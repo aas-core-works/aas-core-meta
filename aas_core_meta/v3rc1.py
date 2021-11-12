@@ -38,7 +38,7 @@ class Has_extensions(DBC):
 @reference_in_the_book(section=(4, 7, 2, 2))
 class Referable(Has_extensions):
     """
-    An element that is referable by its :py:attr:`~ID_short`.
+    An element that is referable by its :attr:`~ID_short`.
 
     This identifier is not globally unique.
     This identifier is unique within the name space of the element.
@@ -49,6 +49,12 @@ class Referable(Has_extensions):
     In case of identifiables this attribute is a short name of the element.
     In case of referable this ID is an identifying string of
     the element within its name space.
+    
+    .. note::
+    
+        In case the element is a property and the property has a semantic definition 
+        (:class:`.Has_semantics`) conformant to IEC61360 the idShort is typically 
+        identical to the short name in English.
     """
 
     display_name: Optional['Lang_string_set']
@@ -74,6 +80,14 @@ class Referable(Has_extensions):
     w.r.t. to the class of the element.
     It affects the expected existence of attributes and the applicability of
     constraints.
+    
+    .. note::
+    
+        The category is not identical to the semantic definition 
+        (:class:`.Has_semantics`) of an element. The category 
+        *e.g.* could denote that the element is a measurement value whereas the 
+        semantic definition of the element would 
+        denote that it is the measured temperature.
     """
 
     description: Optional['Lang_string_set']
@@ -164,7 +178,7 @@ class Identifier(DBC):
     """
     Globally unique identifier of the element.
 
-    Its type is defined in :py:attr:`~ID_type`.
+    Its type is defined in :attr:`~ID_type`.
     """
 
     def __init__(
@@ -196,6 +210,8 @@ class Identifier_type(Enum):
 
 @reference_in_the_book(section=(4, 7, 2, 5), index=1)
 class Modeling_kind(Enum):
+    """ Enumeration for denoting whether an element is a template or an instance. """
+
     Template = "Template"
     """
     Software element which specifies the common attributes shared by all instances of
@@ -232,15 +248,20 @@ class Has_kind(DBC):
     Default for an element is that it is representing an instance.
     """
 
-    kind: 'Modeling_kind'
+    kind: Optional['Modeling_kind']
     """
     Kind of the element: either type or instance.
+    
+    Default Value = Instance
     """
 
     # TODO (all, 2021-05-28): how can ``kind`` be optional
     #  and have a default value?
     #  (See page 54 in the book V3RC1, kind has the cardinality ``0..1``.)
-    def __init__(self, kind: Optional['Modeling_kind'] = None) -> None:
+    def __init__(
+            self,
+            kind: Optional['Modeling_kind'] = None
+    ) -> None:
         self.kind = kind if kind is not None else Modeling_kind.Instance
 
 
@@ -285,7 +306,10 @@ class Has_semantics(DBC):
     of the element.
     """
 
-    def __init__(self, semantic_id: Optional['Reference'] = None) -> None:
+    def __init__(
+            self,
+            semantic_id: Optional['Reference'] = None
+    ) -> None:
         self.semantic_id = semantic_id
 
 
@@ -299,6 +323,7 @@ class Has_semantics(DBC):
     ),
     "Constraint AASd-021"
 )
+@abstract
 @reference_in_the_book(section=(4, 7, 2, 8))
 # fmt: on
 class Qualifiable(DBC):
@@ -310,7 +335,10 @@ class Qualifiable(DBC):
     qualifiers: Optional[List['Constraint']]
     """Additional qualification of a qualifiable element."""
 
-    def __init__(self, qualifiers: Optional[List['Constraint']] = None) -> None:
+    def __init__(
+            self,
+            qualifiers: Optional[List['Constraint']] = None
+    ) -> None:
         self.qualifiers = qualifiers
 
 
@@ -361,7 +389,8 @@ class Qualifier(Constraint, Has_semantics):
             value_type: 'Data_type_def',
             value: Optional['Value_data_type'] = None,
             value_id: Optional['Reference'] = None,
-            semantic_id: Optional['Reference'] = None) -> None:
+            semantic_id: Optional['Reference'] = None
+    ) -> None:
         Has_semantics.__init__(self, semantic_id=semantic_id)
 
         self.type = type
@@ -376,7 +405,7 @@ class Formula(Constraint):
     A formula is used to describe constraints by a logical expression.
     """
 
-    depends_on: List['Reference']
+    depends_on: Optional[List['Reference']]
     """
     A formula may depend on referable or even external global elements that are used in
     the logical expression.
@@ -386,7 +415,10 @@ class Formula(Constraint):
     it is used in.
     """
 
-    def __init__(self, depends_on: List['Reference']) -> None:
+    def __init__(
+            self,
+            depends_on: Optional[List['Reference']]
+    ) -> None:
         self.depends_on = depends_on
 
 
@@ -401,7 +433,7 @@ class Has_data_specification(DBC):
     with their global ID.
     """
 
-    data_specifications: List['Reference']
+    data_specifications: Optional[List['Reference']]
     """
     Global reference to the data specification template used by the element.
     """
@@ -414,7 +446,10 @@ class Has_data_specification(DBC):
     #  IRI of the corresponding data specification template https://admin-
     #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
 
-    def __init__(self, data_specifications: Optional[List['Reference']] = None) -> None:
+    def __init__(
+            self,
+            data_specifications: Optional[List['Reference']] = None
+    ) -> None:
         self.data_specifications = (
             data_specifications if data_specifications is not None else []
         )
@@ -432,7 +467,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     asset_information: 'Asset_information'
     """Meta-information about the asset the AAS is representing."""
 
-    submodels: List['Submodel']
+    submodels: Optional[List['Submodel']]
     """
     References to submodels of the AAS.
 
@@ -441,7 +476,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     no submodel might be assigned to the AAS.
     """
 
-    views: List['View']
+    views: Optional[List['View']]
     """
     Stakeholder-specific views defined for the AAS.
 
@@ -450,13 +485,13 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 
     def __init__(
             self,
-            identification: Identifier,
+            identification: 'Identifier',
             ID_short: str,
             asset_information: 'Asset_information',
             display_name: Optional['Lang_string_set'] = None,
             category: Optional[str] = None,
             description: Optional['Lang_string_set'] = None,
-            administration: Optional[Administrative_information] = None,
+            administration: Optional['Administrative_information'] = None,
             data_specifications: Optional[List['Reference']] = None,
             derived_from: Optional['Asset_administration_shell'] = None,
             security: Optional['Security'] = None,
@@ -493,12 +528,12 @@ class Asset(DBC, Identifiable, Has_data_specification):
 
     def __init__(
             self,
-            identification: Identifier,
+            identification: 'Identifier',
             ID_short: str,
             display_name: Optional['Lang_string_set'] = None,
             category: Optional[str] = None,
             description: Optional['Lang_string_set'] = None,
-            administration: Optional[Administrative_information] = None,
+            administration: Optional['Administrative_information'] = None,
             data_specifications: Optional[List['Reference']] = None
     ):
         Identifiable.__init__(
@@ -524,7 +559,7 @@ class Asset_information:
     a globally unique identifier plus – if needed – additional domain-specific
     (proprietary) identifiers. However, to support the corner case of very first
     phase of lifecycle where a stabilised/constant global asset identifier does not
-    already exist, the corresponding attribute :py:attr:`globalAssetId` is optional.
+    already exist, the corresponding attribute :attr:`~global_asset_ID` is optional.
     """
 
     asset_kind: 'Asset_kind'
@@ -540,7 +575,7 @@ class Asset_information:
     This attribute is required as soon as the AAS is exchanged via partners in the life
     cycle of the asset. In a first phase of the life cycle the asset might not yet have
     a  global ID but already an internal identifier. The internal identifier would be
-    modelled via :py:attr:`~specific_asset_ID`.
+    modelled via :attr:`~specific_asset_ID`.
     """
 
     specific_asset_ID: Optional['Identifier_key_value_pair']
@@ -550,7 +585,7 @@ class Asset_information:
     For example, serial number.
     """
 
-    bill_of_material: List['Submodel']
+    bill_of_material: Optional[List['Submodel']]
     """
     A reference to a Submodel that defines the bill of material of the asset represented
     by the AAS.
@@ -625,17 +660,17 @@ class Identifier_key_value_pair(DBC, Has_semantics):
     key: str
     """Key of the identifier"""
 
-    value: str
+    value: Optional[str]
     """The value of the identifier with the corresponding key."""
 
-    external_subject_ID: 'Reference'
+    external_subject_ID: Optional['Reference']
     """The (external) subject the key belongs to or has meaning to."""
 
     def __init__(
             self,
             key: str,
-            value: str,
-            external_subject_ID: 'Reference',
+            value: Optional[str] = None,
+            external_subject_ID: Optional['Reference'] = None,
             semantic_id: Optional['Reference'] = None
     ) -> None:
         Has_semantics.__init__(self, semantic_id)
@@ -662,17 +697,17 @@ class Submodel(DBC, Identifiable, Has_kind, Has_semantics, Qualifiable,
 
     def __init__(
             self,
-            identification: Identifier,
+            identification: 'Identifier',
             ID_short: str,
+            submodel_elements: List['Submodel_element'],
             display_name: Optional['Lang_string_set'] = None,
             category: Optional[str] = None,
             description: Optional['Lang_string_set'] = None,
-            administration: Optional[Administrative_information] = None,
+            administration: Optional['Administrative_information'] = None,
             kind: Optional['Modeling_kind'] = None,
             semantic_id: Optional['Reference'] = None,
-            qualifiers: Optional[List[Constraint]] = None,
-            data_specifications: Optional[List['Reference']] = None,
-            submodel_elements: Optional[List['Submodel_element']] = None
+            qualifiers: Optional[List['Constraint']] = None,
+            data_specifications: Optional[List['Reference']] = None
     ):
         # TODO (Nico & Marko, 2021-09-24):
         #  How should we implement Constraint AASd-062 (page 64 in V3RC1)?
@@ -681,8 +716,12 @@ class Submodel(DBC, Identifiable, Has_kind, Has_semantics, Qualifiable,
 
         Identifiable.__init__(
             self,
-            identification=identification, ID_short=ID_short, display_name=display_name,
-            category=category, description=description, administration=administration)
+            identification=identification,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+            administration=administration)
 
         Has_kind.__init__(
             self,
@@ -716,11 +755,14 @@ class Submodel_element(DBC, Referable, Has_kind, Has_semantics, Qualifiable,
             description: Optional['Lang_string_set'] = None,
             kind: Optional['Modeling_kind'] = None,
             semantic_id: Optional['Reference'] = None,
-            qualifiers: Optional[List[Constraint]] = None,
+            qualifiers: Optional[List['Constraint']] = None,
             data_specifications: Optional[List['Reference']] = None,
     ) -> None:
         Referable.__init__(
-            self, ID_short=ID_short, display_name=display_name, category=category,
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
             description=description)
 
         Has_kind.__init__(self, kind=kind)
@@ -765,7 +807,7 @@ class Relationship_element(Submodel_element):
             description: Optional['Lang_string_set'] = None,
             kind: Optional['Modeling_kind'] = None,
             semantic_id: Optional['Reference'] = None,
-            qualifiers: Optional[List[Constraint]] = None,
+            qualifiers: Optional[List['Constraint']] = None,
             data_specifications: Optional[List['Reference']] = None,
     ) -> None:
         Submodel_element.__init__(
@@ -795,6 +837,29 @@ class Data_element(Submodel_element):
     for different subtypes of data elements.
     """
 
+    def __init__(
+            self,
+            ID_short: str,
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List[Constraint]] = None,
+            data_specifications: Optional[List['Reference']] = None,
+    ) -> None:
+        Submodel_element.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+            kind=kind,
+            semantic_id=semantic_id,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications
+        )
+
 
 @reference_in_the_book(section=(4, 7, 8, 1))
 class Annotated_relationship_element(Relationship_element):
@@ -802,7 +867,7 @@ class Annotated_relationship_element(Relationship_element):
     An annotated relationship element is a relationship element that can be annotated
     with additional data elements.
     """
-    annotation: List[Data_element]
+    annotation: Optional[List[Data_element]]
     """
     A reference to a data element that represents an annotation that holds for
     the relationship between the two elements.
@@ -971,10 +1036,10 @@ class Key(DBC):
     """
     Denote which kind of entity is referenced.
 
-    In case type = :py:attr:`Key_elements.Global_reference` then the key represents
+    In case type = :attr:`Key_elements.Global_reference` then the key represents
     a global unique id.
 
-    In case type = :py:attr:`Fragment_ID` the key represents a  bookmark or
+    In case type = :attr:`Fragment_ID` the key represents a  bookmark or
     a  similar local identifier within its parent element as specified by the key that
     precedes this key.
 
@@ -983,7 +1048,7 @@ class Key(DBC):
     """
 
     value: str
-    """The key value, for example an IRDI if the :py:attr:`~ID_type` is IRDI."""
+    """The key value, for example an IRDI if the :attr:`~ID_type` is IRDI."""
 
     ID_type: 'Key_type'
     """Type of the key value."""
@@ -1023,7 +1088,7 @@ class Key_elements(Enum):
 
     .. note::
 
-        Data Element is abstract, *i.e.* if a key uses :py:attr:`Data_element`
+        Data Element is abstract, *i.e.* if a key uses :attr:`Data_element`
         the reference may be a Property, a File *etc.*
     """
 
@@ -1055,7 +1120,7 @@ class Key_elements(Enum):
 
     .. note::
 
-        Submodel Element is abstract, *i.e.* if a key uses :py:attr:`Submodel_element`
+        Submodel Element is abstract, *i.e.* if a key uses :attr:`Submodel_element`
         the reference may be a Property, a :class:`Submodel_element_collection`,
         an Operation *etc.*
     """
@@ -1083,7 +1148,7 @@ class Referable_elements(Enum):
 
     .. note::
 
-        Data Element is abstract, *i.e.* if a  key uses :py:attr:`Data_element`
+        Data Element is abstract, *i.e.* if a  key uses :attr:`Data_element`
         the reference may be a Property, a File *etc.*
     """
 
@@ -1111,7 +1176,7 @@ class Referable_elements(Enum):
 
     .. note::
 
-        Submodel Element is abstract, *i.e.* if a key uses :py:attr:`Submodel_element`
+        Submodel Element is abstract, *i.e.* if a key uses :attr:`Submodel_element`
         the reference may be a Property, a :class:`Submodel_element_collection`,
         an Operation *etc.*
     """
@@ -1237,7 +1302,7 @@ class Lang_string(DBC):
     """Give a text in a specific language."""
 
     language: str
-    """Language of the :py:attr`~text`"""
+    """Language of the :attr`~text`"""
 
     text: str
     """Content of the string"""
