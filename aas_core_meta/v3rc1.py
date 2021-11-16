@@ -674,7 +674,6 @@ class Identifier_key_value_pair(DBC, Has_semantics):
             semantic_id: Optional['Reference'] = None
     ) -> None:
         Has_semantics.__init__(self, semantic_id)
-
         self.key = key
         self.value = value
         self.external_subject_ID = external_subject_ID
@@ -786,6 +785,10 @@ class Submodel_element(DBC, Referable, Has_kind, Has_semantics, Qualifiable,
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two referable elements.
+
+    Constraint AASd-055: If the semanticId of a RelationshipElement or an 
+    AnnotatedRelationshipElement submodel element references a ConceptDescription then 
+    the ConceptDescription/category shall be one of following values: RELATIONSHIP.
     """
     first: Referable
     """
@@ -799,9 +802,9 @@ class Relationship_element(Submodel_element):
 
     def __init__(
             self,
+            ID_short: str,
             first: Referable,
             second: Referable,
-            ID_short: str,
             display_name: Optional['Lang_string_set'] = None,
             category: Optional[str] = None,
             description: Optional['Lang_string_set'] = None,
@@ -826,6 +829,93 @@ class Relationship_element(Submodel_element):
         self.second = second
 
 
+@reference_in_the_book(section=(4, 7, 8, 15))
+class Submodel_element_collection(Submodel_element):
+    """
+    A submodel element collection is a set or list of submodel elements.
+
+    Constraint AASd-059: If the semanticId of a SubmodelElementCollection references a 
+    ConceptDescription then the category of the ConceptDescription shall be COLLECTION 
+    or ENTITY.
+    
+    Constraint AASd-092: If the semanticId of a SubmodelElementCollection with 
+    SubmodelElementCollection/allowDuplicates == false references a ConceptDescription 
+    then the ConceptDescription/category shall be ENTITY.
+    
+    Constraint AASd-093: If the semanticId of a SubmodelElementCollection with 
+    SubmodelElementCollection/allowDuplicates == true references a ConceptDescription 
+    then the ConceptDescription/category shall be COLLECTION.
+
+    Example: A set of documents is referencing a concept description of category 
+    COLLECTION. A document within this collection is described as 
+    a SubmodelElementCollection referencing a concept description of category ENTITY.
+
+    .. note::
+       This means that no generic semanticId can be assigned to an element within 
+       a submodel element collection with allowDuplicates == false: every element within 
+       the entity needs a clear and unique semantics.
+    """
+
+    value: Optional[List['Submodel_element']]
+    """
+    Submodel element contained in the collection.
+    """
+
+    ordered: Optional[bool]
+    """
+    If ordered=false, then the elements in the collection are not ordered. 
+    If ordered=true, then the elements in the collection are ordered.
+    Default = false
+
+    .. note::
+      An ordered submodel element collection is typically implemented as an indexed 
+      array.
+    """
+
+    allow_duplicates: Optional[bool]
+    """
+    If allowDuplicates==true, then it is allowed that the collection contains several 
+    elements with the same semantics (i.e. the same semanticId).
+    Constraint AASd-026: If allowDuplicates==false then it is not allowed that 
+    the collection contains several elements with the same semantics (i.e. the same 
+    semanticId).
+    Default = false
+    """
+
+    def __init__(
+            self,
+            ID_short: str,
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List['Constraint']] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            value: Optional[List['Submodel_element']] = None,
+            ordered: Optional[bool] = None,
+            allow_duplicates: Optional[bool] = None
+    ) -> None:
+        Referable.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description)
+
+        Has_kind.__init__(self, kind=kind)
+
+        Has_semantics.__init__(self, semantic_id=semantic_id)
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        Has_data_specification.__init__(self, data_specifications=data_specifications)
+
+        self.value = value
+        self.ordered = ordered
+        self.allow_duplicates = allow_duplicates
+
+
 @abstract
 @reference_in_the_book(section=(4, 7, 8, 5))
 class Data_element(Submodel_element):
@@ -835,6 +925,14 @@ class Data_element(Submodel_element):
 
     A data element is a submodel element that has a value. The type of value differs
     for different subtypes of data elements.
+
+    .. note::
+    A controlled value is a value whose meaning is given in an external source 
+    (see “ISO/TS 29002-10:
+
+    Constraint AASd-090: For data elements DataElement/category shall be one of the 
+    following values: CONSTANT, PARAMETER or VARIABLE. 
+    Exception: File and Blob data elements.
     """
 
     def __init__(
@@ -846,7 +944,7 @@ class Data_element(Submodel_element):
             kind: Optional['Modeling_kind'] = None,
             semantic_id: Optional['Reference'] = None,
             qualifiers: Optional[List[Constraint]] = None,
-            data_specifications: Optional[List['Reference']] = None,
+            data_specifications: Optional[List['Reference']] = None
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -859,6 +957,364 @@ class Data_element(Submodel_element):
             qualifiers=qualifiers,
             data_specifications=data_specifications
         )
+
+
+@reference_in_the_book(section=(4, 7, 8, 11))
+class Property(Data_element):
+    """
+    A property is a data element that has a single value.
+
+    Constraint AASd-007: If both, the Property/value and the Property/valueId are 
+    present then the value of Property/value needs to be identical to the value of 
+    the referenced coded value in Property/valueId.
+    
+    Constraint AASd-052a: If the semanticId of a Property references a 
+    ConceptDescription then the ConceptDescription/category shall be one of 
+    following values: VALUE, PROPERTY.
+
+    Constraint AASd-065: If the semanticId of a Property or MultiLanguageProperty 
+    references a ConceptDescription with the category VALUE then the value of the 
+    property is identical to DataSpecificationIEC61360/value and the valueId of the 
+    property is identical to DataSpecificationIEC61360/valueId.
+    
+    Constraint AASd-066: If the semanticId of a Property or MultiLanguageProperty 
+    references a ConceptDescription with the category PROPERTY and 
+    DataSpecificationIEC61360/valueList is defined the value and valueId of the 
+    property is identical to one of the value reference pair types references in the 
+    value list, i.e. ValueReferencePairType/value or ValueReferencePairType/valueId, 
+    resp.
+    """
+
+    value_type: 'Data_type_def'
+    """
+    Data type of the value
+    """
+
+    value: Optional['Value_data_type']
+    """
+    The value of the property instance.
+
+    See Constraint AASd-065
+    See Constraint AASd-007
+    """
+
+    value_ID: Optional['Reference']
+    """
+    Reference to the global unique id of a coded value.
+
+    See Constraint AASd-065
+    See Constraint AASd-007
+    """
+
+    def __init__(
+            self,
+            ID_short: str,
+            value_type: 'Data_type_def',
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List[Constraint]] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            value: Optional['Value_data_type'] = None,
+            value_ID: Optional['Reference'] = None
+            
+    ) -> None:
+        Submodel_element.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+            kind=kind,
+            semantic_id=semantic_id,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications
+        )
+        
+        self.value_type = value_type
+        self.value = value
+        self.value_ID = value_ID
+
+
+@reference_in_the_book(section=(4, 7, 8, 9))
+class Multi_language_property(Data_element):
+    """
+    A property is a data element that has a multi-language value.
+
+    Constraint AASd-052b: If the semanticId of a MultiLanguageProperty references 
+    a ConceptDescription then the ConceptDescription/category shall be one of 
+    following values: PROPERTY.
+    
+    Constraint AASd-012: If both, the MultiLanguageProperty/value and the 
+    MultiLanguageProperty/valueId are present then for each string in a specific 
+    language the meaning must be the same as specified in 
+    MultiLanguageProperty/valueId.
+
+    Constraint AASd-067: If the semanticId of a MultiLanguageProperty references a 
+    ConceptDescription then DataSpecificationIEC61360/dataType shall be 
+    STRING_TRANSLATABLE.
+
+    See Constraint AASd-065
+    """
+
+    value: Optional['Lang_string_set']
+    """
+    The value of the property instance. 
+    See Constraint AASd-012
+    See Constraint AASd-065"
+    """
+
+    value_ID: Optional['Reference']
+    """
+    Reference to the global unique id of a coded value.
+    See Constraint AASd-012 
+    See Constraint AASd-065"
+    """
+
+    def __init__(
+            self,
+            ID_short: str,
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List[Constraint]] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            value: Optional['Lang_string_set'] = None,
+            value_ID: Optional['Reference'] = None
+    ) -> None:
+        Submodel_element.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+            kind=kind,
+            semantic_id=semantic_id,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications
+        )
+        
+        self.value = value
+        self.value_ID = value_ID
+
+
+@reference_in_the_book(section=(4, 7, 8, 12))
+class Range(Data_element):
+    """
+    A range data element is a data element that defines a range with min and max.
+
+    Constraint AASd-053: If the semanticId of a Range submodel element references a 
+    ConceptDescription then the ConceptDescription/category shall be one of following 
+    values: PROPERTY.
+
+    Constraint AASd-068: If the semanticId of a Range submodel element references a 
+    ConceptDescription then DataSpecificationIEC61360/dataType shall be a numerical 
+    one, i.e. REAL_* or RATIONAL_*.
+    
+    Constraint AASd-069: If the semanticId of a Range references a ConceptDescription 
+    then DataSpecificationIEC61360/levelType shall be identical to the set {Min, Max}.
+    """
+
+    value_type: 'Data_type_def'
+    """
+    Data type of the min und max
+    """
+
+    min: Optional['Value_data_type']
+    """
+    The minimum value of the range.
+    If the min value is missing, then the value  is  assumed  to  be  negative infinite.
+    """
+
+    max: Optional['Value_data_type']
+    """
+    The maximum value of the range.
+    If  the  max  value  is  missing,  then the value is assumed to be positive infinite.
+    """
+
+    def __init__(
+            self,
+            ID_short: str,
+            value_type: 'Data_type_def',
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List[Constraint]] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            min: Optional['Value_data_type'] = None,
+            max: Optional['Value_data_type'] = None
+    ) -> None:
+        Submodel_element.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+            kind=kind,
+            semantic_id=semantic_id,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications
+        )
+
+        self.value_type = value_type
+        self.min = min
+        self.max = max
+
+
+@reference_in_the_book(section=(4, 7, 8, 13))
+class Reference_element(Data_element):
+    """
+    A reference element is a data element that defines a logical reference to another 
+    element within the same or another AAS or a reference to an external object or 
+    entity.
+    """
+
+    value: Optional['Reference']
+    """
+    Reference to any other referable element of the same of any other AAS or a 
+    reference to an external object or entity.
+
+    Constraint AASd-054: If the semanticId of a ReferenceElement submodel element 
+    references a ConceptDescription then the ConceptDescription/category shall be one of 
+    following values: REFERENCE.
+    """
+
+    def __init__(
+            self,
+            ID_short: str,
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List[Constraint]] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            value: Optional['Reference'] = None
+    ) -> None:
+        Submodel_element.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+            kind=kind,
+            semantic_id=semantic_id,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications
+        )
+
+        self.value = value
+
+
+@reference_in_the_book(section=(4, 7, 8, 4))
+class Blob(Data_element):
+    """
+    A BLOB is a data element that represents a file that is contained with its source 
+    code in the value attribute.
+    """
+    
+    mime_type: 'Mime_type'
+    """
+    Mime  type  of  the  content  of  the BLOB.
+    The  mime  type  states  which  file extensions the file can have.
+    Valid values are e.g. “application/json”, “application/xls”, ”image/jpg”
+    The allowed values are defined as in RFC2046.
+    """
+    
+    value: Optional['Blob_type']
+    """
+    The value of the BLOB instance of a blob data element.
+
+    .. note::
+      In  contrast  to  the  file property the file content is stored directly as value
+      in the Blob data element.
+
+    Constraint AASd-057: The semanticId of a File or Blob submodel element shall only 
+    reference a ConceptDescription with the category DOCUMENT.
+    """   
+    
+    def __init__(
+            self,
+            ID_short: str,
+            mime_type: 'Mime_type',            
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List[Constraint]] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            value: Optional['Blob_type'] = None
+    ) -> None:
+        Submodel_element.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+            kind=kind,
+            semantic_id=semantic_id,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications
+        )
+
+        self.mime_type = mime_type
+        self.value = value
+
+@reference_in_the_book(section=(4, 7, 8, 8))
+class File(Data_element):
+    """
+    A File is a data element that represents an address to a file. 
+    The value is an URI that can represent an absolute or relative path.
+
+    See Constraint AASd-057
+    """
+    
+    mime_type: 'Mime_type'
+    """
+    Mime  type  of  the  content  of  the BLOB.
+    The  mime  type  states  which  file extensions the file can have.
+    """
+    
+    value: Optional['Path_type']
+    """
+    Path  and  name  of  the  referenced file (with file extension).
+    The   path   can   be   absolute   or relative.
+    """   
+    
+    def __init__(
+            self,
+            ID_short: str,
+            mime_type: 'Mime_type',            
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List[Constraint]] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            value: Optional['Path_type'] = None
+    ) -> None:
+        Submodel_element.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+            kind=kind,
+            semantic_id=semantic_id,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications
+        )
+
+        self.mime_type = mime_type
+        self.value = value
 
 
 @reference_in_the_book(section=(4, 7, 8, 1))
@@ -918,6 +1374,100 @@ class Annotated_relationship_element(Relationship_element):
 #  a ConceptDescription then the category of the ConceptDescription shall be one of
 #  the following: EVENT.
 
+@reference_in_the_book(section=(4, 7, 8, 6), index=1)
+class Entity_type(Enum):
+    """
+    Enumeration for denoting whether an entity is a self-managed entity or a co-managed 
+    entity.
+    """
+
+    Co_managed_entity = "CoManagedEntity"
+    """
+    For co-managed entities there is no separate AAS. Co-managed entities need to be 
+    part of a self-managed entity.
+    """
+
+    Self_managed_entity = "SelfManagedEntity"
+    """
+    Self-Managed Entities have their own AAS but can be part of the bill of material of 
+    a composite self-managed entity. The asset of an I4.0 Component is a self-managed 
+    entity per definition."
+    """
+
+
+@reference_in_the_book(section=(4, 7, 8, 6))
+class Entity(Submodel_element):
+    """
+    An entity is a submodel element that is used to model entities.
+    
+    Constraint AASd-056: If the semanticId of a Entity submodel element 
+    references a ConceptDescription then the ConceptDescription/category shall 
+    be one of following values: ENTITY. The ConceptDescription describes the elements 
+    assigned to the entity via Entity/statement.
+    """
+
+    entity_type: 'Entity_type'
+    """
+    Describes whether the entity is a co- managed  entity or a self-managed entity.
+    """
+
+    statement: Optional[List['Submodel_element']]
+    """
+    Describes statements applicable to the entity by a set of submodel elements, 
+    typically with a qualified value.
+    """
+    
+    global_asset_id: Optional['Reference']
+    """
+    Reference  to  the  asset  the  entity  is representing.
+    Constraint AASd-014: Either the attribute globalAssetId or specificAssetId of an 
+    Entity must be set if Entity/entityType is set to “SelfManagedEntity”. They are 
+    not existing otherwise.
+    """
+
+    specific_asset_id: Optional['Identifier_key_value_pair']
+    """
+    Reference to an identifier key value pair representing a specific identifier 
+    of the asset represented by the asset administration shell.
+    See Constraint AASd-014
+    """
+
+    def __init__(
+            self,
+            ID_short: str,
+            entity_type: 'Entity_type',
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List['Constraint']] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            statement: Optional['Submodel_element'] = None,
+            global_asset_id: Optional['Reference'] = None,
+            specific_asset_id: Optional['Identifier_key_value_pair'] = None
+    ) -> None:
+        Referable.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description)
+
+        Has_kind.__init__(self, kind=kind)
+
+        Has_semantics.__init__(self, semantic_id=semantic_id)
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        Has_data_specification.__init__(self, data_specifications=data_specifications)
+
+        self.statement = statement
+        self.entity_type = entity_type
+        self.global_asset_id = global_asset_id
+        self.specific_asset_id = specific_asset_id
+
+
 @abstract
 @reference_in_the_book(section=(4, 7, 8, 7))
 class Event(Submodel_element):
@@ -949,7 +1499,6 @@ class Event(Submodel_element):
         )
 
 
-@abstract
 @reference_in_the_book(section=(4, 7, 8, 2))
 class Basic_Event(Event):
     """
@@ -988,8 +1537,219 @@ class Basic_Event(Event):
         self.observed = observed
 
 
+@reference_in_the_book(section=(4, 7, 8, 10))
+class Operation(Submodel_element):
+    """
+    An operation is a submodel element with input and output variables.
+
+    Constraint AASd-060: If the semanticId of a Operation submodel element 
+    references a ConceptDescription then the category of the ConceptDescription 
+    shall be one of the following values: FUNCTION.
+    """
+
+    input_variables: Optional[List['Operation_variable']]
+    """
+    Input parameter of the operation.
+    """
+
+    output_variables: Optional[List['Operation_variable']]
+    """
+    Output parameter of the operation.
+    """
+
+    inoutput_variables: Optional[List['Operation_variable']]
+    """
+    Parameter that is input and output of the operation.
+    """
+
+    def __init__(
+            self,
+            ID_short: str,
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List['Constraint']] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            input_variables: Optional[List['Operation_variable']] = None,
+            output_variables: Optional[List['Operation_variable']] = None,
+            inoutput_variables: Optional[List['Operation_variable']] = None
+    ) -> None:
+        Referable.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description)
+
+        Has_kind.__init__(self, kind=kind)
+
+        Has_semantics.__init__(self, semantic_id=semantic_id)
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        Has_data_specification.__init__(self, data_specifications=data_specifications)
+
+        self.input_variables = input_variables
+        self.output_variables = output_variables
+        self.inoutput_variables = inoutput_variables
+
+
+@reference_in_the_book(section=(4, 7, 8, 10), index=1)
+class Operation_variable():
+    """
+    An operation variable is a submodel element that is used as input or output variable
+    of an operation.
+    """
+
+    value: 'Submodel_element'
+    """
+    Describes the needed argument for an operation via a submodel element of 
+    kind=Template.
+    Constraint AASd-008: The submodel element value of an operation variable shall be 
+    of kind=Template.
+    """
+
+    def __init__(
+            self,
+            value: 'Submodel_element'
+    ) -> None:
+        self.value = value
+
+
+@reference_in_the_book(section=(4, 7, 8, 3))
+class Capability(Submodel_element):
+    """
+    A capability is the implementation-independent description of the potential of an 
+    asset to achieve a certain effect in the physical or virtual world.
+    """
+    
+    def __init__(
+            self,
+            ID_short: str,
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            kind: Optional['Modeling_kind'] = None,
+            semantic_id: Optional['Reference'] = None,
+            qualifiers: Optional[List['Constraint']] = None,
+            data_specifications: Optional[List['Reference']] = None,
+    ) -> None:
+        Referable.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description)
+
+        Has_kind.__init__(self, kind=kind)
+
+        Has_semantics.__init__(self, semantic_id=semantic_id)
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        Has_data_specification.__init__(self, data_specifications=data_specifications)
+
+
+@reference_in_the_book(section=(4, 7, 9))
+class Concept_description(Identifiable, Has_data_specification):
+    """
+    The semantics of a property or other elements that may have a semantic description 
+    is defined by a concept description. The description of the concept should follow a 
+    standardized schema (realized as data specification template).
+    
+    Constraint AASd-051: A ConceptDescription shall have one of the following categories: 
+    VALUE, PROPERTY, REFERENCE, DOCUMENT, CAPABILITY, RELATIONSHIP, COLLECTION, FUNCTION, 
+    EVENT, ENTITY, APPLICATION_CLASS, QUALIFIER, VIEW. Default: PROPERTY.
+    """
+
+    is_case_of: Optional[List['Reference']]
+    """
+    Reference to an external definition the concept is compatible to or was derived from.
+
+    .. note::
+       Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360"
+    """
+
+    def __init__(
+            self,
+            identification: 'Identifier',
+            ID_short: str,
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            administration: Optional['Administrative_information'] = None,
+            is_case_of: Optional[List['Reference']] = None,
+            data_specifications: Optional[List['Reference']] = None
+    ) -> None:
+        Identifiable.__init__(
+            self,
+            identification=identification,
+            administration=administration,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description)
+        
+        Has_data_specification.__init__(
+            self,
+            data_specifications = (
+            data_specifications if data_specifications is not None else []))
+
+        self.is_case_of = is_case_of
+
+
+@reference_in_the_book(section=(4, 7, 10))
+class View(Referable, Has_semantics, Has_data_specification):
+    """
+    A view is a collection of referable elements w.r.t. to a specific viewpoint of one 
+    or more stakeholders.
+
+    Constraint AASd-064: If the semanticId of a View references a ConceptDescription then
+    the category of the ConceptDescription shall be VIEW.
+
+    .. note:: 
+       Views are a projection of submodel elements for a given perspective. 
+       They are not equivalent to submodels.
+    """
+
+    contained_element: Optional[List['Referable']]
+    """
+    Reference to a referable element that is contained in the view.
+    """
+
+    def __init__(
+            self,
+            ID_short: str,
+            display_name: Optional['Lang_string_set'] = None,
+            category: Optional[str] = None,
+            description: Optional['Lang_string_set'] = None,
+            semantic_id: Optional['Reference'] = None,
+            data_specifications: Optional[List['Reference']] = None,
+            contained_element: Optional[List['Referable']] = None
+    ) -> None:
+        Referable.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description)
+        
+        Has_semantics.__init__(
+            self, 
+            semantic_id)
+
+        Has_data_specification.__init__(
+            self,
+            data_specifications = (
+            data_specifications if data_specifications is not None else []))
+
+        self.contained_element = contained_element
+
+
 @invariant(lambda self: len(self.keys) >= 1)
-@reference_in_the_book(section=(4, 7, 11), index=0)
+@reference_in_the_book(section=(4, 7, 11))
 class Reference(DBC):
     """
     Reference to either a model element of the same or another AAs or to an external
@@ -1051,8 +1811,16 @@ class Key(DBC):
     """The key value, for example an IRDI if the :attr:`~ID_type` is IRDI."""
 
     ID_type: 'Key_type'
-    """Type of the key value."""
-
+    """
+    Type of the key value.
+    
+    Constraint AASd-080: In case Key/type == GlobalReference idType shall not be any 
+    LocalKeyType (IdShort, FragmentId).
+    
+    Constraint AASd-081: In case Key/type==AssetAdministrationShell Key/idType shall 
+    not be any LocalKeyType (IdShort, FragmentId).
+    """
+    
     def __init__(self, type: 'Key_elements', value: str, ID_type: 'Key_type') -> None:
         self.type = type
         self.value = value
@@ -1243,7 +2011,7 @@ assert (
 )
 
 
-@reference_in_the_book(section=(4, 7, 13, 2), index=0)
+@reference_in_the_book(section=(4, 7, 13, 2))
 class Data_type_def(Enum):
     Any_uri = "anyUri"
     Base64_binary = "base64Binary"
@@ -1290,12 +2058,7 @@ class Data_type_def(Enum):
     N_M_token = "NMTOKEN"
     Time = "time"
 
-
-@implementation_specific
-@reference_in_the_book(section=(4, 7, 13, 2), index=1)
-class Value_data_type(DBC):
-    """Any XSD atomic type as specified via :class:`Data_type_def`"""
-
+Blob_type =  bytearray
 
 @reference_in_the_book(section=(4, 7, 13, 11))
 class Lang_string(DBC):
@@ -1312,6 +2075,19 @@ class Lang_string(DBC):
         self.language = language
         self.text = text
 
+
+ID = str  # reference_in_the_book(section=(4, 7, 13, 2))
+
+Mime_type = str # reference_in_the_book(section=(4, 7, 13, 2))
+
+Path_type = str # reference_in_the_book(section=(4, 7, 13, 2))
+
+Qualifier_type = str  # reference_in_the_book(section=(4, 7, 13, 2))
+
+@implementation_specific
+@reference_in_the_book(section=(4, 7, 13, 2), index=1)
+class Value_data_type(DBC):
+    """Any XSD atomic type as specified via :class:`Data_type_def`"""
 
 @implementation_specific
 # TODO (Nico & Marko, 2021-05-28):
@@ -1372,12 +2148,6 @@ class Lang_string_set(DBC):
         """
         # The strings need to be accessed by a dictionary;
         # how this dictionary is accessed is left to the individual implementation.
-
-
-Qualifier_type = str  # reference_in_the_book(section=(4, 7, 13, 2))
-
-
-ID = str  # reference_in_the_book(section=(4, 7, 13, 2))
 
 # TODO (Nico & Marko, 2021-09-24):
 #  We need to list in a comment all the constraints which were not implemented.
