@@ -5,12 +5,12 @@ from typing import List, Optional
 
 from icontract import invariant, ensure, DBC
 
-from aas_core3_meta.marker import (
+from aas_core_meta.marker import (
     abstract,
     implementation_specific,
     reference_in_the_book
 )
-from aas_core3_meta.verification import (
+from aas_core_meta.verification import (
     is_IRI, is_IRDI, is_ID_short, are_unique, is_of_type
 )
 
@@ -786,8 +786,8 @@ class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two referable elements.
 
-    Constraint AASd-055: If the semanticId of a RelationshipElement or an 
-    AnnotatedRelationshipElement submodel element references a ConceptDescription then 
+    Constraint AASd-055: If the semanticId of a RelationshipElement or an
+    AnnotatedRelationshipElement submodel element references a ConceptDescription then
     the ConceptDescription/category shall be one of following values: RELATIONSHIP.
     """
     first: Referable
@@ -834,25 +834,25 @@ class Submodel_element_collection(Submodel_element):
     """
     A submodel element collection is a set or list of submodel elements.
 
-    Constraint AASd-059: If the semanticId of a SubmodelElementCollection references a 
-    ConceptDescription then the category of the ConceptDescription shall be COLLECTION 
+    Constraint AASd-059: If the semanticId of a SubmodelElementCollection references a
+    ConceptDescription then the category of the ConceptDescription shall be COLLECTION
     or ENTITY.
-    
-    Constraint AASd-092: If the semanticId of a SubmodelElementCollection with 
-    SubmodelElementCollection/allowDuplicates == false references a ConceptDescription 
+
+    Constraint AASd-092: If the semanticId of a SubmodelElementCollection with
+    SubmodelElementCollection/allowDuplicates == false references a ConceptDescription
     then the ConceptDescription/category shall be ENTITY.
-    
-    Constraint AASd-093: If the semanticId of a SubmodelElementCollection with 
-    SubmodelElementCollection/allowDuplicates == true references a ConceptDescription 
+
+    Constraint AASd-093: If the semanticId of a SubmodelElementCollection with
+    SubmodelElementCollection/allowDuplicates == true references a ConceptDescription
     then the ConceptDescription/category shall be COLLECTION.
 
-    Example: A set of documents is referencing a concept description of category 
-    COLLECTION. A document within this collection is described as 
+    Example: A set of documents is referencing a concept description of category
+    COLLECTION. A document within this collection is described as
     a SubmodelElementCollection referencing a concept description of category ENTITY.
 
     .. note::
-       This means that no generic semanticId can be assigned to an element within 
-       a submodel element collection with allowDuplicates == false: every element within 
+       This means that no generic semanticId can be assigned to an element within
+       a submodel element collection with allowDuplicates == false: every element within
        the entity needs a clear and unique semantics.
     """
 
@@ -927,11 +927,11 @@ class Data_element(Submodel_element):
     for different subtypes of data elements.
 
     .. note::
-    A controlled value is a value whose meaning is given in an external source 
+    A controlled value is a value whose meaning is given in an external source
     (see “ISO/TS 29002-10:
 
-    Constraint AASd-090: For data elements DataElement/category shall be one of the 
-    following values: CONSTANT, PARAMETER or VARIABLE. 
+    Constraint AASd-090: For data elements DataElement/category shall be one of the
+    following values: CONSTANT, PARAMETER or VARIABLE.
     Exception: File and Blob data elements.
     """
 
@@ -964,24 +964,24 @@ class Property(Data_element):
     """
     A property is a data element that has a single value.
 
-    Constraint AASd-007: If both, the Property/value and the Property/valueId are 
-    present then the value of Property/value needs to be identical to the value of 
+    Constraint AASd-007: If both, the Property/value and the Property/valueId are
+    present then the value of Property/value needs to be identical to the value of
     the referenced coded value in Property/valueId.
-    
-    Constraint AASd-052a: If the semanticId of a Property references a 
-    ConceptDescription then the ConceptDescription/category shall be one of 
+
+    Constraint AASd-052a: If the semanticId of a Property references a
+    ConceptDescription then the ConceptDescription/category shall be one of
     following values: VALUE, PROPERTY.
 
-    Constraint AASd-065: If the semanticId of a Property or MultiLanguageProperty 
-    references a ConceptDescription with the category VALUE then the value of the 
-    property is identical to DataSpecificationIEC61360/value and the valueId of the 
+    Constraint AASd-065: If the semanticId of a Property or MultiLanguageProperty
+    references a ConceptDescription with the category VALUE then the value of the
+    property is identical to DataSpecificationIEC61360/value and the valueId of the
     property is identical to DataSpecificationIEC61360/valueId.
-    
-    Constraint AASd-066: If the semanticId of a Property or MultiLanguageProperty 
-    references a ConceptDescription with the category PROPERTY and 
-    DataSpecificationIEC61360/valueList is defined the value and valueId of the 
-    property is identical to one of the value reference pair types references in the 
-    value list, i.e. ValueReferencePairType/value or ValueReferencePairType/valueId, 
+
+    Constraint AASd-066: If the semanticId of a Property or MultiLanguageProperty
+    references a ConceptDescription with the category PROPERTY and
+    DataSpecificationIEC61360/valueList is defined the value and valueId of the
+    property is identical to one of the value reference pair types references in the
+    value list, i.e. ValueReferencePairType/value or ValueReferencePairType/valueId,
     resp.
     """
 
@@ -1019,7 +1019,7 @@ class Property(Data_element):
             data_specifications: Optional[List['Reference']] = None,
             value: Optional['Value_data_type'] = None,
             value_ID: Optional['Reference'] = None
-            
+
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -1032,7 +1032,7 @@ class Property(Data_element):
             qualifiers=qualifiers,
             data_specifications=data_specifications
         )
-        
+
         self.value_type = value_type
         self.value = value
         self.value_ID = value_ID
@@ -1043,17 +1043,17 @@ class Multi_language_property(Data_element):
     """
     A property is a data element that has a multi-language value.
 
-    Constraint AASd-052b: If the semanticId of a MultiLanguageProperty references 
-    a ConceptDescription then the ConceptDescription/category shall be one of 
+    Constraint AASd-052b: If the semanticId of a MultiLanguageProperty references
+    a ConceptDescription then the ConceptDescription/category shall be one of
     following values: PROPERTY.
-    
-    Constraint AASd-012: If both, the MultiLanguageProperty/value and the 
-    MultiLanguageProperty/valueId are present then for each string in a specific 
-    language the meaning must be the same as specified in 
+
+    Constraint AASd-012: If both, the MultiLanguageProperty/value and the
+    MultiLanguageProperty/valueId are present then for each string in a specific
+    language the meaning must be the same as specified in
     MultiLanguageProperty/valueId.
 
-    Constraint AASd-067: If the semanticId of a MultiLanguageProperty references a 
-    ConceptDescription then DataSpecificationIEC61360/dataType shall be 
+    Constraint AASd-067: If the semanticId of a MultiLanguageProperty references a
+    ConceptDescription then DataSpecificationIEC61360/dataType shall be
     STRING_TRANSLATABLE.
 
     See Constraint AASd-065
@@ -1097,7 +1097,7 @@ class Multi_language_property(Data_element):
             qualifiers=qualifiers,
             data_specifications=data_specifications
         )
-        
+
         self.value = value
         self.value_ID = value_ID
 
@@ -1107,15 +1107,15 @@ class Range(Data_element):
     """
     A range data element is a data element that defines a range with min and max.
 
-    Constraint AASd-053: If the semanticId of a Range submodel element references a 
-    ConceptDescription then the ConceptDescription/category shall be one of following 
+    Constraint AASd-053: If the semanticId of a Range submodel element references a
+    ConceptDescription then the ConceptDescription/category shall be one of following
     values: PROPERTY.
 
-    Constraint AASd-068: If the semanticId of a Range submodel element references a 
-    ConceptDescription then DataSpecificationIEC61360/dataType shall be a numerical 
+    Constraint AASd-068: If the semanticId of a Range submodel element references a
+    ConceptDescription then DataSpecificationIEC61360/dataType shall be a numerical
     one, i.e. REAL_* or RATIONAL_*.
-    
-    Constraint AASd-069: If the semanticId of a Range references a ConceptDescription 
+
+    Constraint AASd-069: If the semanticId of a Range references a ConceptDescription
     then DataSpecificationIEC61360/levelType shall be identical to the set {Min, Max}.
     """
 
@@ -1170,8 +1170,8 @@ class Range(Data_element):
 @reference_in_the_book(section=(4, 7, 8, 13))
 class Reference_element(Data_element):
     """
-    A reference element is a data element that defines a logical reference to another 
-    element within the same or another AAS or a reference to an external object or 
+    A reference element is a data element that defines a logical reference to another
+    element within the same or another AAS or a reference to an external object or
     entity.
     """
 
@@ -1215,10 +1215,10 @@ class Reference_element(Data_element):
 @reference_in_the_book(section=(4, 7, 8, 4))
 class Blob(Data_element):
     """
-    A BLOB is a data element that represents a file that is contained with its source 
+    A BLOB is a data element that represents a file that is contained with its source
     code in the value attribute.
     """
-    
+
     mime_type: 'Mime_type'
     """
     Mime  type  of  the  content  of  the BLOB.
@@ -1226,7 +1226,7 @@ class Blob(Data_element):
     Valid values are e.g. “application/json”, “application/xls”, ”image/jpg”
     The allowed values are defined as in RFC2046.
     """
-    
+
     value: Optional['Blob_type']
     """
     The value of the BLOB instance of a blob data element.
@@ -1237,12 +1237,12 @@ class Blob(Data_element):
 
     Constraint AASd-057: The semanticId of a File or Blob submodel element shall only 
     reference a ConceptDescription with the category DOCUMENT.
-    """   
-    
+    """
+
     def __init__(
             self,
             ID_short: str,
-            mime_type: 'Mime_type',            
+            mime_type: 'Mime_type',
             display_name: Optional['Lang_string_set'] = None,
             category: Optional[str] = None,
             description: Optional['Lang_string_set'] = None,
@@ -1270,28 +1270,28 @@ class Blob(Data_element):
 @reference_in_the_book(section=(4, 7, 8, 8))
 class File(Data_element):
     """
-    A File is a data element that represents an address to a file. 
+    A File is a data element that represents an address to a file.
     The value is an URI that can represent an absolute or relative path.
 
     See Constraint AASd-057
     """
-    
+
     mime_type: 'Mime_type'
     """
     Mime  type  of  the  content  of  the BLOB.
     The  mime  type  states  which  file extensions the file can have.
     """
-    
+
     value: Optional['Path_type']
     """
     Path  and  name  of  the  referenced file (with file extension).
     The   path   can   be   absolute   or relative.
-    """   
-    
+    """
+
     def __init__(
             self,
             ID_short: str,
-            mime_type: 'Mime_type',            
+            mime_type: 'Mime_type',
             display_name: Optional['Lang_string_set'] = None,
             category: Optional[str] = None,
             description: Optional['Lang_string_set'] = None,
@@ -1377,7 +1377,7 @@ class Annotated_relationship_element(Relationship_element):
 @reference_in_the_book(section=(4, 7, 8, 6), index=1)
 class Entity_type(Enum):
     """
-    Enumeration for denoting whether an entity is a self-managed entity or a co-managed 
+    Enumeration for denoting whether an entity is a self-managed entity or a co-managed
     entity.
     """
 
@@ -1399,10 +1399,10 @@ class Entity_type(Enum):
 class Entity(Submodel_element):
     """
     An entity is a submodel element that is used to model entities.
-    
-    Constraint AASd-056: If the semanticId of a Entity submodel element 
-    references a ConceptDescription then the ConceptDescription/category shall 
-    be one of following values: ENTITY. The ConceptDescription describes the elements 
+
+    Constraint AASd-056: If the semanticId of a Entity submodel element
+    references a ConceptDescription then the ConceptDescription/category shall
+    be one of following values: ENTITY. The ConceptDescription describes the elements
     assigned to the entity via Entity/statement.
     """
 
@@ -1416,7 +1416,7 @@ class Entity(Submodel_element):
     Describes statements applicable to the entity by a set of submodel elements, 
     typically with a qualified value.
     """
-    
+
     global_asset_id: Optional['Reference']
     """
     Reference  to  the  asset  the  entity  is representing.
@@ -1542,8 +1542,8 @@ class Operation(Submodel_element):
     """
     An operation is a submodel element with input and output variables.
 
-    Constraint AASd-060: If the semanticId of a Operation submodel element 
-    references a ConceptDescription then the category of the ConceptDescription 
+    Constraint AASd-060: If the semanticId of a Operation submodel element
+    references a ConceptDescription then the category of the ConceptDescription
     shall be one of the following values: FUNCTION.
     """
 
@@ -1621,10 +1621,10 @@ class Operation_variable():
 @reference_in_the_book(section=(4, 7, 8, 3))
 class Capability(Submodel_element):
     """
-    A capability is the implementation-independent description of the potential of an 
+    A capability is the implementation-independent description of the potential of an
     asset to achieve a certain effect in the physical or virtual world.
     """
-    
+
     def __init__(
             self,
             ID_short: str,
@@ -1655,12 +1655,12 @@ class Capability(Submodel_element):
 @reference_in_the_book(section=(4, 7, 9))
 class Concept_description(Identifiable, Has_data_specification):
     """
-    The semantics of a property or other elements that may have a semantic description 
-    is defined by a concept description. The description of the concept should follow a 
+    The semantics of a property or other elements that may have a semantic description
+    is defined by a concept description. The description of the concept should follow a
     standardized schema (realized as data specification template).
-    
-    Constraint AASd-051: A ConceptDescription shall have one of the following categories: 
-    VALUE, PROPERTY, REFERENCE, DOCUMENT, CAPABILITY, RELATIONSHIP, COLLECTION, FUNCTION, 
+
+    Constraint AASd-051: A ConceptDescription shall have one of the following categories:
+    VALUE, PROPERTY, REFERENCE, DOCUMENT, CAPABILITY, RELATIONSHIP, COLLECTION, FUNCTION,
     EVENT, ENTITY, APPLICATION_CLASS, QUALIFIER, VIEW. Default: PROPERTY.
     """
 
@@ -1691,7 +1691,7 @@ class Concept_description(Identifiable, Has_data_specification):
             display_name=display_name,
             category=category,
             description=description)
-        
+
         Has_data_specification.__init__(
             self,
             data_specifications = (
@@ -1703,14 +1703,14 @@ class Concept_description(Identifiable, Has_data_specification):
 @reference_in_the_book(section=(4, 7, 10))
 class View(Referable, Has_semantics, Has_data_specification):
     """
-    A view is a collection of referable elements w.r.t. to a specific viewpoint of one 
+    A view is a collection of referable elements w.r.t. to a specific viewpoint of one
     or more stakeholders.
 
     Constraint AASd-064: If the semanticId of a View references a ConceptDescription then
     the category of the ConceptDescription shall be VIEW.
 
-    .. note:: 
-       Views are a projection of submodel elements for a given perspective. 
+    .. note::
+       Views are a projection of submodel elements for a given perspective.
        They are not equivalent to submodels.
     """
 
@@ -1735,9 +1735,9 @@ class View(Referable, Has_semantics, Has_data_specification):
             display_name=display_name,
             category=category,
             description=description)
-        
+
         Has_semantics.__init__(
-            self, 
+            self,
             semantic_id)
 
         Has_data_specification.__init__(
@@ -1820,7 +1820,7 @@ class Key(DBC):
     Constraint AASd-081: In case Key/type==AssetAdministrationShell Key/idType shall 
     not be any LocalKeyType (IdShort, FragmentId).
     """
-    
+
     def __init__(self, type: 'Key_elements', value: str, ID_type: 'Key_type') -> None:
         self.type = type
         self.value = value
@@ -2148,6 +2148,316 @@ class Lang_string_set(DBC):
         """
         # The strings need to be accessed by a dictionary;
         # how this dictionary is accessed is left to the individual implementation.
+
+
+@abstract
+@reference_in_the_book(section=(4,8,1))
+class Data_specification_content(DBC):
+    """
+
+    """
+    # TODO (sadu 2021-11-17)
+    # No table for class in the book
+    # to be implemented
+    pass
+
+@reference_in_the_book(section=(4,8,2), index=3)
+class Data_type_IEC61360(Enum):
+    Date = "DATE"
+    String = "STRING"
+    String_translatable = "STRING_TRANSLATABLE"
+    Integer_Measure = "INTEGER_MEASURE"
+    Integer_count = "INTEGER_COUNT"
+    Integer_currency = "INTEGER_CURRENCY"
+    Real_measure = "REAL_MEASURE"
+    Real_count = "REAL_COUNT"
+    Real_currency = "REAL_CURRENCY"
+    Boolean = "BOOLEAN"
+    URL = "URL"
+    Rational = "RATIONAL"
+    Rational_measure = "RATIONAL_MEASURE"
+    Time = "TIME"
+    Timestamp = "TIMESTAMP"
+
+
+@reference_in_the_book(section=(4,8,2), index=4)
+class Level_type(Enum):
+    Min = "Min"
+    Max = "Max"
+    Nom = "Nom"
+    Type = "Type"
+
+
+@reference_in_the_book(section=(4,7,8,2), index=2)
+class Value_reference_pair(DBC):
+    """
+    A value reference pair within a value list. Each value has a global unique id
+    defining its semantic.
+    """
+
+    value: 'Value_data_type'
+    """
+    The value of the referenced concept definition of the value in valueId.
+    """
+
+    value_ID: 'Reference'
+    """
+    Global unique id of the value.
+    """
+
+    def __init___(
+        self,
+        value: 'Value_data_type',
+        value_ID: 'Reference'
+    ) -> None:
+        self.value: value
+        self.value_ID: value_ID
+
+
+@reference_in_the_book(section=(4,7,8,2), index=1)
+class Value_list(DBC):
+    """
+    A set of value reference pairs.
+    """
+
+    values_reference_pair_type: Optional[List['Value_reference_pair']]
+    """
+    A pair of a value together with its global unique id.
+    """
+
+    def __init___(
+        self,
+        values_reference_pair_type: Optional[List['Value_reference_pair']] = None
+    ) -> None:
+        self.values_reference_pair_type = values_reference_pair_type
+
+
+@reference_in_the_book(section=(4,7,8,2))
+class Data_specification_IEC61360(Data_specification_content):
+    """
+    Content of data specification template for concept descriptions conformant to
+    IEC 61360.
+    Although the IEC61360 attributes listed in this template are defined for properties
+    and values and value lists only it is also possible to use the template for other
+    definition This is shown in the tables Table 7, Table 8, Table 9 and Table 10.
+
+    Constraint AASd-075: For all ConceptDescriptions using data specification template
+    IEC61360 (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
+    values for the attributes not being marked as mandatory or optional in tables
+    Table 7, Table 8, Table 9 and Table 10.depending on its category are ignored and
+    handled as undefined.
+    """
+
+    preferred_name: Optional['Lang_string_set']
+    """
+    Preferred name
+    Constraint AASd-076: For all ConceptDescriptions using data specification template 
+    IEC61360 (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) 
+    at least a preferred name in English shall be defined.
+    """
+
+    short_name: Optional['Lang_string_set']
+    """
+    Short name
+    """
+
+    unit: Optional[str]
+    """
+    Unit
+    """
+
+    unit_ID: Optional['Reference']
+    """
+    Unique unit id
+    """
+
+    source_of_definition: Optional[str]
+    """
+    Source of definition
+    """
+
+    symbol: Optional[str]
+    """
+    Symbol
+    """
+
+    data_type: Optional['Data_type_IEC61360']
+    """
+    Data Type
+    
+    Constraint AASd-070: For a ConceptDescription with category PROPERTY or VALUE using 
+    data specification template IEC61360 
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) - 
+    DataSpecificationIEC61360/dataType is mandatory and shall be defined.
+
+    Constraint AASd-071: For a ConceptDescription with category REFERENCE using data 
+    specification template IEC61360 
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) - 
+    DataSpecificationIEC61360/dataType is STRING by default.
+
+    Constraint AASd-072: For a ConceptDescription with category DOCUMENT using data 
+    specification template IEC61360 
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) - 
+    DataSpecificationIEC61360/dataType shall be one of the following values: STRING or 
+    URL.
+
+    Constraint AASd-073: For a ConceptDescription with category QUALIFIER using data 
+    specification template IEC61360 
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) - 
+    DataSpecificationIEC61360/dataType is mandatory and shall be defined.
+    """
+
+    definition: Optional['Lang_string_set']
+    """
+    Definition in different languages
+    
+    Constraint AASd-074: For all ConceptDescriptions except for ConceptDescriptions of 
+    category VALUE using data specification template IEC61360 
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) - 
+    DataSpecificationIEC61360/definition is mandatory and shall be defined at least in 
+    English.
+    """
+
+    value_format: Optional[str]
+    """
+    Value Format 
+    """
+
+    value_list: Optional['Value_list']
+    """
+    List of allowed values
+    """
+
+    value: Optional['Value_data_type']
+    """
+    Value
+    """
+
+    value_ID: Optional['Reference']
+    """
+    Unique value id
+    """
+
+    level_type: Optional['Level_type']
+    """
+    Set of levels.
+    """
+
+    def __init__(
+        self,
+        preferred_name: Optional['Lang_string_set'] = None,
+        short_name: Optional['Lang_string_set'] = None,
+        unit: Optional[str] = None,
+        unit_ID: Optional['Reference'] = None,
+        source_of_definition: Optional[str] = None,
+        symbol: Optional[str] = None,
+        data_type: Optional['Data_type_IEC61360'] = None,
+        definition: Optional['Lang_string_set'] = None,
+        value_format: Optional[str] = None,
+        value_list: Optional['Value_list'] = None,
+        value: Optional['Value_data_type'] = None,
+        value_ID: Optional['Reference']  = None,
+        level_type: Optional['Level_type'] = None
+    ) -> None:
+        self.preferred_name = preferred_name
+        self.short_name = short_name
+        self.unit = unit
+        self.unit_ID = unit_ID
+        self.source_of_definition = source_of_definition
+        self.symbol = symbol
+        self.data_type = data_type
+        self.definition = definition
+        self.value_format = value_format
+        self.value_list = value_list
+        self.value = value
+        self.value_ID = value_ID
+        self.level_type = level_type
+
+
+@reference_in_the_book(section=(4,8,3,0))
+class Data_specification_physical_unit(Data_specification_content):
+    """
+
+    """
+    # TODO (sadu 2021-11-17)
+    # No table for class in the book
+
+    unit_name: Optional[str]
+    """
+    """
+
+    unit_symbol: Optional[str]
+    """
+    """
+
+    definition: Optional['Lang_string_set']
+    """
+    """
+
+    SI_notation: Optional[str]
+    """
+    """
+
+    DIN_notation: Optional[str]
+    """
+    """
+
+    ECE_name: Optional[str]
+    """
+    """
+
+    ECE_code: Optional[str]
+    """
+    """
+
+    nist_name: Optional[str]
+    """
+    """
+
+    source_of_definition: Optional[str]
+    """
+    """
+
+    conversion_factor: Optional[str]
+    """
+    """
+
+    registration_authority_ID: Optional[str]
+    """
+    """
+
+    supplier: Optional[str]
+    """
+    """
+
+    def __init__ (
+        self,
+        unit_name: Optional[str] = None,
+        unit_symbol: Optional[str] = None,
+        definition: Optional['Lang_string_set'] = None,
+        SI_notation: Optional[str] = None,
+        DIN_notation: Optional[str] = None,
+        ECE_name: Optional[str] = None,
+        ECE_code: Optional[str] = None,
+        nist_name: Optional[str] = None,
+        source_of_definition: Optional[str] = None,
+        conversion_factor: Optional[str] = None,
+        registration_authority_ID: Optional[str] = None,
+        supplier: Optional[str] = None
+    ) -> None:
+        self.unit_name = unit_name
+        self.unit_symbol = unit_symbol
+        self.definition = definition
+        self.SI_notation = SI_notation
+        self.DIN_notation = DIN_notation
+        self.ECE_name = ECE_name
+        self.ECE_code = ECE_code
+        self.nist_name = nist_name
+        self.source_of_definition = source_of_definition
+        self.conversion_factor = conversion_factor
+        self.registration_authority_ID = registration_authority_ID
+        self.supplier = supplier
+
 
 # TODO (Nico & Marko, 2021-09-24):
 #  We need to list in a comment all the constraints which were not implemented.
