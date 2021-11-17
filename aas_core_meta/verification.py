@@ -21,7 +21,7 @@ def is_ID_short(text: str) -> bool:
     raise NotImplementedError()
 
 
-T = TypeVar('T')
+T = TypeVar("T")
 
 
 def are_unique(iterable: Iterable[T]) -> bool:
@@ -34,8 +34,3 @@ def are_unique(iterable: Iterable[T]) -> bool:
         count += 1
 
     return len(observed) == count
-
-
-def is_of_type(value: 'Value_data_type', value_type: 'Data_type_def') -> bool:
-    # This is only a stub to hint how this function is used.
-    raise NotImplementedError()
