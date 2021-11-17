@@ -48,7 +48,7 @@ class Referable(Has_extensions):
 
     ID_short: str
     """
-    In case of identifiables this attribute is a short name of the element.
+    In case of identifiable this attribute is a short name of the element.
     In case of referable this ID is an identifying string of
     the element within its name space.
     
@@ -452,10 +452,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     derived_from: Optional["Asset_administration_shell"]
     """The reference to the AAS the AAS was derived from."""
 
-    # TODO (mristin, 2021-11-17): This needs to be uncommented once we added
-    #  the Security part.
-    # security: Optional["Security"]
-    # """Definition of the security relevant aspects of the AAS."""
+    security: Optional["Security"]
+    """Definition of the security relevant aspects of the AAS."""
 
     asset_information: "Asset_information"
     """Meta-information about the asset the AAS is representing."""
@@ -487,9 +485,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         administration: Optional["Administrative_information"] = None,
         data_specifications: Optional[List["Reference"]] = None,
         derived_from: Optional["Asset_administration_shell"] = None,
-        # TODO (mristin, 2021-11-17): This needs to be uncommented once we added
-        #  the Security part.
-        # security: Optional["Security"] = None,
+        security: Optional["Security"] = None,
         submodels: Optional[List["Submodel"]] = None,
         views: Optional[List["View"]] = None,
     ) -> None:
@@ -507,9 +503,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 
         self.derived_from = derived_from
         self.asset_information = asset_information
-        # TODO (mristin, 2021-11-17): This needs to be uncommented once we added
-        #  the Security part.
-        # self.security = security
+        self.security = security
         self.submodels = submodels if submodels is not None else []
         self.views = views if views is not None else []
 
@@ -554,7 +548,7 @@ class Asset_information:
     The asset may either represent an asset type or an asset instance. The asset has
     a globally unique identifier plus – if needed – additional domain-specific
     (proprietary) identifiers. However, to support the corner case of very first
-    phase of lifecycle where a stabilised/constant global asset identifier does not
+    phase of lifecycle where a stabilized/constant global asset identifier does not
     already exist, the corresponding attribute :attr:`~global_asset_ID` is optional.
     """
 
@@ -855,7 +849,7 @@ class Submodel_element_collection(Submodel_element):
        the entity needs a clear and unique semantics.
     """
 
-    value: Optional[List["Submodel_element"]]
+    values: Optional[List["Submodel_element"]]
     """
     Submodel element contained in the collection.
     """
@@ -891,7 +885,7 @@ class Submodel_element_collection(Submodel_element):
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        value: Optional[List["Submodel_element"]] = None,
+        values: Optional[List["Submodel_element"]] = None,
         ordered: Optional[bool] = None,
         allow_duplicates: Optional[bool] = None,
     ) -> None:
@@ -907,7 +901,7 @@ class Submodel_element_collection(Submodel_element):
             data_specifications=data_specifications,
         )
 
-        self.value = value
+        self.values = values
         self.ordered = ordered
         self.allow_duplicates = allow_duplicates
 
@@ -1177,7 +1171,7 @@ class Reference_element(Data_element):
     reference to an external object or entity.
 
     Constraint AASd-054: If the semanticId of a ReferenceElement submodel element 
-    references a ConceptDescription then the ConceptDescription/category shall be one of 
+    references a ConceptDescription then the ConceptDescription/category shall be one of
     following values: REFERENCE.
     """
 
@@ -1649,14 +1643,16 @@ class Concept_description(Identifiable, Has_data_specification):
     is defined by a concept description. The description of the concept should follow a
     standardized schema (realized as data specification template).
 
-    Constraint AASd-051: A ConceptDescription shall have one of the following categories:
-    VALUE, PROPERTY, REFERENCE, DOCUMENT, CAPABILITY, RELATIONSHIP, COLLECTION, FUNCTION,
-    EVENT, ENTITY, APPLICATION_CLASS, QUALIFIER, VIEW. Default: PROPERTY.
+    Constraint AASd-051: A ConceptDescription shall have one of the following
+    categories:
+    VALUE, PROPERTY, REFERENCE, DOCUMENT, CAPABILITY, RELATIONSHIP, COLLECTION,
+    FUNCTION, EVENT, ENTITY, APPLICATION_CLASS, QUALIFIER, VIEW. Default: PROPERTY.
     """
 
     is_case_of: Optional[List["Reference"]]
     """
-    Reference to an external definition the concept is compatible to or was derived from.
+    Reference to an external definition the concept is compatible to or was derived 
+    from.
 
     .. note::
        Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360"
@@ -1694,8 +1690,8 @@ class View(Referable, Has_semantics, Has_data_specification):
     A view is a collection of referable elements w.r.t. to a specific viewpoint of one
     or more stakeholders.
 
-    Constraint AASd-064: If the semanticId of a View references a ConceptDescription then
-    the category of the ConceptDescription shall be VIEW.
+    Constraint AASd-064: If the semanticId of a View references a ConceptDescription
+    then the category of the ConceptDescription shall be VIEW.
 
     .. note::
        Views are a projection of submodel elements for a given perspective.
@@ -2124,8 +2120,6 @@ class Lang_string_set(DBC):
 @abstract
 @reference_in_the_book(section=(4, 8, 1))
 class Data_specification_content(DBC):
-    """ """
-
     # TODO (sadu 2021-11-17)
     # No table for class in the book
     # to be implemented
@@ -2342,8 +2336,6 @@ class Data_specification_IEC61360(Data_specification_content):
 
 @reference_in_the_book(section=(4, 8, 3))
 class Data_specification_physical_unit(Data_specification_content):
-    """ """
-
     # TODO (sadu, 2021-11-17): No table for class in the book
 
     unit_name: Optional[str]
@@ -2443,6 +2435,476 @@ class Data_specification_physical_unit(Data_specification_content):
 
 # TODO (mristin, 2021-10-27): write a code generator that outputs the JSON schema and
 #  then compare it against the https://github.com/admin-shell-io/aas-specs/blob/master/schemas/json/aas.json
+
+
+@abstract
+@reference_in_the_book(section=(5, 3, 3))
+class Certificate(DBC):
+    """
+    Certificate
+    """
+
+    policy_administration_point: "Policy_administration_point"
+    """
+    The access control administration policy point of the AAS.
+    """
+
+    def __init__(
+        self, policy_administration_point: "Policy_administration_point"
+    ) -> None:
+        self.policy_administration_point = policy_administration_point
+
+
+@reference_in_the_book(section=(5, 3, 3), index=1)
+class Blob_certificate(Certificate):
+    """
+    Certificate provided as BLOB
+    """
+
+    blob_certificate: "Blob"
+    """
+    Certificate as BLOB.
+    """
+
+    last_certificate: bool
+    """
+    Denotes whether this certificate is the certificated that fast added last.
+    """
+
+    contained_extensions: Optional[List["Reference"]]
+    """
+    Extensions contained in the certificate.
+    """
+
+    def __init__(
+        self,
+        policy_administration_point: "Policy_administration_point",
+        blob_certificate: "Blob",
+        last_certificate: bool,
+        contained_extensions: Optional[List["Reference"]] = None,
+    ) -> None:
+        Certificate.__init__(
+            self, policy_administration_point=policy_administration_point
+        )
+
+        self.blob_certificate = blob_certificate
+        self.last_certificate = last_certificate
+        self.contained_extensions = contained_extensions
+
+
+@reference_in_the_book(section=(5, 3, 5), index=3)
+class Object_attributes(DBC):
+    """
+    A set of data elements that describe object attributes. These attributes need to
+    refer to a data element within an existing submodel.
+    """
+
+    object_attributes: List["Data_element"]
+    """
+    Reference to a data element that further classifies an object.
+    """
+
+    def __init__(self, object_attributes: List["Data_element"]) -> None:
+        self.object_attributes = object_attributes
+
+
+@reference_in_the_book(section=(5, 3, 5), index=4)
+class Permission(DBC):
+    """
+    Description of a single permission.
+    """
+
+    permission: "Property"
+    """
+    Reference to a property that defines the semantics of the permission.
+
+    Constraint AASs-010: The property referenced in Permission/permission shall have the
+    category “CONSTANT”.
+    Constraint AASs-011: The property referenced in Permission/permission shall be part 
+    of the submodel that is referenced within the “selectablePermissions” attribute of 
+    “AccessControl”."
+    """
+
+    kind_of_permission: "Permission_kind"
+    """
+    Description of the kind of permission. Possible kind of permission also include the
+    denial of the permission.
+
+    Values:
+    *     Allow
+    *     Deny
+    *     NotApplicable
+    *     Undefined"
+    """
+
+    def __init__(
+        self, permission: "Property", kind_of_permission: "Permission_kind"
+    ) -> None:
+        self.permission = permission
+        self.kind_of_permission = kind_of_permission
+
+
+@reference_in_the_book(section=(5, 3, 5), index=5)
+class Subject_attributes:
+    """
+    A set of data elements that further classifies a specific subject.
+    """
+
+    subject_attributes: List["Data_element"]
+    """
+    A data element that further classifies a specific subject.
+    
+    Constraint AASs-015: The data element SubjectAttributes/subjectAttribute shall be 
+    part of the submodel that is referenced within the “selectableSubjectAttributes” 
+    attribute of “AccessControl”."
+    """
+
+    def __init__(self, subject_attributes: List["Data_element"]) -> None:
+        self.subject_attributes = subject_attributes
+
+
+@reference_in_the_book(section=(5, 3, 5), index=2)
+class Permissions_per_object(DBC):
+    """
+    Table that defines access permissions for a specified object. The object is any
+    referable element in the AAS. Additionally, object attributes can be defined that
+    further specify the kind of object the permissions apply to.
+    """
+
+    object: "Referable"
+    """
+    Element to which permission shall be assigned.
+    """
+
+    target_object_attributes: Optional["Object_attributes"]
+    """
+    Target object attributes that need to be fulfilled so that the access permissions
+    apply to the accessing subject.
+    """
+
+    permissions: Optional[List["Permission"]]
+    """
+    Permissions assigned to the object.
+    The permissions hold for all subjects as specified in the access permission rule."
+    """
+
+    def __init__(
+        self,
+        object: "Referable",
+        target_object_attributes: Optional["Object_attributes"] = None,
+        permissions: Optional[List["Permission"]] = None,
+    ) -> None:
+        self.object = object
+        self.target_object_attributes = target_object_attributes
+        self.permissions = permissions
+
+
+@reference_in_the_book(section=(5, 3, 5), index=1)
+class Access_permission_rule(Referable, Qualifiable):
+    """
+    Table that defines access permissions per authenticated subject for a set of objects
+    (referable elements).
+    """
+
+    target_subject_attributes: "Subject_attributes"
+    """
+    Target subject attributes that need to be fulfilled by accessing subject to get the 
+    permissions defined by this rule.
+    """
+
+    permissions_per_objects: Optional[List["Permissions_per_object"]]
+    """
+    Set of object-permission pairs that define the permissions per object within
+    the access permission rule.
+    """
+
+    def __init__(
+        self,
+        ID_short: str,
+        target_subject_attributes: "Subject_attributes",
+        display_name: Optional["Lang_string_set"] = None,
+        category: Optional[str] = None,
+        description: Optional["Lang_string_set"] = None,
+        qualifiers: Optional[List["Constraint"]] = None,
+        permissions_per_objects: Optional[List["Permissions_per_object"]] = None,
+    ) -> None:
+        Referable.__init__(
+            self,
+            ID_short=ID_short,
+            display_name=display_name,
+            category=category,
+            description=description,
+        )
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        self.target_subject_attributes = target_subject_attributes
+        self.permissions_per_objects = permissions_per_objects
+
+
+@reference_in_the_book(section=(5, 3, 5))
+class Access_control(DBC):
+    """
+    Access Control defines the local access control policy administration point.
+    Access Control has the major task to define the access permission rules.
+    """
+
+    default_subject_attributes: "Submodel"
+    """
+    Reference to a submodel defining the default subjects’ attributes for the AAS that 
+    can be used to describe access permission rules.
+
+    The submodel is of kind=Template.
+    """
+
+    selectable_permissions: "Submodel"
+    """
+    Reference to a submodel defining which permissions can be assigned to the subjects.
+
+    Default: reference to the submodel referenced via defaultPermissions
+    """
+
+    default_permissions: "Submodel"
+    """
+    Reference to a submodel defining the default permissions for the AAS.
+    """
+
+    access_permission_rules: Optional[List["Access_permission_rule"]]
+    """
+    Access permission rules of the AAS describing the rights assigned to (already 
+    authenticated) subjects to access elements of the AAS.
+    """
+
+    selectable_subject_attributes: Optional["Submodel"]
+    """
+    Reference to a submodel defining the authenticated subjects that are configured for 
+    the AAS. They are selectable by the access permission rules to assign permissions 
+    to the subjects.
+    
+    Default: reference to the submodel referenced via defaultSubjectAttributes.
+    """
+
+    defaultEnvironmentAttributes: Optional["Submodel"]
+    """
+    Reference to a submodel defining default environment attributes, *i.e.* attributes 
+    that are not describing the asset itself.
+    
+    The submodel is of kind=Template.
+    
+    At the same type the values of these environment attributes need to be accessible 
+    when evaluating the access permission rules. This is realized as a policy 
+    information point.
+    """
+
+    def __init__(
+        self,
+        default_subject_attributes: "Submodel",
+        selectable_permissions: "Submodel",
+        default_permissions: "Submodel",
+        access_permission_rules: Optional[List["Access_permission_rule"]] = None,
+        selectable_subject_attributes: Optional["Submodel"] = None,
+        defaultEnvironmentAttributes: Optional["Submodel"] = None,
+    ) -> None:
+        self.default_subject_attributes = default_subject_attributes
+        self.selectable_permissions = selectable_permissions
+        self.default_permissions = default_permissions
+        self.access_permission_rules = access_permission_rules
+        self.selectable_subject_attributes = selectable_subject_attributes
+        self.defaultEnvironmentAttributes = defaultEnvironmentAttributes
+
+
+@reference_in_the_book(section=(5, 3, 4), index=1)
+class Policy_administration_point(DBC):
+    """
+    Definition of a security policy administration point (PAP).
+    """
+
+    external_access_control: bool
+    """
+    If :attr:`~external_access_control` True then an Endpoint to an external access 
+    control defining a policy administration point to be used by the AAS needs 
+    to be configured.
+    """
+
+    local_access_control: Optional["Access_control"]
+    """
+    The policy administration point of access control as realized by the AAS itself.
+    
+    Constraint AASs-009: Either there is an external policy administration point 
+    endpoint defined (PolicyAdministrationPoint/externalPolicyDecisionPoints=true) or 
+    the AAS has its own access control.
+    """
+
+    def __init__(
+        self,
+        external_access_control: bool,
+        local_access_control: Optional["Access_control"] = None,
+    ) -> None:
+        self.external_access_control = external_access_control
+        self.local_access_control = local_access_control
+
+
+@reference_in_the_book(section=(5, 3, 4), index=2)
+class Policy_information_points(DBC):
+    """
+    Defines the security policy information points (PIP).
+    Serves as the retrieval source of attributes, or the data required for policy
+    evaluation to provide the information needed by the policy decision point to make
+    the decisions.
+    """
+
+    external_information_points: bool
+    """
+    If externalInformationPoints True then at least one Endpoint to external available 
+    information needs to be configured for the AAS.
+    """
+
+    internal_information_points: Optional[List["Submodel"]]
+    """
+    Reference to a  Submodel defining information used by security access permission 
+    rules.
+    """
+
+    def __init__(
+        self,
+        external_information_points: bool,
+        internal_information_points: Optional[List["Submodel"]] = None,
+    ) -> None:
+        self.external_information_points = external_information_points
+        self.internal_information_points = internal_information_points
+
+
+@reference_in_the_book(section=(5, 3, 4), index=3)
+class Policy_enforcement_points(DBC):
+    """
+    Defines the security policy enforcement points (PEP).
+    """
+
+    external_policy_enforcement_point: bool
+    """
+    If externalPolicyEnforcementPoint True then an Endpoint to external available 
+    enforcement point taking needs to be configured for the AAS.
+    """
+
+    def __init__(self, external_policy_enforcement_point: bool) -> None:
+        self.external_policy_enforcement_point = external_policy_enforcement_point
+
+
+@reference_in_the_book(section=(5, 3, 4), index=4)
+class Policy_decision_point(DBC):
+    """
+    Defines the security policy decision points (PDP).
+    """
+
+    external_policy_decision_points: bool
+    """
+    If externalPolicyDecisionPoints True then Endpoints to external available decision  
+    points taking into consideration for access control for the AAS need to be 
+    configured.
+    """
+
+    def __init__(self, external_policy_decision_points: bool) -> None:
+        self.external_policy_decision_points = external_policy_decision_points
+
+
+@reference_in_the_book(section=(5, 3, 4))
+class Access_control_policy_points(DBC):
+    """
+    Container for access control policy points.
+    """
+
+    policy_administration_point: "Policy_administration_point"
+    """
+    The access control administration policy point of the AAS.
+    """
+
+    policy_decision_point: "Policy_decision_point"
+    """
+    The access control policy decision point of the AAS.
+    """
+
+    policy_enforcement_point: "Policy_enforcement_points"
+    """
+    The access control policy enforcement point of the AAS.
+    """
+
+    policy_information_points: Optional["Policy_information_points"]
+    """
+    The access control policy information points of the AAS.
+    """
+
+    def __init__(
+        self,
+        policy_administration_point: "Policy_administration_point",
+        policy_decision_point: "Policy_decision_point",
+        policy_enforcement_point: "Policy_enforcement_points",
+        policy_information_points: Optional["Policy_information_points"] = None,
+    ) -> None:
+        self.policy_administration_point = policy_administration_point
+        self.policy_decision_point = policy_decision_point
+        self.policy_enforcement_point = policy_enforcement_point
+        self.policy_information_points = policy_information_points
+
+
+@reference_in_the_book(section=(5, 3, 2))
+class Security(DBC):
+    """
+    Container for security relevant information of the AAS.
+    """
+
+    access_control_policy_points: "Access_control_policy_points"
+    """
+    Access control policy points of the AAS.
+    """
+
+    certificates: Optional[List["Certificate"]]
+    """
+    Authenticating Certificates of the AAS and its submodels etc.
+    """
+
+    required_certificates_extension: Optional[List["Reference"]]
+    """
+    Certificate extensions as required by the AAS
+    """
+
+    def __init__(
+        self,
+        access_control_policy_points: "Access_control_policy_points",
+        certificates: Optional[List["Certificate"]] = None,
+        required_certificates_extension: Optional[List["Reference"]] = None,
+    ) -> None:
+        self.access_control_policy_points = access_control_policy_points
+        self.certificates = certificates
+        self.required_certificates_extension = required_certificates_extension
+
+
+@reference_in_the_book(section=(5, 3, 5), index=6)
+class Permission_kind(Enum):
+    """
+    Enumeration of the kind of permissions that is given to the assignment of
+    a permission to a subject.
+    """
+
+    Allow = "Allow"
+    """
+    Allow the permission given to the subject.
+    """
+
+    Deny = "Deny"
+    """
+    Explicitly deny the permission given to the subject.
+    """
+
+    Not_applicable = "NotApplicable"
+    """
+    The permission is not applicable to the subject.
+    """
+
+    Undefined = "Undefined"
+    """
+    It is undefined whether the permission is allowed, not applicable or denied to 
+    the subject.
+    """
 
 
 # TODO: make this environment implementation-specific in the final implementation.
