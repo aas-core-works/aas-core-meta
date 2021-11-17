@@ -2,16 +2,25 @@
   <dictionary name="rist">
     <words>
       <w>braunisch</w>
+      <w>eclass</w>
+      <w>icid</w>
       <w>icontract</w>
+      <w>idref</w>
+      <w>idrefs</w>
+      <w>inoutput</w>
+      <w>irdi</w>
       <w>lehmann</w>
       <w>marcin</w>
       <w>mypy</w>
+      <w>nmtokens</w>
       <w>ristin</w>
+      <w>sadu</w>
       <w>sadurski</w>
       <w>sauer</w>
       <w>stackoverflow</w>
       <w>unformatted</w>
       <w>versioning</w>
+      <w>yyyy</w>
     </words>
   </dictionary>
 </component>
