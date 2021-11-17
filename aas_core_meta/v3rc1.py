@@ -1,7 +1,7 @@
 """Provide the meta model for Asset Administration Shell V3 Release Candidate 1."""
 
 from enum import Enum
-from typing import List, Optional, NewType
+from typing import List, Optional
 
 from icontract import invariant, ensure, DBC
 
@@ -354,7 +354,7 @@ class Qualifier(Constraint, Has_semantics):
     of the element.
     """
 
-    type: "Qualifier_type"
+    type: str
     """
     The qualifier type describes the type of the qualifier that is applied to
     the element.
@@ -365,7 +365,7 @@ class Qualifier(Constraint, Has_semantics):
     Data type of the qualifier value.
     """
 
-    value: Optional["Value_data_type"]
+    value: Optional[str]
     """
     The qualifier value is the value of the qualifier.
     """
@@ -377,9 +377,9 @@ class Qualifier(Constraint, Has_semantics):
 
     def __init__(
         self,
-        type: "Qualifier_type",
+        type: str,
         value_type: "Data_type_def",
-        value: Optional["Value_data_type"] = None,
+        value: Optional[str] = None,
         value_id: Optional["Reference"] = None,
         semantic_id: Optional["Reference"] = None,
     ) -> None:
@@ -986,7 +986,7 @@ class Property(Data_element):
     Data type of the value
     """
 
-    value: Optional["Value_data_type"]
+    value: Optional[str]
     """
     The value of the property instance.
 
@@ -1013,7 +1013,7 @@ class Property(Data_element):
         semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        value: Optional["Value_data_type"] = None,
+        value: Optional[str] = None,
         value_ID: Optional["Reference"] = None,
     ) -> None:
         Submodel_element.__init__(
@@ -1119,13 +1119,13 @@ class Range(Data_element):
     Data type of the min und max
     """
 
-    min: Optional["Value_data_type"]
+    min: Optional[str]
     """
     The minimum value of the range.
     If the min value is missing, then the value is assumed to be negative infinite.
     """
 
-    max: Optional["Value_data_type"]
+    max: Optional[str]
     """
     The maximum value of the range.
     If the max value is missing,  then the value is assumed to be positive infinite.
@@ -1142,8 +1142,8 @@ class Range(Data_element):
         semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        min: Optional["Value_data_type"] = None,
-        max: Optional["Value_data_type"] = None,
+        min: Optional[str] = None,
+        max: Optional[str] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -1280,7 +1280,7 @@ class File(Data_element):
     The  MIME  type states which file extensions the file can have.
     """
 
-    value: Optional["Path_type"]
+    value: Optional[str]
     """
     Path and name of the referenced file (with file extension).
     The path can be absolute or relative.
@@ -1297,7 +1297,7 @@ class File(Data_element):
         semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        value: Optional["Path_type"] = None,
+        value: Optional[str] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2084,17 +2084,6 @@ class Lang_string(DBC):
         self.text = text
 
 
-Path_type = NewType("Path_type", str)  # reference_in_the_book(section=(4, 7, 13, 2))
-
-Qualifier_type = NewType(
-    "Qualifier_type", str
-)  # reference_in_the_book(section=(4, 7, 13, 2))
-
-Value_data_type = NewType(
-    "Value_data_type", str
-)  # reference_in_the_book(section=(4, 7, 13, 2))
-
-
 # TODO (Nico & Marko, 2021-05-28):
 #  Should the language be unique?
 #  Or can we have duplicate entries for, say, "EN"?
@@ -2208,7 +2197,7 @@ class Value_reference_pair(DBC):
     defining its semantic.
     """
 
-    value: "Value_data_type"
+    value: str
     """
     The value of the referenced concept definition of the value in valueId.
     """
@@ -2218,7 +2207,7 @@ class Value_reference_pair(DBC):
     Global unique id of the value.
     """
 
-    def __init___(self, value: "Value_data_type", value_ID: "Reference") -> None:
+    def __init___(self, value: str, value_ID: "Reference") -> None:
         self.value = value
         self.value_ID = value_ID
 
@@ -2336,7 +2325,7 @@ class Data_specification_IEC61360(Data_specification_content):
     List of allowed values
     """
 
-    value: Optional["Value_data_type"]
+    value: Optional[str]
     """
     Value
     """
@@ -2363,7 +2352,7 @@ class Data_specification_IEC61360(Data_specification_content):
         definition: Optional["Lang_string_set"] = None,
         value_format: Optional[str] = None,
         value_list: Optional["Value_list"] = None,
-        value: Optional["Value_data_type"] = None,
+        value: Optional[str] = None,
         value_ID: Optional["Reference"] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
