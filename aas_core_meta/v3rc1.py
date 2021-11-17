@@ -2019,7 +2019,7 @@ assert set(literal.value for literal in Key_type) == set(
 
 @reference_in_the_book(section=(4, 7, 13, 2))
 class Data_type_def(Enum):
-    Any_uri = "anyUri"
+    Any_URI = "anyUri"
     Base64_binary = "base64Binary"
     Boolean = "boolean"
     Date = "date"
