@@ -8,9 +8,10 @@ from icontract import invariant, ensure, DBC
 from aas_core_meta.marker import (
     abstract,
     implementation_specific,
+    json_serialization,
     reference_in_the_book,
 )
-from aas_core_meta.verification import is_IRI, is_IRDI, is_ID_short, are_unique
+from aas_core_meta.verification import is_IRI, is_IRDI, is_ID_short
 
 __book_url__ = "https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/Details_of_the_Asset_Administration_Shell_Part1_V3.pdf?__blob=publicationFile&v=5"
 __book_version__ = "V3.0RC1"
@@ -35,6 +36,7 @@ class Has_extensions(DBC):
 
 @abstract
 @invariant(lambda self: is_ID_short(self.ID_short), "Constraint AASd-002")
+@json_serialization(with_model_type=True)
 @reference_in_the_book(section=(4, 7, 2, 2))
 class Referable(Has_extensions):
     """
@@ -295,14 +297,14 @@ class Has_semantics(DBC):
     Element that can have a semantic definition.
     """
 
-    semantic_id: Optional["Reference"]
+    semantic_ID: Optional["Reference"]
     """
     Identifier of the semantic definition of the element. It is called semantic ID
     of the element.
     """
 
-    def __init__(self, semantic_id: Optional["Reference"] = None) -> None:
-        self.semantic_id = semantic_id
+    def __init__(self, semantic_ID: Optional["Reference"] = None) -> None:
+        self.semantic_ID = semantic_ID
 
 
 # fmt: off
@@ -347,6 +349,7 @@ class Constraint(DBC):
 #     "Constraint AASd-020"
 # )
 @reference_in_the_book(section=(4, 7, 2, 11))
+@json_serialization(with_model_type=True)
 # fmt: on
 class Qualifier(Constraint, Has_semantics):
     """
@@ -381,9 +384,9 @@ class Qualifier(Constraint, Has_semantics):
         value_type: "Data_type_def",
         value: Optional[str] = None,
         value_id: Optional["Reference"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
     ) -> None:
-        Has_semantics.__init__(self, semantic_id=semantic_id)
+        Has_semantics.__init__(self, semantic_ID=semantic_ID)
 
         self.type = type
         self.value_type = value_type
@@ -392,6 +395,7 @@ class Qualifier(Constraint, Has_semantics):
 
 
 @reference_in_the_book(section=(4, 7, 2, 12))
+@json_serialization(with_model_type=True)
 class Formula(Constraint):
     """
     A formula is used to describe constraints by a logical expression.
@@ -506,8 +510,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         # TODO (mristin, 2021-11-17): This needs to be uncommented once we added
         #  the Security part.
         # self.security = security
-        self.submodels = [] if submodels is None else submodels
-        self.views = [] if views is None else views
+        self.submodels = submodels if submodels is not None else []
+        self.views = views if views is not None else []
 
 
 @reference_in_the_book(section=(4, 7, 4))
@@ -528,7 +532,7 @@ class Asset(Identifiable, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         administration: Optional["Administrative_information"] = None,
         data_specifications: Optional[List["Reference"]] = None,
-    ):
+    ) -> None:
         Identifiable.__init__(
             self,
             identification=identification,
@@ -607,7 +611,7 @@ class Asset_information:
         self.asset_kind = asset_kind
         self.global_asset_ID = global_asset_ID
         self.specific_asset_ID = specific_asset_ID
-        self.bill_of_material = [] if bill_of_material is None else bill_of_material
+        self.bill_of_material = bill_of_material if bill_of_material is not None else []
         self.default_thumbnail = default_thumbnail
 
 
@@ -663,9 +667,9 @@ class Identifier_key_value_pair(Has_semantics):
         key: str,
         value: Optional[str] = None,
         external_subject_ID: Optional["Reference"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
     ) -> None:
-        Has_semantics.__init__(self, semantic_id)
+        Has_semantics.__init__(self, semantic_ID)
         self.key = key
         self.value = value
         self.external_subject_ID = external_subject_ID
@@ -697,10 +701,10 @@ class Submodel(
         description: Optional["Lang_string_set"] = None,
         administration: Optional["Administrative_information"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-    ):
+    ) -> None:
         # TODO (Nico & Marko, 2021-09-24):
         #  How should we implement Constraint AASd-062 (page 64 in V3RC1)?
         #  Isn't this a constraint on the SubmodelElement?
@@ -718,7 +722,7 @@ class Submodel(
 
         Has_kind.__init__(self, kind=kind)
 
-        Has_semantics.__init__(self, semantic_id=semantic_id)
+        Has_semantics.__init__(self, semantic_ID=semantic_ID)
 
         Qualifiable.__init__(self, qualifiers=qualifiers)
 
@@ -746,7 +750,7 @@ class Submodel_element(
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -760,7 +764,7 @@ class Submodel_element(
 
         Has_kind.__init__(self, kind=kind)
 
-        Has_semantics.__init__(self, semantic_id=semantic_id)
+        Has_semantics.__init__(self, semantic_ID=semantic_ID)
 
         Qualifiable.__init__(self, qualifiers=qualifiers)
 
@@ -804,7 +808,7 @@ class Relationship_element(Submodel_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -815,7 +819,7 @@ class Relationship_element(Submodel_element):
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -884,28 +888,24 @@ class Submodel_element_collection(Submodel_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional[List["Submodel_element"]] = None,
         ordered: Optional[bool] = None,
         allow_duplicates: Optional[bool] = None,
     ) -> None:
-        Referable.__init__(
+        Submodel_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
+            kind=kind,
+            semantic_ID=semantic_ID,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications,
         )
-
-        Has_kind.__init__(self, kind=kind)
-
-        Has_semantics.__init__(self, semantic_id=semantic_id)
-
-        Qualifiable.__init__(self, qualifiers=qualifiers)
-
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
 
         self.value = value
         self.ordered = ordered
@@ -923,8 +923,9 @@ class Data_element(Submodel_element):
     for different subtypes of data elements.
 
     .. note::
-    A controlled value is a value whose meaning is given in an external source
-    (see “ISO/TS 29002-10:
+
+        A controlled value is a value whose meaning is given in an external source
+        (see “ISO/TS 29002-10)
 
     Constraint AASd-090: For data elements DataElement/category shall be one of the
     following values: CONSTANT, PARAMETER or VARIABLE.
@@ -938,7 +939,7 @@ class Data_element(Submodel_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -949,7 +950,7 @@ class Data_element(Submodel_element):
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1010,20 +1011,20 @@ class Property(Data_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional[str] = None,
         value_ID: Optional["Reference"] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Data_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1075,20 +1076,20 @@ class Multi_language_property(Data_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Lang_string_set"] = None,
         value_ID: Optional["Reference"] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Data_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1139,20 +1140,20 @@ class Range(Data_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         min: Optional[str] = None,
         max: Optional[str] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Data_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1187,19 +1188,19 @@ class Reference_element(Data_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Reference"] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Data_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1223,7 +1224,7 @@ class Blob(Data_element):
     The allowed values are defined as in RFC2046.
     """
 
-    value: Optional["Blob_type"]
+    value: Optional[bytearray]
     """
     The value of the BLOB instance of a blob data element.
 
@@ -1243,19 +1244,19 @@ class Blob(Data_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        value: Optional["Blob_type"] = None,
+        value: Optional[bytearray] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Data_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1294,19 +1295,19 @@ class File(Data_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional[str] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Data_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1337,7 +1338,7 @@ class Annotated_relationship_element(Relationship_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         annotation: Optional[List[Data_element]] = None,
@@ -1351,7 +1352,7 @@ class Annotated_relationship_element(Relationship_element):
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1440,28 +1441,24 @@ class Entity(Submodel_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_id: Optional["Reference"] = None,
         specific_asset_id: Optional["Identifier_key_value_pair"] = None,
     ) -> None:
-        Referable.__init__(
+        Submodel_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
+            kind=kind,
+            semantic_ID=semantic_ID,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications,
         )
-
-        Has_kind.__init__(self, kind=kind)
-
-        Has_semantics.__init__(self, semantic_id=semantic_id)
-
-        Qualifiable.__init__(self, qualifiers=qualifiers)
-
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
 
         self.statements = statements
         self.entity_type = entity_type
@@ -1483,7 +1480,7 @@ class Event(Submodel_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional[Modeling_kind] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -1494,7 +1491,7 @@ class Event(Submodel_element):
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1520,18 +1517,18 @@ class Basic_Event(Event):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional[Modeling_kind] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Event.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
             kind=kind,
-            semantic_id=semantic_id,
+            semantic_ID=semantic_ID,
             qualifiers=qualifiers,
             data_specifications=data_specifications,
         )
@@ -1571,28 +1568,24 @@ class Operation(Submodel_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         input_variables: Optional[List["Operation_variable"]] = None,
         output_variables: Optional[List["Operation_variable"]] = None,
         inoutput_variables: Optional[List["Operation_variable"]] = None,
     ) -> None:
-        Referable.__init__(
+        Submodel_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
+            kind=kind,
+            semantic_ID=semantic_ID,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications,
         )
-
-        Has_kind.__init__(self, kind=kind)
-
-        Has_semantics.__init__(self, semantic_id=semantic_id)
-
-        Qualifiable.__init__(self, qualifiers=qualifiers)
-
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
 
         self.input_variables = input_variables
         self.output_variables = output_variables
@@ -1632,25 +1625,21 @@ class Capability(Submodel_element):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
-        Referable.__init__(
+        Submodel_element.__init__(
             self,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
+            kind=kind,
+            semantic_ID=semantic_ID,
+            qualifiers=qualifiers,
+            data_specifications=data_specifications,
         )
-
-        Has_kind.__init__(self, kind=kind)
-
-        Has_semantics.__init__(self, semantic_id=semantic_id)
-
-        Qualifiable.__init__(self, qualifiers=qualifiers)
-
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
 
 
 @reference_in_the_book(section=(4, 7, 9))
@@ -1694,12 +1683,7 @@ class Concept_description(Identifiable, Has_data_specification):
             description=description,
         )
 
-        Has_data_specification.__init__(
-            self,
-            data_specifications=(
-                data_specifications if data_specifications is not None else []
-            ),
-        )
+        Has_data_specification.__init__(self, data_specifications=data_specifications)
 
         self.is_case_of = is_case_of
 
@@ -1729,7 +1713,7 @@ class View(Referable, Has_semantics, Has_data_specification):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
-        semantic_id: Optional["Reference"] = None,
+        semantic_ID: Optional["Reference"] = None,
         data_specifications: Optional[List["Reference"]] = None,
         contained_element: Optional[List["Referable"]] = None,
     ) -> None:
@@ -1741,13 +1725,11 @@ class View(Referable, Has_semantics, Has_data_specification):
             description=description,
         )
 
-        Has_semantics.__init__(self, semantic_id)
+        Has_semantics.__init__(self, semantic_ID)
 
         Has_data_specification.__init__(
             self,
-            data_specifications=(
-                data_specifications if data_specifications is not None else []
-            ),
+            data_specifications=data_specifications,
         )
 
         self.contained_element = contained_element
@@ -1802,10 +1784,10 @@ class Key(DBC):
     """
     Denote which kind of entity is referenced.
 
-    In case type = :attr:`Key_elements.Global_reference` then the key represents
+    In case type = :attr:`~Key_elements.Global_reference` then the key represents
     a global unique id.
 
-    In case type = :attr:`Fragment_ID` the key represents a bookmark or
+    In case type = :attr:`~Fragment_ID` the key represents a bookmark or
     a similar local identifier within its parent element as specified by the key that
     precedes this key.
 
@@ -1862,7 +1844,7 @@ class Key_elements(Enum):
 
     .. note::
 
-        Data Element is abstract, *i.e.* if a key uses :attr:`Data_element`
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
         the reference may be a Property, a File *etc.*
     """
 
@@ -1894,8 +1876,8 @@ class Key_elements(Enum):
 
     .. note::
 
-        Submodel Element is abstract, *i.e.* if a key uses :attr:`Submodel_element`
-        the reference may be a Property, a :class:`Submodel_element_collection`,
+        Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
+        the reference may be a Property, a :class:`.Submodel_element_collection`,
         an Operation *etc.*
     """
 
@@ -1922,7 +1904,7 @@ class Referable_elements(Enum):
 
     .. note::
 
-        Data Element is abstract, *i.e.* if a key uses :attr:`Data_element`
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
         the reference may be a Property, a File *etc.*
     """
 
@@ -1950,8 +1932,8 @@ class Referable_elements(Enum):
 
     .. note::
 
-        Submodel Element is abstract, *i.e.* if a key uses :attr:`Submodel_element`
-        the reference may be a Property, a :class:`Submodel_element_collection`,
+        Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
+        the reference may be a Property, a :class:`.Submodel_element_collection`,
         an Operation *etc.*
     """
 
@@ -2065,9 +2047,6 @@ class Data_type_def(Enum):
     Time = "time"
 
 
-Blob_type = bytearray
-
-
 @reference_in_the_book(section=(4, 7, 13, 11))
 class Lang_string(DBC):
     """Give a text in a specific language."""
@@ -2087,18 +2066,8 @@ class Lang_string(DBC):
 # TODO (Nico & Marko, 2021-05-28):
 #  Should the language be unique?
 #  Or can we have duplicate entries for, say, "EN"?
-# fmt: off
 @implementation_specific
-@invariant(lambda self: len(self.lang_strings) > 0)
-@invariant(
-    lambda self:
-    are_unique(
-        lang_string.language for lang_string in self.lang_strings
-    ),
-    "No duplicate languages allowed"
-)
 @reference_in_the_book(section=(4, 7, 13, 2), index=2)
-# fmt: on
 class Lang_string_set(DBC):
     """
     A set of strings, each annotated by the language of the string.
@@ -2207,7 +2176,7 @@ class Value_reference_pair(DBC):
     Global unique id of the value.
     """
 
-    def __init___(self, value: str, value_ID: "Reference") -> None:
+    def __init__(self, value: str, value_ID: "Reference") -> None:
         self.value = value
         self.value_ID = value_ID
 
@@ -2223,7 +2192,7 @@ class Value_list(DBC):
     A pair of a value together with its global unique id.
     """
 
-    def __init___(
+    def __init__(
         self, values_reference_pair_type: Optional[List["Value_reference_pair"]] = None
     ) -> None:
         self.values_reference_pair_type = values_reference_pair_type
@@ -2474,3 +2443,39 @@ class Data_specification_physical_unit(Data_specification_content):
 
 # TODO (mristin, 2021-10-27): write a code generator that outputs the JSON schema and
 #  then compare it against the https://github.com/admin-shell-io/aas-specs/blob/master/schemas/json/aas.json
+
+
+# TODO: make this environment implementation-specific in the final implementation.
+#  + Sketch what methods it should implement.
+#  + Sketch what invariants it should implement.
+class Environment:
+    """Model the environment as the entry point for referencing and serialization."""
+
+    asset_administration_shells: List[Asset_administration_shell]
+
+    assets: List[Asset]
+
+    submodels: List[Submodel]
+
+    concept_descriptions: List[Concept_description]
+
+    def __init__(
+        self,
+        asset_administration_shells: Optional[List[Asset_administration_shell]] = None,
+        assets: Optional[List[Asset]] = None,
+        submodels: Optional[List[Submodel]] = None,
+        concept_descriptions: Optional[List[Concept_description]] = None,
+    ) -> None:
+        self.asset_administration_shells = (
+            asset_administration_shells
+            if asset_administration_shells is not None
+            else []
+        )
+
+        self.assets = assets if assets is not None else []
+
+        self.submodels = submodels if submodels is not None else []
+
+        self.concept_descriptions = (
+            concept_descriptions if concept_descriptions is not None else []
+        )

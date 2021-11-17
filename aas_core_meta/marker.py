@@ -52,3 +52,19 @@ class reference_in_the_book:
 
     def __call__(self, func: Type[T]) -> Type[T]:
         return func
+
+
+class json_serialization:
+    """Mark the settings for JSON serialization."""
+
+    def __init__(self, with_model_type: bool) -> None:
+        """
+        Initialize with the given values.
+
+        :param with_model_type:
+            The class needs to include ``modelType`` property in the serialization
+        """
+        self.with_model_type = with_model_type
+
+    def __call__(self, func: Type[T]) -> Type[T]:
+        return func
