@@ -3,6 +3,13 @@
   <component name="CsvFileAttributes">
     <option name="attributeMap">
       <map>
+        <entry key="\README.rst">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\aas_core3_meta\__init__.py">
           <value>
             <Attribute>
