@@ -440,9 +440,7 @@ class Has_data_specification(DBC):
     #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
 
     def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
-        self.data_specifications = (
-            data_specifications if data_specifications is not None else []
-        )
+        self.data_specifications = data_specifications
 
 
 @reference_in_the_book(section=(4, 7, 3))
@@ -504,8 +502,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         self.derived_from = derived_from
         self.asset_information = asset_information
         self.security = security
-        self.submodels = submodels if submodels is not None else []
-        self.views = views if views is not None else []
+        self.submodels = submodels
+        self.views = views
 
 
 @reference_in_the_book(section=(4, 7, 4))
@@ -565,10 +563,10 @@ class Asset_information(DBC):
     This attribute is required as soon as the AAS is exchanged via partners in the life
     cycle of the asset. In a first phase of the life cycle the asset might not yet have
     a global ID but already an internal identifier. The internal identifier would be
-    modelled via :attr:`~specific_asset_ID`.
+    modelled via :attr:`~specific_asset_IDs`.
     """
 
-    specific_asset_ID: Optional[List["Identifier_key_value_pair"]]
+    specific_asset_IDs: Optional["Identifier_key_value_pair"]
     """
     Additional domain-specific, typically proprietary, Identifier for the asset.
 
@@ -595,7 +593,7 @@ class Asset_information(DBC):
         self,
         asset_kind: "Asset_kind",
         global_asset_ID: Optional["Reference"] = None,
-        specific_asset_ID: Optional[List["Identifier_key_value_pair"]] = None,
+        specific_asset_IDs: Optional["Identifier_key_value_pair"] = None,
         bill_of_material: Optional[List["Submodel"]] = None,
         default_thumbnail: Optional["File"] = None,
     ) -> None:
@@ -604,8 +602,8 @@ class Asset_information(DBC):
         #  see page 63 in the book V3RC1
         self.asset_kind = asset_kind
         self.global_asset_ID = global_asset_ID
-        self.specific_asset_ID = specific_asset_ID
-        self.bill_of_material = bill_of_material if bill_of_material is not None else []
+        self.specific_asset_IDs = specific_asset_IDs
+        self.bill_of_material = bill_of_material
         self.default_thumbnail = default_thumbnail
 
 
@@ -1351,7 +1349,7 @@ class Annotated_relationship_element(Relationship_element):
             data_specifications=data_specifications,
         )
 
-        self.annotation = annotation if annotation is not None else []
+        self.annotation = annotation
 
 
 # TODO (mristin, 2021-10-27):
@@ -1420,7 +1418,7 @@ class Entity(Submodel_element):
     not existing otherwise.
     """
 
-    specific_asset_ID: Optional["Identifier_key_value_pair"]
+    specific_asset_IDs: Optional[List["Identifier_key_value_pair"]]
     """
     Reference to an identifier key value pair representing a specific identifier 
     of the asset represented by the asset administration shell.
@@ -1440,7 +1438,7 @@ class Entity(Submodel_element):
         data_specifications: Optional[List["Reference"]] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_ID: Optional["Reference"] = None,
-        specific_asset_ID: Optional["Identifier_key_value_pair"] = None,
+        specific_asset_IDs: Optional[List["Identifier_key_value_pair"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -1457,7 +1455,7 @@ class Entity(Submodel_element):
         self.statements = statements
         self.entity_type = entity_type
         self.global_asset_ID = global_asset_ID
-        self.specific_asset_ID = specific_asset_ID
+        self.specific_asset_IDs = specific_asset_IDs
 
 
 @abstract
@@ -1783,7 +1781,7 @@ class Key(DBC):
     In case type = :attr:`~Key_elements.Global_reference` then the key represents
     a global unique id.
 
-    In case type = :attr:`~Fragment_ID` the key represents a bookmark or
+    In case type = :attr:`~Key_type.Fragment_ID` the key represents a bookmark or
     a similar local identifier within its parent element as specified by the key that
     precedes this key.
 
@@ -2126,7 +2124,7 @@ class Data_specification_content(DBC):
 
 
 @reference_in_the_book(section=(4, 8, 2), index=3)
-class Data_type_IEC61360(Enum):
+class Data_type_IEC_61360(Enum):
     Date = "DATE"
     String = "STRING"
     String_translatable = "STRING_TRANSLATABLE"
@@ -2146,10 +2144,10 @@ class Data_type_IEC61360(Enum):
 
 @reference_in_the_book(section=(4, 8, 2), index=4)
 class Level_type(Enum):
-    Min = "MIN"
-    Max = "MAX"
-    Nom = "NOM"
-    Type = "TYPE"
+    Min = "Min"
+    Max = "Max"
+    Nom = "Nom"
+    Type = "Type"
 
 
 @reference_in_the_book(section=(4, 7, 8, 2), index=2)
@@ -2192,7 +2190,7 @@ class Value_list(DBC):
 
 
 @reference_in_the_book(section=(4, 7, 8, 2))
-class Data_specification_IEC61360(Data_specification_content):
+class Data_specification_IEC_61360(Data_specification_content):
     """
     Content of data specification template for concept descriptions conformant to
     IEC 61360.
@@ -2240,7 +2238,7 @@ class Data_specification_IEC61360(Data_specification_content):
     Symbol
     """
 
-    data_type: Optional["Data_type_IEC61360"]
+    data_type: Optional["Data_type_IEC_61360"]
     """
     Data Type
     
@@ -2310,7 +2308,7 @@ class Data_specification_IEC61360(Data_specification_content):
         unit_ID: Optional["Reference"] = None,
         source_of_definition: Optional[str] = None,
         symbol: Optional[str] = None,
-        data_type: Optional["Data_type_IEC61360"] = None,
+        data_type: Optional["Data_type_IEC_61360"] = None,
         definition: Optional["Lang_string_set"] = None,
         value_format: Optional[str] = None,
         value_list: Optional["Value_list"] = None,
@@ -2470,7 +2468,7 @@ class Blob_certificate(Certificate):
     Denotes whether this certificate is the certificated that fast added last.
     """
 
-    contained_extensions: Optional[List["Reference"]]
+    contained_extension: Optional[List["Reference"]]
     """
     Extensions contained in the certificate.
     """
@@ -2480,7 +2478,7 @@ class Blob_certificate(Certificate):
         policy_administration_point: "Policy_administration_point",
         blob_certificate: "Blob",
         last_certificate: bool,
-        contained_extensions: Optional[List["Reference"]] = None,
+        contained_extension: Optional[List["Reference"]] = None,
     ) -> None:
         Certificate.__init__(
             self, policy_administration_point=policy_administration_point
@@ -2488,7 +2486,7 @@ class Blob_certificate(Certificate):
 
         self.blob_certificate = blob_certificate
         self.last_certificate = last_certificate
-        self.contained_extensions = contained_extensions
+        self.contained_extension = contained_extension
 
 
 @reference_in_the_book(section=(5, 3, 5), index=3)
@@ -2611,7 +2609,7 @@ class Access_permission_rule(Referable, Qualifiable):
     permissions defined by this rule.
     """
 
-    permissions_per_objects: Optional[List["Permissions_per_object"]]
+    permissions_per_object: Optional[List["Permissions_per_object"]]
     """
     Set of object-permission pairs that define the permissions per object within
     the access permission rule.
@@ -2625,7 +2623,7 @@ class Access_permission_rule(Referable, Qualifiable):
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
-        permissions_per_objects: Optional[List["Permissions_per_object"]] = None,
+        permissions_per_object: Optional[List["Permissions_per_object"]] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -2638,7 +2636,7 @@ class Access_permission_rule(Referable, Qualifiable):
         Qualifiable.__init__(self, qualifiers=qualifiers)
 
         self.target_subject_attributes = target_subject_attributes
-        self.permissions_per_objects = permissions_per_objects
+        self.permissions_per_object = permissions_per_object
 
 
 @reference_in_the_book(section=(5, 3, 5))
@@ -2683,7 +2681,7 @@ class Access_control(DBC):
     Default: reference to the submodel referenced via defaultSubjectAttributes.
     """
 
-    defaultEnvironmentAttributes: Optional["Submodel"]
+    default_environment_attributes: Optional["Submodel"]
     """
     Reference to a submodel defining default environment attributes, *i.e.* attributes 
     that are not describing the asset itself.
@@ -2702,14 +2700,14 @@ class Access_control(DBC):
         default_permissions: "Submodel",
         access_permission_rules: Optional[List["Access_permission_rule"]] = None,
         selectable_subject_attributes: Optional["Submodel"] = None,
-        defaultEnvironmentAttributes: Optional["Submodel"] = None,
+        default_environment_attributes: Optional["Submodel"] = None,
     ) -> None:
         self.default_subject_attributes = default_subject_attributes
         self.selectable_permissions = selectable_permissions
         self.default_permissions = default_permissions
         self.access_permission_rules = access_permission_rules
         self.selectable_subject_attributes = selectable_subject_attributes
-        self.defaultEnvironmentAttributes = defaultEnvironmentAttributes
+        self.default_environment_attributes = default_environment_attributes
 
 
 @reference_in_the_book(section=(5, 3, 4), index=1)
