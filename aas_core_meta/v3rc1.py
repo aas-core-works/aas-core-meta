@@ -541,7 +541,7 @@ class Asset(Identifiable, Has_data_specification):
 
 
 @reference_in_the_book(section=(4, 7, 5), index=0)
-class Asset_information:
+class Asset_information(DBC):
     """
     Identifying meta data of the asset that is represented by an AAS.
 
@@ -568,7 +568,7 @@ class Asset_information:
     modelled via :attr:`~specific_asset_ID`.
     """
 
-    specific_asset_ID: Optional["Identifier_key_value_pair"]
+    specific_asset_ID: Optional[List["Identifier_key_value_pair"]]
     """
     Additional domain-specific, typically proprietary, Identifier for the asset.
 
@@ -595,7 +595,7 @@ class Asset_information:
         self,
         asset_kind: "Asset_kind",
         global_asset_ID: Optional["Reference"] = None,
-        specific_asset_ID: Optional["Identifier_key_value_pair"] = None,
+        specific_asset_ID: Optional[List["Identifier_key_value_pair"]] = None,
         bill_of_material: Optional[List["Submodel"]] = None,
         default_thumbnail: Optional["File"] = None,
     ) -> None:
@@ -682,14 +682,14 @@ class Submodel(
     standardized and, thus, become submodels templates.
     """
 
-    submodel_elements: List["Submodel_element"]
+    submodel_elements: Optional[List["Submodel_element"]]
     """A submodel consists of zero or more submodel elements."""
 
     def __init__(
         self,
         identification: "Identifier",
         ID_short: str,
-        submodel_elements: List["Submodel_element"],
+        submodel_elements: Optional[List["Submodel_element"]],
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
@@ -1698,7 +1698,7 @@ class View(Referable, Has_semantics, Has_data_specification):
        They are not equivalent to submodels.
     """
 
-    contained_element: Optional[List["Referable"]]
+    contained_elements: Optional[List["Referable"]]
     """
     Reference to a referable element that is contained in the view.
     """
@@ -1711,7 +1711,7 @@ class View(Referable, Has_semantics, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         semantic_ID: Optional["Reference"] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        contained_element: Optional[List["Referable"]] = None,
+        contained_elements: Optional[List["Referable"]] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -1728,7 +1728,7 @@ class View(Referable, Has_semantics, Has_data_specification):
             data_specifications=data_specifications,
         )
 
-        self.contained_element = contained_element
+        self.contained_elements = contained_elements
 
 
 @invariant(lambda self: len(self.keys) >= 1)
@@ -2120,7 +2120,6 @@ class Lang_string_set(DBC):
 @abstract
 @reference_in_the_book(section=(4, 8, 1))
 class Data_specification_content(DBC):
-    # TODO (sadu 2021-11-17)
     # No table for class in the book
     # to be implemented
     pass
@@ -2147,10 +2146,10 @@ class Data_type_IEC61360(Enum):
 
 @reference_in_the_book(section=(4, 8, 2), index=4)
 class Level_type(Enum):
-    Min = "Min"
-    Max = "Max"
-    Nom = "Nom"
-    Type = "Type"
+    Min = "MIN"
+    Max = "MAX"
+    Nom = "NOM"
+    Type = "TYPE"
 
 
 @reference_in_the_book(section=(4, 7, 8, 2), index=2)
@@ -2181,15 +2180,15 @@ class Value_list(DBC):
     A set of value reference pairs.
     """
 
-    values_reference_pair_type: Optional[List["Value_reference_pair"]]
+    value_reference_pair_types: Optional[List["Value_reference_pair"]]
     """
     A pair of a value together with its global unique id.
     """
 
     def __init__(
-        self, values_reference_pair_type: Optional[List["Value_reference_pair"]] = None
+        self, value_reference_pair_types: Optional[List["Value_reference_pair"]] = None
     ) -> None:
-        self.values_reference_pair_type = values_reference_pair_type
+        self.value_reference_pair_types = value_reference_pair_types
 
 
 @reference_in_the_book(section=(4, 7, 8, 2))
