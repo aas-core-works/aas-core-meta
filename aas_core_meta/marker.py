@@ -31,6 +31,11 @@ def abstract(thing: Type[T]) -> Type[T]:
     """
     return thing
 
+def deprecated(text: str) -> None:
+    """
+    Mark deprecated parts of the book
+    """
+    pass
 
 class reference_in_the_book:
     """Mark the location in the book where the definition resides."""
@@ -68,3 +73,4 @@ class json_serialization:
 
     def __call__(self, func: Type[T]) -> Type[T]:
         return func
+
