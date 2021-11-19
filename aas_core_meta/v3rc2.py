@@ -7,6 +7,7 @@ from icontract import invariant, ensure, DBC
 
 from aas_core_meta.marker import (
     abstract,
+    deprecated,
     implementation_specific,
     reference_in_the_book,
 )
@@ -23,21 +24,90 @@ __book_version__ = "V3.0RC2"
 
 
 @abstract
-@reference_in_the_book(section=(4, 7, 2, 1))
+@reference_in_the_book(section=(6, 7, 2, 6))
+class Has_semantics(DBC):
+    """
+    Element that can have a semantic definition.
+    """
+
+    semantic_ID: Optional["Reference"]
+    """
+    Identifier of the semantic definition of the element. It is called semantic ID
+    of the element.
+    """
+
+    def __init__(self, semantic_ID: Optional["Reference"] = None) -> None:
+        self.semantic_ID = semantic_ID
+
+
+@reference_in_the_book(section=(6, 7, 2, 1), index=2)
+class Extension(Has_semantics):
+    """
+    Single extension of an element.
+    """
+
+    name: str
+    """
+    Name of the extension.
+
+    Constraint AASd-077: The name of an extension within HasExtensions needs to be 
+    unique.
+    """
+
+    value_type: Optional["Data_type_def"]
+    """
+    Type of the value of the extension.
+    
+    Default: xsd:string
+    """
+    # TODO (Nico: Add ValueDataType)
+    value: Optional[str]
+    """
+    Value of the extension
+    """
+
+    refers_to: Optional["Reference"]
+    """
+    Reference to an element the extension refers to.
+    """
+
+    def __init__(
+        self,
+        name: str,
+        semantic_ID: Optional["Reference"] = None,
+        value_type: Optional["Data_type_def"] = None,
+        value: Optional[str] = None,
+        refers_to: Optional["Reference"] = None,
+    ) -> None:
+        Has_semantics.__init__(self, semantic_ID=semantic_ID)
+
+        self.name = name
+        self.value_type = value_type
+        self.value = value
+        self.refers_to = refers_to
+
+
+@abstract
+@reference_in_the_book(section=(6, 7, 2, 1))
 class Has_extensions(DBC):
     """
     Element that can be extended by proprietary extensions.
+
+    Note: Extensions are proprietary, i.e. they do not support global interoperability.
     """
 
-    # NOTE (mristin, 2021-05-28):
-    # We do not implement extensions at the moment.
-    # This needs to be further discussed.
-    pass
+    extensions: Optional["Extension"]
+    """
+    An extension of the element.
+    """
+
+    def __init__(self, extension: Optional["Extension"] = None) -> None:
+        self.extension = extension
 
 
 @abstract
 @invariant(lambda self: is_ID_short(self.ID_short), "Constraint AASd-002")
-@reference_in_the_book(section=(4, 7, 2, 2))
+@reference_in_the_book(section=(6, 7, 2, 2))
 class Referable(Has_extensions):
     """
     An element that is referable by its :attr:`~ID_short`.
@@ -51,6 +121,23 @@ class Referable(Has_extensions):
     In case of identifiables this attribute is a short name of the element.
     In case of referable this ID is an identifying string of
     the element within its name space.
+
+    Constraint AASd-002: idShort of Referables shall only feature letters, digits, 
+    underscore ("_"); starting mandatory with a letter. I.e. [a-zA-Z][a-zA-Z0-9_]+
+    Exception: In case of direct submodel elements within a SubmodelElementList the 
+    idShort shall feature a sequence of digits representing an integer. I.e. [0] or 
+    [1-9][0-9]+.
+
+    Constraint AASd-117: For all Referables which are not Identifiables the idShort is 
+    mandatory.
+
+    Constraint AASd-003: idShort shall be matched case-sensitive.
+    
+    Constraint AASd-022: idShort of non-identifiable referables shall be unique in its 
+    namespace.
+
+    Constraint AASd-027: idShort of Referables shall have a maximum length of 128 
+    characters.
 
     .. note::
 
@@ -105,11 +192,14 @@ class Referable(Has_extensions):
 
     def __init__(
         self,
+        extension: Optional["Extension"] = None,
         ID_short: Optional[str] = None,
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
     ) -> None:
+        Has_extensions.__init__(self, extension=extension)
+
         self.ID_short = ID_short
         self.display_name = display_name
         self.category = category
@@ -155,11 +245,11 @@ class Identifiable(Referable):
         self.administration = administration
 
 
-@reference_in_the_book(section=(4, 7, 2, 5), index=1)
+@reference_in_the_book(section=(6, 7, 2, 4), index=1)
 class Modeling_kind(Enum):
     """Enumeration for denoting whether an element is a template or an instance."""
 
-    Template = "Template"
+    Template = "TEMPLATE"
     """
     Software element which specifies the common attributes shared by all instances of
     the template.
@@ -167,7 +257,7 @@ class Modeling_kind(Enum):
     [SOURCE: IEC TR 62390:2005-01, 3.1.25] modified
     """
 
-    Instance = "Instance"
+    Instance = "INSTANCE"
     """
     Concrete, clearly identifiable component of a certain template.
 
@@ -186,7 +276,7 @@ class Modeling_kind(Enum):
 
 
 @abstract
-@reference_in_the_book(section=(4, 7, 2, 5), index=0)
+@reference_in_the_book(section=(6, 7, 2, 4))
 class Has_kind(DBC):
     """
     An element with a kind is an element that can either represent a template or an
@@ -215,7 +305,7 @@ class Has_kind(DBC):
     not (self.revision is not None) or self.version is not None,
     "Constraint AASd-005"
 )
-@reference_in_the_book(section=(4, 7, 2, 6))
+@reference_in_the_book(section=(6, 7, 2, 5))
 # fmt: on
 class Administrative_information(DBC):
     """
@@ -236,20 +326,9 @@ class Administrative_information(DBC):
 
 
 @abstract
-@reference_in_the_book(section=(4, 7, 2, 7))
-class Has_semantics(DBC):
-    """
-    Element that can have a semantic definition.
-    """
-
-    semantic_ID: Optional["Reference"]
-    """
-    Identifier of the semantic definition of the element. It is called semantic ID
-    of the element.
-    """
-
-    def __init__(self, semantic_ID: Optional["Reference"] = None) -> None:
-        self.semantic_ID = semantic_ID
+@reference_in_the_book(section=(6, 7, 2, 8))
+class Constraint(DBC):
+    """A constraint is used to further qualify or restrict an element."""
 
 
 # fmt: off
@@ -265,7 +344,7 @@ class Has_semantics(DBC):
 #     "Constraint AASd-021"
 # )
 @abstract
-@reference_in_the_book(section=(4, 7, 2, 8))
+@reference_in_the_book(section=(6, 7, 2, 7))
 # fmt: on
 class Qualifiable(DBC):
     """
@@ -280,12 +359,6 @@ class Qualifiable(DBC):
         self.qualifiers = qualifiers
 
 
-@abstract
-@reference_in_the_book(section=(4, 7, 2, 9))
-class Constraint(DBC):
-    """A constraint is used to further qualify or restrict an element."""
-
-
 # fmt: off
 # TODO (mristin, 2021-11-17): rewrite using XSD constraints on strings
 # @invariant(
@@ -293,7 +366,7 @@ class Constraint(DBC):
 #     not (self.value is not None) or is_of_type(self.value, self.value_type),
 #     "Constraint AASd-020"
 # )
-@reference_in_the_book(section=(4, 7, 2, 11))
+@reference_in_the_book(section=(6, 7, 2, 10))
 # fmt: on
 class Qualifier(Constraint, Has_semantics):
     """
@@ -338,7 +411,7 @@ class Qualifier(Constraint, Has_semantics):
         self.value_ID = value_ID
 
 
-@reference_in_the_book(section=(4, 7, 2, 12))
+@reference_in_the_book(section=(6, 7, 2, 11))
 class Formula(Constraint):
     """
     A formula is used to describe constraints by a logical expression.
@@ -359,7 +432,7 @@ class Formula(Constraint):
 
 
 @abstract
-@reference_in_the_book(section=(4, 7, 2, 13))
+@reference_in_the_book(section=(6, 7, 2, 12))
 class Has_data_specification(DBC):
     """
     Element that can be extended by using data specification templates.
@@ -388,7 +461,7 @@ class Has_data_specification(DBC):
         )
 
 
-@reference_in_the_book(section=(4, 7, 3))
+@reference_in_the_book(section=(6, 7, 3))
 class Asset_administration_shell(Identifiable, Has_data_specification):
     """Structure a digital representation of an asset."""
 
@@ -445,8 +518,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         self.submodels = [] if submodels is None else submodels
 
 
-@reference_in_the_book(section=(4, 7, 5), index=0)
-class Asset_information:
+@reference_in_the_book(section=(6, 7, 4))
+class Asset_information(DBC):
     """
     Identifying meta data of the asset that is represented by an AAS.
 
@@ -473,7 +546,7 @@ class Asset_information:
     modelled via :attr:`~specific_asset_ID`.
     """
 
-    specific_asset_ID: Optional["Identifier_key_value_pair"]
+    specific_asset_IDs: Optional["Identifier_key_value_pair"]
     """
     Additional domain-specific, typically proprietary, Identifier for the asset.
 
@@ -503,7 +576,7 @@ class Asset_information:
         self.default_thumbnail = default_thumbnail
 
 
-@reference_in_the_book(section=(4, 7, 5), index=1)
+@reference_in_the_book(section=(6, 7, 4), index=1)
 class Asset_kind(Enum):
     """
     Enumeration for denoting whether an element is a type or an instance.
@@ -535,7 +608,7 @@ class Asset_kind(Enum):
     """
 
 
-@reference_in_the_book(section=(4, 7, 5), index=2)
+@reference_in_the_book(section=(6, 7, 4), index=2)
 class Identifier_key_value_pair(Has_semantics):
     """
     An IdentifierKeyValuePair describes a generic identifier as key-value pair.
@@ -544,7 +617,7 @@ class Identifier_key_value_pair(Has_semantics):
     key: str
     """Key of the identifier"""
 
-    value: Optional[str]
+    value: str
     """The value of the identifier with the corresponding key."""
 
     external_subject_ID: Optional["Reference"]
@@ -553,7 +626,7 @@ class Identifier_key_value_pair(Has_semantics):
     def __init__(
         self,
         key: str,
-        value: Optional[str] = None,
+        value: str,
         external_subject_ID: Optional["Reference"] = None,
         semantic_ID: Optional["Reference"] = None,
     ) -> None:
@@ -563,7 +636,7 @@ class Identifier_key_value_pair(Has_semantics):
         self.external_subject_ID = external_subject_ID
 
 
-@reference_in_the_book(section=(4, 7, 6))
+@reference_in_the_book(section=(6, 7, 5))
 class Submodel(
     Identifiable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
 ):
@@ -576,14 +649,14 @@ class Submodel(
     standardized and, thus, become submodels templates.
     """
 
-    submodel_elements: List["Submodel_element"]
+    submodel_elements: Optional[List["Submodel_element"]]
     """A submodel consists of zero or more submodel elements."""
 
     def __init__(
         self,
         ID: str,
         ID_short: str,
-        submodel_elements: List["Submodel_element"],
+        submodel_elements: Optional[List["Submodel_element"]] = None,
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
@@ -620,7 +693,7 @@ class Submodel(
 
 
 @abstract
-@reference_in_the_book(section=(4, 7, 7))
+@reference_in_the_book(section=(6, 7, 6))
 class Submodel_element(
     Referable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
 ):
@@ -666,7 +739,7 @@ class Submodel_element(
 #
 #  🠒 We really need to think hard how we resolve the references. Should this class be
 #  implementation-specific?
-@reference_in_the_book(section=(4, 7, 8, 14))
+@reference_in_the_book(section=(6, 7, 7, 14))
 @abstract
 class Relationship_element(Submodel_element):
     """
@@ -751,7 +824,8 @@ class Submodel_element_list(Submodel_element):
     a semanticId then they shall be identical.
 
     Constraint AASd-115: If a first level child element in a SubmodelElementList does 
-    not specify a semanticId then the value is assumed to be identical to SubmodelElementList/semanticIdValues.
+    not specify a semanticId then the value is assumed to be identical to 
+    SubmodelElementList/semanticIdValues.
     """
 
     value_type_values: Optional["Data_type_def"]
@@ -840,7 +914,7 @@ class Submodel_element_struct(Submodel_element):
 
 
 @abstract
-@reference_in_the_book(section=(4, 7, 8, 5))
+@reference_in_the_book(section=(6, 7, 7, 5))
 class Data_element(Submodel_element):
     """
     A data element is a submodel element that is not further composed out of
@@ -848,11 +922,6 @@ class Data_element(Submodel_element):
 
     A data element is a submodel element that has a value. The type of value differs
     for different subtypes of data elements.
-
-    .. note::
-
-        A controlled value is a value whose meaning is given in an external source
-        (see "ISO/TS 29002-10").
 
     Constraint AASd-090: For data elements DataElement/category shall be one of the
     following values: CONSTANT, PARAMETER or VARIABLE.
@@ -883,7 +952,7 @@ class Data_element(Submodel_element):
         )
 
 
-@reference_in_the_book(section=(4, 7, 8, 11))
+@reference_in_the_book(section=(6, 7, 7, 11))
 class Property(Data_element):
     """
     A property is a data element that has a single value.
@@ -961,7 +1030,7 @@ class Property(Data_element):
         self.value_ID = value_ID
 
 
-@reference_in_the_book(section=(4, 7, 8, 9))
+@reference_in_the_book(section=(6, 7, 7, 9))
 class Multi_language_property(Data_element):
     """
     A property is a data element that has a multi-language value.
@@ -980,6 +1049,8 @@ class Multi_language_property(Data_element):
     STRING_TRANSLATABLE.
 
     See Constraint AASd-065
+
+    See Constraint AASd-066
     """
 
     value: Optional["Lang_string_set"]
@@ -1025,7 +1096,7 @@ class Multi_language_property(Data_element):
         self.value_ID = value_ID
 
 
-@reference_in_the_book(section=(4, 7, 8, 12))
+@reference_in_the_book(section=(6, 7, 7, 12))
 class Range(Data_element):
     """
     A range data element is a data element that defines a range with min and max.
@@ -1090,22 +1161,26 @@ class Range(Data_element):
         self.max = max
 
 
-@reference_in_the_book(section=(4, 7, 8, 13))
+@reference_in_the_book(section=(6, 7, 7, 13))
 class Reference_element(Data_element):
     """
     A reference element is a data element that defines a logical reference to another
     element within the same or another AAS or a reference to an external object or
     entity.
+
+    Constraint AASd-054: If the semanticId of a ReferenceElement submodel element
+    references a ConceptDescription then the ConceptDescription/category shall be one
+    of following values: REFERENCE.
+
+    Constraint AASd-082: If the semanticId of a ReferenceElement references a
+    ConceptDescription then DataSpecificationIEC61360/dataType shall be one of: STRING,
+    IRI, IRDI.
     """
 
     value: Optional["Reference"]
     """
     Reference to any other referable element of the same of any other AAS or a 
     reference to an external object or entity.
-
-    Constraint AASd-054: If the semanticId of a ReferenceElement submodel element 
-    references a ConceptDescription then the ConceptDescription/category shall be one of 
-    following values: REFERENCE.
     """
 
     def __init__(
@@ -1135,11 +1210,17 @@ class Reference_element(Data_element):
         self.value = value
 
 
-@reference_in_the_book(section=(4, 7, 8, 4))
+@reference_in_the_book(section=(6, 7, 7, 4))
 class Blob(Data_element):
     """
     A BLOB is a data element that represents a file that is contained with its source
     code in the value attribute.
+
+    Constraint AASd-057: The semanticId of a File or Blob submodel element shall only
+    reference a ConceptDescription with the category DOCUMENT.
+
+    Constraint AASd-083: If the semanticId of a Blob references a ConceptDescription
+    then DataSpecificationIEC61360/dataType shall be one of: BLOB, HTML.
     """
 
     MIME_type: str
@@ -1158,9 +1239,6 @@ class Blob(Data_element):
 
         In contrast to the file property the file content is stored directly as value
         in the Blob data element.
-
-    Constraint AASd-057: The semanticId of a File or Blob submodel element shall only 
-    reference a ConceptDescription with the category DOCUMENT.
     """
 
     def __init__(
@@ -1192,13 +1270,16 @@ class Blob(Data_element):
         self.value = value
 
 
-@reference_in_the_book(section=(4, 7, 8, 8))
+@reference_in_the_book(section=(6, 7, 7, 8))
 class File(Data_element):
     """
     A File is a data element that represents an address to a file.
     The value is an URI that can represent an absolute or relative path.
 
     See Constraint AASd-057
+
+    Constraint AASd-079: If the semanticId of a File references a
+    ConceptDescription then DataSpecificationIEC61360/dataType shall be one of: FILE.
     """
 
     mime_type: str
@@ -1242,11 +1323,13 @@ class File(Data_element):
         self.value = value
 
 
-@reference_in_the_book(section=(4, 7, 8, 1))
+@reference_in_the_book(section=(6, 7, 7, 1))
 class Annotated_relationship_element(Relationship_element):
     """
     An annotated relationship element is a relationship element that can be annotated
     with additional data elements.
+
+    See Constraint AASd-055
     """
 
     annotation: Optional[List[Data_element]]
@@ -1301,20 +1384,20 @@ class Annotated_relationship_element(Relationship_element):
 #  the following: EVENT.
 
 
-@reference_in_the_book(section=(4, 7, 8, 6), index=1)
+@reference_in_the_book(section=(6, 7, 7, 6), index=1)
 class Entity_type(Enum):
     """
     Enumeration for denoting whether an entity is a self-managed entity or a co-managed
     entity.
     """
 
-    Co_managed_entity = "CoManagedEntity"
+    Co_managed_entity = "COMANAGEDENTITY"
     """
     For co-managed entities there is no separate AAS. Co-managed entities need to be 
     part of a self-managed entity.
     """
 
-    Self_managed_entity = "SelfManagedEntity"
+    Self_managed_entity = "SELFMANAGEDENTITY"
     """
     Self-Managed Entities have their own AAS but can be part of the bill of material of 
     a composite self-managed entity. The asset of an I4.0 Component is a self-managed 
@@ -1322,7 +1405,7 @@ class Entity_type(Enum):
     """
 
 
-@reference_in_the_book(section=(4, 7, 8, 6))
+@reference_in_the_book(section=(6, 7, 7, 6))
 class Entity(Submodel_element):
     """
     An entity is a submodel element that is used to model entities.
@@ -1347,6 +1430,7 @@ class Entity(Submodel_element):
     global_asset_ID: Optional["Reference"]
     """
     Reference to the asset the entity is representing.
+    
     Constraint AASd-014: Either the attribute globalAssetId or specificAssetId of an 
     Entity must be set if Entity/entityType is set to “SelfManagedEntity”. They are 
     not existing otherwise.
@@ -1356,6 +1440,7 @@ class Entity(Submodel_element):
     """
     Reference to an identifier key value pair representing a specific identifier 
     of the asset represented by the asset administration shell.
+    
     See Constraint AASd-014
     """
 
@@ -1393,10 +1478,14 @@ class Entity(Submodel_element):
 
 
 @abstract
-@reference_in_the_book(section=(4, 7, 8, 7))
+@reference_in_the_book(section=(6, 7, 7, 7))
 class Event(Submodel_element):
     """
     An event.
+
+    Constraint AASd-061: If the semanticId of a Event submodel element references a
+    ConceptDescription then the category of the ConceptDescription shall be one of
+    the following: EVENT.
     """
 
     def __init__(
@@ -1423,7 +1512,7 @@ class Event(Submodel_element):
         )
 
 
-@reference_in_the_book(section=(4, 7, 8, 2))
+@reference_in_the_book(section=(6, 7, 7, 2))
 class Basic_Event(Event):
     """
     A basic event.
@@ -1462,7 +1551,7 @@ class Basic_Event(Event):
         self.observed = observed
 
 
-@reference_in_the_book(section=(4, 7, 8, 10))
+@reference_in_the_book(section=(6, 7, 7, 10))
 class Operation(Submodel_element):
     """
     An operation is a submodel element with input and output variables.
@@ -1518,7 +1607,7 @@ class Operation(Submodel_element):
         self.inoutput_variables = inoutput_variables
 
 
-@reference_in_the_book(section=(4, 7, 8, 10), index=1)
+@reference_in_the_book(section=(6, 7, 7, 10), index=1)
 class Operation_variable:
     """
     An operation variable is a submodel element that is used as input or output variable
@@ -1527,21 +1616,25 @@ class Operation_variable:
 
     value: "Submodel_element"
     """
-    Describes the needed argument for an operation via a submodel element of 
-    kind=Template.
-    Constraint AASd-008: The submodel element value of an operation variable shall be 
-    of kind=Template.
+    Describes the needed argument for an operation via a submodel element
     """
 
     def __init__(self, value: "Submodel_element") -> None:
         self.value = value
 
 
-@reference_in_the_book(section=(4, 7, 8, 3))
+@reference_in_the_book(section=(6, 7, 7, 3))
 class Capability(Submodel_element):
     """
     A capability is the implementation-independent description of the potential of an
     asset to achieve a certain effect in the physical or virtual world.
+
+    Constraint AASd-058: If the semanticId of a Capability submodel element references
+    a ConceptDescription then the ConceptDescription/category shall be CAPABILITY.
+
+    .. note::
+        The semanticId of a capability is typically an ontology. Thus, reasoning on
+        capabilities is enabled.
     """
 
     def __init__(
@@ -1568,7 +1661,7 @@ class Capability(Submodel_element):
         )
 
 
-@reference_in_the_book(section=(4, 7, 9))
+@reference_in_the_book(section=(6, 7, 8))
 class Concept_description(Identifiable, Has_data_specification):
     """
     The semantics of a property or other elements that may have a semantic description
@@ -1614,7 +1707,10 @@ class Concept_description(Identifiable, Has_data_specification):
         self.is_case_of = is_case_of
 
 
-@reference_in_the_book(section=(4, 7, 10))
+# TODO sadu (2021-11-19)
+# decorator @deprecated should be checked and corrected in the marker
+# @deprecated
+@reference_in_the_book(section=(6, 7, 9))
 class View(Referable, Has_semantics, Has_data_specification):
     """
     A view is a collection of referable elements w.r.t. to a specific viewpoint of one
@@ -1628,7 +1724,7 @@ class View(Referable, Has_semantics, Has_data_specification):
        They are not equivalent to submodels.
     """
 
-    contained_element: Optional[List["Referable"]]
+    contained_elements: Optional[List["Referable"]]
     """
     Reference to a referable element that is contained in the view.
     """
@@ -1641,7 +1737,7 @@ class View(Referable, Has_semantics, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         semantic_ID: Optional["Reference"] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        contained_element: Optional[List["Referable"]] = None,
+        contained_elements: Optional[List["Referable"]] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -1655,7 +1751,7 @@ class View(Referable, Has_semantics, Has_data_specification):
 
         Has_data_specification.__init__(self, data_specifications=data_specifications)
 
-        self.contained_element = contained_element
+        self.contained_elements = contained_elements
 
 
 @invariant(lambda self: len(self.keys) >= 1)
@@ -1728,7 +1824,7 @@ class Model_reference(Reference):
 #     not (self.type == Key_elements.Asset_administration_shell),
 #     "Constraint AASd-081"
 # )
-@reference_in_the_book(section=(4, 7, 11), index=1)
+@reference_in_the_book(section=(6, 7, 10), index=1)
 # fmt: on
 class Key(DBC):
     """A key is a reference to an element by its id."""
@@ -1756,12 +1852,9 @@ class Key(DBC):
         self.value = value
 
 
-@reference_in_the_book(section=(4, 7, 11), index=2)
+@reference_in_the_book(section=(6, 7, 10), index=2)
 class Key_elements(Enum):
     """Enumeration of different key value types within a key."""
-
-    Global_reference = "GlobalReference"
-    """reference to an element not belonging to an asset administration shell"""
 
     Fragment_reference = "FragmentReference"
     """
@@ -1821,11 +1914,21 @@ class Key_elements(Enum):
         an Operation *etc.*
     """
 
-    Submodel_element_collection = "SubmodelElementCollection"
+    Submodel_element_list = "SubmodelElementList"
+    """
+    List of Submodel Elements
+    """
+    Submodel_element_struct = "SubmodelElementStruct"
+    """
+    Struct of Submodel Elements
+    """
     View = "View"
+    """"
+    View (<<Deprecated>>, do not use any longer)
+    """
 
 
-@reference_in_the_book(section=(4, 7, 11), index=3)
+@reference_in_the_book(section=(6, 7, 10), index=3)
 class Referable_elements(Enum):
     """Enumeration of all referable elements within an asset administration shell"""
 
@@ -1876,8 +1979,18 @@ class Referable_elements(Enum):
         an Operation *etc.*
     """
 
-    Submodel_element_collection = "SubmodelElementCollection"
+    Submodel_element_list = "SubmodelElementList"
+    """
+    List of Submodel Elements
+    """
+    Submodel_element_struct = "SubmodelElementStruct"
+    """
+    Struct of Submodel Elements
+    """
     View = "View"
+    """"
+    View (<<Deprecated>>, do not use any longer)
+    """
 
 
 @reference_in_the_book(section=(6, 7, 10), index=7)
@@ -1984,11 +2097,10 @@ class Submodel_elements(Enum):
     """
 
 
-@reference_in_the_book(section=(4, 7, 11), index=4)
+@reference_in_the_book(section=(6, 7, 11), index=8)
 class Identifiable_elements(Enum):
     """Enumeration of all identifiable elements within an asset administration shell."""
 
-    Asset = "Asset"
     Asset_administration_shell = "AssetAdministrationShell"
     Concept_description = "ConceptDescription"
     Submodel = "Submodel"
@@ -2003,14 +2115,14 @@ assert {literal.value for literal in Identifiable_elements}.issubset(
 )
 
 
-@reference_in_the_book(section=(6, 7, 12, 1))
+@reference_in_the_book(section=(6, 7, 12, 1), index=1)
 class Build_in_list_types(Enum):
     Entities = "ENTITIES"
     ID_refs = "IDREFS"
     N_M_tokens = "NMTOKENS"
 
 
-@reference_in_the_book(section=(6, 7, 12, 1))
+@reference_in_the_book(section=(6, 7, 12, 1), index=2)
 class Decimal_build_in_types(Enum):
     Integer = "integer"
     Long = "long"
@@ -2021,20 +2133,20 @@ class Decimal_build_in_types(Enum):
     Positive_integer = "positiveInteger"
     Unsigned_integer = "unsignedInteger"
     Unsigned_long = "unsignedLong"
-    Unsigned_int = "unsignedINt"
+    Unsigned_int = "unsignedInt"
     Unsigned_short = "unsignedShort"
     Unsigned_byte = "unsignedByte"
     Non_positive_integer = "nonPositiveInteger"
     Negative_integer = "negativeInteger"
 
 
-@reference_in_the_book(section=(6, 7, 12, 1))
+@reference_in_the_book(section=(6, 7, 12, 1), index=3)
 class Duration_build_in_types(Enum):
     day_time_duration = "dayTimeDuration"
     year_month_duration = "yearMonthDuration"
 
 
-@reference_in_the_book(section=(6, 7, 12, 1))
+@reference_in_the_book(section=(6, 7, 12, 1), index=4)
 class Primitive_types(Enum):
     Any_URI = "anyURI"
     Base_64_binary = "base64Binary"
@@ -2055,7 +2167,7 @@ class Primitive_types(Enum):
     Time = "time"
 
 
-@reference_in_the_book(section=(6, 7, 12, 1))
+@reference_in_the_book(section=(6, 7, 12, 1), index=5)
 class String_build_in_types(Enum):
     Normalized_string = "normalizedString"
     Token = "token"
@@ -2124,7 +2236,7 @@ class Data_type_def(Enum):
 Blob_type = bytearray
 
 
-@reference_in_the_book(section=(4, 7, 13, 11))
+@reference_in_the_book(section=(6, 7, 12, 1))
 class Lang_string(DBC):
     """Give a text in a specific language."""
 
@@ -2144,7 +2256,7 @@ class Lang_string(DBC):
 #  Should the language be unique?
 #  Or can we have duplicate entries for, say, "EN"?
 @implementation_specific
-@reference_in_the_book(section=(4, 7, 13, 2), index=2)
+@reference_in_the_book(section=(6, 7, 12, 2), index=2)
 class Lang_string_set(DBC):
     """
     A set of strings, each annotated by the language of the string.
@@ -2192,9 +2304,14 @@ class Lang_string_set(DBC):
 
 
 @abstract
-@reference_in_the_book(section=(4, 8, 1))
+@reference_in_the_book(section=(6, 8, 1))
 class Data_specification_content(DBC):
-    """ """
+    """
+    .. note::
+        The Data Specification Templates do not belong to the metamodel of the Asset
+        Administration Shell. In 5 serializations that choose specific templates
+        the corresponding data specification content may be directly 6 incorporated.
+    """
 
     # TODO (sadu 2021-11-17)
     # No table for class in the book
@@ -2202,7 +2319,7 @@ class Data_specification_content(DBC):
     pass
 
 
-@reference_in_the_book(section=(4, 8, 2), index=3)
+@reference_in_the_book(section=(6, 8, 2, 3), index=2)
 class Data_type_IEC61360(Enum):
     Date = "DATE"
     """
@@ -2305,10 +2422,13 @@ class Data_type_IEC61360(Enum):
     Blob = "BLOB"
     """
     values containing the content of a file. Values may be binaries.
+    HTML conformant to HTML5 is a special blob. In IEC61360 binary is for a sequence of bits, 
+    each bit being represented by “0” and “1” only. A binary is a blob but a blob may also 
+    contain other source code.
     """
 
 
-@reference_in_the_book(section=(4, 8, 2), index=4)
+@reference_in_the_book(section=(6, 8, 2, 3), index=5)
 class Level_type(Enum):
     Min = "Min"
     Max = "Max"
@@ -2316,7 +2436,7 @@ class Level_type(Enum):
     Type = "Type"
 
 
-@reference_in_the_book(section=(4, 7, 8, 2), index=2)
+@reference_in_the_book(section=(6, 8, 2, 3), index=4)
 class Value_reference_pair(DBC):
     """
     A value reference pair within a value list. Each value has a global unique id
@@ -2338,24 +2458,24 @@ class Value_reference_pair(DBC):
         self.value_ID = value_ID
 
 
-@reference_in_the_book(section=(4, 7, 8, 2), index=1)
+@reference_in_the_book(section=(6, 8, 2, 3), index=3)
 class Value_list(DBC):
     """
     A set of value reference pairs.
     """
 
-    values_reference_pair_type: Optional[List["Value_reference_pair"]]
+    value_reference_pairs: Optional[List["Value_reference_pair"]]
     """
     A pair of a value together with its global unique id.
     """
 
     def __init__(
-        self, values_reference_pair_type: Optional[List["Value_reference_pair"]] = None
+        self, value_reference_pairs: Optional[List["Value_reference_pair"]] = None
     ) -> None:
-        self.values_reference_pair_type = values_reference_pair_type
+        self.value_reference_pairs = value_reference_pairs
 
 
-@reference_in_the_book(section=(4, 7, 8, 2))
+@reference_in_the_book(section=(6, 8, 2, 3))
 class Data_specification_IEC61360(Data_specification_content):
     """
     Content of data specification template for concept descriptions conformant to
