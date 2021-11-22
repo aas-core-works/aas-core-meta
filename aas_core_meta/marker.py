@@ -32,11 +32,21 @@ def abstract(thing: Type[T]) -> Type[T]:
     return thing
 
 
-def deprecated(text: str) -> None:
+def template(thing: Type[T]) -> Type[T]:
+    """
+    Mark the class as template.
+
+    specification of the common features of an object in sufficient
+    detail that such object can be instantiated using it
+    """
+    return thing
+
+
+def deprecated(thing: Type[T]) -> Type[T]:
     """
     Mark deprecated parts of the book
     """
-    pass
+    return thing
 
 
 class reference_in_the_book:

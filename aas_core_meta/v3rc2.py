@@ -7,6 +7,7 @@ from icontract import invariant, ensure, DBC
 
 from aas_core_meta.marker import (
     abstract,
+    template,
     deprecated,
     implementation_specific,
     reference_in_the_book,
@@ -567,9 +568,6 @@ class Asset_information(DBC):
         specific_asset_ID: Optional["Identifier_key_value_pair"] = None,
         default_thumbnail: Optional["File"] = None,
     ) -> None:
-        # TODO (Nico & Marko, 2021-09-24):
-        #  We did not know how to implement Constraint AASd-023,
-        #  see page 63 in the book V3RC1
         self.asset_kind = asset_kind
         self.global_asset_ID = global_asset_ID
         self.specific_asset_ID = specific_asset_ID
@@ -615,7 +613,13 @@ class Identifier_key_value_pair(Has_semantics):
     """
 
     key: str
-    """Key of the identifier"""
+    """
+    Key of the identifier
+    
+    Constraint AASd-116: “globalAssetId” (case-insensitive) is a reserved key. If used 
+    as value for IdentifierKeyValuePair/key IdentifierKeyValuePair/value shall be 
+    identical to AssetInformation/globalAssetId.
+    """
 
     value: str
     """The value of the identifier with the corresponding key."""
@@ -1707,9 +1711,7 @@ class Concept_description(Identifiable, Has_data_specification):
         self.is_case_of = is_case_of
 
 
-# TODO sadu (2021-11-19)
-# decorator @deprecated should be checked and corrected in the marker
-# @deprecated
+@deprecated
 @reference_in_the_book(section=(6, 7, 9))
 class View(Referable, Has_semantics, Has_data_specification):
     """
@@ -1804,28 +1806,7 @@ class Model_reference(Reference):
         self.referred_semantic_ID = referred_semantic_ID
 
 
-# TODO (sadu, 2021-11-17): all below constraints should be rechecked
-# fmt: off
-# @invariant(
-#     lambda self:
-#     is_IRI(self.value)
-# )
-# @invariant(
-#     lambda self:
-#     is_IRDI(self.value)
-# )
-# @invariant(
-#     lambda self:
-#     not (self.type == Key_elements.Global_reference),
-#     "Constraint AASd-080"
-# )
-# @invariant(
-#     lambda self:
-#     not (self.type == Key_elements.Asset_administration_shell),
-#     "Constraint AASd-081"
-# )
 @reference_in_the_book(section=(6, 7, 10), index=1)
-# fmt: on
 class Key(DBC):
     """A key is a reference to an element by its id."""
 
@@ -2180,7 +2161,7 @@ class String_build_in_types(Enum):
 
 # TODO sadu (2021-11-17)
 # super enum to do
-@reference_in_the_book(section=(4, 7, 13, 2))
+@reference_in_the_book(section=(6, 7, 12, 2))
 class Data_type_def(Enum):
     """Build_in_list_types(Enum)"""
 
@@ -2451,6 +2432,10 @@ class Value_reference_pair(DBC):
     value_ID: "Reference"
     """
     Global unique id of the value.
+
+    Constraint AASd-078: If the valueId of a ValueReferencePair references a 
+    ConceptDescription then the ConceptDescription/category shall be one of following 
+    values: VALUE.
     """
 
     def __init__(self, value: str, value_ID: "Reference") -> None:
@@ -2475,20 +2460,12 @@ class Value_list(DBC):
         self.value_reference_pairs = value_reference_pairs
 
 
+@template
 @reference_in_the_book(section=(6, 8, 2, 3))
 class Data_specification_IEC61360(Data_specification_content):
     """
     Content of data specification template for concept descriptions conformant to
     IEC 61360.
-    Although the IEC61360 attributes listed in this template are defined for properties
-    and values and value lists only it is also possible to use the template for other
-    definition This is shown in the tables Table 7, Table 8, Table 9 and Table 10.
-
-    Constraint AASd-075: For all ConceptDescriptions using data specification template
-    IEC61360 (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
-    values for the attributes not being marked as mandatory or optional in tables
-    Table 7, Table 8, Table 9 and Table 10.depending on its category are ignored and
-    handled as undefined.
     """
 
     preferred_name: Optional["Lang_string_set"]
@@ -2548,6 +2525,10 @@ class Data_specification_IEC61360(Data_specification_content):
     specification template IEC61360 
     (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) - 
     DataSpecificationIEC61360/dataType is mandatory and shall be defined.
+
+    Constraint AASd-103: If DataSpecificationIEC61360/-dataType one of: INTEGER_MEASURE,
+    REAL_MEASURE, RATIONAL_MEASURE, INTEGER_CURRENCY, REAL_CURRENCY, then 
+    DataSpecificationIEC61360/unit or DataSpecificationIEC61360/unitId shall be defined.
     """
 
     definition: Optional["Lang_string_set"]
@@ -2569,16 +2550,27 @@ class Data_specification_IEC61360(Data_specification_content):
     value_list: Optional["Value_list"]
     """
     List of allowed values
+
+    See Contraint AASd-102
     """
 
     value: Optional[str]
     """
     Value
+
+    Constraint AASd-101: If DataSpecificationIEC61360/category equal to VALUE then 
+    DataSpecificationIEC61360/value shall be set.
+
+    Constraint AASd-102: If DataSpecificationIEC61360/value or 
+    DataSpecificationIEC61360/valueId is not empty then DataSpecificationIEC61360/valueList 
+    shall be empty and vice versa.
     """
 
     value_ID: Optional["Reference"]
     """
     Unique value id
+
+    See Contraint AASd-102
     """
 
     level_type: Optional["Level_type"]
@@ -2617,7 +2609,8 @@ class Data_specification_IEC61360(Data_specification_content):
         self.level_type = level_type
 
 
-@reference_in_the_book(section=(4, 8, 3))
+@template
+@reference_in_the_book(section=(6, 8, 3, 2))
 class Data_specification_physical_unit(Data_specification_content):
     """TODO"""
 
@@ -2626,62 +2619,62 @@ class Data_specification_physical_unit(Data_specification_content):
 
     unit_name: Optional[str]
     """
-    TODO
+    Unit Name
     """
 
     unit_symbol: Optional[str]
     """
-    TODO
+    Unit Symbol
     """
 
     definition: Optional["Lang_string_set"]
     """
-    TODO
+    Definition
     """
 
     SI_notation: Optional[str]
     """
-    TODO
+    SI Notation
     """
 
     DIN_notation: Optional[str]
     """
-    TODO
+    DIN Notation
     """
 
     ECE_name: Optional[str]
     """
-    TODO
+    ECE Name
     """
 
     ECE_code: Optional[str]
     """
-    TODO
+    ECE Code
     """
 
     NIST_name: Optional[str]
     """
-    TODO
+    NIST Name
     """
 
     source_of_definition: Optional[str]
     """
-    TODO
+    Source Of Definition
     """
 
     conversion_factor: Optional[str]
     """
-    TODO
+    Conversion Factor
     """
 
     registration_authority_ID: Optional[str]
     """
-    TODO
+    Registration Authority ID
     """
 
     supplier: Optional[str]
     """
-    TODO
+    Supplier
     """
 
     def __init__(

@@ -7,6 +7,7 @@ from icontract import invariant, ensure, DBC
 
 from aas_core_meta.marker import (
     abstract,
+    template,
     implementation_specific,
     json_serialization,
     reference_in_the_book,
@@ -2189,6 +2190,7 @@ class Value_list(DBC):
         self.value_reference_pair_types = value_reference_pair_types
 
 
+@template
 @reference_in_the_book(section=(4, 7, 8, 2))
 class Data_specification_IEC_61360(Data_specification_content):
     """
