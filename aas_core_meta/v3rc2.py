@@ -299,6 +299,35 @@ class Has_kind(DBC):
     def __init__(self, kind: Optional["Modeling_kind"] = None) -> None:
         self.kind = kind if kind is not None else Modeling_kind.Instance
 
+@abstract
+@reference_in_the_book(section=(5, 7, 2, 12))
+class Has_data_specification(DBC):
+    """
+    Element that can be extended by using data specification templates.
+
+    A data specification template defines a named set of additional attributes an
+    element may or shall have. The data specifications used are explicitly specified
+    with their global ID.
+    """
+
+    data_specifications: Optional[List["Reference"]]
+    """
+    Global reference to the data specification template used by the element.
+    """
+
+    # TODO (all, 2021-09-24): need to implement the constraint:
+    #  page 60 in V3RC1
+    #  Constraint AASd-050:  If the DataSpecificationContent
+    #  DataSpecificationIEC61360 is used for an element then the value of
+    #  hasDataSpecification/dataSpecification shall contain the global reference to the
+    #  IRI of the corresponding data specification template https://admin-
+    #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
+
+    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
+        self.data_specifications = (
+            data_specifications if data_specifications is not None else []
+        )
+
 
 # fmt: off
 @invariant(
@@ -308,7 +337,7 @@ class Has_kind(DBC):
 )
 @reference_in_the_book(section=(5, 7, 2, 5))
 # fmt: on
-class Administrative_information(DBC):
+class Administrative_information(Has_data_specification):
     """
     Administrative meta-information for an element like version information.
     """
@@ -430,37 +459,6 @@ class Formula(Constraint):
 
     def __init__(self, depends_on: Optional[List["Reference"]]) -> None:
         self.depends_on = depends_on
-
-
-@abstract
-@reference_in_the_book(section=(5, 7, 2, 12))
-class Has_data_specification(DBC):
-    """
-    Element that can be extended by using data specification templates.
-
-    A data specification template defines a named set of additional attributes an
-    element may or shall have. The data specifications used are explicitly specified
-    with their global ID.
-    """
-
-    data_specifications: Optional[List["Reference"]]
-    """
-    Global reference to the data specification template used by the element.
-    """
-
-    # TODO (all, 2021-09-24): need to implement the constraint:
-    #  page 60 in V3RC1
-    #  Constraint AASd-050:  If the DataSpecificationContent
-    #  DataSpecificationIEC61360 is used for an element then the value of
-    #  hasDataSpecification/dataSpecification shall contain the global reference to the
-    #  IRI of the corresponding data specification template https://admin-
-    #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
-
-    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
-        self.data_specifications = (
-            data_specifications if data_specifications is not None else []
-        )
-
 
 @reference_in_the_book(section=(5, 7, 3))
 class Asset_administration_shell(Identifiable, Has_data_specification):

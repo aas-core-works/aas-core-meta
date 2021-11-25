@@ -21,18 +21,86 @@ __book_version__ = "V3.0RC1"
 # TODO (mristin, 2021-10-27): check the order of properties in the constructor
 #  🠒 first the concrete, then the more abstract/inherited
 
+@abstract
+@reference_in_the_book(section=(4, 7, 2, 7))
+class Has_semantics(DBC):
+    """
+    Element that can have a semantic definition.
+    """
+
+    semantic_ID: Optional["Reference"]
+    """
+    Identifier of the semantic definition of the element. It is called semantic ID
+    of the element.
+    """
+
+    def __init__(self, semantic_ID: Optional["Reference"] = None) -> None:
+        self.semantic_ID = semantic_ID
+
+
+@reference_in_the_book(section=(4, 7, 2, 1), index=2)
+class Extension(Has_semantics):
+    """
+    Single extension of an element.
+    """
+
+    name: str
+    """
+    Name of the extension.
+
+    Constraint AASd-077: The name of an extension within HasExtensions needs to be 
+    unique.
+    """
+
+    value_type: Optional["Data_type_def"]
+    """
+    Type of the value of the extension.
+    
+    Default: xsd:string
+    """
+    # TODO (Nico: Add ValueDataType)
+    value: Optional[str]
+    """
+    Value of the extension
+    """
+
+    refers_to: Optional["Reference"]
+    """
+    Reference to an element the extension refers to.
+    """
+
+    def __init__(
+        self,
+        name: str,
+        semantic_ID: Optional["Reference"] = None,
+        value_type: Optional["Data_type_def"] = None,
+        value: Optional[str] = None,
+        refers_to: Optional["Reference"] = None,
+    ) -> None:
+        Has_semantics.__init__(self, semantic_ID=semantic_ID)
+
+        self.name = name
+        self.value_type = value_type
+        self.value = value
+        self.refers_to = refers_to
+
 
 @abstract
 @reference_in_the_book(section=(4, 7, 2, 1))
 class Has_extensions(DBC):
     """
     Element that can be extended by proprietary extensions.
+
+    Note: Extensions are proprietary, i.e. they do not support global interoperability.
     """
 
-    # NOTE (mristin, 2021-05-28):
-    # We do not implement extensions at the moment.
-    # This needs to be further discussed.
-    pass
+    extensions: Optional["Extension"]
+    """
+    An extension of the element.
+    """
+
+    def __init__(self, extension: Optional["Extension"] = None) -> None:
+        self.extension = extension
 
 
 @abstract
@@ -264,6 +332,33 @@ class Has_kind(DBC):
     def __init__(self, kind: Optional["Modeling_kind"] = None) -> None:
         self.kind = kind if kind is not None else Modeling_kind.Instance
 
+@abstract
+@reference_in_the_book(section=(4, 7, 2, 13))
+class Has_data_specification(DBC):
+    """
+    Element that can be extended by using data specification templates.
+
+    A data specification template defines a named set of additional attributes an
+    element may or shall have. The data specifications used are explicitly specified
+    with their global ID.
+    """
+
+    data_specifications: Optional[List["Reference"]]
+    """
+    Global reference to the data specification template used by the element.
+    """
+
+    # TODO (all, 2021-09-24): need to implement the constraint:
+    #  page 60 in V3RC1
+    #  Constraint AASd-050:  If the DataSpecificationContent
+    #  DataSpecificationIEC61360 is used for an element then the value of
+    #  hasDataSpecification/dataSpecification shall contain the global reference to the
+    #  IRI of the corresponding data specification template https://admin-
+    #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
+
+    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
+        self.data_specifications = data_specifications
+
 
 # fmt: off
 @invariant(
@@ -273,7 +368,7 @@ class Has_kind(DBC):
 )
 @reference_in_the_book(section=(4, 7, 2, 6))
 # fmt: on
-class Administrative_information(DBC):
+class Administrative_information(Has_data_specification):
     """
     Administrative meta-information for an element like version information.
     """
@@ -414,34 +509,6 @@ class Formula(Constraint):
 
     def __init__(self, depends_on: Optional[List["Reference"]]) -> None:
         self.depends_on = depends_on
-
-
-@abstract
-@reference_in_the_book(section=(4, 7, 2, 13))
-class Has_data_specification(DBC):
-    """
-    Element that can be extended by using data specification templates.
-
-    A data specification template defines a named set of additional attributes an
-    element may or shall have. The data specifications used are explicitly specified
-    with their global ID.
-    """
-
-    data_specifications: Optional[List["Reference"]]
-    """
-    Global reference to the data specification template used by the element.
-    """
-
-    # TODO (all, 2021-09-24): need to implement the constraint:
-    #  page 60 in V3RC1
-    #  Constraint AASd-050:  If the DataSpecificationContent
-    #  DataSpecificationIEC61360 is used for an element then the value of
-    #  hasDataSpecification/dataSpecification shall contain the global reference to the
-    #  IRI of the corresponding data specification template https://admin-
-    #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
-
-    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
-        self.data_specifications = data_specifications
 
 
 @reference_in_the_book(section=(4, 7, 3))
