@@ -16,7 +16,7 @@ from aas_core_meta.verification import is_IRI, is_IRDI, is_ID_short
 
 # TOTO (sadu, 2021-11-17)
 # book URL should be updated when published
-__book_url__ = "https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/Details_of_the_Asset_Administration_Shell_Part1_V3.pdf?__blob=publicationFile&v=5"
+__book_url__ = "TBA"
 __book_version__ = "V3.0RC2"
 
 
@@ -300,6 +300,36 @@ class Has_kind(DBC):
         self.kind = kind if kind is not None else Modeling_kind.Instance
 
 
+@abstract
+@reference_in_the_book(section=(5, 7, 2, 12))
+class Has_data_specification(DBC):
+    """
+    Element that can be extended by using data specification templates.
+
+    A data specification template defines a named set of additional attributes an
+    element may or shall have. The data specifications used are explicitly specified
+    with their global ID.
+    """
+
+    data_specifications: Optional[List["Reference"]]
+    """
+    Global reference to the data specification template used by the element.
+    """
+
+    # TODO (all, 2021-09-24): need to implement the constraint:
+    #  page 60 in V3RC1
+    #  Constraint AASd-050:  If the DataSpecificationContent
+    #  DataSpecificationIEC61360 is used for an element then the value of
+    #  hasDataSpecification/dataSpecification shall contain the global reference to the
+    #  IRI of the corresponding data specification template https://admin-
+    #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
+
+    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
+        self.data_specifications = (
+            data_specifications if data_specifications is not None else []
+        )
+
+
 # fmt: off
 @invariant(
     lambda self:
@@ -308,7 +338,7 @@ class Has_kind(DBC):
 )
 @reference_in_the_book(section=(5, 7, 2, 5))
 # fmt: on
-class Administrative_information(DBC):
+class Administrative_information(Has_data_specification):
     """
     Administrative meta-information for an element like version information.
     """
@@ -430,36 +460,6 @@ class Formula(Constraint):
 
     def __init__(self, depends_on: Optional[List["Reference"]]) -> None:
         self.depends_on = depends_on
-
-
-@abstract
-@reference_in_the_book(section=(5, 7, 2, 12))
-class Has_data_specification(DBC):
-    """
-    Element that can be extended by using data specification templates.
-
-    A data specification template defines a named set of additional attributes an
-    element may or shall have. The data specifications used are explicitly specified
-    with their global ID.
-    """
-
-    data_specifications: Optional[List["Reference"]]
-    """
-    Global reference to the data specification template used by the element.
-    """
-
-    # TODO (all, 2021-09-24): need to implement the constraint:
-    #  page 60 in V3RC1
-    #  Constraint AASd-050:  If the DataSpecificationContent
-    #  DataSpecificationIEC61360 is used for an element then the value of
-    #  hasDataSpecification/dataSpecification shall contain the global reference to the
-    #  IRI of the corresponding data specification template https://admin-
-    #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
-
-    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
-        self.data_specifications = (
-            data_specifications if data_specifications is not None else []
-        )
 
 
 @reference_in_the_book(section=(5, 7, 3))
@@ -738,8 +738,8 @@ class Submodel_element(
 
 # TODO (mristin, 2021-10-27, page 77):
 #  Constraint AASd-055: If the semanticId of a RelationshipElement or an
-#  AnnotatedRelationshipElement submodel element references a  ConceptDescription then the
-#  ConceptDescription/category shall be one of following values: RELATIONSHIP.
+#  AnnotatedRelationshipElement submodel element references a  ConceptDescription then
+#  the ConceptDescription/category shall be one of following values: RELATIONSHIP.
 #
 #  🠒 We really need to think hard how we resolve the references. Should this class be
 #  implementation-specific?
@@ -747,7 +747,8 @@ class Submodel_element(
 @abstract
 class Relationship_element(Submodel_element):
     """
-    A relationship element is used to define a relationship between two referable elements.
+    A relationship element is used to define a relationship between two referable
+    elements.
 
     Constraint AASd-055: If the semanticId of a RelationshipElement or an
     AnnotatedRelationshipElement submodel element references a ConceptDescription then
@@ -1672,14 +1673,14 @@ class Concept_description(Identifiable, Has_data_specification):
     is defined by a concept description. The description of the concept should follow a
     standardized schema (realized as data specification template).
 
-    Constraint AASd-051: A ConceptDescription shall have one of the following categories:
-    VALUE, PROPERTY, REFERENCE, DOCUMENT, CAPABILITY, RELATIONSHIP, COLLECTION, FUNCTION,
-    EVENT, ENTITY, APPLICATION_CLASS, QUALIFIER, VIEW. Default: PROPERTY.
+    Constraint AASd-051: A ConceptDescription shall have one of the following categories
+    VALUE, PROPERTY, REFERENCE, DOCUMENT, CAPABILITY, RELATIONSHIP, COLLECTION, FUNCTION
+    , EVENT, ENTITY, APPLICATION_CLASS, QUALIFIER, VIEW. Default: PROPERTY.
     """
 
     is_case_of: Optional[List["Reference"]]
     """
-    Reference to an external definition the concept is compatible to or was derived from.
+    Reference to an external definition the concept is compatible to or was derived from
 
     .. note::
        Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360"
@@ -1718,8 +1719,8 @@ class View(Referable, Has_semantics, Has_data_specification):
     A view is a collection of referable elements w.r.t. to a specific viewpoint of one
     or more stakeholders.
 
-    Constraint AASd-064: If the semanticId of a View references a ConceptDescription then
-    the category of the ConceptDescription shall be VIEW.
+    Constraint AASd-064: If the semanticId of a View references a ConceptDescription
+    then the category of the ConceptDescription shall be VIEW.
 
     .. note::
        Views are a projection of submodel elements for a given perspective.
@@ -2403,9 +2404,9 @@ class Data_type_IEC61360(Enum):
     Blob = "BLOB"
     """
     values containing the content of a file. Values may be binaries.
-    HTML conformant to HTML5 is a special blob. In IEC61360 binary is for a sequence of bits, 
-    each bit being represented by “0” and “1” only. A binary is a blob but a blob may also 
-    contain other source code.
+    HTML conformant to HTML5 is a special blob. In IEC61360 binary is for a sequence of 
+    bits, each bit being represented by “0” and “1” only. A binary is a blob but a blob 
+    may also contain other source code.
     """
 
 
@@ -2472,7 +2473,8 @@ class Data_specification_IEC61360(Data_specification_content):
     """
     Preferred name
     Constraint AASd-076: For all ConceptDescriptions using data specification template 
-    IEC61360 (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) 
+    IEC61360 
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) 
     at least a preferred name in English shall be defined.
     """
 
@@ -2562,8 +2564,8 @@ class Data_specification_IEC61360(Data_specification_content):
     DataSpecificationIEC61360/value shall be set.
 
     Constraint AASd-102: If DataSpecificationIEC61360/value or 
-    DataSpecificationIEC61360/valueId is not empty then DataSpecificationIEC61360/valueList 
-    shall be empty and vice versa.
+    DataSpecificationIEC61360/valueId is not empty then 
+    DataSpecificationIEC61360/valueList shall be empty and vice versa.
     """
 
     value_ID: Optional["Reference"]
@@ -2713,7 +2715,8 @@ class Data_specification_physical_unit(Data_specification_content):
 #  in the book as much as possible, but be careful about the inheritance
 
 # TODO (mristin, 2021-10-27): write a code generator that outputs the JSON schema and
-#  then compare it against the https://github.com/admin-shell-io/aas-specs/blob/master/schemas/json/aas.json
+#  then compare it against the
+#  https://github.com/admin-shell-io/aas-specs/blob/master/schemas/json/aas.json
 
 # TODO: make this environment implementation-specific in the final implementation.
 #  + Sketch what methods it should implement.

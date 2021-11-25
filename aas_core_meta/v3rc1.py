@@ -23,16 +23,85 @@ __book_version__ = "V3.0RC1"
 
 
 @abstract
+@reference_in_the_book(section=(4, 7, 2, 7))
+class Has_semantics(DBC):
+    """
+    Element that can have a semantic definition.
+    """
+
+    semantic_ID: Optional["Reference"]
+    """
+    Identifier of the semantic definition of the element. It is called semantic ID
+    of the element.
+    """
+
+    def __init__(self, semantic_ID: Optional["Reference"] = None) -> None:
+        self.semantic_ID = semantic_ID
+
+
+@reference_in_the_book(section=(4, 7, 2, 1), index=2)
+class Extension(Has_semantics):
+    """
+    Single extension of an element.
+    """
+
+    name: str
+    """
+    Name of the extension.
+
+    Constraint AASd-077: The name of an extension within HasExtensions needs to be 
+    unique.
+    """
+
+    value_type: Optional["Data_type_def"]
+    """
+    Type of the value of the extension.
+    
+    Default: xsd:string
+    """
+    # TODO (Nico: Add ValueDataType)
+    value: Optional[str]
+    """
+    Value of the extension
+    """
+
+    refers_to: Optional["Reference"]
+    """
+    Reference to an element the extension refers to.
+    """
+
+    def __init__(
+        self,
+        name: str,
+        semantic_ID: Optional["Reference"] = None,
+        value_type: Optional["Data_type_def"] = None,
+        value: Optional[str] = None,
+        refers_to: Optional["Reference"] = None,
+    ) -> None:
+        Has_semantics.__init__(self, semantic_ID=semantic_ID)
+
+        self.name = name
+        self.value_type = value_type
+        self.value = value
+        self.refers_to = refers_to
+
+
+@abstract
 @reference_in_the_book(section=(4, 7, 2, 1))
 class Has_extensions(DBC):
     """
     Element that can be extended by proprietary extensions.
+
+    Note: Extensions are proprietary, i.e. they do not support global interoperability.
     """
 
-    # NOTE (mristin, 2021-05-28):
-    # We do not implement extensions at the moment.
-    # This needs to be further discussed.
-    pass
+    extensions: Optional["Extension"]
+    """
+    An extension of the element.
+    """
+
+    def __init__(self, extension: Optional["Extension"] = None) -> None:
+        self.extension = extension
 
 
 @abstract
@@ -265,6 +334,34 @@ class Has_kind(DBC):
         self.kind = kind if kind is not None else Modeling_kind.Instance
 
 
+@abstract
+@reference_in_the_book(section=(4, 7, 2, 13))
+class Has_data_specification(DBC):
+    """
+    Element that can be extended by using data specification templates.
+
+    A data specification template defines a named set of additional attributes an
+    element may or shall have. The data specifications used are explicitly specified
+    with their global ID.
+    """
+
+    data_specifications: Optional[List["Reference"]]
+    """
+    Global reference to the data specification template used by the element.
+    """
+
+    # TODO (all, 2021-09-24): need to implement the constraint:
+    #  page 60 in V3RC1
+    #  Constraint AASd-050:  If the DataSpecificationContent
+    #  DataSpecificationIEC61360 is used for an element then the value of
+    #  hasDataSpecification/dataSpecification shall contain the global reference to the
+    #  IRI of the corresponding data specification template https://admin-
+    #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
+
+    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
+        self.data_specifications = data_specifications
+
+
 # fmt: off
 @invariant(
     lambda self:
@@ -273,7 +370,7 @@ class Has_kind(DBC):
 )
 @reference_in_the_book(section=(4, 7, 2, 6))
 # fmt: on
-class Administrative_information(DBC):
+class Administrative_information(Has_data_specification):
     """
     Administrative meta-information for an element like version information.
     """
@@ -289,23 +386,6 @@ class Administrative_information(DBC):
     ) -> None:
         self.version = version
         self.revision = revision
-
-
-@abstract
-@reference_in_the_book(section=(4, 7, 2, 7))
-class Has_semantics(DBC):
-    """
-    Element that can have a semantic definition.
-    """
-
-    semantic_ID: Optional["Reference"]
-    """
-    Identifier of the semantic definition of the element. It is called semantic ID
-    of the element.
-    """
-
-    def __init__(self, semantic_ID: Optional["Reference"] = None) -> None:
-        self.semantic_ID = semantic_ID
 
 
 # fmt: off
@@ -414,34 +494,6 @@ class Formula(Constraint):
 
     def __init__(self, depends_on: Optional[List["Reference"]]) -> None:
         self.depends_on = depends_on
-
-
-@abstract
-@reference_in_the_book(section=(4, 7, 2, 13))
-class Has_data_specification(DBC):
-    """
-    Element that can be extended by using data specification templates.
-
-    A data specification template defines a named set of additional attributes an
-    element may or shall have. The data specifications used are explicitly specified
-    with their global ID.
-    """
-
-    data_specifications: Optional[List["Reference"]]
-    """
-    Global reference to the data specification template used by the element.
-    """
-
-    # TODO (all, 2021-09-24): need to implement the constraint:
-    #  page 60 in V3RC1
-    #  Constraint AASd-050:  If the DataSpecificationContent
-    #  DataSpecificationIEC61360 is used for an element then the value of
-    #  hasDataSpecification/dataSpecification shall contain the global reference to the
-    #  IRI of the corresponding data specification template https://admin-
-    #  shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0.
-
-    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
-        self.data_specifications = data_specifications
 
 
 @reference_in_the_book(section=(4, 7, 3))
@@ -766,8 +818,8 @@ class Submodel_element(
 
 # TODO (mristin, 2021-10-27, page 77):
 #  Constraint AASd-055: If the semanticId of a RelationshipElement or an
-#  AnnotatedRelationshipElement submodel element references a  ConceptDescription then the
-#  ConceptDescription/category shall be one of following values: RELATIONSHIP.
+#  AnnotatedRelationshipElement submodel element references a  ConceptDescription then
+#  the ConceptDescription/category shall be one of following values: RELATIONSHIP.
 #
 #  🠒 We really need to think hard how we resolve the references. Should this class be
 #  implementation-specific?
@@ -775,7 +827,8 @@ class Submodel_element(
 @reference_in_the_book(section=(4, 7, 8, 14))
 class Relationship_element(Submodel_element):
     """
-    A relationship element is used to define a relationship between two referable elements.
+    A relationship element is used to define a relationship between two referable
+    elements.
 
     Constraint AASd-055: If the semanticId of a RelationshipElement or an
     AnnotatedRelationshipElement submodel element references a ConceptDescription then
@@ -2201,7 +2254,8 @@ class Data_specification_IEC_61360(Data_specification_content):
     definition This is shown in the tables Table 7, Table 8, Table 9 and Table 10.
 
     Constraint AASd-075: For all ConceptDescriptions using data specification template
-    IEC61360 (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
+    IEC61360
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
     values for the attributes not being marked as mandatory or optional in tables
     Table 7, Table 8, Table 9 and Table 10.depending on its category are ignored and
     handled as undefined.
@@ -2211,7 +2265,8 @@ class Data_specification_IEC_61360(Data_specification_content):
     """
     Preferred name
     Constraint AASd-076: For all ConceptDescriptions using data specification template 
-    IEC61360 (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) 
+    IEC61360 
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) 
     at least a preferred name in English shall be defined.
     """
 
@@ -2433,7 +2488,8 @@ class Data_specification_physical_unit(Data_specification_content):
 #  in the book as much as possible, but be careful about the inheritance
 
 # TODO (mristin, 2021-10-27): write a code generator that outputs the JSON schema and
-#  then compare it against the https://github.com/admin-shell-io/aas-specs/blob/master/schemas/json/aas.json
+#  then compare it against the
+#  https://github.com/admin-shell-io/aas-specs/blob/master/schemas/json/aas.json
 
 
 @abstract
@@ -2517,11 +2573,11 @@ class Permission(DBC):
     """
     Reference to a property that defines the semantics of the permission.
 
-    Constraint AASs-010: The property referenced in Permission/permission shall have the
-    category “CONSTANT”.
-    Constraint AASs-011: The property referenced in Permission/permission shall be part 
-    of the submodel that is referenced within the “selectablePermissions” attribute of 
-    “AccessControl”."
+    Constraint AASs-010: The property referenced in Permission/permission shall have 
+    the category “CONSTANT”.
+    Constraint AASs-011: The property referenced in Permission/permission shall be 
+    part of the submodel that is referenced within the “selectablePermissions” attribute
+     of “AccessControl”."
     """
 
     kind_of_permission: "Permission_kind"
