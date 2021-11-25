@@ -21,6 +21,7 @@ __book_version__ = "V3.0RC1"
 # TODO (mristin, 2021-10-27): check the order of properties in the constructor
 #  🠒 first the concrete, then the more abstract/inherited
 
+
 @abstract
 @reference_in_the_book(section=(4, 7, 2, 7))
 class Has_semantics(DBC):
@@ -332,6 +333,7 @@ class Has_kind(DBC):
     def __init__(self, kind: Optional["Modeling_kind"] = None) -> None:
         self.kind = kind if kind is not None else Modeling_kind.Instance
 
+
 @abstract
 @reference_in_the_book(section=(4, 7, 2, 13))
 class Has_data_specification(DBC):
@@ -384,23 +386,6 @@ class Administrative_information(Has_data_specification):
     ) -> None:
         self.version = version
         self.revision = revision
-
-
-@abstract
-@reference_in_the_book(section=(4, 7, 2, 7))
-class Has_semantics(DBC):
-    """
-    Element that can have a semantic definition.
-    """
-
-    semantic_ID: Optional["Reference"]
-    """
-    Identifier of the semantic definition of the element. It is called semantic ID
-    of the element.
-    """
-
-    def __init__(self, semantic_ID: Optional["Reference"] = None) -> None:
-        self.semantic_ID = semantic_ID
 
 
 # fmt: off
@@ -833,8 +818,8 @@ class Submodel_element(
 
 # TODO (mristin, 2021-10-27, page 77):
 #  Constraint AASd-055: If the semanticId of a RelationshipElement or an
-#  AnnotatedRelationshipElement submodel element references a  ConceptDescription then the
-#  ConceptDescription/category shall be one of following values: RELATIONSHIP.
+#  AnnotatedRelationshipElement submodel element references a  ConceptDescription then
+#  the ConceptDescription/category shall be one of following values: RELATIONSHIP.
 #
 #  🠒 We really need to think hard how we resolve the references. Should this class be
 #  implementation-specific?
@@ -842,7 +827,8 @@ class Submodel_element(
 @reference_in_the_book(section=(4, 7, 8, 14))
 class Relationship_element(Submodel_element):
     """
-    A relationship element is used to define a relationship between two referable elements.
+    A relationship element is used to define a relationship between two referable
+    elements.
 
     Constraint AASd-055: If the semanticId of a RelationshipElement or an
     AnnotatedRelationshipElement submodel element references a ConceptDescription then
@@ -2268,7 +2254,8 @@ class Data_specification_IEC_61360(Data_specification_content):
     definition This is shown in the tables Table 7, Table 8, Table 9 and Table 10.
 
     Constraint AASd-075: For all ConceptDescriptions using data specification template
-    IEC61360 (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
+    IEC61360
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
     values for the attributes not being marked as mandatory or optional in tables
     Table 7, Table 8, Table 9 and Table 10.depending on its category are ignored and
     handled as undefined.
@@ -2278,7 +2265,8 @@ class Data_specification_IEC_61360(Data_specification_content):
     """
     Preferred name
     Constraint AASd-076: For all ConceptDescriptions using data specification template 
-    IEC61360 (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) 
+    IEC61360 
+    (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) 
     at least a preferred name in English shall be defined.
     """
 
@@ -2500,7 +2488,8 @@ class Data_specification_physical_unit(Data_specification_content):
 #  in the book as much as possible, but be careful about the inheritance
 
 # TODO (mristin, 2021-10-27): write a code generator that outputs the JSON schema and
-#  then compare it against the https://github.com/admin-shell-io/aas-specs/blob/master/schemas/json/aas.json
+#  then compare it against the
+#  https://github.com/admin-shell-io/aas-specs/blob/master/schemas/json/aas.json
 
 
 @abstract
@@ -2584,11 +2573,11 @@ class Permission(DBC):
     """
     Reference to a property that defines the semantics of the permission.
 
-    Constraint AASs-010: The property referenced in Permission/permission shall have the
-    category “CONSTANT”.
-    Constraint AASs-011: The property referenced in Permission/permission shall be part 
-    of the submodel that is referenced within the “selectablePermissions” attribute of 
-    “AccessControl”."
+    Constraint AASs-010: The property referenced in Permission/permission shall have 
+    the category “CONSTANT”.
+    Constraint AASs-011: The property referenced in Permission/permission shall be 
+    part of the submodel that is referenced within the “selectablePermissions” attribute
+     of “AccessControl”."
     """
 
     kind_of_permission: "Permission_kind"
