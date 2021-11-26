@@ -1,5 +1,6 @@
 """Define markers for the meta model to mark the functions and data structures."""
-from typing import TypeVar, Type, Optional, Tuple, Generic
+from enum import Enum
+from typing import TypeVar, Type, Optional, Tuple, Generic, Sequence
 
 from icontract import require
 
@@ -97,3 +98,22 @@ class Ref(Generic[T]):
 
 def associate_ref_with(cls: Type[T]) -> None:
     """Mark that the type ``T`` represents :py:class:`Ref` in the implementation."""
+
+
+EnumT = TypeVar("EnumT", bound=Enum)
+
+
+class is_superset_of:
+    """Mark the contained enumeration subsets of the decoratee."""
+
+    def __init__(self, enums: Sequence[Type[EnumT]]) -> None:
+        """
+        Initialize with the given values.
+
+        :param enums:
+            The contained subset enumerations
+        """
+        self.enums = enums
+
+    def __call__(self, func: Type[T]) -> Type[T]:
+        return func

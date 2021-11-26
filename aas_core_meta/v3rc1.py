@@ -13,6 +13,7 @@ from aas_core_meta.marker import (
     reference_in_the_book,
     Ref,
     associate_ref_with,
+    is_superset_of,
 )
 from aas_core_meta.verification import is_IRI, is_IRDI, is_ID_short
 
@@ -1876,7 +1877,75 @@ class Key(DBC):
         self.ID_type = ID_type
 
 
+@reference_in_the_book(section=(4, 7, 11), index=4)
+class Identifiable_elements(Enum):
+    """Enumeration of all identifiable elements within an asset administration shell."""
+
+    Asset = "Asset"
+    Asset_administration_shell = "AssetAdministrationShell"
+    Concept_description = "ConceptDescription"
+    Submodel = "Submodel"
+
+
+@reference_in_the_book(section=(4, 7, 11), index=3)
+@is_superset_of(enums=[Identifiable_elements])
+class Referable_elements(Enum):
+    """Enumeration of all referable elements within an asset administration shell"""
+
+    Access_permission_rule = "AccessPermissionRule"
+    Annotated_relationship_element = "AnnotatedRelationshipElement"
+    Asset = "Asset"
+    Asset_administration_shell = "AssetAdministrationShell"
+    Basic_event = "BasicEvent"
+    Blob = "Blob"
+    Capability = "Capability"
+    Concept_description = "ConceptDescription"
+    Concept_dictionary = "ConceptDictionary"
+    Data_element = "DataElement"
+    """
+    Data element.
+
+    .. note::
+
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
+        the reference may be a Property, a File *etc.*
+    """
+
+    Entity = "Entity"
+    Event = "Event"
+    """
+    Event.
+
+    .. note::
+
+        Event is abstract.
+    """
+
+    File = "File"
+    Multi_language_property = "MultiLanguageProperty"
+    Operation = "Operation"
+    Property = "Property"
+    Range = "Range"
+    Reference_element = "ReferenceElement"
+    Relationship_element = "RelationshipElement"
+    Submodel = "Submodel"
+    Submodel_element = "SubmodelElement"
+    """
+    Submodel Element
+
+    .. note::
+
+        Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
+        the reference may be a Property, a :class:`.Submodel_element_collection`,
+        an Operation *etc.*
+    """
+
+    Submodel_element_collection = "SubmodelElementCollection"
+    View = "View"
+
+
 @reference_in_the_book(section=(4, 7, 11), index=2)
+@is_superset_of(enums=[Referable_elements])
 class Key_elements(Enum):
     """Enumeration of different key value types within a key."""
 
@@ -1946,82 +2015,19 @@ class Key_elements(Enum):
     View = "View"
 
 
-@reference_in_the_book(section=(4, 7, 11), index=3)
-class Referable_elements(Enum):
-    """Enumeration of all referable elements within an asset administration shell"""
+@reference_in_the_book(section=(4, 7, 11), index=6)
+class Local_key_type(Enum):
+    """Enumeration of different key value types within a key."""
 
-    Access_permission_rule = "AccessPermissionRule"
-    Annotated_relationship_element = "AnnotatedRelationshipElement"
-    Asset = "Asset"
-    Asset_administration_shell = "AssetAdministrationShell"
-    Basic_event = "BasicEvent"
-    Blob = "Blob"
-    Capability = "Capability"
-    Concept_description = "ConceptDescription"
-    Concept_dictionary = "ConceptDictionary"
-    Data_element = "DataElement"
-    """
-    Data element.
+    ID_short = "IdShort"
+    """idShort of a referable element"""
 
-    .. note::
-
-        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a Property, a File *etc.*
-    """
-
-    Entity = "Entity"
-    Event = "Event"
-    """
-    Event.
-
-    .. note::
-
-        Event is abstract.
-    """
-
-    File = "File"
-    Multi_language_property = "MultiLanguageProperty"
-    Operation = "Operation"
-    Property = "Property"
-    Range = "Range"
-    Reference_element = "ReferenceElement"
-    Relationship_element = "RelationshipElement"
-    Submodel = "Submodel"
-    Submodel_element = "SubmodelElement"
-    """
-    Submodel Element
-
-    .. note::
-
-        Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
-        the reference may be a Property, a :class:`.Submodel_element_collection`,
-        an Operation *etc.*
-    """
-
-    Submodel_element_collection = "SubmodelElementCollection"
-    View = "View"
-
-
-@reference_in_the_book(section=(4, 7, 11), index=4)
-class Identifiable_elements(Enum):
-    """Enumeration of all identifiable elements within an asset administration shell."""
-
-    Asset = "Asset"
-    Asset_administration_shell = "AssetAdministrationShell"
-    Concept_description = "ConceptDescription"
-    Submodel = "Submodel"
-
-
-assert {literal.value for literal in Referable_elements}.issubset(
-    {literal.value for literal in Key_elements}
-)
-
-assert {literal.value for literal in Identifiable_elements}.issubset(
-    {literal.value for literal in Referable_elements}
-)
+    Fragment_ID = "FragmentId"
+    """Identifier of a fragment within a file"""
 
 
 @reference_in_the_book(section=(4, 7, 11), index=5)
+@is_superset_of(enums=[Local_key_type, Identifier_type])
 class Key_type(Enum):
     """Enumeration of different key value types within a key."""
 
@@ -2042,22 +2048,6 @@ class Key_type(Enum):
 
     Custom = "Custom"
     """Custom identifiers like GUIDs (globally unique identifiers)"""
-
-
-@reference_in_the_book(section=(4, 7, 11), index=6)
-class Local_key_type(Enum):
-    """Enumeration of different key value types within a key."""
-
-    ID_short = "IdShort"
-    """idShort of a referable element"""
-
-    Fragment_ID = "FragmentId"
-    """Identifier of a fragment within a file"""
-
-
-assert set(literal.value for literal in Key_type) == set(
-    literal.value for literal in Local_key_type
-).union(literal.value for literal in Identifier_type)
 
 
 @reference_in_the_book(section=(4, 7, 13, 2))
