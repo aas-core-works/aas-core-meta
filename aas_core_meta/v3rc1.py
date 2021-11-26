@@ -429,6 +429,7 @@ class Qualifiable(DBC):
 
 @abstract
 @reference_in_the_book(section=(4, 7, 2, 9))
+@serialization(with_model_type=True)
 class Constraint(DBC):
     """A constraint is used to further qualify or restrict an element."""
 
