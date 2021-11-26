@@ -72,15 +72,17 @@ class reference_in_the_book:
         return func
 
 
-class json_serialization:
-    """Mark the settings for JSON serialization."""
+class serialization:
+    """Mark the settings for the general serialization schemas."""
 
     def __init__(self, with_model_type: bool) -> None:
         """
         Initialize with the given values.
 
         :param with_model_type:
-            The class needs to include ``modelType`` property in the serialization
+            The serialization needs to specify the concrete type since the given
+            type is abstract and the implemented de-serializations need to know the
+            concrete type up-front.
         """
         self.with_model_type = with_model_type
 
