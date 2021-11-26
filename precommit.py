@@ -77,18 +77,27 @@ def main() -> int:
         if overwrite:
             subprocess.check_call(["black"] + black_targets, cwd=str(repo_root))
         else:
-            subprocess.check_call(
+            exit_code = subprocess.call(
                 ["black", "--check"] + black_targets, cwd=str(repo_root)
             )
+            if exit_code != 0:
+                print("The black failed on one or more files.", file=sys.stderr)
+                return 1
     else:
         print("Skipped black'ing.")
 
     if Step.MYPY in selects and Step.MYPY not in skips:
         print("Mypy'ing...")
-        # fmt: off
         mypy_targets = ["aas_core_meta"]
-        subprocess.check_call(["mypy", "--strict"] + mypy_targets, cwd=str(repo_root))
-        # fmt: on
+
+        exit_code = subprocess.call(
+            ["mypy", "--strict"] + mypy_targets, cwd=str(repo_root)
+        )
+
+        if exit_code != 0:
+            print("Mypy failed on one or more files.", file=sys.stderr)
+            return 1
+
     else:
         print("Skipped mypy'ing.")
 
@@ -104,17 +113,36 @@ def main() -> int:
         module_dir = repo_root / "aas_core_meta"
         for pth in module_dir.iterdir():
             if pth.is_file() and pth.name.startswith("v") and pth.name.endswith(".py"):
-                subprocess.check_call([sys.executable, str(pth)], cwd=str(repo_root))
+                exit_code = subprocess.call(
+                    [sys.executable, str(pth)], cwd=str(repo_root)
+                )
+
+                if exit_code != 0:
+                    print(
+                        f"Failed to execute with python interpreter "
+                        f"{sys.executable}: {pth}",
+                        file=sys.stderr,
+                    )
+                    return 1
+
     if (
         Step.CHECK_INIT_AND_SETUP_COINCIDE in selects
         and Step.CHECK_INIT_AND_SETUP_COINCIDE not in skips
     ):
         print("Checking that aas_core_meta/__init__.py and setup.py coincide...")
-        subprocess.check_call([sys.executable, "check_init_and_setup_coincide.py"])
-    else:
-        print(
-            "Skipped checking that aas_core_meta/__init__.py and " "setup.py coincide."
+        exit_code = subprocess.call(
+            [sys.executable, "check_init_and_setup_coincide.py"]
         )
+
+        if exit_code != 0:
+            print(
+                f"Failed to execute with python interpreter "
+                f"{sys.executable}: check_init_and_setup_coincide.py",
+                file=sys.stderr,
+            )
+            return 1
+    else:
+        print("Skipped checking that aas_core_meta/__init__.py and setup.py coincide.")
 
     return 0
 
