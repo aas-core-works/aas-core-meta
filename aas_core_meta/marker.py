@@ -1,5 +1,5 @@
 """Define markers for the meta model to mark the functions and data structures."""
-from typing import TypeVar, Type, Optional, Tuple
+from typing import TypeVar, Type, Optional, Tuple, Generic
 
 from icontract import require
 
@@ -85,3 +85,15 @@ class json_serialization:
 
     def __call__(self, func: Type[T]) -> Type[T]:
         return func
+
+
+class Ref(Generic[T]):
+    """
+    Represent a reference to an instance of ``T``.
+
+    This is described by ``ref*`` in the book.
+    """
+
+
+def associate_ref_with(cls: Type[T]) -> None:
+    """Mark that the type ``T`` represents :py:class:`Ref` in the implementation."""
