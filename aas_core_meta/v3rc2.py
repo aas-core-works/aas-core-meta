@@ -9,8 +9,11 @@ from aas_core_meta.marker import (
     abstract,
     template,
     deprecated,
+    Ref,
+    serialization,
     implementation_specific,
     reference_in_the_book,
+    is_superset_of,
 )
 from aas_core_meta.verification import is_IRI, is_IRDI, is_ID_short
 
@@ -358,6 +361,7 @@ class Administrative_information(Has_data_specification):
 
 @abstract
 @reference_in_the_book(section=(5, 7, 2, 8))
+@serialization(with_model_type=True)
 class Constraint(DBC):
     """A constraint is used to further qualify or restrict an element."""
 
@@ -376,6 +380,7 @@ class Constraint(DBC):
 # )
 @abstract
 @reference_in_the_book(section=(5, 7, 2, 7))
+@serialization(with_model_type=True)
 # fmt: on
 class Qualifiable(DBC):
     """
@@ -398,6 +403,7 @@ class Qualifiable(DBC):
 #     "Constraint AASd-020"
 # )
 @reference_in_the_book(section=(5, 7, 2, 10))
+@serialization(with_model_type=True)
 # fmt: on
 class Qualifier(Constraint, Has_semantics):
     """
@@ -443,6 +449,7 @@ class Qualifier(Constraint, Has_semantics):
 
 
 @reference_in_the_book(section=(5, 7, 2, 11))
+@serialization(with_model_type=True)
 class Formula(Constraint):
     """
     A formula is used to describe constraints by a logical expression.
@@ -466,7 +473,7 @@ class Formula(Constraint):
 class Asset_administration_shell(Identifiable, Has_data_specification):
     """Structure a digital representation of an asset."""
 
-    derived_from: Optional["Asset_administration_shell"]
+    derived_from: Optional[Ref["Asset_administration_shell"]]
     """The reference to the AAS the AAS was derived from."""
 
     # NOTE sadu, Manuel (2021-11-17)
@@ -476,7 +483,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     asset_information: "Asset_information"
     """Meta-information about the asset the AAS is representing."""
 
-    submodels: Optional[List["Submodel"]]
+    submodels: Optional[List[Ref["Submodel"]]]
     """
     References to submodels of the AAS.
 
@@ -499,8 +506,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         administration: Optional["Administrative_information"] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        derived_from: Optional["Asset_administration_shell"] = None,
-        submodels: Optional[List["Submodel"]] = None,
+        derived_from: Optional[Ref["Asset_administration_shell"]] = None,
+        submodels: Optional[List[Ref["Submodel"]]] = None,
     ) -> None:
         Identifiable.__init__(
             self,
@@ -1523,7 +1530,7 @@ class Basic_Event(Event):
     A basic event.
     """
 
-    observed: Referable
+    observed: Ref[Referable]
     """
     Reference to a referable, e.g. a data element or a submodel, that is being 
     observed.
@@ -1531,7 +1538,7 @@ class Basic_Event(Event):
 
     def __init__(
         self,
-        observed: Referable,
+        observed: Ref[Referable],
         ID_short: str,
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
@@ -1727,7 +1734,7 @@ class View(Referable, Has_semantics, Has_data_specification):
        They are not equivalent to submodels.
     """
 
-    contained_elements: Optional[List["Referable"]]
+    contained_elements: Optional[List[Ref["Referable"]]]
     """
     Reference to a referable element that is contained in the view.
     """
@@ -1740,7 +1747,7 @@ class View(Referable, Has_semantics, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         semantic_ID: Optional["Reference"] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        contained_elements: Optional[List["Referable"]] = None,
+        contained_elements: Optional[List[Ref["Referable"]]] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -1911,6 +1918,7 @@ class Key_elements(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 10), index=3)
+@serialization(with_model_type=True)
 class Referable_elements(Enum):
     """Enumeration of all referable elements within an asset administration shell"""
 
@@ -2163,56 +2171,21 @@ class String_build_in_types(Enum):
 # TODO sadu (2021-11-17)
 # super enum to do
 @reference_in_the_book(section=(5, 7, 12, 2))
+@is_superset_of(
+    enums=[
+        Build_in_list_types,
+        Decimal_build_in_types,
+        Duration_build_in_types,
+        Primitive_types,
+        String_build_in_types,
+    ]
+)
 class Data_type_def(Enum):
-    """Build_in_list_types(Enum)"""
+    """
+    Enumeration listing all xsd anySimpleTypes
+    """
 
-    Entities = "ENTITIES"
-    ID_refs = "IDREFS"
-    N_M_tokens = "NMTOKENS"
-    """ Decimal_build_in_types(Enum) """
-    Integer = "integer"
-    Long = "long"
-    Int = "int"
-    Short = "short"
-    Byte = "byte"
-    Non_negative_integer = "NonNegativeInteger"
-    Positive_integer = "positiveInteger"
-    Unsigned_integer = "unsignedInteger"
-    Unsigned_long = "unsignedLong"
-    Unsigned_int = "unsignedINt"
-    Unsigned_short = "unsignedShort"
-    Unsigned_byte = "unsignedByte"
-    Non_positive_integer = "nonPositiveInteger"
-    Negative_integer = "negativeInteger"
-    """ Duration_build_in_types(Enum) """
-    day_time_duration = "dayTimeDuration"
-    year_month_duration = "yearMonthDuration"
-    """ Primitive_types(Enum) """
-    Any_URI = "anyURI"
-    Base_64_binary = "base64Binary"
-    Boolean = "boolean"
-    Date = "date"
-    Date_time = "dateTime"
-    Decimal = "decimal"
-    Double = "double"
-    Duration = "duration"
-    Float = "float"
-    G_day = "gDay"
-    G_month = "gMonth"
-    G_month_day = "gMonthDay"
-    Hey_binary = "heyBinary"
-    Notation = "NOTATION"
-    Q_name = "QName"
-    String = "string"
-    Time = "time"
-    """ String_build_in_types(Enum) """
-    Normalized_string = "normalizedString"
-    Token = "token"
-    Language = "Language"
-    N_C_name = "NCName"
-    Entity = "ENTITY"
-    ID = "ID"
-    IDREF = "IDREF"
+    pass
 
 
 Blob_type = bytearray
