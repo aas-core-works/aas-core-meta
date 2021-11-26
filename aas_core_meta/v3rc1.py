@@ -11,6 +11,8 @@ from aas_core_meta.marker import (
     implementation_specific,
     json_serialization,
     reference_in_the_book,
+    Ref,
+    associate_ref_with,
 )
 from aas_core_meta.verification import is_IRI, is_IRDI, is_ID_short
 
@@ -179,7 +181,10 @@ class Referable(Has_extensions):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional[Extension] = None,
     ) -> None:
+        Has_extensions.__init__(self, extension=extension)
+
         self.ID_short = ID_short
         self.display_name = display_name
         self.category = category
@@ -382,8 +387,13 @@ class Administrative_information(Has_data_specification):
     """Revision of the element."""
 
     def __init__(
-        self, version: Optional[str] = None, revision: Optional[str] = None
+        self,
+        version: Optional[str] = None,
+        revision: Optional[str] = None,
+        data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
+        Has_data_specification.__init__(self, data_specifications=data_specifications)
+
         self.version = version
         self.revision = revision
 
@@ -500,7 +510,7 @@ class Formula(Constraint):
 class Asset_administration_shell(Identifiable, Has_data_specification):
     """Structure a digital representation of an :class:`.Asset`."""
 
-    derived_from: Optional["Asset_administration_shell"]
+    derived_from: Optional[Ref["Asset_administration_shell"]]
     """The reference to the AAS the AAS was derived from."""
 
     security: Optional["Security"]
@@ -509,7 +519,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     asset_information: "Asset_information"
     """Meta-information about the asset the AAS is representing."""
 
-    submodels: Optional[List["Submodel"]]
+    submodels: Optional[List[Ref["Submodel"]]]
     """
     References to submodels of the AAS.
 
@@ -535,9 +545,9 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         administration: Optional["Administrative_information"] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        derived_from: Optional["Asset_administration_shell"] = None,
+        derived_from: Optional[Ref["Asset_administration_shell"]] = None,
         security: Optional["Security"] = None,
-        submodels: Optional[List["Submodel"]] = None,
+        submodels: Optional[List[Ref["Submodel"]]] = None,
         views: Optional[List["View"]] = None,
     ) -> None:
         Identifiable.__init__(
@@ -626,7 +636,7 @@ class Asset_information(DBC):
     For example, serial number.
     """
 
-    bill_of_material: Optional[List["Submodel"]]
+    bill_of_material: Optional[List[Ref["Submodel"]]]
     """
     A reference to a Submodel that defines the bill of material of the asset represented
     by the AAS.
@@ -647,7 +657,7 @@ class Asset_information(DBC):
         asset_kind: "Asset_kind",
         global_asset_ID: Optional["Reference"] = None,
         specific_asset_IDs: Optional["Identifier_key_value_pair"] = None,
-        bill_of_material: Optional[List["Submodel"]] = None,
+        bill_of_material: Optional[List[Ref["Submodel"]]] = None,
         default_thumbnail: Optional["File"] = None,
     ) -> None:
         # TODO (Nico & Marko, 2021-09-24):
@@ -835,12 +845,12 @@ class Relationship_element(Submodel_element):
     the ConceptDescription/category shall be one of following values: RELATIONSHIP.
     """
 
-    first: Referable
+    first: Ref[Referable]
     """
     Reference to the first element in the relationship taking the role of the subject.
     """
 
-    second: Referable
+    second: Ref[Referable]
     """
     Reference to the second element in the relationship taking the role of the object.
     """
@@ -848,8 +858,8 @@ class Relationship_element(Submodel_element):
     def __init__(
         self,
         ID_short: str,
-        first: Referable,
-        second: Referable,
+        first: Ref[Referable],
+        second: Ref[Referable],
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
@@ -1369,7 +1379,7 @@ class Annotated_relationship_element(Relationship_element):
     with additional data elements.
     """
 
-    annotation: Optional[List[Data_element]]
+    annotation: Optional[List[Ref[Data_element]]]
     """
     A reference to a data element that represents an annotation that holds for
     the relationship between the two elements.
@@ -1378,16 +1388,16 @@ class Annotated_relationship_element(Relationship_element):
     def __init__(
         self,
         ID_short: str,
-        first: Referable,
-        second: Referable,
+        first: Ref["Referable"],
+        second: Ref["Referable"],
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
-        qualifiers: Optional[List[Constraint]] = None,
+        qualifiers: Optional[List["Constraint"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        annotation: Optional[List[Data_element]] = None,
+        annotation: Optional[List[Ref["Data_element"]]] = None,
     ) -> None:
         Relationship_element.__init__(
             self,
@@ -1549,7 +1559,7 @@ class Basic_Event(Event):
     A basic event.
     """
 
-    observed: Referable
+    observed: Ref[Referable]
     """
     Reference to a referable, e.g. a data element or a submodel, that is being 
     observed.
@@ -1557,7 +1567,7 @@ class Basic_Event(Event):
 
     def __init__(
         self,
-        observed: Referable,
+        observed: Ref[Referable],
         ID_short: str,
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
@@ -1750,7 +1760,7 @@ class View(Referable, Has_semantics, Has_data_specification):
        They are not equivalent to submodels.
     """
 
-    contained_elements: Optional[List["Referable"]]
+    contained_elements: Optional[List[Ref["Referable"]]]
     """
     Reference to a referable element that is contained in the view.
     """
@@ -1763,7 +1773,7 @@ class View(Referable, Has_semantics, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         semantic_ID: Optional["Reference"] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        contained_elements: Optional[List["Referable"]] = None,
+        contained_elements: Optional[List[Ref["Referable"]]] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -1800,6 +1810,9 @@ class Reference(DBC):
 
     def __init__(self, keys: List["Key"]) -> None:
         self.keys = keys
+
+
+associate_ref_with(Reference)
 
 
 # fmt: off
@@ -2548,18 +2561,19 @@ class Blob_certificate(Certificate):
 
 
 @reference_in_the_book(section=(5, 3, 5), index=3)
+@invariant(lambda self: len(self.object_attributes) >= 1)
 class Object_attributes(DBC):
     """
     A set of data elements that describe object attributes. These attributes need to
     refer to a data element within an existing submodel.
     """
 
-    object_attributes: List["Data_element"]
+    object_attributes: List[Ref["Data_element"]]
     """
     Reference to a data element that further classifies an object.
     """
 
-    def __init__(self, object_attributes: List["Data_element"]) -> None:
+    def __init__(self, object_attributes: List[Ref["Data_element"]]) -> None:
         self.object_attributes = object_attributes
 
 
@@ -2569,7 +2583,7 @@ class Permission(DBC):
     Description of a single permission.
     """
 
-    permission: "Property"
+    permission: Ref["Property"]
     """
     Reference to a property that defines the semantics of the permission.
 
@@ -2586,14 +2600,14 @@ class Permission(DBC):
     denial of the permission.
 
     Values:
-    *     Allow
-    *     Deny
-    *     NotApplicable
-    *     Undefined"
+    * Allow
+    * Deny
+    * NotApplicable
+    * Undefined"
     """
 
     def __init__(
-        self, permission: "Property", kind_of_permission: "Permission_kind"
+        self, permission: Ref["Property"], kind_of_permission: "Permission_kind"
     ) -> None:
         self.permission = permission
         self.kind_of_permission = kind_of_permission
@@ -2626,7 +2640,7 @@ class Permissions_per_object(DBC):
     further specify the kind of object the permissions apply to.
     """
 
-    object: "Referable"
+    object: Ref["Referable"]
     """
     Element to which permission shall be assigned.
     """
@@ -2645,7 +2659,7 @@ class Permissions_per_object(DBC):
 
     def __init__(
         self,
-        object: "Referable",
+        object: Ref["Referable"],
         target_object_attributes: Optional["Object_attributes"] = None,
         permissions: Optional[List["Permission"]] = None,
     ) -> None:
@@ -2704,7 +2718,22 @@ class Access_control(DBC):
     Access Control has the major task to define the access permission rules.
     """
 
-    default_subject_attributes: "Submodel"
+    access_permission_rules: Optional[List["Access_permission_rule"]]
+    """
+    Access permission rules of the AAS describing the rights assigned to (already 
+    authenticated) subjects to access elements of the AAS.
+    """
+
+    selectable_subject_attributes: Optional[Ref["Submodel"]]
+    """
+    Reference to a submodel defining the authenticated subjects that are configured for 
+    the AAS. They are selectable by the access permission rules to assign permissions 
+    to the subjects.
+
+    Default: reference to the submodel referenced via defaultSubjectAttributes.
+    """
+
+    default_subject_attributes: Ref["Submodel"]
     """
     Reference to a submodel defining the default subjects’ attributes for the AAS that 
     can be used to describe access permission rules.
@@ -2712,34 +2741,28 @@ class Access_control(DBC):
     The submodel is of kind=Template.
     """
 
-    selectable_permissions: "Submodel"
+    selectable_permissions: Ref["Submodel"]
     """
     Reference to a submodel defining which permissions can be assigned to the subjects.
 
     Default: reference to the submodel referenced via defaultPermissions
     """
 
-    default_permissions: "Submodel"
+    default_permissions: Ref["Submodel"]
     """
     Reference to a submodel defining the default permissions for the AAS.
     """
 
-    access_permission_rules: Optional[List["Access_permission_rule"]]
+    selectable_environment_attributes: Optional[Ref["Submodel"]]
     """
-    Access permission rules of the AAS describing the rights assigned to (already 
-    authenticated) subjects to access elements of the AAS.
-    """
-
-    selectable_subject_attributes: Optional["Submodel"]
-    """
-    Reference to a submodel defining the authenticated subjects that are configured for 
-    the AAS. They are selectable by the access permission rules to assign permissions 
-    to the subjects.
+    Reference to a submodel defining which environment attributes can be accessed
+    *via* the permission rules defined for the AAS, i.e. attributes that are 
+    not describing the asset itself. 
     
-    Default: reference to the submodel referenced via defaultSubjectAttributes.
+    Default: reference to the submodel referenced via defaultEnvironmentAttributes
     """
 
-    default_environment_attributes: Optional["Submodel"]
+    default_environment_attributes: Optional[Ref["Submodel"]]
     """
     Reference to a submodel defining default environment attributes, *i.e.* attributes 
     that are not describing the asset itself.
@@ -2753,18 +2776,20 @@ class Access_control(DBC):
 
     def __init__(
         self,
-        default_subject_attributes: "Submodel",
-        selectable_permissions: "Submodel",
-        default_permissions: "Submodel",
+        default_subject_attributes: Ref["Submodel"],
+        selectable_permissions: Ref["Submodel"],
+        default_permissions: Ref["Submodel"],
         access_permission_rules: Optional[List["Access_permission_rule"]] = None,
-        selectable_subject_attributes: Optional["Submodel"] = None,
-        default_environment_attributes: Optional["Submodel"] = None,
+        selectable_subject_attributes: Optional[Ref["Submodel"]] = None,
+        selectable_environment_attributes: Optional[Ref["Submodel"]] = None,
+        default_environment_attributes: Optional[Ref["Submodel"]] = None,
     ) -> None:
         self.default_subject_attributes = default_subject_attributes
         self.selectable_permissions = selectable_permissions
         self.default_permissions = default_permissions
         self.access_permission_rules = access_permission_rules
         self.selectable_subject_attributes = selectable_subject_attributes
+        self.selectable_environment_attributes = selectable_environment_attributes
         self.default_environment_attributes = default_environment_attributes
 
 
@@ -2814,7 +2839,7 @@ class Policy_information_points(DBC):
     information needs to be configured for the AAS.
     """
 
-    internal_information_points: Optional[List["Submodel"]]
+    internal_information_points: Optional[List[Ref["Submodel"]]]
     """
     Reference to a  Submodel defining information used by security access permission 
     rules.
@@ -2823,7 +2848,7 @@ class Policy_information_points(DBC):
     def __init__(
         self,
         external_information_points: bool,
-        internal_information_points: Optional[List["Submodel"]] = None,
+        internal_information_points: Optional[List[Ref["Submodel"]]] = None,
     ) -> None:
         self.external_information_points = external_information_points
         self.internal_information_points = internal_information_points
