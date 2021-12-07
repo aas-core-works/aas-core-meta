@@ -3,11 +3,10 @@
 from enum import Enum
 from typing import List, Optional
 
-from icontract import invariant, ensure, DBC
+from icontract import invariant, DBC
 
 from aas_core_meta.marker import (
     abstract,
-    template,
     implementation_specific,
     serialization,
     reference_in_the_book,
@@ -98,7 +97,7 @@ class Has_extensions(DBC):
     Note: Extensions are proprietary, i.e. they do not support global interoperability.
     """
 
-    extensions: Optional["Extension"]
+    extension: Optional["Extension"]
     """
     An extension of the element.
     """
@@ -217,6 +216,7 @@ class Identifiable(Referable):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional[Extension] = None,
         administration: Optional["Administrative_information"] = None,
     ) -> None:
         Referable.__init__(
@@ -225,6 +225,7 @@ class Identifiable(Referable):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
         )
 
         self.identification = identification
@@ -545,6 +546,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional[Extension] = None,
         administration: Optional["Administrative_information"] = None,
         data_specifications: Optional[List["Reference"]] = None,
         derived_from: Optional[Ref["Asset_administration_shell"]] = None,
@@ -559,6 +561,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             administration=administration,
         )
 
@@ -587,6 +590,7 @@ class Asset(Identifiable, Has_data_specification):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional[Extension] = None,
         administration: Optional["Administrative_information"] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -597,6 +601,7 @@ class Asset(Identifiable, Has_data_specification):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             administration=administration,
         )
 
@@ -756,6 +761,7 @@ class Submodel(
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional[Extension] = None,
         administration: Optional["Administrative_information"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
@@ -774,6 +780,7 @@ class Submodel(
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             administration=administration,
         )
 
@@ -806,6 +813,7 @@ class Submodel_element(
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional[Extension] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
@@ -817,6 +825,7 @@ class Submodel_element(
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
         )
 
         Has_kind.__init__(self, kind=kind)
@@ -865,6 +874,7 @@ class Relationship_element(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
@@ -876,6 +886,7 @@ class Relationship_element(Submodel_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -945,6 +956,7 @@ class Submodel_element_collection(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
@@ -959,6 +971,7 @@ class Submodel_element_collection(Submodel_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -996,6 +1009,7 @@ class Data_element(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1007,6 +1021,7 @@ class Data_element(Submodel_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1068,6 +1083,7 @@ class Property(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1081,6 +1097,7 @@ class Property(Data_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1133,6 +1150,7 @@ class Multi_language_property(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1146,6 +1164,7 @@ class Multi_language_property(Data_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1197,6 +1216,7 @@ class Range(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1210,6 +1230,7 @@ class Range(Data_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1245,6 +1266,7 @@ class Reference_element(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1257,6 +1279,7 @@ class Reference_element(Data_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1301,6 +1324,7 @@ class Blob(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1313,6 +1337,7 @@ class Blob(Data_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1352,6 +1377,7 @@ class File(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1364,6 +1390,7 @@ class File(Data_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1395,6 +1422,7 @@ class Annotated_relationship_element(Relationship_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
@@ -1409,6 +1437,7 @@ class Annotated_relationship_element(Relationship_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1498,6 +1527,7 @@ class Entity(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
@@ -1512,6 +1542,7 @@ class Entity(Submodel_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1537,6 +1568,7 @@ class Event(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional[Modeling_kind] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1548,6 +1580,7 @@ class Event(Submodel_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1574,6 +1607,7 @@ class Basic_Event(Event):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional[Modeling_kind] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
@@ -1585,6 +1619,7 @@ class Basic_Event(Event):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1625,6 +1660,7 @@ class Operation(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
@@ -1639,6 +1675,7 @@ class Operation(Submodel_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1682,6 +1719,7 @@ class Capability(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
@@ -1693,6 +1731,7 @@ class Capability(Submodel_element):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
             kind=kind,
             semantic_ID=semantic_ID,
             qualifiers=qualifiers,
@@ -1729,6 +1768,7 @@ class Concept_description(Identifiable, Has_data_specification):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional[Extension] = None,
         administration: Optional["Administrative_information"] = None,
         is_case_of: Optional[List["Reference"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
@@ -1736,11 +1776,12 @@ class Concept_description(Identifiable, Has_data_specification):
         Identifiable.__init__(
             self,
             identification=identification,
-            administration=administration,
             ID_short=ID_short,
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
+            administration=administration,
         )
 
         Has_data_specification.__init__(self, data_specifications=data_specifications)
@@ -1773,6 +1814,7 @@ class View(Referable, Has_semantics, Has_data_specification):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         semantic_ID: Optional["Reference"] = None,
         data_specifications: Optional[List["Reference"]] = None,
         contained_elements: Optional[List[Ref["Referable"]]] = None,
@@ -1783,6 +1825,7 @@ class View(Referable, Has_semantics, Has_data_specification):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
         )
 
         Has_semantics.__init__(self, semantic_ID)
@@ -1814,7 +1857,7 @@ class Reference(DBC):
         self.keys = keys
 
 
-associate_ref_with(Reference)
+associate_ref_with(cls=Reference)
 
 
 # fmt: off
@@ -2099,25 +2142,6 @@ class Data_type_def(Enum):
     Time = "time"
 
 
-@reference_in_the_book(section=(4, 7, 13, 11))
-class Lang_string(DBC):
-    """Give a text in a specific language."""
-
-    language: str
-    """Language of the :attr`~text`"""
-
-    text: str
-    """Content of the string"""
-
-    # TODO (Nico & Marko, 2021-05-28): what is the format of the ``language``?
-    def __init__(self, language: str, text: str) -> None:
-        self.language = language
-        self.text = text
-
-
-# TODO (Nico & Marko, 2021-05-28):
-#  Should the language be unique?
-#  Or can we have duplicate entries for, say, "EN"?
 @implementation_specific
 @reference_in_the_book(section=(4, 7, 13, 2), index=2)
 class Lang_string_set(DBC):
@@ -2126,51 +2150,6 @@ class Lang_string_set(DBC):
 
     The meaning of the string in each language shall be the same.
     """
-
-    lang_strings: List[Lang_string]
-    """Strings in the specified languages."""
-
-    def __init__(self, lang_strings: List[Lang_string]) -> None:
-        self.lang_strings = lang_strings
-
-        # The strings need to be accessed by a dictionary;
-        # how this dictionary is initialized is left to the individual implementation.
-
-    # fmt: off
-    @ensure(
-        lambda self, language, result:
-        not result
-        or any(
-            language == lang_string.language for lang_string in self.lang_strings)
-    )
-    # fmt: on
-    def has_language(self, language: str) -> bool:
-        """
-        Check whether the string is available in the given language.
-
-        :param language: language of interest
-        :return: True if the string is available in the language
-        """
-        # The strings need to be accessed by a dictionary;
-        # how this dictionary is accessed is left to the individual implementation.
-
-    # fmt: off
-    @ensure(
-        lambda self, language, result:
-        not (
-                self.has_language(language) ^ (result is not None)
-        )
-    )
-    # fmt: on
-    def by_language(self, language: str) -> Optional[str]:
-        """
-        Retrieve the string in the given language.
-
-        :param language: language of interest
-        :return: the string in the language, if available
-        """
-        # The strings need to be accessed by a dictionary;
-        # how this dictionary is accessed is left to the individual implementation.
 
 
 @abstract
@@ -2247,7 +2226,6 @@ class Value_list(DBC):
         self.value_reference_pair_types = value_reference_pair_types
 
 
-@template
 @reference_in_the_book(section=(4, 7, 8, 2))
 class Data_specification_IEC_61360(Data_specification_content):
     """
@@ -2582,7 +2560,7 @@ class Permission(DBC):
     the category “CONSTANT”.
     Constraint AASs-011: The property referenced in Permission/permission shall be 
     part of the submodel that is referenced within the “selectablePermissions” attribute
-     of “AccessControl”."
+    of “AccessControl”."
     """
 
     kind_of_permission: "Permission_kind"
@@ -2685,6 +2663,7 @@ class Access_permission_rule(Referable, Qualifiable):
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[str] = None,
         description: Optional["Lang_string_set"] = None,
+        extension: Optional["Extension"] = None,
         qualifiers: Optional[List["Constraint"]] = None,
         permissions_per_object: Optional[List["Permissions_per_object"]] = None,
     ) -> None:
@@ -2694,6 +2673,7 @@ class Access_permission_rule(Referable, Qualifiable):
             display_name=display_name,
             category=category,
             description=description,
+            extension=extension,
         )
 
         Qualifiable.__init__(self, qualifiers=qualifiers)
