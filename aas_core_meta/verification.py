@@ -21,6 +21,10 @@ def is_ID_short(text: str) -> bool:
     raise NotImplementedError()
 
 
+def is_MIME_type(text: str) -> bool:
+    raise NotImplementedError()
+
+
 T = TypeVar("T")
 
 

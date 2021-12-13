@@ -17,6 +17,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\aas_core_meta\v3rc2.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
       </map>
     </option>
   </component>
