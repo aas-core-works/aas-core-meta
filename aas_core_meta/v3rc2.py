@@ -1157,7 +1157,7 @@ class Multi_language_property(Data_element):
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        translatable: Optional["Lang_string_set"] = None,
+        value: Optional["Lang_string_set"] = None,
         value_ID: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
@@ -1173,7 +1173,7 @@ class Multi_language_property(Data_element):
             data_specifications=data_specifications,
         )
 
-        self.translatable = translatable
+        self.value = value
         self.value_ID = value_ID
 
 
@@ -1277,7 +1277,7 @@ class Reference_element(Data_element):
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        reference: Optional["Reference"] = None,
+        value: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -1292,7 +1292,7 @@ class Reference_element(Data_element):
             data_specifications=data_specifications,
         )
 
-        self.reference = reference
+        self.value = value
 
 
 @reference_in_the_book(section=(5, 7, 7, 4))
@@ -1339,7 +1339,7 @@ class Blob(Data_element):
         semantic_ID: Optional["Reference"] = None,
         qualifiers: Optional[List[Constraint]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        content: Optional[bytearray] = None,
+        value: Optional[bytearray] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -1355,7 +1355,7 @@ class Blob(Data_element):
         )
 
         self.MIME_type = MIME_type
-        self.content = content
+        self.value = value
 
 
 @reference_in_the_book(section=(5, 7, 7, 8))
