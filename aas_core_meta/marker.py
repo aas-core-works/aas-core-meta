@@ -55,8 +55,9 @@ class reference_in_the_book:
 
     @require(lambda section: all(number >= 1 for number in section))
     @require(lambda index: index >= 0)
-    def __init__(self, section: Tuple[int, ...], index: int = 0, fragment: str = "") ->\
-            None:
+    def __init__(
+        self, section: Tuple[int, ...], index: int = 0, fragment: str = ""
+    ) -> None:
         """
         Initialize with the given values.
 
@@ -70,8 +71,9 @@ class reference_in_the_book:
         self.section = section
         self.index = index
         if fragment == "":
-            fragment = '.'.join(section)+' '+classname +' Attributes'
-            fragment = fragment.replace(' ', '%20')
+            classname = " "
+            fragment = ".".join(map(str, section)) + " " + classname + " Attributes"
+            fragment = fragment.replace(" ", "%20")
 
         self.fragment = fragment
 
