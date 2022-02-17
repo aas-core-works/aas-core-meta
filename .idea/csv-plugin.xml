@@ -17,10 +17,24 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\aas_core_meta\marker.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\aas_core_meta\v3rc2.py">
           <value>
             <Attribute>
               <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
+        <entry key="\aas_core_meta\verification.py">
+          <value>
+            <Attribute>
+              <option name="separator" value=":" />
             </Attribute>
           </value>
         </entry>

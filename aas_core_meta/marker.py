@@ -1,13 +1,37 @@
 """Define markers for the meta model to mark the functions and data structures."""
 from enum import Enum
-from typing import TypeVar, Type, Optional, Tuple, Generic, Sequence
+from typing import (
+    TypeVar,
+    Type,
+    Optional,
+    Tuple,
+    Generic,
+    Sequence,
+    Callable,
+    Any,
+    Union,
+    overload,
+)
 
 from icontract import require
 
 T = TypeVar("T")
 
+CallableT = TypeVar("CallableT", bound=Callable[..., Any])
 
+
+@overload
 def implementation_specific(thing: Type[T]) -> Type[T]:
+    ...
+
+
+@overload
+def implementation_specific(thing: CallableT) -> CallableT:
+    ...
+
+
+# See https://github.com/python/mypy/issues/9420 for why we use ``Any`` here
+def implementation_specific(thing: Any) -> Any:
     """
     Mark the function or class that can not be defined in the meta-model.
 
@@ -29,23 +53,6 @@ def abstract(thing: Type[T]) -> Type[T]:
 
     This instructs the code generators for languages which do not support
     multiple inheritance to convert them to interfaces.
-    """
-    return thing
-
-
-def template(thing: Type[T]) -> Type[T]:
-    """
-    Mark the class as template.
-
-    specification of the common features of an object in sufficient
-    detail that such object can be instantiated using it
-    """
-    return thing
-
-
-def deprecated(thing: Type[T]) -> Type[T]:
-    """
-    Mark deprecated parts of the book
     """
     return thing
 
@@ -99,18 +106,6 @@ class serialization:
         return func
 
 
-class Ref(Generic[T]):
-    """
-    Represent a reference to an instance of ``T``.
-
-    This is described by ``ref*`` in the book.
-    """
-
-
-def associate_ref_with(cls: Type[T]) -> None:
-    """Mark that the type ``T`` represents :py:class:`Ref` in the implementation."""
-
-
 EnumT = TypeVar("EnumT", bound=Enum)
 
 
@@ -128,3 +123,8 @@ class is_superset_of:
 
     def __call__(self, func: Type[T]) -> Type[T]:
         return func
+
+
+def verification(thing: CallableT) -> CallableT:
+    """Mark the function as a verification function used in contracts."""
+    return thing
