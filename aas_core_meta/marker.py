@@ -55,18 +55,25 @@ class reference_in_the_book:
 
     @require(lambda section: all(number >= 1 for number in section))
     @require(lambda index: index >= 0)
-    def __init__(self, section: Tuple[int, ...], index: int = 0) -> None:
+    def __init__(self, section: Tuple[int, ...], index: int = 0, fragment: str = "") ->\
+            None:
         """
         Initialize with the given values.
 
         :param section: Section of the book given as tuple (so that it is sortable)
         :param index:
             Index in the section.
-
             The index helps us distinguish between multiple definitions in a section.
+        :param fragment:
+            Title of (Sub-)Section for anchor.
         """
         self.section = section
         self.index = index
+        if fragment == "":
+            fragment = '.'.join(section)+' '+classname +' Attributes'
+            fragment = fragment.replace(' ', '%20')
+
+        self.fragment = fragment
 
     def __call__(self, func: Type[T]) -> Type[T]:
         return func
