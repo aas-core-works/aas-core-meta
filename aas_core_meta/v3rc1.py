@@ -250,7 +250,7 @@ class Extension(Has_semantics):
 @abstract
 @reference_in_the_book(
     section=(4, 7, 2, 1),
-    fragment="4.7.2.7%20Semantic%20References%20Attributes%20(" "HasSemantics))",
+    fragment="4.7.2.7 Semantic References Attributes (HasSemantics))",
 )
 class Has_extensions(DBC):
     """
