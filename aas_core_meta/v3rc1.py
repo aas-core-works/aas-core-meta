@@ -2115,7 +2115,7 @@ class Identifiable_elements(Enum):
 @reference_in_the_book(
     section=(4, 7, 11),
     index=3,
-    fragment="4.7.11%20Referencing%20in%20Asset%20Administration" "%20Shells",
+    fragment="4.7.11 Referencing in Asset Administration Shells",
 )
 @is_superset_of(enums=[Identifiable_elements])
 class Referable_elements(Enum):
@@ -2176,7 +2176,7 @@ class Referable_elements(Enum):
 @reference_in_the_book(
     section=(4, 7, 11),
     index=2,
-    fragment="4.7.11%20Referencing%20in%20Asset%20Administration" "%20Shells",
+    fragment="4.7.11 Referencing in Asset Administration Shells",
 )
 @is_superset_of(enums=[Referable_elements])
 class Key_elements(Enum):
@@ -2266,7 +2266,7 @@ class Local_key_type(Enum):
 @reference_in_the_book(
     section=(4, 7, 11),
     index=5,
-    fragment="4.7.11%20Referencing%20in%20Asset%20Administration" "%20Shells",
+    fragment="4.7.11 Referencing in Asset Administration Shells",
 )
 @is_superset_of(enums=[Local_key_type, Identifier_type])
 class Key_type(Enum):
@@ -2291,7 +2291,7 @@ class Key_type(Enum):
     """Custom identifiers like GUIDs (globally unique identifiers)"""
 
 
-@reference_in_the_book(section=(4, 7, 13, 2), fragment="4.7.13.2%20Data%20Types")
+@reference_in_the_book(section=(4, 7, 13, 2), fragment="4.7.13.2 Data Types")
 class Data_type_def(Enum):
     Any_URI = "anyUri"
     Base64_binary = "base64Binary"
@@ -2341,7 +2341,7 @@ class Data_type_def(Enum):
 
 @implementation_specific
 @reference_in_the_book(
-    section=(4, 7, 13, 2), index=2, fragment="4.7.13.2%20Data%20Types"
+    section=(4, 7, 13, 2), index=2, fragment="4.7.13.2 Data Types"
 )
 class Lang_string_set(DBC):
     """
@@ -2354,7 +2354,7 @@ class Lang_string_set(DBC):
 @abstract
 @reference_in_the_book(
     section=(4, 8, 1),
-    fragment="4.8.1%20Concept%20of%20Data%20Specification" "%20Templates",
+    fragment="4.8.1 Concept of Data Specification Templates",
 )
 class Data_specification_content(DBC):
     # No table for class in the book
@@ -2365,8 +2365,9 @@ class Data_specification_content(DBC):
 @reference_in_the_book(
     section=(4, 8, 2),
     index=3,
-    fragment="4.8.2%20Predefined%20Templates%20for%20Property"
-    "%20and%20Value%20Descriptions",
+    fragment=(
+        "4.8.2 Predefined Templates for Property and Value Descriptions"
+    ),
 )
 class Data_type_IEC_61360(Enum):
     Date = "DATE"
