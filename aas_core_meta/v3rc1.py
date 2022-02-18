@@ -483,10 +483,7 @@ class Modeling_kind(Enum):
 @reference_in_the_book(
     section=(4, 7, 2, 5),
     index=0,
-    fragment=(
-	"4.7.2.5 Template or Instance of Model "
-        "Element Attributes (HasKind)"
-    ),
+    fragment=("4.7.2.5 Template or Instance of Model " "Element Attributes (HasKind)"),
 )
 class Has_kind(DBC):
     """
@@ -513,7 +510,7 @@ class Has_kind(DBC):
 @abstract
 @reference_in_the_book(
     section=(4, 7, 2, 13),
-    fragment = (
+    fragment=(
         "4.7.2.13 Used Templates for Data Specification Attributes "
         "(HasDataSpecification)"
     ),
@@ -2058,7 +2055,7 @@ class Reference(DBC):
 )
 @reference_in_the_book(
     section=(4, 7, 11), index=1,
-    fragment="4.7.11 Referencing in Asset Administration Shells"
+    fragment="4.7.11 Referencing in Asset Administration Shells")
 # fmt: on
 class Key(DBC):
     """A key is a reference to an element by its id."""
@@ -2340,9 +2337,7 @@ class Data_type_def(Enum):
 
 
 @implementation_specific
-@reference_in_the_book(
-    section=(4, 7, 13, 2), index=2, fragment="4.7.13.2 Data Types"
-)
+@reference_in_the_book(section=(4, 7, 13, 2), index=2, fragment="4.7.13.2 Data Types")
 class Lang_string_set(DBC):
     """
     A set of strings, each annotated by the language of the string.
@@ -2365,9 +2360,7 @@ class Data_specification_content(DBC):
 @reference_in_the_book(
     section=(4, 8, 2),
     index=3,
-    fragment=(
-        "4.8.2 Predefined Templates for Property and Value Descriptions"
-    ),
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
 )
 class Data_type_IEC_61360(Enum):
     Date = "DATE"
@@ -2390,9 +2383,7 @@ class Data_type_IEC_61360(Enum):
 @reference_in_the_book(
     section=(4, 8, 2),
     index=4,
-    fragment=(
-        "4.8.2 Predefined Templates for Property and Value Descriptions"
-    ),
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
 )
 class Level_type(Enum):
     Min = "Min"
@@ -2404,9 +2395,7 @@ class Level_type(Enum):
 @reference_in_the_book(
     section=(4, 8, 2),
     index=2,
-    fragment=(
-        "4.8.2 Predefined Templates for Property and Value Descriptions"
-    ),
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
 )
 class Value_reference_pair(DBC):
     """
@@ -2432,9 +2421,7 @@ class Value_reference_pair(DBC):
 @reference_in_the_book(
     section=(4, 8, 2),
     index=1,
-    fragment=(
-        "4.8.2 Predefined Templates for Property and Value Descriptions"
-    ),
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
 )
 class Value_list(DBC):
     """
@@ -2454,9 +2441,7 @@ class Value_list(DBC):
 
 @reference_in_the_book(
     section=(4, 8, 2),
-    fragment=(
-        "4.8.2 Predefined Templates for Property and Value Descriptions"
-    ),
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
 )
 class Data_specification_IEC_61360(Data_specification_content):
     """
