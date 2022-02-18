@@ -2251,7 +2251,7 @@ class Key_elements(Enum):
 @reference_in_the_book(
     section=(4, 7, 11),
     index=6,
-    fragment="4.7.11%20Referencing%20in%20Asset%20Administration" "%20Shells",
+    fragment="4.7.11 Referencing in Asset Administration Shells",
 )
 class Local_key_type(Enum):
     """Enumeration of different key value types within a key."""
