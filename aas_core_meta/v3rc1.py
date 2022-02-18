@@ -483,8 +483,10 @@ class Modeling_kind(Enum):
 @reference_in_the_book(
     section=(4, 7, 2, 5),
     index=0,
-    fragment="4.7.2.5%20Template%20or%20Instance%20of%20Model"
-    "%20Element%20Attributes%20(HasKind)",
+    fragment=(
+	"4.7.2.5 Template or Instance of Model "
+        "Element Attributes (HasKind)"
+    ),
 )
 class Has_kind(DBC):
     """
