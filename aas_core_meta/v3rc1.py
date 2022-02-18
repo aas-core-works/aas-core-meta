@@ -513,9 +513,10 @@ class Has_kind(DBC):
 @abstract
 @reference_in_the_book(
     section=(4, 7, 2, 13),
-    fragment="4.7.2.13%20Used%20Templates%20for%20Data"
-    "%20Specification%20Attributes%20("
-    "HasDataSpecification)",
+    fragment = (
+        "4.7.2.13 Used Templates for Data Specification Attributes "
+        "(HasDataSpecification)"
+    ),
 )
 class Has_data_specification(DBC):
     """
