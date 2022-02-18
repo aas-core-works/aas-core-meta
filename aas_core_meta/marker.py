@@ -63,7 +63,7 @@ class reference_in_the_book:
     @require(lambda section: all(number >= 1 for number in section))
     @require(lambda index: index >= 0)
     def __init__(
-        self, section: Tuple[int, ...], index: int = 0, fragment: str = ""
+        self, section: Tuple[int, ...], index: int = 0, fragment: Optional[str] = None
     ) -> None:
         """
         Initialize with the given values.
