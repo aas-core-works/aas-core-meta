@@ -62,18 +62,52 @@ class reference_in_the_book:
 
     @require(lambda section: all(number >= 1 for number in section))
     @require(lambda index: index >= 0)
-    def __init__(self, section: Tuple[int, ...], index: int = 0) -> None:
+    def __init__(
+        self, section: Tuple[int, ...], index: int = 0, fragment: Optional[str] = None
+    ) -> None:
         """
         Initialize with the given values.
 
         :param section: Section of the book given as tuple (so that it is sortable)
         :param index:
             Index in the section.
-
             The index helps us distinguish between multiple definitions in a section.
+        :param fragment:
+            Fragment of the section as a fragment suffix to the book URL.
+
+            If no fragment is given, the fragment is computed as a concatenation
+            of the indicated section number and the capitalized class name.
+
+            Example of an inferred fragment:
+
+            .. code-block:
+
+                @reference_in_the_book(section=(4, 7, 2, 8))
+                class Qualifiable(...):
+                    ...
+
+            The inferred fragment will be ``4.7.2.8 Qualifiable``.
+
+            Example of a fully specified fragment:
+
+            .. code-block:
+
+                @reference_in_the_book(
+                    section=(4, 7, 2, 13),
+                    fragment=(
+                        "4.7.2.13 Used Templates for Data Specification "
+                        "Attributes (HasDataSpecification)"
+                    )
+                )
+                class HasDataSpecification(...):
+                    ...
+
+            We expect the downstream to URL-encode the fragment and prepend the literal
+            ``#``.
         """
         self.section = section
         self.index = index
+        self.fragment = fragment
 
     def __call__(self, func: Type[T]) -> Type[T]:
         return func
