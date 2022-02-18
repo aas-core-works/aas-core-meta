@@ -2056,9 +2056,9 @@ class Reference(DBC):
     or (self.ID_type != Key_type.ID_short and self.ID_type != Key_type.Fragment_ID),
     "Constraint AASd-081"
 )
-@reference_in_the_book(section=(4, 7, 11), index=1,
-                       fragment="4.7.11%20Referencing%20in%20Asset%20Administration"
-                                "%20Shells")
+@reference_in_the_book(
+    section=(4, 7, 11), index=1,
+    fragment="4.7.11 Referencing in Asset Administration Shells"
 # fmt: on
 class Key(DBC):
     """A key is a reference to an element by its id."""
