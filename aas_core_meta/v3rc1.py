@@ -2597,7 +2597,7 @@ class Data_specification_IEC_61360(Data_specification_content):
 
 @reference_in_the_book(
     section=(4, 8, 3),
-    fragment="4.8.3%20Predefined%20Templates%20for%20Unit" "%20Concept%20Descriptions",
+    fragment="4.8.3 Predefined Templates for Unit Concept Descriptions",
 )
 class Data_specification_physical_unit(Data_specification_content):
     # TODO (sadu, 2021-11-17): No table for class in the book
