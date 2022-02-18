@@ -2402,8 +2402,9 @@ class Level_type(Enum):
 @reference_in_the_book(
     section=(4, 8, 2),
     index=2,
-    fragment="4.8.2%20Predefined%20Templates%20for%20Property"
-    "%20and%20Value%20Descriptions",
+    fragment=(
+        "4.8.2 Predefined Templates for Property and Value Descriptions"
+    ),
 )
 class Value_reference_pair(DBC):
     """
