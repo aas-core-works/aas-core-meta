@@ -73,7 +73,37 @@ class reference_in_the_book:
             Index in the section.
             The index helps us distinguish between multiple definitions in a section.
         :param fragment:
-            Title of (Sub-)Section for anchor.
+            Fragment of the section as a fragment suffix to the book URL.
+
+            If no fragment is given, the fragment is computed as a concatenation
+            of the indicated section number and the capitalized class name.
+
+            Example of an inferred fragment:
+
+            .. code-block:
+
+                @reference_in_the_book(section=(4, 7, 2, 8))
+                class Qualifiable(...):
+                    ...
+
+            The inferred fragment will be ``4.7.2.8 Qualifiable``.
+
+            Example of a fully specified fragment:
+
+            .. code-block:
+
+                @reference_in_the_book(
+                    section=(4, 7, 2, 13),
+                    fragment=(
+                        "4.7.2.13 Used Templates for Data Specification "
+                        "Attributes (HasDataSpecification)"
+                    )
+                )
+                class HasDataSpecification(...):
+                    ...
+
+            We expect the downstream to URL-encode the fragment and prepend the literal
+            ``#``.
         """
         self.section = section
         self.index = index
