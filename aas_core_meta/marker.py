@@ -77,11 +77,6 @@ class reference_in_the_book:
         """
         self.section = section
         self.index = index
-        if fragment == "":
-            classname = " "
-            fragment = ".".join(map(str, section)) + " " + classname + " Attributes"
-            fragment = fragment.replace(" ", "%20")
-
         self.fragment = fragment
 
     def __call__(self, func: Type[T]) -> Type[T]:
