@@ -2016,7 +2016,7 @@ class View(Referable, Has_semantics, Has_data_specification):
 @invariant(lambda self: len(self.keys) >= 1)
 @reference_in_the_book(
     section=(4, 7, 11),
-    fragment="4.7.11%20Referencing%20in%20Asset%20Administration" "%20Shells",
+    fragment="4.7.11 Referencing in Asset Administration Shells",
 )
 class Reference(DBC):
     """
