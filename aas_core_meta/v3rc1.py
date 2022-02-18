@@ -183,7 +183,7 @@ class MIME_typed(Non_empty_string, DBC):
 
 @abstract
 @reference_in_the_book(
-    section=(4, 7, 2, 7), fragment="4.7.2.1%20Extensions%20(" "HasExtensions)"
+    section=(4, 7, 2, 7), fragment="4.7.2.1 Extensions (HasExtensions)"
 )
 class Has_semantics(DBC):
     """
