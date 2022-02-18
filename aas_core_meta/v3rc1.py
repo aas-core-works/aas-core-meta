@@ -2449,8 +2449,9 @@ class Value_list(DBC):
 
 @reference_in_the_book(
     section=(4, 8, 2),
-    fragment="4.8.2%20Predefined%20Templates%20for%20Property"
-    "%20and%20Value%20Descriptions",
+    fragment=(
+        "4.8.2 Predefined Templates for Property and Value Descriptions"
+    ),
 )
 class Data_specification_IEC_61360(Data_specification_content):
     """
