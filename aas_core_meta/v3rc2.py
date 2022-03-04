@@ -1,4 +1,4 @@
-"""Provide the meta model for Asset Administration Shell V3 Release Candidate 1."""
+"""Provide the meta model for Asset Administration Shell V3 Release Candidate 2."""
 from enum import Enum
 from re import match
 from typing import List, Optional
