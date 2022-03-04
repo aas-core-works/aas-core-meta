@@ -1,6 +1,5 @@
 """Provide the meta model for Asset Administration Shell V3 Release Candidate 1."""
 from enum import Enum
-from logging.config import IDENTIFIER
 from re import match
 from typing import List, Optional
 
