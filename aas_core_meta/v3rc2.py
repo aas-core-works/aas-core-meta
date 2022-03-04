@@ -1175,16 +1175,16 @@ class Property(Data_element):
     """
     The value of the property instance.
 
-    See Constraint AASd-065
-    See Constraint AASd-007
+    See :constraintref:`AASd-065`
+    See :constraintref:`AASd-007`
     """
 
     value_ID: Optional["Reference"]
     """
     Reference to the global unique id of a coded value.
 
-    See Constraint AASd-065
-    See Constraint AASd-007
+    See :constraintref:`AASd-065`
+    See :constraintref:`AASd-007`
     """
 
     def __init__(
@@ -1238,23 +1238,23 @@ class Multi_language_property(Data_element):
     ConceptDescription then DataSpecificationIEC61360/dataType shall be
     STRING_TRANSLATABLE.
 
-    See Constraint AASd-065
+    See :constraintref:`AASd-065`
 
-    See Constraint AASd-066
+    See :constraintref:`AASd-066`
     """
 
     value: Optional["Lang_string_set"]
     """
     The value of the property instance.
-    See Constraint AASd-012
-    See Constraint AASd-065"
+    See :constraintref:`AASd-012`
+    See :constraintref:`AASd-065`
     """
 
     value_ID: Optional["Reference"]
     """
     Reference to the global unique id of a coded value.
-    See Constraint AASd-012
-    See Constraint AASd-065"
+    See :constraintref:`AASd-012`
+    See :constraintref:`AASd-065`
     """
 
     def __init__(
@@ -1476,7 +1476,7 @@ class File(Data_element):
     A File is a data element that represents an address to a file.
     The value is an URI that can represent an absolute or relative path.
 
-    See Constraint AASd-057
+    See :constraintref:`AASd-057`
 
     Constraint AASd-079: If the semanticId of a File references a
     ConceptDescription then DataSpecificationIEC61360/dataType shall be one of: FILE.
@@ -1531,7 +1531,7 @@ class Annotated_relationship_element(Relationship_element):
     An annotated relationship element is a relationship element that can be annotated
     with additional data elements.
 
-    See Constraint AASd-055
+    See :constraintref:`AASd-055`
     """
 
     annotation: List[Data_element]
@@ -1645,7 +1645,7 @@ class Entity(Submodel_element):
     Reference to an identifier key value pair representing a specific identifier
     of the asset represented by the asset administration shell.
 
-    See Constraint AASd-014
+    See :constraintref:`AASd-014`
     """
 
     def __init__(
@@ -2671,7 +2671,7 @@ class Data_specification_IEC61360(Data_specification_content):
     """
     List of allowed values
 
-    See Constraint AASd-102
+    See :constraintref:`AASd-102`
     """
 
     value: Optional[Non_empty_string]
@@ -2690,7 +2690,7 @@ class Data_specification_IEC61360(Data_specification_content):
     """
     Unique value id
 
-    See Constraint AASd-102
+    See :constraintref:`AASd-102`
     """
 
     level_type: Optional["Level_type"]
@@ -2841,11 +2841,9 @@ class Data_specification_physical_unit(Data_specification_content):
 class Environment:
     """Model the environment as the entry point for referencing and serialization."""
 
-    asset_administration_shells: List[Asset_administration_shell]
-
-    submodels: List[Submodel]
-
-    concept_descriptions: List[Concept_description]
+    asset_administration_shells: Optional[List[Asset_administration_shell]]
+    submodels: Optional[List[Submodel]]
+    concept_descriptions: Optional[List[Concept_description]]
 
     def __init__(
         self,
@@ -2853,14 +2851,6 @@ class Environment:
         submodels: Optional[List[Submodel]] = None,
         concept_descriptions: Optional[List[Concept_description]] = None,
     ) -> None:
-        self.asset_administration_shells = (
-            asset_administration_shells
-            if asset_administration_shells is not None
-            else []
-        )
-
-        self.submodels = submodels if submodels is not None else []
-
-        self.concept_descriptions = (
-            concept_descriptions if concept_descriptions is not None else []
-        )
+        self.asset_administration_shells = asset_administration_shells
+        self.submodels = submodels
+        self.concept_descriptions = concept_descriptions
