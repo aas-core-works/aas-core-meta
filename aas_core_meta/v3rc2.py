@@ -60,6 +60,74 @@ class Non_empty_string(str, DBC):
     pass
 
 
+
+@reference_in_the_book(section=(5, 7, 11, 2))
+class Primitive_data_types(Enum):
+    Blob_type = "BlobType"
+    """
+    Group of bytes to represent file content (binaries and non-binaries)
+
+    """
+
+    Data_type_def = "DataTypeDef"
+    """
+    string with values of enumerations DataTypeDefXsd, DataTypeDefRdf
+    """
+
+    Identifier = "Identifier"
+    """
+    string
+    """
+
+    Lang_string_set = "LangStringSet"
+    """
+    Array of elements of type langString 
+    
+    .. note::
+        langString is a RDF data type.
+        
+    A langString is a string value tagged with a language code. 
+    It depends on the serialization rules for a technology how 
+    this is realized.
+    """
+
+    Content_type = "ContentType"
+    """
+    string
+    
+    .. note::
+        Any content type as in RFC2046. 
+    
+    A media type (also MIME type and content type) […] is a two-part 
+    identifier for file formats and format contents transmitted on 
+    the Internet. The Internet Assigned Numbers Authority (IANA) is 
+    the official authority for the standardization and publication of 
+    these classifications. Media types were originally defined in 
+    Request for Comments 2045 in November 1996 as a part of MIME 
+    (Multipurpose Internet Mail Extensions) specification, for denoting 
+    type of email message content and attachments.  
+    """
+
+    Path_type = "PathType"
+    """
+    string  
+    
+    .. note::
+    Any string conformant to RFC8089 , the “file” URI scheme (for 
+    relative and absolute file paths)
+    """
+
+    Qualifier_type = "QualifierType"
+    """
+    string
+    """
+    
+    Value_data_type = "ValueDataType"
+    """
+    any xsd atomic type as specified via DataTypeDefXsd
+    """
+
+
 @invariant(lambda self: is_MIME_type(self))
 class MIME_typed(Non_empty_string, DBC):
     """Represent a string that follows the pattern of a MIME type."""
@@ -85,7 +153,7 @@ class Has_semantics(DBC):
         self.semantic_ID = semantic_ID
 
 
-@reference_in_the_book(section=(6, 7, 2, 1), index=2)
+@reference_in_the_book(section=(5, 7, 2, 1), index=2)
 class Extension(Has_semantics):
     """
     Single extension of an element.
@@ -99,19 +167,19 @@ class Extension(Has_semantics):
     unique.
     """
 
-    value_type: Optional["Data_type_def"]
+    value_type: Optional["Data_type_defXsd"]
     """
     Type of the value of the extension.
 
     Default: xsd:string
     """
     # TODO (Nico: Add ValueDataType)
-    value: Optional[Non_empty_string]
+    value: Optional["Value_data_type"]
     """
     Value of the extension
     """
 
-    refers_to: Optional["Reference"]
+    refers_to: Optional["Model_reference"]
     """
     Reference to an element the extension refers to.
     """
@@ -120,7 +188,7 @@ class Extension(Has_semantics):
         self,
         name: Non_empty_string,
         semantic_ID: Optional["Reference"] = None,
-        value_type: Optional["Data_type_def"] = None,
+        value_type: Optional["Data_type_defXsd"] = None,
         value: Optional[Non_empty_string] = None,
         refers_to: Optional["Reference"] = None,
     ) -> None:
@@ -465,7 +533,7 @@ class Qualifier(Constraint, Has_semantics):
     the element.
     """
 
-    value_type: "Data_type_def"
+    value_type: "Data_type_defXsd"
     """
     Data type of the qualifier value.
     """
@@ -483,7 +551,7 @@ class Qualifier(Constraint, Has_semantics):
     def __init__(
         self,
         type: Non_empty_string,
-        value_type: "Data_type_def",
+        value_type: "Data_type_defXsd",
         value: Optional[Non_empty_string] = None,
         value_ID: Optional["Reference"] = None,
         semantic_ID: Optional["Reference"] = None,
@@ -869,7 +937,7 @@ class Submodel_element_list(Submodel_element):
     a ConceptDescription then the ConceptDescription/category shall be COLLECTION.
     """
 
-    submodel_element_type_values: "Submodel_elements"
+    submodel_element_type_values: "Submodel_element_elements"
     """
     The submodel element type of the submodel elements contained in the list.
 
@@ -899,7 +967,7 @@ class Submodel_element_list(Submodel_element):
     SubmodelElementList/semanticIdValues.
     """
 
-    value_type_values: Optional["Data_type_def"]
+    value_type_values: Optional["Data_type_defXsd"]
     """
     The value type of the submodel element contained in the list.
 
@@ -911,7 +979,7 @@ class Submodel_element_list(Submodel_element):
 
     def __init__(
         self,
-        submodel_element_type_values: "Submodel_elements",
+        submodel_element_type_values: "Submodel_element_elements",
         extensions: Optional[List["Extension"]] = None,
         ID_short: Optional[Non_empty_string] = None,
         display_name: Optional["Lang_string_set"] = None,
@@ -923,7 +991,7 @@ class Submodel_element_list(Submodel_element):
         data_specifications: Optional[List["Reference"]] = None,
         values: Optional[List["Submodel_element"]] = None,
         semantic_ID_values: Optional["Reference"] = None,
-        value_type_values: Optional["Data_type_def"] = None,
+        value_type_values: Optional["Data_type_defXsd"] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -1055,7 +1123,7 @@ class Property(Data_element):
     resp.
     """
 
-    value_type: "Data_type_def"
+    value_type: "Data_type_defXsd"
     """
     Data type of the value
     """
@@ -1079,7 +1147,7 @@ class Property(Data_element):
     def __init__(
         self,
         ID_short: Non_empty_string,
-        value_type: "Data_type_def",
+        value_type: "Data_type_defXsd",
         extensions: Optional[List["Extension"]] = None,
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[Non_empty_string] = None,
@@ -1194,7 +1262,7 @@ class Range(Data_element):
     then DataSpecificationIEC61360/levelType shall be identical to the set {Min, Max}.
     """
 
-    value_type: "Data_type_def"
+    value_type: "Data_type_defXsd"
     """
     Data type of the min und max
     """
@@ -1214,7 +1282,7 @@ class Range(Data_element):
     def __init__(
         self,
         ID_short: Non_empty_string,
-        value_type: "Data_type_def",
+        value_type: "Data_type_defXsd",
         extensions: Optional[List["Extension"]] = None,
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[Non_empty_string] = None,
@@ -1865,7 +1933,7 @@ class View(Referable, Has_semantics, Has_data_specification):
 
 
 @abstract
-@reference_in_the_book(section=(6, 7, 10))
+@reference_in_the_book(section=(5, 7, 9, 1))
 @serialization(with_model_type=True)
 class Reference(DBC):
     """
@@ -1875,25 +1943,25 @@ class Reference(DBC):
 
 
 @invariant(lambda self: len(self.values) >= 1)
-@reference_in_the_book(section=(6, 7, 10), index=1)
+@reference_in_the_book(section=(5, 7, 9, 2))
 @serialization(with_model_type=True)
 class Global_reference(Reference):
     """
     Reference to an external entity.
     """
 
-    values: List[Non_empty_string]
+    values: List["Identifier"]
     """
     Unique reference. The reference can be a concatenation of different identifiers,
     for example to an IRDI path etc.
     """
 
-    def __init__(self, values: List[Non_empty_string]) -> None:
+    def __init__(self, values: List["Identifier"]) -> None:
         self.values = values
 
 
 @invariant(lambda self: len(self.keys) >= 1)
-@reference_in_the_book(section=(6, 7, 10), index=2)
+@reference_in_the_book(section=(5, 7, 9, 3))
 @serialization(with_model_type=True)
 class Model_reference(Reference):
     """
@@ -1906,19 +1974,19 @@ class Model_reference(Reference):
     keys: List["Key"]
     """Unique references in their name space."""
 
-    referred_semantic_ID: Optional["Reference"]
+    referred_semantic_ID: Optional["Global_reference"]
     """
     SemanticId of the referenced model element.
     """
 
     def __init__(
-        self, keys: List["Key"], referred_semantic_ID: Optional["Reference"] = None
+        self, keys: List["Key"], referred_semantic_ID: Optional["Global_reference"] = None
     ) -> None:
         self.keys = keys
         self.referred_semantic_ID = referred_semantic_ID
 
 
-@reference_in_the_book(section=(6, 7, 10), index=1)
+@reference_in_the_book(section=(5, 7, 9, 3), index=1)
 class Key(DBC):
     """A key is a reference to an element by its id."""
 
@@ -1952,7 +2020,7 @@ class Key(DBC):
         self.value = value
 
 
-@reference_in_the_book(section=(6, 7, 11), index=8)
+@reference_in_the_book(section=(5, 7, 9, 3), index=5)
 class Identifiable_elements(Enum):
     """Enumeration of all identifiable elements within an asset administration shell."""
 
@@ -1961,16 +2029,15 @@ class Identifiable_elements(Enum):
     Submodel = "Submodel"
 
 
-@reference_in_the_book(section=(6, 7, 10), index=3)
+@reference_in_the_book(section=(5, 7, 9, 3), index=3)
 @is_superset_of(enums=[Identifiable_elements])
 class Referable_elements(Enum):
     """Enumeration of all referable elements within an asset administration shell"""
 
-    Access_permission_rule = "AccessPermissionRule"
+    
     Annotated_relationship_element = "AnnotatedRelationshipElement"
-    Asset = "Asset"
     Asset_administration_shell = "AssetAdministrationShell"
-    Basic_event = "BasicEvent"
+    Basic_event_element = "BasicEventElement"
     Blob = "Blob"
     Capability = "Capability"
     Concept_description = "ConceptDescription"
@@ -1985,22 +2052,46 @@ class Referable_elements(Enum):
     """
 
     Entity = "Entity"
-    Event = "Event"
+    Event_element = "EventElement"
     """
     Event.
 
     .. note::
 
-        Event is abstract.
+        Event Element is abstract.
     """
 
     File = "File"
+    Global_element_reference = "GlobalElementReference"
+    """
+    Global reference
+    """
+    Model_element_reference = "ModelElementReference"
+    """
+    Model reference
+    """
     Multi_language_property = "MultiLanguageProperty"
+    """
+    Property with a value that can be provided in multiple languages
+    """
     Operation = "Operation"
     Property = "Property"
     Range = "Range"
+    """
+    Range with min and max
+    """
     Reference_element = "ReferenceElement"
+    """
+    Reference
+
+    .. note::
+    
+        ReferenceElement is abstract
+    """
     Relationship_element = "RelationshipElement"
+    """
+    Relationship
+    """
     Submodel = "Submodel"
     Submodel_element = "SubmodelElement"
     """
@@ -2023,23 +2114,20 @@ class Referable_elements(Enum):
     """
 
 
-@reference_in_the_book(section=(6, 7, 10), index=2)
+@reference_in_the_book(section=(5, 7, 9, 3), index=2)
 @is_superset_of(enums=[Referable_elements])
 class Key_elements(Enum):
     """Enumeration of different key value types within a key."""
 
     Fragment_reference = "FragmentReference"
     """
-    unique reference to an element within a file.
-
-    The file itself is assumed to be part of an asset administration shell.
+    Bookmark or a similar local identifier of a subordinate part of 
+    a primary resource
     """
 
-    Access_permission_rule = "AccessPermissionRule"
     Annotated_relationship_element = "AnnotatedRelationshipElement"
-    Asset = "Asset"
     Asset_administration_shell = "AssetAdministrationShell"
-    Basic_event = "BasicEvent"
+    Basic_event_Element = "BasicEventElement"
     Blob = "Blob"
     Capability = "Capability"
     Concept_description = "ConceptDescription"
@@ -2054,16 +2142,21 @@ class Key_elements(Enum):
     """
 
     Entity = "Entity"
-    Event = "Event"
+    Event_element = "EventElement"
     """
     Event.
 
     .. note::
 
-        Event is abstract.
+        Event element is abstract.
     """
 
     File = "File"
+    Global_reference = "GlobalReference"
+    Model_element_reference = "ModelElementReference"
+    """
+    Model Reference
+    """
     Multi_language_property = "MultiLanguageProperty"
     """Property with a value that can be provided in multiple languages"""
 
@@ -2072,9 +2165,19 @@ class Key_elements(Enum):
     Range = "Range"
     """Range with min and max"""
 
-    Global_reference = "GlobalReference"
+    
     Reference_element = "ReferenceElement"
+    """"
+    Reference
+    
+    .. note::
+
+        RefrenceElement is abstract
+    """
     Relationship_element = "RelationshipElement"
+    """
+    Relationship
+    """
     Submodel = "Submodel"
     Submodel_element = "SubmodelElement"
     """
@@ -2097,38 +2200,14 @@ class Key_elements(Enum):
     """
 
 
-@reference_in_the_book(section=(6, 7, 10), index=7)
-class Submodel_elements(Enum):
+@reference_in_the_book(section=(5, 7, 9, 3), index=4)
+class Submodel_element_elements(Enum):
     """Enumeration of all referable elements within an asset administration shell."""
 
     Annotated_relationship_element = "AnnotatedRelationshipElement"
-    """
-    Annotated relationship element
-    """
-    Asset = "Asset"
-    """
-    Asset
-    """
-    Asset_administration_shell = "AssetAdministrationShell"
-    """
-    Asset Administration Shell
-    """
-    Basic_event = "BasicEvent"
-    """
-    Basic Event
-    """
+    Basic_event_element = "BasicEventElement"
     Blob = "Blob"
-    """
-    Blob
-    """
     Capability = "Capability"
-    """
-    Capability
-    """
-    Concept_description = "ConceptDescription"
-    """
-    Concept Description
-    """
     Data_element = "DataElement"
     """
     Data Element.
@@ -2138,33 +2217,29 @@ class Submodel_elements(Enum):
         be a Property, a File etc.
     """
     Entity = "Entity"
+    Event_element = "EventElement"
     """
-    Entity
-    """
-    Event = "Event"
-    """
-    Event
+    Event element
 
     .. note::
 
         Event is abstract
     """
     File = "File"
+    Global_element_reference = "GlobalReference"
     """
-    File
+    Global reference
+    """
+    Model_element_reference = "ModelElementReference"
+    """
+    Model Reference
     """
     Multi_language_property = "MultiLanguageProperty"
     """
     Property with a value that can be provided in multiple languages
     """
     Operation = "Operation"
-    """
-    Operation
-    """
     Property = "Property"
-    """
-    Property
-    """
     Range = "Range"
     """
     Range with min and max
@@ -2172,15 +2247,16 @@ class Submodel_elements(Enum):
     Reference_element = "ReferenceElement"
     """
     Reference
+
+    .. note::
+
+        ReferenceElement is abstract
     """
     Relationship_element = "RelationshipElement"
     """
     Relationship
     """
-    Submodel = "Submodel"
-    """
-    Submodel
-    """
+    
     Submodel_element = "SubmodelElement"
     """
     Submodel Element
@@ -2232,6 +2308,7 @@ class Duration_build_in_types(Enum):
     Year_month_duration = "yearMonthDuration"
 
 
+
 @reference_in_the_book(section=(6, 7, 12, 1), index=4)
 class Primitive_types(Enum):
     Any_URI = "anyURI"
@@ -2274,7 +2351,7 @@ class String_build_in_types(Enum):
         String_build_in_types,
     ]
 )
-class Data_type_def(Enum):
+class Data_type_defXsd(Enum):
     """
     Enumeration listing all xsd anySimpleTypes
     """
