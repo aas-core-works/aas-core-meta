@@ -3213,3 +3213,4 @@ class Asset_administration_shell_environment:
         self.assets = assets
         self.submodels = submodels
         self.concept_descriptions = concept_descriptions
+        
