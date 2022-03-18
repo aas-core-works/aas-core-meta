@@ -993,7 +993,7 @@ class Submodel_element_list(Submodel_element):
     The submodel element type of the submodel elements contained in the list.
     """
 
-    value_type_list_element: Optional["Data_type_DefXsd"]
+    value_type_list_element: Optional["Data_type_defXsd"]
     """
     The value type of the submodel element contained in the list. 
     """
