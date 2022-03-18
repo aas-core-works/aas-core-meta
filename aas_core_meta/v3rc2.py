@@ -975,7 +975,7 @@ class Submodel_element_list(Submodel_element):
     The submodel element type of the submodel elements contained in the list.
     """
 
-    order_relevant: Optional["Boolean"]
+    order_relevant: Optional["bool"]
     """
     Defines whether order in list is relevant. If orderRelevant = False then the list 
     is representing a set or a bag.
@@ -1010,7 +1010,7 @@ class Submodel_element_list(Submodel_element):
         semantic_ID: Optional["Global_reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Global_reference"]] = None,
-        order_relevant: Optional["Boolean"] = None,
+        order_relevant: Optional["bool"] = None,
         values: Optional[List["Submodel_element"]] = None,
         semantic_id_list_element: Optional["Global_reference"] = None,
         value_type_list_element: Optional["Data_type_defXsd"] = None,
