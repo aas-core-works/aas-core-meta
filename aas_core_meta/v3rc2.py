@@ -1,4 +1,4 @@
-"""Provide the meta model for Asset Administration Shell V3 Release Candidate 1."""
+"""Provide the meta model for Asset Administration Shell V3.0 Release Candidate 2 from 2022-02-20"""
 from enum import Enum
 from re import match
 from typing import List, Optional
@@ -1530,11 +1530,9 @@ class Annotated_relationship_element(Relationship_element):
     """
     An annotated relationship element is a relationship element that can be annotated
     with additional data elements.
-
-    See :constraintref:`AASd-055`
     """
 
-    annotation: List[Data_element]
+    annotation: Optional[List[Data_element]]
     """
     A reference to a data element that represents an annotation that holds for
     the relationship between the two elements.
@@ -2388,7 +2386,38 @@ class Data_type_defXsd(Enum):
     """
     Enumeration listing all xsd anySimpleTypes
     """
-    pass
+    Integer = "integer"
+    Long = "long"
+    Int = "int"
+    Short = "short"
+    Byte = "byte"
+    Non_negative_integer = "NonNegativeInteger"
+    Positive_integer = "positiveInteger"
+    Unsigned_long = "unsignedLong"
+    Unsigned_int = "unsignedInt"
+    Unsigned_short = "unsignedShort"
+    Unsigned_byte = "unsignedByte"
+    Non_positive_integer = "nonPositiveInteger"
+    Negative_integer = "negativeInteger"
+    Day_time_duration = "dayTimeDuration"
+    Year_month_duration = "yearMonthDuration"
+    Any_URI = "anyURI"
+    Base_64_binary = "base64Binary"
+    Boolean = "boolean"
+    Date = "date"
+    Date_time = "dateTime"
+    Decimal = "decimal"
+    Double = "double"
+    Duration = "duration"
+    Float = "float"
+    G_day = "gDay"
+    G_month = "gMonth"
+    G_month_day = "gMonthDay"
+    G_year = "gYear"
+    G_year_month = "gYearMonth"
+    Hex_binary = "hexBinary"
+    String = "string"
+    Time = "time"
 
 @reference_in_the_book(section=(6, 7, 12, 1), index=5)
 class String_build_in_types(Enum):
