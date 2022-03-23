@@ -16,7 +16,7 @@ from aas_core_meta.marker import (
 
 # TODO (sadu, 2021-11-17): book URL should be updated when published
 __book_url__ = "TBA"
-__book_version__ = "V3.0RC2"
+__book_version__ = "V3.0RC02"
 
 
 # TODO (mristin, 2021-10-27): check the order of properties in the constructor
@@ -174,12 +174,6 @@ class Primitive_types(Enum):
     Hex_binary = "xs:hexBinary"
     String = "xs:string"
     Time = "xs:time"
-
-
-@reference_in_the_book(section=(5, 7, 11, 3), index=4)
-class Data_type_def_Rdf(Enum):
-    Lang_string = "rdf:langString"
-    pass
 
 
 @reference_in_the_book(section=(5, 7, 11, 3))
