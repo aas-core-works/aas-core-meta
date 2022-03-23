@@ -1,4 +1,4 @@
-"""Provide the meta model for Asset Administration Shell V3 Release Candidate 1."""
+"""Provide the meta model for Asset Administration Shell V3.0 Release Candidate 2."""
 from enum import Enum
 from re import match
 from typing import List, Optional
@@ -111,6 +111,7 @@ class Blob_type(DBC):
     pass
 
 
+# todo: is super set
 class Data_type_def(DBC):
     """
     string with values of enumerations DataTypeDefXsd, DataTypeDefRdf
@@ -492,7 +493,7 @@ class Qualifier(Has_semantics):
     the element.
     """
 
-    value_type: "Data_type_defXsd"
+    value_type: "Data_type_def_XSD"
     """
     Data type of the qualifier value.
     """
@@ -510,7 +511,7 @@ class Qualifier(Has_semantics):
     def __init__(
         self,
         type: "Qualifier_type",
-        value_type: "Data_type_defXsd",
+        value_type: "Data_type_def_XSD",
         value: Optional["Value_data_type"] = None,
         value_ID: Optional["Global_reference"] = None,
         semantic_ID: Optional["Global_reference"] = None,
@@ -787,7 +788,7 @@ class Extension(Has_semantics):
     unique.
     """
 
-    value_type: Optional["Data_type_defXsd"]
+    value_type: Optional["Data_type_def_XSD"]
     """
     Type of the value of the extension.
 
@@ -808,7 +809,7 @@ class Extension(Has_semantics):
         self,
         name: Non_empty_string,
         semantic_ID: Optional["Global_reference"] = None,
-        value_type: Optional["Data_type_defXsd"] = None,
+        value_type: Optional["Data_type_def_XSD"] = None,
         value: Optional["Value_data_type"] = None,
         # ToDo: Make refs_to -> ModelReference<Referable>
         refers_to: Optional["Model_reference"] = None,
@@ -1261,7 +1262,7 @@ class Submodel_element_list(Submodel_element):
     The submodel element type of the submodel elements contained in the list.
     """
 
-    value_type_list_element: Optional["Data_type_defXsd"]
+    value_type_list_element: Optional["Data_type_def_XSD"]
     """
     The value type of the submodel element contained in the list. 
     """
@@ -1281,7 +1282,7 @@ class Submodel_element_list(Submodel_element):
         order_relevant: Optional["bool"] = None,
         values: Optional[List["Submodel_element"]] = None,
         semantic_id_list_element: Optional["Global_reference"] = None,
-        value_type_list_element: Optional["Data_type_defXsd"] = None,
+        value_type_list_element: Optional["Data_type_def_XSD"] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -1355,7 +1356,7 @@ class Property(Data_element):
 
     """
 
-    value_type: "Data_type_defXsd"
+    value_type: "Data_type_def_XSD"
     """
     Data type of the value
     """
@@ -1373,7 +1374,7 @@ class Property(Data_element):
     def __init__(
         self,
         ID_short: Non_empty_string,
-        value_type: "Data_type_defXsd",
+        value_type: "Data_type_def_XSD",
         extensions: Optional[List["Extension"]] = None,
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[Non_empty_string] = None,
@@ -1463,7 +1464,7 @@ class Range(Data_element):
 
     """
 
-    value_type: "Data_type_defXsd"
+    value_type: "Data_type_def_XSD"
     """
     Data type of the min und max
     """
@@ -1483,7 +1484,7 @@ class Range(Data_element):
     def __init__(
         self,
         ID_short: Non_empty_string,
-        value_type: "Data_type_defXsd",
+        value_type: "Data_type_def_XSD",
         extensions: Optional[List["Extension"]] = None,
         display_name: Optional["Lang_string_set"] = None,
         category: Optional[Non_empty_string] = None,
@@ -2606,7 +2607,7 @@ class DataTypeDefRdf(Enum):
         Primitive_types,
     ]
 )
-class Data_type_defXsd(Enum):
+class Data_type_def_XSD(Enum):
     """
     Enumeration listing all xsd anySimpleTypes
     """
