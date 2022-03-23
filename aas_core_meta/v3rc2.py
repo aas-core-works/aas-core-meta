@@ -222,7 +222,26 @@ class Data_type_def_XSD(Enum):
     Unsigned_byte = "xs:unsignedByte"
     Non_positive_integer = "xs:nonPositiveInteger"
     Negative_integer = "xs:negativeInteger"
-
+    Day_time_duration = "xs:dayTimeDuration"
+    Year_month_duration = "xs:yearMonthDuration"
+    Any_URI = "xs:anyURI"
+    Base_64_binary = "xs:base64Binary"
+    Boolean = "xs:boolean"
+    Date = "xs:date"
+    Date_time = "xs:dateTime"
+    Date_time_stamp = "xs:dateTimeStamp"
+    Decimal = "xs:decimal"
+    Double = "xs:double"
+    Duration = "xs:duration"
+    Float = "xs:float"
+    G_day = "xs:gDay"
+    G_month = "xs:gMonth"
+    G_month_day = "xs:gMonthDay"
+    G_year = "xs:gYear"
+    G_year_month = "xs:gYearMonth"
+    Hex_binary = "xs:hexBinary"
+    String = "xs:string"
+    Time = "xs:time"
 
 @is_superset_of(enums=[Data_type_def_XSD, Data_type_def_Rdf])
 class Data_type_def(Enum):
