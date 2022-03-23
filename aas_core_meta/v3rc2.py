@@ -111,16 +111,168 @@ class Blob_type(DBC):
     pass
 
 
-# todo: is super set
-class Data_type_def(DBC):
+@reference_in_the_book(section=(5, 7, 12, 3), index=4)
+class Data_Type_Def_Rdf(Enum):
     """
-    string with values of enumerations DataTypeDefXsd, DataTypeDefRdf
+    Enumeration listing all RDF types
     """
 
+    rdf_lang_string = "rdf:langString"
+    """
+    String with a language tag
+
+    .. note::
+        RDF requires IETF BCP 47  language tags, i.e. simple two-letter language tags
+        for Locales like “de” conformant to ISO 639-1 are allowed as well as language 
+        tags plus extension like “de-DE” for country code, dialect etc. like in “en-US” 
+        or “en-GB” for English (United Kingdom) and English (United States). 
+        IETF language tags are referencing ISO 639, ISO 3166 and ISO 15924.
+
+    """
+
+
+@reference_in_the_book(section=(7, 7, 11, 3), index=1)
+class Decimal_build_in_types(Enum):
+    Integer = "xs:integer"
+    Long = "xs:long"
+    Int = "xs:int"
+    Short = "xs:short"
+    Byte = "xs:byte"
+    Non_negative_integer = "xs:NonNegativeInteger"
+    Positive_integer = "xs:positiveInteger"
+    Unsigned_long = "xs:unsignedLong"
+    Unsigned_int = "xs:unsignedInt"
+    Unsigned_short = "xs:unsignedShort"
+    Unsigned_byte = "xs:unsignedByte"
+    Non_positive_integer = "xs:nonPositiveInteger"
+    Negative_integer = "xs:negativeInteger"
+
+
+@reference_in_the_book(section=(5, 7, 11, 3), index=2)
+class Duration_build_in_types(Enum):
+    Day_time_duration = "xs:dayTimeDuration"
+    Year_month_duration = "xs:yearMonthDuration"
+
+
+@reference_in_the_book(section=(5, 7, 11, 3), index=3)
+class Primitive_types(Enum):
+    Any_URI = "xs:anyURI"
+    Base_64_binary = "xs:base64Binary"
+    Boolean = "xs:boolean"
+    Date = "xs:date"
+    Date_time = "xs:dateTime"
+    Date_time_stamp = "xs:dateTimeStamp"
+    Decimal = "xs:decimal"
+    Double = "xs:double"
+    Duration = "xs:duration"
+    Float = "xs:float"
+    G_day = "xs:gDay"
+    G_month = "xs:gMonth"
+    G_month_day = "xs:gMonthDay"
+    G_year = "xs:gYear"
+    G_year_month = "xs:gYearMonth"
+    Hex_binary = "xs:hexBinary"
+    String = "xs:string"
+    Time = "xs:time"
+
+
+@reference_in_the_book(section=(5, 7, 11, 3), index=4)
+class Data_Type_Def_RDF(Enum):
+    Lang_string = "rdf:langString"
     pass
 
 
-class Identifier(DBC):
+@reference_in_the_book(section=(5, 7, 11, 3))
+@is_superset_of(
+    enums=[
+        Decimal_build_in_types,
+        Duration_build_in_types,
+        Primitive_types,
+    ]
+)
+class Data_type_def_XSD(Enum):
+    """
+    Enumeration listing all xsd anySimpleTypes
+    """
+
+    Any_URI = "xs:anyURI"
+    Base_64_binary = "xs:base64Binary"
+    Boolean = "xs:boolean"
+    Date = "xs:date"
+    Date_time = "xs:dateTime"
+    Date_time_stamp = "xs:dateTimeStamp"
+    Decimal = "xs:decimal"
+    Double = "xs:double"
+    Duration = "xs:duration"
+    Float = "xs:float"
+    G_day = "xs:gDay"
+    G_month = "xs:gMonth"
+    G_month_day = "xs:gMonthDay"
+    G_year = "xs:gYear"
+    G_year_month = "xs:gYearMonth"
+    Hex_binary = "xs:hexBinary"
+    String = "xs:string"
+    Time = "xs:time"
+    Day_time_duration = "xs:dayTimeDuration"
+    Year_month_duration = "xs:yearMonthDuration"
+    Integer = "xs:integer"
+    Long = "xs:long"
+    Int = "xs:int"
+    Short = "xs:short"
+    Byte = "xs:byte"
+    Non_negative_integer = "xs:NonNegativeInteger"
+    Positive_integer = "xs:positiveInteger"
+    Unsigned_long = "xs:unsignedLong"
+    Unsigned_int = "xs:unsignedInt"
+    Unsigned_short = "xs:unsignedShort"
+    Unsigned_byte = "xs:unsignedByte"
+    Non_positive_integer = "xs:nonPositiveInteger"
+    Negative_integer = "xs:negativeInteger"
+
+
+@is_superset_of(enums=[Data_type_def_XSD, Data_Type_Def_RDF])
+class Data_type_def(Enum):
+    """
+    string with values of enumerations DataTypeDefXsd, Data_Type_Def_RDF
+    """
+
+    Any_URI = "xs:anyURI"
+    Base_64_binary = "xs:base64Binary"
+    Boolean = "xs:boolean"
+    Date = "xs:date"
+    Date_time = "xs:dateTime"
+    Date_time_stamp = "xs:dateTimeStamp"
+    Decimal = "xs:decimal"
+    Double = "xs:double"
+    Duration = "xs:duration"
+    Float = "xs:float"
+    G_day = "xs:gDay"
+    G_month = "xs:gMonth"
+    G_month_day = "xs:gMonthDay"
+    G_year = "xs:gYear"
+    G_year_month = "xs:gYearMonth"
+    Hex_binary = "xs:hexBinary"
+    String = "xs:string"
+    Time = "xs:time"
+    Day_time_duration = "xs:dayTimeDuration"
+    Year_month_duration = "xs:yearMonthDuration"
+    Integer = "xs:integer"
+    Long = "xs:long"
+    Int = "xs:int"
+    Short = "xs:short"
+    Byte = "xs:byte"
+    Non_negative_integer = "xs:NonNegativeInteger"
+    Positive_integer = "xs:positiveInteger"
+    Unsigned_long = "xs:unsignedLong"
+    Unsigned_int = "xs:unsignedInt"
+    Unsigned_short = "xs:unsignedShort"
+    Unsigned_byte = "xs:unsignedByte"
+    Non_positive_integer = "xs:nonPositiveInteger"
+    Negative_integer = "xs:negativeInteger"
+    Lang_string = "rdf:langString"
+
+
+class Identifier(Non_empty_string, DBC):
     """
     string
     """
@@ -128,7 +280,7 @@ class Identifier(DBC):
     pass
 
 
-class Lang_string_set(DBC):
+class Lang_string_set(Non_empty_string, DBC):
     """
     Array of elements of type langString
 
@@ -143,7 +295,8 @@ class Lang_string_set(DBC):
     pass
 
 
-class Content_type(DBC):
+@invariant(lambda self: is_MIME_type(self))
+class Content_type(Non_empty_string, DBC):
     """
     string
 
@@ -163,7 +316,7 @@ class Content_type(DBC):
     pass
 
 
-class Path_type(DBC):
+class Path_type(Non_empty_string, DBC):
     """
     string
 
@@ -175,7 +328,7 @@ class Path_type(DBC):
     pass
 
 
-class Qualifier_type(DBC):
+class Qualifier_type(Non_empty_string, DBC):
     """
     string
     """
@@ -183,12 +336,49 @@ class Qualifier_type(DBC):
     pass
 
 
-class Value_data_type(DBC):
+@is_superset_of(enums=[Data_type_def_XSD])
+class Value_data_type(Enum):
     """
     any xsd atomic type as specified via DataTypeDefXsd
     """
 
-    pass
+    """
+       Enumeration listing all xsd anySimpleTypes
+       """
+
+    Any_URI = "xs:anyURI"
+    Base_64_binary = "xs:base64Binary"
+    Boolean = "xs:boolean"
+    Date = "xs:date"
+    Date_time = "xs:dateTime"
+    Date_time_stamp = "xs:dateTimeStamp"
+    Decimal = "xs:decimal"
+    Double = "xs:double"
+    Duration = "xs:duration"
+    Float = "xs:float"
+    G_day = "xs:gDay"
+    G_month = "xs:gMonth"
+    G_month_day = "xs:gMonthDay"
+    G_year = "xs:gYear"
+    G_year_month = "xs:gYearMonth"
+    Hex_binary = "xs:hexBinary"
+    String = "xs:string"
+    Time = "xs:time"
+    Day_time_duration = "xs:dayTimeDuration"
+    Year_month_duration = "xs:yearMonthDuration"
+    Integer = "xs:integer"
+    Long = "xs:long"
+    Int = "xs:int"
+    Short = "xs:short"
+    Byte = "xs:byte"
+    Non_negative_integer = "xs:NonNegativeInteger"
+    Positive_integer = "xs:positiveInteger"
+    Unsigned_long = "xs:unsignedLong"
+    Unsigned_int = "xs:unsignedInt"
+    Unsigned_short = "xs:unsignedShort"
+    Unsigned_byte = "xs:unsignedByte"
+    Non_positive_integer = "xs:nonPositiveInteger"
+    Negative_integer = "xs:negativeInteger"
 
 
 @invariant(lambda self: is_MIME_type(self))
@@ -2526,125 +2716,6 @@ class Key_elements(Enum):
     """
     Struct of Submodel Elements
     """
-
-
-@reference_in_the_book(section=(5, 7, 12, 3), index=4)
-class Data_Type_Def_Rdf(Enum):
-    """
-    Enumeration listing all RDF types
-    """
-
-    rdf_lang_string = "rdf:langString"
-    """
-    String with a language tag
-
-    .. note::
-        RDF requires IETF BCP 47  language tags, i.e. simple two-letter language tags
-        for Locales like “de” conformant to ISO 639-1 are allowed as well as language 
-        tags plus extension like “de-DE” for country code, dialect etc. like in “en-US” 
-        or “en-GB” for English (United Kingdom) and English (United States). 
-        IETF language tags are referencing ISO 639, ISO 3166 and ISO 15924.
-    
-    """
-
-
-@reference_in_the_book(section=(7, 7, 11, 3), index=1)
-class Decimal_build_in_types(Enum):
-    Integer = "xs:integer"
-    Long = "xs:long"
-    Int = "xs:int"
-    Short = "xs:short"
-    Byte = "xs:byte"
-    Non_negative_integer = "xs:NonNegativeInteger"
-    Positive_integer = "xs:positiveInteger"
-    Unsigned_long = "xs:unsignedLong"
-    Unsigned_int = "xs:unsignedInt"
-    Unsigned_short = "xs:unsignedShort"
-    Unsigned_byte = "xs:unsignedByte"
-    Non_positive_integer = "xs:nonPositiveInteger"
-    Negative_integer = "xs:negativeInteger"
-
-
-@reference_in_the_book(section=(5, 7, 11, 3), index=2)
-class Duration_build_in_types(Enum):
-    Day_time_duration = "xs:dayTimeDuration"
-    Year_month_duration = "xs:yearMonthDuration"
-
-
-@reference_in_the_book(section=(5, 7, 11, 3), index=3)
-class Primitive_types(Enum):
-    Any_URI = "xs:anyURI"
-    Base_64_binary = "xs:base64Binary"
-    Boolean = "xs:boolean"
-    Date = "xs:date"
-    Date_time = "xs:dateTime"
-    Date_time_stamp = "xs:dateTimeStamp"
-    Decimal = "xs:decimal"
-    Double = "xs:double"
-    Duration = "xs:duration"
-    Float = "xs:float"
-    G_day = "xs:gDay"
-    G_month = "xs:gMonth"
-    G_month_day = "xs:gMonthDay"
-    G_year = "xs:gYear"
-    G_year_month = "xs:gYearMonth"
-    Hex_binary = "xs:hexBinary"
-    String = "xs:string"
-    Time = "xs:time"
-
-
-@reference_in_the_book(section=(5, 7, 11, 3), index=4)
-class DataTypeDefRdf(Enum):
-    Lang_string = "rdf:langString"
-    pass
-
-
-@reference_in_the_book(section=(5, 7, 11, 3))
-@is_superset_of(
-    enums=[
-        Decimal_build_in_types,
-        Duration_build_in_types,
-        Primitive_types,
-    ]
-)
-class Data_type_def_XSD(Enum):
-    """
-    Enumeration listing all xsd anySimpleTypes
-    """
-
-    Any_URI = "xs:anyURI"
-    Base_64_binary = "xs:base64Binary"
-    Boolean = "xs:boolean"
-    Date = "xs:date"
-    Date_time = "xs:dateTime"
-    Date_time_stamp = "xs:dateTimeStamp"
-    Decimal = "xs:decimal"
-    Double = "xs:double"
-    Duration = "xs:duration"
-    Float = "xs:float"
-    G_day = "xs:gDay"
-    G_month = "xs:gMonth"
-    G_month_day = "xs:gMonthDay"
-    G_year = "xs:gYear"
-    G_year_month = "xs:gYearMonth"
-    Hex_binary = "xs:hexBinary"
-    String = "xs:string"
-    Time = "xs:time"
-    Day_time_duration = "xs:dayTimeDuration"
-    Year_month_duration = "xs:yearMonthDuration"
-    Integer = "xs:integer"
-    Long = "xs:long"
-    Int = "xs:int"
-    Short = "xs:short"
-    Byte = "xs:byte"
-    Non_negative_integer = "xs:NonNegativeInteger"
-    Positive_integer = "xs:positiveInteger"
-    Unsigned_long = "xs:unsignedLong"
-    Unsigned_int = "xs:unsignedInt"
-    Unsigned_short = "xs:unsignedShort"
-    Unsigned_byte = "xs:unsignedByte"
-    Non_positive_integer = "xs:nonPositiveInteger"
-    Negative_integer = "xs:negativeInteger"
 
 
 @abstract
