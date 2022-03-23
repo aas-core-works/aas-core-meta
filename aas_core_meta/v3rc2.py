@@ -112,7 +112,7 @@ class Blob_type(DBC):
 
 
 @reference_in_the_book(section=(5, 7, 12, 3), index=4)
-class Data_Type_Def_Rdf(Enum):
+class Data_type_def_Rdf(Enum):
     """
     Enumeration listing all RDF types
     """
@@ -177,7 +177,7 @@ class Primitive_types(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 11, 3), index=4)
-class Data_Type_Def_RDF(Enum):
+class Data_type_def_Rdf(Enum):
     Lang_string = "rdf:langString"
     pass
 
@@ -230,10 +230,10 @@ class Data_type_def_XSD(Enum):
     Negative_integer = "xs:negativeInteger"
 
 
-@is_superset_of(enums=[Data_type_def_XSD, Data_Type_Def_RDF])
+@is_superset_of(enums=[Data_type_def_XSD, Data_type_def_Rdf])
 class Data_type_def(Enum):
     """
-    string with values of enumerations DataTypeDefXsd, Data_Type_Def_RDF
+    string with values of enumerations DataTypeDefXsd, Data_type_def_Rdf
     """
 
     Any_URI = "xs:anyURI"
