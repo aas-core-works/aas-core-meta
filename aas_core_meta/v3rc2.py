@@ -231,7 +231,8 @@ class Data_type_def_XSD(Enum):
 @is_superset_of(enums=[Data_type_def_XSD, Data_type_def_RDF])
 class Data_type_def(Enum):
     """
-    string with values of enumerations DataTypeDefXsd, Data_type_def_Rdf
+    string with values of enumerations :class:`.Data_type_def_XSD`,
+    :class:`.Data_type_def_RDF`
     """
 
     Any_URI = "xs:anyURI"
@@ -283,6 +284,7 @@ class Lang_string_set(Non_empty_string, DBC):
     Array of elements of type langString
 
     .. note::
+
         langString is a RDF data type.
 
     A langString is a string value tagged with a language code.
@@ -338,7 +340,7 @@ class Qualifier_type(Non_empty_string, DBC):
 @is_superset_of(enums=[Data_type_def_XSD])
 class Value_data_type(Enum):
     """
-    any xsd atomic type as specified via DataTypeDefXsd
+    any xsd atomic type as specified via :class:`.Data_type_def_XSD`
     """
 
     Any_URI = "xs:anyURI"
@@ -432,12 +434,12 @@ class Referable(Has_extensions):
     .. note::
 
         In case the element is a property and the property has a semantic definition
-        (:class:`.Has_semantics`) conformant to IEC61360 the idShort is typically
-        identical to the short name in English.
+        (:class:`.Has_semantics`) conformant to IEC61360 the :attr:`~ID_short`
+        is typically identical to the short name in English.
 
     :constraint AASd-027:
-        idShort of Referables shall have a maximum length of 128
-        characters.
+        :attr:`~ID_short` of :class:`.Referable`'s shall have a maximum length
+        of 128 characters.
     """
 
     display_name: Optional["Lang_string_set"]
@@ -455,7 +457,7 @@ class Referable(Has_extensions):
     * the English preferred name of the concept description defining
       the semantics of the element
     * the short name of the concept description
-    * the idShort of the element
+    * the :attr:`~ID_short` of the element
     """
 
     category: Optional[Non_empty_string]
@@ -575,7 +577,8 @@ class Qualifiable(DBC):
     Additional qualification of a qualifiable element.
 
     :constraint AASd-021:
-        Every qualifiable can only have one qualifier with the same Qualifier/type.
+        Every qualifiable can only have one qualifier with the same 
+        :attr:`~Qualifier.type`.
     """
 
     def __init__(self, qualifiers: Optional[List["Qualifier"]] = None) -> None:
@@ -666,13 +669,14 @@ class Qualifier(Has_semantics):
     of the element.
 
     :constraint AASd-006:
-        If both, the value and the valueId of a Qualifier are present then the value
-        needs to be identical to the value of the referenced coded value in
-        Qualifier/valueId.
+        If both the :attr:`~value` and the :attr:`~value_ID` of
+        a :class:`.Qualifier` are present then the :attr:`~value` needs
+        to be identical to the value of the referenced coded value
+        in :attr:`~value_ID`.
 
     :constraint AASd-020:
-        The value of Qualifier/value shall be consistent to the data type as defined in
-        Qualifier/valueType
+        The value of :attr:`~value` shall be consistent to the data type as
+        defined in :attr:`~value_type`.
     """
 
     type: "Qualifier_type"
@@ -726,8 +730,8 @@ class Data_element(Submodel_element):
     (see “ISO/TS 29002-10:2009(E)”).
 
     :constraint AASd-090:
-        For data elements DataElement/category shall be one of the following values:
-        CONSTANT, PARAMETER or VARIABLE.
+        For data elements :attr:`~category` shall be one of the following
+        values: ``CONSTANT``, ``PARAMETER`` or ``VARIABLE``.
     """
 
     def __init__(
@@ -923,7 +927,7 @@ class Model_reference(Reference):
 
     referred_semantic_ID: Optional["Global_reference"]
     """
-    SemanticId of the referenced model element.
+    :attr:`Has_semantics.semantic_ID` of the referenced model element.
     """
 
     def __init__(
@@ -948,10 +952,10 @@ class Key(DBC):
     """
     Denote which kind of entity is referenced.
 
-    In case type = :attr:`~Key_elements.Global_reference` then the key represents
+    In case type = :attr:`Key_elements.Global_reference` then the key represents
     a global unique id.
 
-    In case type = :attr:`~Key_elements.Fragment_reference` the key represents
+    In case type = :attr:`Key_elements.Fragment_reference` the key represents
     a bookmark or a similar local identifier within its parent element as specified by
     the key that precedes this key.
 
@@ -983,7 +987,7 @@ class Extension(Has_semantics):
     Name of the extension.
 
     :constraint AASd-077:
-        The name of an extension within HasExtensions needs to be unique.
+        The name of an extension within :class:`.Has_extensions` needs to be unique.
     """
 
     value_type: Optional["Data_type_def_XSD"]
@@ -1009,7 +1013,6 @@ class Extension(Has_semantics):
         semantic_ID: Optional["Global_reference"] = None,
         value_type: Optional["Data_type_def_XSD"] = None,
         value: Optional["Value_data_type"] = None,
-        # ToDo: Make refs_to -> ModelReference<Referable>
         refers_to: Optional["Model_reference"] = None,
     ) -> None:
         Has_semantics.__init__(self, semantic_ID=semantic_ID)
@@ -1107,10 +1110,9 @@ class Administrative_information(Has_data_specification):
     information.
 
     :constraint AASd-005:
-        If AdministrativeInformation/version is not specified than also
-        AdministrativeInformation/revision shall be unspecified. This means, a revision
-        requires a version. If there is no version there is no revision neither.
-        Revision is optional.
+        If :attr:`~version` is not specified than also :attr:`~revision` shall be
+        unspecified. This means, a revision requires a version. If there is no version
+        there is no revision neither. Revision is optional.
     """
 
     version: Optional[Non_empty_string]
@@ -1190,14 +1192,15 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 @reference_in_the_book(section=(5, 7, 4))
 class Asset_information(DBC):
     """
-    In AssetInformation identifying meta data of the asset that is represented by an AAS
-    is defined.
+    In :class:`.Asset_information` identifying meta data of the asset that is
+    represented by an AAS is defined.
 
     The asset may either represent an asset type or an asset instance.
     The asset has a globally unique identifier plus – if needed – additional domain
     specific (proprietary) identifiers. However, to support the corner case of very
     first phase of lifecycle where a stabilised/constant global asset identifier does
-    not already exist, the corresponding attribute “globalAssetId” is optional.
+    not already exist, the corresponding attribute
+    :attr:`~global_asset_ID` is optional.
 
     """
 
@@ -1279,7 +1282,8 @@ class Asset_kind(Enum):
 @reference_in_the_book(section=(5, 7, 4), index=3)
 class Identifier_key_value_pair(Has_semantics):
     """
-    An IdentifierKeyValuePair describes a generic identifier as key-value pair.
+    An :class:`.Identifier_key_value_pair` describes a generic identifier as
+    key-value pair.
     """
 
     key: Non_empty_string
@@ -1426,27 +1430,30 @@ class Submodel_element_list(Submodel_element):
     A submodel element list is an ordered collection of submodel elements.
 
     :constraint AASd-107:
-        If a first level child element in a SubmodelElementList has a semanticId it
-        shall be identical to SubmodelElementList/semanticIdListElement.
+        If a first level child element in a :class:`.Submodel_element_list` has
+        a :attr:`~Submodel_element.semantic_ID` it
+        shall be identical to :attr:`~Submodel_element_list.semantic_id_list_element`.
 
     :constraint AASd-114:
-        If two first level child elements in a SubmodelElementList have a semanticId
-        then they shall be identical.
+        If two first level child elements in a :class:`.Submodel_element_list` have
+        a :attr:`~Submodel_element.semantic_ID` then they shall be identical.
 
     :constraint AASd-115:
-        If a first level child element in a SubmodelElementList does not specify
-        a semanticId then the value is assumed to be identical to
-        SubmodelElementList/semanticIdListElement.
+        If a first level child element in a :class:`.Submodel_element_list` does not
+        specify a :attr:`~Submodel_element.semantic_ID` then the value is assumed to be
+        identical to :attr:`~Submodel_element_list.semantic_id_list_element`.
 
     :constraint AASd-108:
-        All first level child elements in a SubmodelElementList shall have the same
-        submodel element type as specified in SubmodelElementList/typeValueListElement.
+        All first level child elements in a :class:`.Submodel_element_list` shall have
+        the same submodel element type as specified in :attr:`~type_value_list_element`.
 
     :constraint AASd-109:
-        If SubmodelElementList/typeValueListElement equal to Property or Range
-        SubmodelElementList/valueTypeListElement shall be set and all first level
-        child elements in the SubmodelElementList shall have the the value type as
-        specified in SubmodelElementList/valueTypeListElement.
+        If :attr:`~type_value_list_element` is equal to
+        :attr:`Submodel_element_elements.Property` or
+        :attr:`Submodel_element_elements.Range`
+        :attr:`~value_type_list_element` shall be set and all first
+        level child elements in the :class:`.Submodel_element_list` shall have
+        the value type as specified in :attr:`~value_type_list_element`.
     """
 
     type_value_list_element: "Submodel_element_elements"
@@ -1456,9 +1463,10 @@ class Submodel_element_list(Submodel_element):
 
     order_relevant: Optional["bool"]
     """
-    Defines whether order in list is relevant. If orderRelevant = False then the list
-    is representing a set or a bag.
-    Default: True
+    Defines whether order in list is relevant. If :attr:`~order_relevant` = ``False``
+    then the list is representing a set or a bag.
+
+    Default: ``True``
     """
 
     values: Optional[List["Submodel_element"]]
@@ -1565,9 +1573,9 @@ class Property(Data_element):
     A property is a data element that has a single value.
 
     :constraint AASd-007:
-        If both, the Property/value and the Property/valueId are present then the value
-        of Property/value needs to be identical to the value of the referenced coded
-        value in Property/valueId.
+        If both, the :attr:`~value` and the :attr:`~value_ID` are
+        present then the value of :attr:`~value` needs to be identical to
+        the value of the referenced coded value in :attr:`~value_ID`.
     """
 
     value_type: "Data_type_def_XSD"
@@ -1626,9 +1634,9 @@ class Multi_language_property(Data_element):
     A property is a data element that has a multi-language value.
 
     :constraint AASd-012:
-        If both, the MultiLanguageProperty/value and the MultiLanguageProperty/valueId
-        are present then for each string in a specific language the meaning must be
-        the same as specified in MultiLanguageProperty/valueId.
+        If both the :attr:`~value` and the :attr:`~value_ID` are present then for each
+        string in a specific language the meaning must be the same as specified in
+        :attr:`~value_ID`.
     """
 
     value: Optional["Lang_string_set"]
@@ -1737,26 +1745,27 @@ class Range(Data_element):
 @invariant(lambda self: is_MIME_type(self.MIME_type))
 class Blob(Data_element):
     """
-    A BLOB is a data element that represents a file that is contained with its source
-    code in the value attribute.
+    A :class:`.Blob` is a data element that represents a file that is contained with its
+    source code in the value attribute.
     """
 
     MIME_type: MIME_typed
     """
-    Mime type of the content of the BLOB.
-    The mime type states which file extensions the file can have.
-    Valid values are e.g. “application/json”, “application/xls”, ”image/jpg”
+    MIME type of the content of the :class:`.Blob`.
+
+    The MIME type states which file extensions the file can have.
+    Valid values are e.g. ``application/json``, ``application/xls``, ``image/jpg``.
     The allowed values are defined as in RFC2046.
     """
 
     value: Optional["Blob_type"]
     """
-    The value of the BLOB instance of a blob data element.
+    The value of the :class:`.Blob` instance of a blob data element.
 
     .. note::
 
         In contrast to the file property the file content is stored directly as value
-        in the Blob data element.
+        in the :class:`.Blob` data element.
     """
 
     def __init__(
@@ -1972,21 +1981,22 @@ class Basic_event_element(Event_element):
 
     observed: "Model_reference"
     """
-    Reference to the Referable, which defines the scope of the event. Can be AAS, Submodel
-    or SubmodelElement. Reference to a referable, e.g. a data element or a submodel, that
-    is being observed.
+    Reference to the :class:`.Referable`, which defines the scope of the event. 
+    Can be :class:`.Asset_administration_shell`, :class:`.Submodel`, or 
+    :class:`.Submodel_element`. Reference to a referable, e.g. a data element or 
+    a submodel, that is being observed.
     """
 
     direction: "Direction"
     """
     Direction of event.
-    Can be { Input, Output }.
+    Can be ``{ Input, Output }``.
     """
 
     state: "State_of_event"
     """
     State of event.
-    Can be { On, Off }.
+    Can be ``{ On, Off }``.
     """
 
     message_topic: Optional["Non_empty_string"]
@@ -1998,12 +2008,16 @@ class Basic_event_element(Event_element):
     message_broker: Optional["Model_reference"]
     """
     Information, which outer message infrastructure shall handle messages for
-    the EventElement. Refers to a Submodel, SubmodelElementList, SubmodelElementStruct or
-    Entity, which contains DataElements describing the proprietary specification for
+    the :class:`.Event_element`.
+    
+    Refers to a :class:`.Submodel`, :class:`.Submodel_element_list`, 
+    :class:`.Submodel_element_struct` or :class:`.Entity`, which contains 
+    :class:`.Data_element`'s describing the proprietary specification for
     the message broker.
 
     .. note::
-        for different message infrastructure, e.g. OPC UA or MQTT or AMQP, these
+
+        For different message infrastructure, e.g. OPC UA or MQTT or AMQP, these
         proprietary specification could be standardized by having respective Submodels.
     """
 
@@ -2086,24 +2100,28 @@ class Event_payload(DBC):
 
     source: "Model_reference"
     """
-    Reference to the source event element, including identification of AAS, Submodel,
-    SubmodelElements.
+    Reference to the source event element, including identification of 
+    :class:`.Asset_administration_shell`, :class:`.Submodel`, 
+    :class:`.Submodel_element`'s.
     """
 
     source_semantic_id: Optional["Global_reference"]
     """
-    semanticId of the source event element, if available
+    :attr:`~Has_semantics.semantic_ID` of the source event element, if available
     """
 
     observable_reference: "Model_reference"
     """
     Reference to the referable, which defines the scope of the event.
-    Can be AAS, Submodel or SubmodelElement.
+    
+    Can be :class:`.Asset_administration_shell`, :class:`.Submodel` or
+    :class:`.Submodel_element`.
     """
 
     observable_semantic_id: Optional["Global_reference"]
     """
-    semanticId of the referable which defines the scope of the event, if available.
+    :attr:`~Has_semantics.semantic_ID` of the referable which defines the scope of 
+    the event, if available.
     """
 
     topic: Optional["Non_empty_string"]
@@ -2176,9 +2194,9 @@ class Entity(Submodel_element):
     An entity is a submodel element that is used to model entities.
 
     :constraint AASd-014:
-        Either the attribute globalAssetId or specificAssetId of an Entity must be set
-        if Entity/entityType is set to “SelfManagedEntity”. They are not existing
-        otherwise.
+        Either the attribute :attr:`~global_asset_ID` or :attr:`~specific_asset_ID`
+        of an :class:`.Entity` must be set if :attr:`~entity_type` is set to
+        ``SelfManagedEntity``. They are not existing otherwise.
     """
 
     entity_type: "Entity_type"
@@ -2247,9 +2265,10 @@ class Event(Submodel_element):
     An event.
 
     :constraint AASd-061:
-        If the semanticId of a Event submodel element references a ConceptDescription
-        then the category of the ConceptDescription shall be one of the following:
-        EVENT.
+        If the :attr:`~Has_semantics.semantic_ID` of an :class:`.Event` references
+        a :class:`.Concept_description` then the :attr:`~Concept_description.category`
+        of the :class:`.Concept_description` shall be one of the following:
+        ``EVENT``.
     """
 
     def __init__(
@@ -2388,8 +2407,9 @@ class Operation_variable(DBC):
     of an operation.
 
     .. note::
-        Note: OperationVariable is introduced as separate class to enable future extensions,
-        e.g. for adding a default value, cardinality (option/mandatory).
+
+        :class:`.Operation_variable` is introduced as separate class to enable future
+        extensions, e.g. for adding a default value, cardinality (option/mandatory).
     """
 
     value: "Submodel_element"
@@ -2408,8 +2428,9 @@ class Capability(Submodel_element):
     asset to achieve a certain effect in the physical or virtual world.
 
     .. note::
-        The semanticId of a capability is typically an ontology. Thus, reasoning on
-        capabilities is enabled.
+
+        The :attr:`~semantic_ID` of a capability is typically an ontology.
+        Thus, reasoning on capabilities is enabled.
     """
 
     def __init__(
@@ -2449,11 +2470,12 @@ class Concept_description(Identifiable, Has_data_specification):
     standardized schema (realized as data specification template).
 
     :constraint AASd-051:
-        A ConceptDescription shall have one of the following categories
-        VALUE, PROPERTY, REFERENCE, DOCUMENT, CAPABILITY, RELATIONSHIP, COLLECTION,
-        FUNCTION, EVENT, ENTITY, APPLICATION_CLASS, QUALIFIER, VIEW.
+        A :class:`.Concept_description` shall have one of the following categories
+        ``VALUE``, ``PROPERTY``, ``REFERENCE``, ``DOCUMENT``, ``CAPABILITY``,
+        ``RELATIONSHIP``, ``COLLECTION``, ``FUNCTION``, ``EVENT``, ``ENTITY``,
+        ``APPLICATION_CLASS``, ``QUALIFIER``, ``VIEW``.
 
-        Default: PROPERTY.
+        Default: ``PROPERTY``.
     """
 
     is_case_of: Optional[List["Global_reference"]]
@@ -2507,8 +2529,9 @@ class View(Referable, Has_semantics, Has_data_specification):
        They are not equivalent to submodels.
 
     :constraint AASd-064:
-        If the semanticId of a View references a ConceptDescription
-        then the category of the ConceptDescription shall be VIEW.
+        If the :attr:`~semantic_ID` references a :class:`.Concept_description`
+        then the :attr:`~Concept_description.category` of
+        the :class:`.Concept_description` shall be ``VIEW``.
     """
 
     contained_elements: List["Reference"]
@@ -2573,8 +2596,9 @@ class Submodel_element_elements(Enum):
     Data Element.
 
     .. note::
-        Data Element is abstract, *i.e.* if a key uses “DataElement” the reference may
-        be a Property, a File etc.
+
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element` 
+        the reference may be a :class:`.Property`, a :class:`.File` etc.
     """
     Entity = "Entity"
     Event_element = "EventElement"
@@ -2583,7 +2607,7 @@ class Submodel_element_elements(Enum):
 
     .. note::
 
-        Event is abstract
+        :class:`.Event` is abstract.
     """
     File = "File"
 
@@ -2612,9 +2636,9 @@ class Submodel_element_elements(Enum):
 
     .. note::
 
-        Submodel Element is abstract, i.e. if a key uses “SubmodelElement”
-        the reference may be a Property, a SubmodelElementList,
-        an Operation etc.
+        Submodel Element is abstract, i.e. if a key uses 
+        :attr:`Submodel_element` the reference may be a :class:`.Property`,
+        a :class:`.Submodel_element_list`, an :class:`.Operation` etc.
     """
     Submodel_element_list = "SubmodelElementList"
     """
@@ -2645,8 +2669,8 @@ class Referable_elements(Enum):
 
     .. note::
 
-        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a Property, a File *etc.*
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element` 
+        the reference may be a :class:`.Property`, a :class:`.File` *etc.*
     """
 
     Entity = "Entity"
@@ -2687,8 +2711,7 @@ class Referable_elements(Enum):
     .. note::
 
         Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
-        the reference may be a Property, a SubmodelElementCollection,
-        an Operation *etc.*
+        the reference may be a :class:`.Property`, an :class:`.Operation` *etc.*
     """
 
     Submodel_element_list = "SubmodelElementList"
@@ -2766,8 +2789,7 @@ class Key_elements(Enum):
     .. note::
 
         Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
-        the reference may be a Property, a SubmodelElementCollection`,
-        an Operation *etc.*
+        the reference may be a :class:`.Property`, an :class:`.Operation` *etc.*
     """
 
     Submodel_element_list = "SubmodelElementList"
@@ -2804,6 +2826,7 @@ class Data_type_IEC61360(Enum):
     Date = "DATE"
     """
     values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd
+    
     Example from IEC 61360-1:2017: "1999-05-31" is the [DATE] representation of:
     31 May 1999.
     """
@@ -2925,17 +2948,17 @@ class Value_reference_pair(DBC):
 
     value: Non_empty_string
     """
-    The value of the referenced concept definition of the value in valueId.
+    The value of the referenced concept definition of the value in :attr:`~value_ID`.
     """
 
     value_ID: "Reference"
     """
-    Global unique id of the value.
+    Global unique ID of the value.
 
     :constraint AASd-078:
-        If the valueId of a ValueReferencePair references a
-        ConceptDescription then the ConceptDescription/category shall be one of
-        following values: VALUE.
+        If the :attr:`value_ID` of a :class:`.Value_reference_pair` references a
+        :class:`.Concept_description` then the :attr:`~Concept_description.category`
+        shall be one of following values: ``VALUE``.
     """
 
     def __init__(self, value: Non_empty_string, value_ID: "Reference") -> None:
@@ -2974,7 +2997,7 @@ class Data_specification_IEC61360(Data_specification_content):
     Preferred name
 
     :constraint AASd-076:
-        For all ConceptDescriptions using data specification template
+        For all :class`Concept_description`'s using data specification template
         IEC61360
         (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
         at least a preferred name in English shall be defined.
@@ -3010,35 +3033,34 @@ class Data_specification_IEC61360(Data_specification_content):
     Data Type
 
     :constraint AASd-070:
-        For a ConceptDescription with category PROPERTY or VALUE using
-        data specification template IEC61360
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category` 
+        ``PROPERTY`` or ``VALUE`` using data specification template IEC61360
         (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/dataType is mandatory and shall be defined.
+        :attr:`~data_type` is mandatory and shall be defined.
 
     :constraint AASd-071:
-        For a ConceptDescription with category REFERENCE using data
-        specification template IEC61360
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category`
+        ``REFERENCE`` using data specification template IEC61360
         (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/dataType is STRING by default.
+        :attr:`~data_type` is ``STRING`` by default.
 
     :constraint AASd-072:
-        For a ConceptDescription with category DOCUMENT using data
-        specification template IEC61360
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category`
+        ``DOCUMENT`` using data specification template IEC61360
         (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/dataType shall be one of the following values: STRING or
-        URL.
+        :attr:`~data_type` shall be one of the following values: ``STRING`` or ``URL``.
 
     :constraint AASd-073:
-        For a ConceptDescription with category QUALIFIER using data
-        specification template IEC61360
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category`
+        ``QUALIFIER`` using data specification template IEC61360
         (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/dataType is mandatory and shall be defined.
+        :attr:`~data_type` is mandatory and shall be defined.
 
     :constraint AASd-103:
-        If DataSpecificationIEC61360/-dataType one of: INTEGER_MEASURE,
-        REAL_MEASURE, RATIONAL_MEASURE, INTEGER_CURRENCY, REAL_CURRENCY, then
-        DataSpecificationIEC61360/unit or DataSpecificationIEC61360/unitId shall be
-        defined.
+        If :attr:`~data_type` is one of: 
+        ``INTEGER_MEASURE``, ``REAL_MEASURE``, ``RATIONAL_MEASURE``, 
+        ``INTEGER_CURRENCY``, ``REAL_CURRENCY``, then
+        :attr:`~unit` or :attr:`~unit_ID` shall be defined.
     """
 
     definition: Optional["Lang_string_set"]
@@ -3046,11 +3068,11 @@ class Data_specification_IEC61360(Data_specification_content):
     Definition in different languages
 
     :constraint AASd-074:
-        For all ConceptDescriptions except for ConceptDescriptions of
-        category VALUE using data specification template IEC61360
+        For all :class:`.Concept_description`'s except for 
+        :class:`.Concept_description`'s of category ``VALUE`` using data specification 
+        template IEC61360
         (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/definition is mandatory and shall be defined at least
-        in English.
+        :attr:`~definition` is mandatory and shall be defined at least in English.
     """
 
     value_format: Optional[Non_empty_string]
@@ -3070,13 +3092,11 @@ class Data_specification_IEC61360(Data_specification_content):
     Value
 
     :constraint AASd-101:
-        If DataSpecificationIEC61360/category equal to VALUE then
-        DataSpecificationIEC61360/value shall be set.
+        If :attr:`~category` equal to ``VALUE`` then :attr:`~value` shall be set.
 
     :constraint AASd-102:
-        If DataSpecificationIEC61360/value or
-        DataSpecificationIEC61360/valueId is not empty then
-        DataSpecificationIEC61360/valueList shall be empty and vice versa.
+        If :attr:`~value` or :attr:`~value_ID` is not empty then :attr:`~value_list`
+        shall be empty and vice versa.
     """
 
     value_ID: Optional["Reference"]
@@ -3265,12 +3285,13 @@ class Environment:
 @reference_in_the_book(section=(6, 1))
 class Data_specification(DBC):
     """
-    A template consists of the DataSpecificationContent containing the additional attributes
-    to be added to the element instance that references the data specification template and
-    meta information about the template itself.
+    A template consists of the :class:`.Data_specification_content` containing
+    the additional attributes to be added to the element instance that references
+    the data specification template and meta information about the template itself.
 
     .. note::
-        The Data Specification Templates do not belong to the metamodel of the asset
+
+        The Data Specification Templates do not belong to the meta-model of the asset
         administration shell. In serializations that choose specific templates
         the corresponding data specification content may be directly incorporated.
     """
