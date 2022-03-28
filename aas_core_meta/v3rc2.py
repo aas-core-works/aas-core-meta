@@ -405,13 +405,13 @@ class Has_extensions(DBC):
     Note: Extensions are proprietary, i.e. they do not support global interoperability.
     """
 
-    extensions: List["Extension"]
+    extensions: Optional[List["Extension"]]
     """
     An extension of the element.
     """
 
     def __init__(self, extensions: Optional[List["Extension"]] = None) -> None:
-        self.extensions = extensions if extensions is not None else []
+        self.extensions = extensions
 
 
 @abstract
@@ -569,7 +569,7 @@ class Qualifiable(DBC):
     qualifiers or complex formulas.
     """
 
-    qualifiers: List["Qualifier"]
+    qualifiers: Optional[List["Qualifier"]]
     """
     Additional qualification of a qualifiable element.
 
@@ -579,7 +579,7 @@ class Qualifiable(DBC):
     """
 
     def __init__(self, qualifiers: Optional[List["Qualifier"]] = None) -> None:
-        self.qualifiers = qualifiers if qualifiers is not None else []
+        self.qualifiers = qualifiers
 
 
 @abstract
@@ -601,9 +601,7 @@ class Has_data_specification(DBC):
     def __init__(
         self, data_specifications: Optional[List["Global_reference"]] = None
     ) -> None:
-        self.data_specifications = (
-            data_specifications if data_specifications is not None else []
-        )
+        self.data_specifications = data_specifications
 
 
 @abstract
@@ -1139,7 +1137,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     """Meta-information about the asset the AAS is representing."""
 
     # todo: Nico Model_reference --> ModelReference<Submodel>
-    submodels: List["Model_reference"]
+    submodels: Optional[List["Model_reference"]]
     """
     References to submodels of the AAS.
 
@@ -1183,7 +1181,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 
         self.derived_from = derived_from
         self.asset_information = asset_information
-        self.submodels = submodels if submodels is not None else []
+        self.submodels = submodels
 
 
 @reference_in_the_book(section=(5, 7, 4))
@@ -1318,7 +1316,7 @@ class Submodel(
     standardized and, thus, become submodels templates.
     """
 
-    submodel_elements: List["Submodel_element"]
+    submodel_elements: Optional[List["Submodel_element"]]
     """A submodel consists of zero or more submodel elements."""
 
     def __init__(
@@ -1357,9 +1355,7 @@ class Submodel(
 
         Has_data_specification.__init__(self, data_specifications=data_specifications)
 
-        self.submodel_elements = (
-            submodel_elements if submodel_elements is not None else []
-        )
+        self.submodel_elements = submodel_elements
 
 
 @reference_in_the_book(section=(5, 7, 7, 16))
@@ -1509,7 +1505,7 @@ class Submodel_element_list(Submodel_element):
 
         self.type_value_list_element = type_value_list_element
         self.order_relevant = order_relevant
-        self.values = values if values is not None else []
+        self.values = values
         self.semantic_id_list_element = semantic_id_list_element
         self.value_type_list_element = value_type_list_element
 
@@ -1554,7 +1550,7 @@ class Submodel_element_struct(Submodel_element):
             data_specifications=data_specifications,
         )
 
-        self.values = values if values is not None else []
+        self.values = values
 
 
 @reference_in_the_book(section=(5, 7, 7, 13))
@@ -1853,7 +1849,7 @@ class Annotated_relationship_element(Relationship_element):
     with additional data elements.
     """
 
-    annotation: List[Data_element]
+    annotation: Optional[List[Data_element]]
     """
     A data element that represents an annotation that holds for the relationship
     between the two elements
@@ -1891,7 +1887,7 @@ class Annotated_relationship_element(Relationship_element):
             data_specifications=data_specifications,
         )
 
-        self.annotation = annotation if annotation is not None else []
+        self.annotation = annotation
 
 
 @reference_in_the_book(section=(5, 7, 7, 2), index=1)
@@ -2242,7 +2238,7 @@ class Entity(Submodel_element):
             data_specifications=data_specifications,
         )
 
-        self.statements = statements if statements is not None else []
+        self.statements = statements
         self.entity_type = entity_type
         self.global_asset_id = global_asset_id
         self.specific_asset_id = specific_asset_id
@@ -2383,11 +2379,9 @@ class Operation(Submodel_element):
             data_specifications=data_specifications,
         )
 
-        self.input_variables = input_variables if input_variables is not None else []
-        self.output_variables = output_variables if output_variables is not None else []
-        self.inoutput_variables = (
-            inoutput_variables if inoutput_variables is not None else []
-        )
+        self.input_variables = input_variables
+        self.output_variables = output_variables
+        self.inoutput_variables = inoutput_variables
 
 
 @reference_in_the_book(section=(5, 7, 7, 13), index=1)
@@ -2503,7 +2497,7 @@ class Concept_description(Identifiable, Has_data_specification):
 
         Has_data_specification.__init__(self, data_specifications=data_specifications)
 
-        self.is_case_of = is_case_of if is_case_of is not None else []
+        self.is_case_of = is_case_of
 
 
 @reference_in_the_book(section=(5, 7, 9))
@@ -2524,7 +2518,7 @@ class View(Referable, Has_semantics, Has_data_specification):
         the :class:`.Concept_description` shall be ``VIEW``.
     """
 
-    contained_elements: List["Reference"]
+    contained_elements: Optional[List["Reference"]]
     """
     Reference to a referable element that is contained in the view.
     """
@@ -2555,9 +2549,7 @@ class View(Referable, Has_semantics, Has_data_specification):
 
         Has_data_specification.__init__(self, data_specifications=data_specifications)
 
-        self.contained_elements = (
-            contained_elements if contained_elements is not None else []
-        )
+        self.contained_elements = contained_elements
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=5)
@@ -2957,7 +2949,7 @@ class Value_list(DBC):
     A set of value reference pairs.
     """
 
-    value_reference_pairs: List["Value_reference_pair"]
+    value_reference_pairs: Optional[List["Value_reference_pair"]]
     """
     A pair of a value together with its global unique id.
     """
@@ -2965,9 +2957,7 @@ class Value_list(DBC):
     def __init__(
         self, value_reference_pairs: Optional[List["Value_reference_pair"]] = None
     ) -> None:
-        self.value_reference_pairs = (
-            value_reference_pairs if value_reference_pairs is not None else []
-        )
+        self.value_reference_pairs = value_reference_pairs
 
 
 @reference_in_the_book(section=(6, 8, 2, 3))
