@@ -538,9 +538,6 @@ class Has_kind(DBC):
     Default Value = Instance
     """
 
-    # TODO (all, 2021-05-28): how can ``kind`` be optional
-    #  and have a default value?
-    #  (See page 52 in the book V3.0RC02, kind has the cardinality ``0..1``.)
     def __init__(self, kind: Optional["Modeling_kind"] = None) -> None:
         self.kind = kind if kind is not None else Modeling_kind.Instance
 
@@ -944,7 +941,7 @@ class Key(DBC):
     """A key is a reference to an element by its ID."""
 
     type: "Key_elements"
-    # TODO (g1zzm0, 2021-12-13):
+    # TODO (mristin 🠒 g1zzm0, 2021-12-13):
     #  We had to introduce ``Key_elements.Global_reference`` as it was missing in
     #  the meta-model, but was referenced here in the book.
     #  Analogously for ``Key_elements.Fragment_reference``. It was written here as
@@ -965,7 +962,7 @@ class Key(DBC):
 
     value: Non_empty_string
 
-    # TODO (g1zzm0, 2021-12-13):
+    # TODO (mristin 🠒 g1zzm0, 2021-12-13):
     #  The docstring references a non-existing attribute ``ID_type`` which has been
     #  removed in this version, but existed in V3RC01. The description needs to be
     #  revised in the book.
@@ -1365,13 +1362,6 @@ class Submodel(
         )
 
 
-# TODO (mristin, 2021-10-27, page 77):
-#  :constraint AASd-055: If the semanticId of a RelationshipElement or an
-#  AnnotatedRelationshipElement submodel element references a  ConceptDescription then
-#  the ConceptDescription/category shall be one of following values: RELATIONSHIP.
-#
-#  🠒 We really need to think hard how we resolve the references. Should this class be
-#  implementation-specific?
 @reference_in_the_book(section=(5, 7, 7, 16))
 @abstract
 class Relationship_element(Submodel_element):
@@ -2815,11 +2805,6 @@ class Data_specification_content(DBC):
         the corresponding data specification content may be directly incorporated.
     """
 
-    # TODO (sadu 2021-11-17)
-    # No table for class in the book
-    # to be implemented
-    pass
-
 
 @reference_in_the_book(section=(6, 8, 2, 3), index=2)
 class Data_type_IEC61360(Enum):
@@ -3146,7 +3131,7 @@ class Data_specification_IEC61360(Data_specification_content):
 class Data_specification_physical_unit(Data_specification_content):
     """TODO"""
 
-    # TODO (sadu 2021-11-17)
+    # TODO (sadu, 2021-11-17):
     # No table for class in the book
 
     unit_name: Optional[Non_empty_string]
@@ -3240,9 +3225,6 @@ class Data_specification_physical_unit(Data_specification_content):
 
 # TODO (Nico & Marko, 2021-09-24):
 #  We need to list in a comment all the constraints which were not implemented.
-
-# TODO (mristin, 2021-10-27): re-order the entities so that they follow the structure
-#  in the book as much as possible, but be careful about the inheritance
 
 
 @reference_in_the_book(section=(5, 7, 9))
