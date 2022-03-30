@@ -89,11 +89,8 @@ class Resource(DBC):
         self.content_type = content_type
 
 
-class Date_time(str, DBC):
-    pass
-
-
-class Date_time_stamp(str, DBC):
+class Date_time_stamp_UTC(str, DBC):
+    # TODO (mristin, 2022-03-30): add invariant that the format is ISO 8601
     pass
 
 
@@ -2007,13 +2004,13 @@ class Basic_event_element(Event_element):
         proprietary specification could be standardized by having respective Submodels.
     """
 
-    last_update: Optional["Date_time"]
+    last_update: Optional["Date_time_stamp_UTC"]
     """
     Timestamp in UTC, when the last event was received (input direction) or sent
     (output direction).
     """
 
-    min_interval: Optional["Date_time"]
+    min_interval: Optional["Date_time_stamp_UTC"]
     """
     For input direction, reports on the maximum frequency, the software entity behind
     the respective Referable can handle input events. For output events, specifies
@@ -2021,7 +2018,7 @@ class Basic_event_element(Event_element):
     Might be not specified, that is, there is no minimum interval.
     """
 
-    max_interval: Optional["Date_time"]
+    max_interval: Optional["Date_time_stamp_UTC"]
     """
     For input direction: not applicable.
     For output direction: maximum interval in time, the respective Referable shall send
@@ -2046,9 +2043,9 @@ class Basic_event_element(Event_element):
         data_specifications: Optional[List["Global_reference"]] = None,
         message_topic: Optional["Non_empty_string"] = None,
         message_broker: Optional["Model_reference"] = None,
-        last_update: Optional["Date_time"] = None,
-        min_interval: Optional["Date_time"] = None,
-        max_interval: Optional["Date_time"] = None,
+        last_update: Optional["Date_time_stamp_UTC"] = None,
+        min_interval: Optional["Date_time_stamp_UTC"] = None,
+        max_interval: Optional["Date_time_stamp_UTC"] = None,
     ) -> None:
         Event_element.__init__(
             self,
@@ -2121,7 +2118,7 @@ class Event_payload(DBC):
     Subject, who/which initiated the creation.
     """
 
-    time_stamp: "Date_time_stamp"
+    time_stamp: "Date_time_stamp_UTC"
     """
     Timestamp in UTC, when this event was triggered.
     """
@@ -2135,7 +2132,7 @@ class Event_payload(DBC):
         self,
         source: "Model_reference",
         observable_reference: "Model_reference",
-        time_stamp: "Date_time_stamp",
+        time_stamp: "Date_time_stamp_UTC",
         source_semantic_id: Optional["Global_reference"] = None,
         observable_semantic_id: Optional["Global_reference"] = None,
         topic: Optional["Non_empty_string"] = None,
