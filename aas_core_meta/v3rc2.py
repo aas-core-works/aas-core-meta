@@ -3025,7 +3025,8 @@ class Data_specification_IEC61360(Data_specification_content):
     Value
 
     :constraint AASd-101:
-        If :attr:`~category` equal to ``VALUE`` then :attr:`~value` shall be set.
+        If :attr:`~Referable.category` equal to ``VALUE`` then :attr:`~value` shall be
+        set.
 
     :constraint AASd-102:
         If :attr:`~value` or :attr:`~value_id` is not empty then :attr:`~value_list`
