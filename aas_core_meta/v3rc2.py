@@ -101,7 +101,7 @@ class Non_empty_string(str, DBC):
     pass
 
 
-@reference_in_the_book(section=(5, 7, 11, 2))
+@reference_in_the_book(section=(5, 7, 12, 2))
 class Blob_type(bytearray, DBC):
     """
     Group of bytes to represent file content (binaries and non-binaries)
@@ -225,6 +225,7 @@ class Data_type_def_XSD(Enum):
     Negative_integer = "xs:negativeInteger"
 
 
+@reference_in_the_book(section=(5, 7, 12, 2))
 @is_superset_of(enums=[Data_type_def_XSD, Data_type_def_RDF])
 class Data_type_def(Enum):
     """
@@ -268,15 +269,16 @@ class Data_type_def(Enum):
     Lang_string = "rdf:langString"
 
 
+@reference_in_the_book(section=(5, 7, 12, 2))
 class Identifier(Non_empty_string, DBC):
     """
     string
     """
 
-    pass
 
-
-class Lang_string_set(Non_empty_string, DBC):
+@reference_in_the_book(section=(5, 7, 12, 2))
+@implementation_specific
+class Lang_string_set(DBC):
     """
     Array of elements of type langString
 
@@ -289,9 +291,8 @@ class Lang_string_set(Non_empty_string, DBC):
     this is realized.
     """
 
-    pass
 
-
+@reference_in_the_book(section=(5, 7, 12, 2))
 @invariant(lambda self: is_MIME_type(self))
 class Content_type(Non_empty_string, DBC):
     """
@@ -313,6 +314,7 @@ class Content_type(Non_empty_string, DBC):
     pass
 
 
+@reference_in_the_book(section=(5, 7, 12, 2))
 class Path_type(Non_empty_string, DBC):
     """
     string
@@ -326,6 +328,7 @@ class Path_type(Non_empty_string, DBC):
     pass
 
 
+@reference_in_the_book(section=(5, 7, 12, 2))
 class Qualifier_type(Non_empty_string, DBC):
     """
     string
@@ -334,50 +337,10 @@ class Qualifier_type(Non_empty_string, DBC):
     pass
 
 
-@is_superset_of(enums=[Data_type_def_XSD])
-class Value_data_type(Enum):
+class Value_data_type(str, DBC):
     """
     any xsd atomic type as specified via :class:`.Data_type_def_XSD`
     """
-
-    Any_URI = "xs:anyURI"
-    Base_64_binary = "xs:base64Binary"
-    Boolean = "xs:boolean"
-    Date = "xs:date"
-    Date_time = "xs:dateTime"
-    Date_time_stamp = "xs:dateTimeStamp"
-    Decimal = "xs:decimal"
-    Double = "xs:double"
-    Duration = "xs:duration"
-    Float = "xs:float"
-    G_day = "xs:gDay"
-    G_month = "xs:gMonth"
-    G_month_day = "xs:gMonthDay"
-    G_year = "xs:gYear"
-    G_year_month = "xs:gYearMonth"
-    Hex_binary = "xs:hexBinary"
-    String = "xs:string"
-    Time = "xs:time"
-    Day_time_duration = "xs:dayTimeDuration"
-    Year_month_duration = "xs:yearMonthDuration"
-    Integer = "xs:integer"
-    Long = "xs:long"
-    Int = "xs:int"
-    Short = "xs:short"
-    Byte = "xs:byte"
-    Non_negative_integer = "xs:NonNegativeInteger"
-    Positive_integer = "xs:positiveInteger"
-    Unsigned_long = "xs:unsignedLong"
-    Unsigned_int = "xs:unsignedInt"
-    Unsigned_short = "xs:unsignedShort"
-    Unsigned_byte = "xs:unsignedByte"
-    Non_positive_integer = "xs:nonPositiveInteger"
-    Negative_integer = "xs:negativeInteger"
-
-
-@invariant(lambda self: is_MIME_type(self))
-class MIME_typed(Non_empty_string, DBC):
-    """Represent a string that follows the pattern of a MIME type."""
 
 
 # endregion
@@ -1725,14 +1688,13 @@ class Range(Data_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 4))
-@invariant(lambda self: is_MIME_type(self.MIME_type))
 class Blob(Data_element):
     """
     A :class:`.Blob` is a data element that represents a file that is contained with its
     source code in the value attribute.
     """
 
-    MIME_type: MIME_typed
+    MIME_type: Content_type
     """
     MIME type of the content of the :class:`.Blob`.
 
@@ -1753,7 +1715,7 @@ class Blob(Data_element):
 
     def __init__(
         self,
-        MIME_type: MIME_typed,
+        MIME_type: Content_type,
         extensions: Optional[List["Extension"]] = None,
         id_short: Optional[Non_empty_string] = None,
         display_name: Optional["Lang_string_set"] = None,
@@ -1785,7 +1747,6 @@ class Blob(Data_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 8))
-@invariant(lambda self: is_MIME_type(self.content_type))
 class File(Data_element):
     """
     A File is a data element that represents an address to a file.
