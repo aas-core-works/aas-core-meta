@@ -39,7 +39,7 @@ setup(
     # fmt: off
     extras_require={
         "dev": [
-            "black==21.11b0",
+            "black==22.3.0",
             "mypy==0.910",
             "aas-core-codegen==0.0.6"
         ],
