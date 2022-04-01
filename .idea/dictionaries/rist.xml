@@ -1,17 +1,27 @@
 <component name="ProjectDictionaryState">
   <dictionary name="rist">
     <words>
+      <w>aasx</w>
+      <w>abiword</w>
+      <w>amqp</w>
       <w>braunisch</w>
       <w>codegen</w>
+      <w>comanagedentity</w>
+      <w>constraintref</w>
+      <w>docx</w>
+      <w>ebook</w>
       <w>eclass</w>
+      <w>iana</w>
       <w>icid</w>
       <w>icontract</w>
       <w>idref</w>
       <w>idrefs</w>
+      <w>ietf</w>
       <w>inoutput</w>
       <w>irdi</w>
       <w>lehmann</w>
       <w>marcin</w>
+      <w>mqtt</w>
       <w>mypy</w>
       <w>nist</w>
       <w>nmtokens</w>
@@ -21,7 +31,9 @@
       <w>sadu</w>
       <w>sadurski</w>
       <w>sauer</w>
+      <w>selfmanagedentity</w>
       <w>stackoverflow</w>
+      <w>tchar</w>
       <w>unformatted</w>
       <w>versioning</w>
       <w>yyyy</w>
