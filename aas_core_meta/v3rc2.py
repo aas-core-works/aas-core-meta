@@ -2550,7 +2550,6 @@ class Relationship_element(Submodel_element):
     lambda self:
     not (
             self.value is not None
-            and self.type_value_list_element is not None
             and (
                     self.type_value_list_element == Submodel_element_elements.Property
                     or self.type_value_list_element == Submodel_element_elements.Range
@@ -2568,7 +2567,7 @@ class Relationship_element(Submodel_element):
     "value type list element.")
 @invariant(
     lambda self:
-    not (self.value is not None and self.type_value_list_element is not None)
+    not (self.value is not None)
     or all(
         submodel_element_is_of_type(element, self.type_value_list_element)
         for element in self.value
