@@ -21,11 +21,11 @@ with open(os.path.join(here, "requirements.txt"), encoding="utf-8") as fid:
 
 setup(
     name="aas-core-meta",
-    version="2021.11.20a2",
+    version="2022.4.30a1",
     description="Provide meta-models for Asset Administration Shell information model.",
     long_description=long_description,
     url="https://github.com/aas-core-works/aas-core-meta",
-    author="Nico Braunisch, Marko Ristin, Robert Lehmann, Marcin Sadurski, Manuel Sauer",
+    author="Nico Braunisch, Marko Ristin, Marcin Sadurski",
     author_email="rist@zhaw.ch",
     classifiers=[
         "Development Status :: 3 - Alpha",
