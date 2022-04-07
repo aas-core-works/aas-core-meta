@@ -2021,32 +2021,18 @@ class Key(DBC):
     """A key is a reference to an element by its ID."""
 
     type: "Key_elements"
-    # TODO (mristin 🠒 g1zzm0, 2021-12-13):
-    #  We had to introduce ``Key_elements.Global_reference`` as it was missing in
-    #  the meta-model, but was referenced here in the book.
-    #  Analogously for ``Key_elements.Fragment_reference``. It was written here as
-    #  ``Fragment_id``. This description needs to be revised either here or in the book.
     """
     Denote which kind of entity is referenced.
 
-    In case type = :attr:`Key_elements.Global_reference` then the key represents
-    a global unique id.
+    In case type = FragmentReference the key represents a bookmark or a similar local 
+    identifier within its parent element as specified by the key that precedes this key. 
 
-    In case type = :attr:`Key_elements.Fragment_reference` the key represents
-    a bookmark or a similar local identifier within its parent element as specified by
-    the key that precedes this key.
-
-    In all other cases the key references a model element of the same or of another AAS.
+    In all other cases the key references a model element of the same or of another AAS. 
     The name of the model element is explicitly listed.
     """
 
     value: Non_empty_string
-
-    # TODO (mristin 🠒 g1zzm0, 2021-12-13):
-    #  The docstring references a non-existing attribute ``ID_type`` which has been
-    #  removed in this version, but existed in V3RC01. The description needs to be
-    #  revised in the book.
-    # """The key value, for example an IRDI if the :attr:`~ID_type` is IRDI."""
+    """The key value, for example an IRDI or an URI"""
 
     def __init__(self, type: "Key_elements", value: Non_empty_string) -> None:
         self.type = type
