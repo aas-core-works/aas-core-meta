@@ -192,7 +192,8 @@ def matches_RFC_8089_path(text: str) -> bool:
 # noinspection SpellCheckingInspection
 @verification
 def matches_BCP_47(text: str) -> bool:
-    """Check that :paramref:`text` is a valid BCP 47 language tag.
+    """
+    Check that :paramref:`text` is a valid BCP 47 language tag.
 
     See: https://en.wikipedia.org/wiki/IETF_language_tag
     """
