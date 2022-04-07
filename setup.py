@@ -21,7 +21,7 @@ with open(os.path.join(here, "requirements.txt"), encoding="utf-8") as fid:
 
 setup(
     name="aas-core-meta",
-    version="2022.4.30a1",
+    version="2022.4.30a2",
     description="Provide meta-models for Asset Administration Shell information model.",
     long_description=long_description,
     url="https://github.com/aas-core-works/aas-core-meta",
