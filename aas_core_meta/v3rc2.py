@@ -1,4 +1,41 @@
-"""Provide the meta model for Asset Administration Shell V3.0 Release Candidate 2."""
+"""
+Provide the meta model for Asset Administration Shell V3.0 Release Candidate 2.
+
+We could not implement the following constraints since they depend on registry
+and can not be verified without it:
+
+* :constraintref:`AASd-006`
+* :constraintref:`AASd-007`
+* :constraintref:`AASd-061`
+* :constraintref:`AASd-064`
+* :constraintref:`AASd-078`
+
+Some of the constraints are not enforceable as they depend on the wider context
+such as language understanding, so we could not formalize them:
+
+* :constraintref:`AASd-012`
+
+The following constraints have not been implemented as they are not part of
+the meta-model, but are related to the templates for concept descriptions:
+
+* :constraintref:`AASd-070`
+* :constraintref:`AASd-071`
+* :constraintref:`AASd-072`
+* :constraintref:`AASd-073`
+* :constraintref:`AASd-074`
+* :constraintref:`AASd-076`
+* :constraintref:`AASd-101`
+* :constraintref:`AASd-102`
+* :constraintref:`AASd-103`
+
+
+We could not formalize the constraints which prescribed how to deal with
+the default values as the semantic of the default values has not been defined
+in the meta-model:
+
+* :constraintref:`AASd-115`
+"""
+
 from enum import Enum
 from re import match
 from typing import List, Optional
@@ -14,18 +51,80 @@ from aas_core_meta.marker import (
     verification,
 )
 
-# TODO (sadu, 2021-11-17): book URL should be updated when published
-__book_url__ = "TBA"
+__book_url__ = (
+    "https://plattform-i40.coyocloud.com/files/"
+    "442df5bf-72e7-4ad4-ade1-4ddee70dd392/4d299251-a723-4858-afe7-9f656af07bcb/"
+    "DetailsOfTheAssetAdministrationShell_Part1_"
+    "V3%200RC02_EN%20Working%20Version%20docx"
+)
 __book_version__ = "V3.0RC02"
 
 
 # region Verification
 
-# noinspection SpellCheckingInspection
+
 @verification
-def is_MIME_type(text: str) -> bool:
+def matches_xs_date_time_stamp_utc(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:dateTimeStamp``.
+
+    The time zone must be fixed to UTC. We verify only that the ``text`` matches
+    a pre-defined pattern. We *do not* verify that the day of month is
+    correct nor do we check for leap seconds.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#dateTimeStamp
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    digit = "[0-9]"
+    year_frag = f"-?(([1-9]{digit}{digit}{digit}+)|(0{digit}{digit}{digit}))"
+    month_frag = f"((0[1-9])|(1[0-2]))"
+    day_frag = f"((0[1-9])|([12]{digit})|(3[01]))"
+    hour_frag = f"(([01]{digit})|(2[0-3]))"
+    minute_frag = f"[0-5]{digit}"
+    second_frag = f"([0-5]{digit})(\\.{digit}+)?"
+    end_of_day_frag = "24:00:00(\\.0+)?"
+    timezone_frag = "Z"
+    date_time_stamp_lexical_rep = (
+        f"{year_frag}-{month_frag}-{day_frag}"
+        f"T"
+        f"(({hour_frag}:{minute_frag}:{second_frag})|{end_of_day_frag})"
+        f"{timezone_frag}"
+    )
+    pattern = f"^{date_time_stamp_lexical_rep}$"
+
+    return match(pattern, text) is not None
+
+
+# noinspection PyUnusedLocal
+@verification
+@implementation_specific
+def is_xs_date_time_stamp_utc(text: str) -> bool:
+    """
+    Check that :paramref:`text` is a ``xs:dateTimeStamp`` with time zone set to UTC.
+
+    The ``text`` is assumed to match a pre-defined pattern for ``xs:dateTimeStamp`` with
+    the time zone set to UTC. In this function, we check for days of month (*e.g.*,
+    February 29th).
+
+    See: https://www.w3.org/TR/xmlschema11-2/#dateTimeStamp
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` is a valid ``xs:dateTimeStamp`` in UTC
+    """
+    raise NotImplementedError()
+
+
+@verification
+def matches_MIME_type(text: str) -> bool:
     """
     Check that :paramref:`text` conforms to the pattern of MIME type.
+
+    The definition has been taken from:
+    https://www.rfc-editor.org/rfc/rfc7231#section-3.1.1.1,
+    https://www.rfc-editor.org/rfc/rfc7230#section-3.2.3 and
+    https://www.rfc-editor.org/rfc/rfc7230#section-3.2.6.
 
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
@@ -40,9 +139,863 @@ def is_MIME_type(text: str) -> bool:
     quoted_pair = f"\\\\([\t !-~]|{obs_text})"
     quoted_string = f'"({qd_text}|{quoted_pair})*"'
     parameter = f"{token}=({token}|{quoted_string})"
-    media_type = f"{type}/{subtype}({ows};{ows}{parameter})*"
+    media_type = f"^{type}/{subtype}({ows};{ows}{parameter})*$"
 
     return match(media_type, text) is not None
+
+
+# noinspection SpellCheckingInspection
+@verification
+def matches_RFC_8089_path(text: str) -> bool:
+    """
+    Check that :paramref:`text` is a path conforming to the pattern of RFC 8089.
+
+    The definition has been taken from:
+    https://datatracker.ietf.org/doc/html/rfc8089
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+
+    """
+    h16 = "[0-9A-Fa-f]{1,4}"
+    dec_octet = "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
+    ipv4address = f"{dec_octet}\\.{dec_octet}\\.{dec_octet}\\.{dec_octet}"
+    ls32 = f"({h16}:{h16}|{ipv4address})"
+    ipv6address = (
+        f"(({h16}:){{6}}{ls32}|::({h16}:){{5}}{ls32}|({h16})?::({h16}:){{4}}"
+        f"{ls32}|(({h16}:)?{h16})?::({h16}:){{3}}{ls32}|(({h16}:){{2}}{h16})?::"
+        f"({h16}:){{2}}{ls32}|(({h16}:){{3}}{h16})?::{h16}:{ls32}|(({h16}:){{4}}"
+        f"{h16})?::{ls32}|(({h16}:){{5}}{h16})?::{h16}|(({h16}:){{6}}{h16})?::)"
+    )
+    unreserved = "[a-zA-Z0-9\\-._~]"
+    sub_delims = "[!$&'()*+,;=]"
+    ipvfuture = f"[vV][0-9A-Fa-f]+\\.({unreserved}|{sub_delims}|:)+"
+    ip_literal = f"\\[({ipv6address}|{ipvfuture})\\]"
+    pct_encoded = "%[0-9A-Fa-f][0-9A-Fa-f]"
+    reg_name = f"({unreserved}|{pct_encoded}|{sub_delims})*"
+    host = f"({ip_literal}|{ipv4address}|{reg_name})"
+    file_auth = f"(localhost|{host})"
+    pchar = f"({unreserved}|{pct_encoded}|{sub_delims}|[:@])"
+    segment_nz = f"({pchar})+"
+    segment = f"({pchar})*"
+    path_absolute = f"/({segment_nz}(/{segment})*)?"
+    auth_path = f"({file_auth})?{path_absolute}"
+    local_path = f"{path_absolute}"
+    file_hier_part = f"(//{auth_path}|{local_path})"
+    file_scheme = "file"
+    file_uri = f"{file_scheme}:{file_hier_part}"
+
+    pattern = f"^{file_uri}$"
+    return match(pattern, text) is not None
+
+
+# noinspection SpellCheckingInspection
+@verification
+def matches_BCP_47(text: str) -> bool:
+    """Check that :paramref:`text` is a valid BCP 47 language tag.
+
+    See: https://en.wikipedia.org/wiki/IETF_language_tag
+    """
+    alphanum = "[a-zA-Z0-9]"
+    singleton = "[0-9A-WY-Za-wy-z]"
+    extension = f"{singleton}(-({alphanum}){{2,8}})+"
+    extlang = "[a-zA-Z]{3}(-[a-zA-Z]{3}){2}"
+    irregular = (
+        "(en-GB-oed|i-ami|i-bnn|i-default|i-enochian|i-hak|"
+        "i-klingon|i-lux|i-mingo|i-navajo|i-pwn|i-tao|i-tay|"
+        "i-tsu|sgn-BE-FR|sgn-BE-NL|sgn-CH-DE)"
+    )
+    regular = (
+        "(art-lojban|cel-gaulish|no-bok|no-nyn|zh-guoyu|zh-hakka|"
+        "zh-min|zh-min-nan|zh-xiang)"
+    )
+    grandfathered = f"({irregular}|{regular})"
+    language = f"([a-zA-Z]{{2,3}}(-{extlang})?|[a-zA-Z]{{4}}|[a-zA-Z]{{5,8}})"
+    script = "[a-zA-Z]{4}"
+    region = "([a-zA-Z]{2}|[0-9]{3})"
+    variant = f"(({alphanum}){{5,8}}|[0-9]({alphanum}){{3}})"
+    privateuse = f"[xX](-({alphanum}){{1,8}})+"
+    langtag = (
+        f"{language}(-{script})?(-{region})?(-{variant})*(-{extension})*(-"
+        f"{privateuse})?"
+    )
+    language_tag = f"({langtag}|{privateuse}|{grandfathered})"
+
+    pattern = f"^{language_tag}$"
+    return match(pattern, text) is not None
+
+
+@verification
+@implementation_specific
+def lang_strings_have_unique_languages(lang_strings: List["Lang_string"]) -> bool:
+    """
+    Check that the :paramref:`lang_strings` do not have overlapping
+    :attr:`~Lang_string.language`'s
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    language_set = set()
+    for lang_string in lang_strings:
+        if lang_string.language in language_set:
+            return False
+        language_set.add(lang_string.language)
+
+    return True
+
+
+@verification
+@implementation_specific
+def qualifier_types_are_unique(qualifiers: List["Qualifier"]) -> bool:
+    """
+    Check that :attr:`~Qualifier.type`'s of :paramref:`qualifiers` are unique.
+
+    :param qualifiers: to be checked
+    :return: True if all :attr:`~Qualifier.type`'s are unique
+    """
+    # NOTE (mristin, 2022-04-1):
+    # This implementation is given here only as reference. It needs to be adapted
+    # for each implementation separately.
+    observed_types = set()
+    for qualifier in qualifiers:
+        if qualifier.type in observed_types:
+            return False
+
+        observed_types.add(qualifier.type)
+
+    return True
+
+
+# noinspection SpellCheckingInspection
+@verification
+def matches_xs_any_URI(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:anyURI``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#anyURI and
+    https://datatracker.ietf.org/doc/html/rfc3987
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    scheme = "[a-zA-Z][a-zA-Z0-9+\\-.]*"
+    ucschar = (
+        "[\\xa0-\\ud7ff\\uf900-\\ufdcf\\ufdf0-\\uffef\\u10000-\\u1fffd"
+        "\\u20000-\\u2fffd\\u30000-\\u3fffd\\u40000-\\u4fffd"
+        "\\u50000-\\u5fffd\\u60000-\\u6fffd\\u70000-\\u7fffd"
+        "\\u80000-\\u8fffd\\u90000-\\u9fffd\\ua0000-\\uafffd"
+        "\\ub0000-\\ubfffd\\uc0000-\\ucfffd\\ud0000-\\udfffd"
+        "\\ue1000-\\uefffd]"
+    )
+    iunreserved = f"([a-zA-Z0-9\\-._~]|{ucschar})"
+    pct_encoded = "%[0-9A-Fa-f][0-9A-Fa-f]"
+    sub_delims = "[!$&'()*+,;=]"
+    iuserinfo = f"({iunreserved}|{pct_encoded}|{sub_delims}|:)*"
+    h16 = "[0-9A-Fa-f]{1,4}"
+    dec_octet = "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
+    ipv4address = f"{dec_octet}\\.{dec_octet}\\.{dec_octet}\\.{dec_octet}"
+    ls32 = f"({h16}:{h16}|{ipv4address})"
+    ipv6address = (
+        f"(({h16}:){{6}}{ls32}|::({h16}:){{5}}{ls32}|({h16})?::({h16}:){{4}}"
+        f"{ls32}|(({h16}:)?{h16})?::({h16}:){{3}}{ls32}|(({h16}:){{2}}{h16})?::"
+        f"({h16}:){{2}}{ls32}|(({h16}:){{3}}{h16})?::{h16}:{ls32}|(({h16}:){{4}}"
+        f"{h16})?::{ls32}|(({h16}:){{5}}{h16})?::{h16}|(({h16}:){{6}}{h16})?::)"
+    )
+    unreserved = "[a-zA-Z0-9\\-._~]"
+    ipvfuture = f"[vV][0-9A-Fa-f]+\\.({unreserved}|{sub_delims}|:)+"
+    ip_literal = f"\\[({ipv6address}|{ipvfuture})\\]"
+    ireg_name = f"({iunreserved}|{pct_encoded}|{sub_delims})*"
+    ihost = f"({ip_literal}|{ipv4address}|{ireg_name})"
+    port = "[0-9]*"
+    iauthority = f"({iuserinfo}@)?{ihost}(:{port})?"
+    ipchar = f"({iunreserved}|{pct_encoded}|{sub_delims}|[:@])"
+    isegment = f"({ipchar})*"
+    ipath_abempty = f"(/{isegment})*"
+    isegment_nz = f"({ipchar})+"
+    ipath_absolute = f"/({isegment_nz}(/{isegment})*)?"
+    ipath_rootless = f"{isegment_nz}(/{isegment})*"
+    ipath_empty = f"({ipchar}){{0}}"
+    ihier_part = (
+        f"(//{iauthority}{ipath_abempty}|{ipath_absolute}|"
+        f"{ipath_rootless}|{ipath_empty})"
+    )
+    iprivate = "[\\ue000-\\uf8ff\\uf0000-\\uffffd\\u100000-\\u10fffd]"
+    iquery = f"({ipchar}|{iprivate}|[/?])*"
+    ifragment = f"({ipchar}|[/?])*"
+    isegment_nz_nc = f"({iunreserved}|{pct_encoded}|{sub_delims}|@)+"
+    ipath_noscheme = f"{isegment_nz_nc}(/{isegment})*"
+    irelative_part = (
+        f"(//{iauthority}{ipath_abempty}|{ipath_absolute}|"
+        f"{ipath_noscheme}|{ipath_empty})"
+    )
+    irelative_ref = f"{irelative_part}(\\?{iquery})?(\\#{ifragment})?"
+    iri = f"{scheme}:{ihier_part}(\\?{iquery})?(\\#{ifragment})?"
+    iri_reference = f"({iri}|{irelative_ref})"
+
+    pattern = f"^{iri_reference}$"
+    return match(pattern, text) is not None
+
+
+# noinspection SpellCheckingInspection
+@verification
+def matches_xs_base_64_binary(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:base64Binary``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#base64Binary
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # Base64 characters whose bit-string value ends in '0000'
+    b04_char = "[AQgw]"
+    b04 = f"{b04_char}\\x20?"
+
+    # Base64 characters whose bit-string value ends in '00'
+    b16_char = "[AEIMQUYcgkosw048]"
+    b16 = f"{b16_char}\\x20?"
+
+    b64_char = "[A-Za-z0-9+/]"
+    b64 = f"{b64_char}\\x20?"
+
+    b64quad = f"({b64}{b64}{b64}{b64})"
+
+    # b64_final_quad represents three octets of binary data without trailing space.
+    b64_final_quad = f"({b64}{b64}{b64}{b64_char})"
+
+    # padded_8 represents a single octet at the end of the data.
+    padded_8 = f"{b64}{b04}=\x20?="
+
+    # padded_16 represents a two-octet at the end of the data.
+    padded_16 = f"{b64}{b64}{b16}="
+
+    b64final = f"({b64_final_quad}|{padded_16}|{padded_8})"
+
+    base64_binary = f"({b64quad}*{b64final})?"
+
+    pattern = f"^{base64_binary}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_boolean(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:boolean``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#boolean
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    pattern = "^(true|false|1|0)$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_date(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:date``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#date
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    digit = "[0-9]"
+    year_frag = f"-?(([1-9]{digit}{digit}{digit}+)|(0{digit}{digit}{digit}))"
+    month_frag = f"((0[1-9])|(1[0-2]))"
+    day_frag = f"((0[1-9])|([12]{digit})|(3[01]))"
+    minute_frag = f"[0-5]{digit}"
+    timezone_frag = rf"(Z|(\+|-)(0{digit}|1[0-3]):{minute_frag}|14:00)"
+    date_lexical_rep = f"{year_frag}-{month_frag}-{day_frag}{timezone_frag}?"
+
+    pattern = f"^{date_lexical_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_date_time(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:dateTime``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#dateTime
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    digit = "[0-9]"
+    year_frag = f"-?(([1-9]{digit}{digit}{digit}+)|(0{digit}{digit}{digit}))"
+    month_frag = f"((0[1-9])|(1[0-2]))"
+    day_frag = f"((0[1-9])|([12]{digit})|(3[01]))"
+    hour_frag = f"(([01]{digit})|(2[0-3]))"
+    minute_frag = f"[0-5]{digit}"
+    second_frag = f"([0-5]{digit})(\\.{digit}+)?"
+    end_of_day_frag = "24:00:00(\\.0+)?"
+    timezone_frag = rf"(Z|(\+|-)(0{digit}|1[0-3]):{minute_frag}|14:00)"
+    date_time_lexical_rep = (
+        f"{year_frag}-{month_frag}-{day_frag}"
+        f"T"
+        f"(({hour_frag}:{minute_frag}:{second_frag})|{end_of_day_frag})"
+        f"{timezone_frag}?"
+    )
+
+    pattern = f"^{date_time_lexical_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_date_time_stamp(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:dateTimeStamp``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#dateTimeStamp
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    digit = "[0-9]"
+    year_frag = f"-?(([1-9]{digit}{digit}{digit}+)|(0{digit}{digit}{digit}))"
+    month_frag = f"((0[1-9])|(1[0-2]))"
+    day_frag = f"((0[1-9])|([12]{digit})|(3[01]))"
+    hour_frag = f"(([01]{digit})|(2[0-3]))"
+    minute_frag = f"[0-5]{digit}"
+    second_frag = f"([0-5]{digit})(\\.{digit}+)?"
+    end_of_day_frag = "24:00:00(\\.0+)?"
+    timezone_frag = rf"(Z|(\+|-)(0{digit}|1[0-3]):{minute_frag}|14:00)"
+    date_time_stamp_lexical_rep = (
+        f"{year_frag}-{month_frag}-{day_frag}"
+        f"T"
+        f"(({hour_frag}:{minute_frag}:{second_frag})|{end_of_day_frag})"
+        f"{timezone_frag}"
+    )
+
+    pattern = f"^{date_time_stamp_lexical_rep}$"
+    return match(pattern, text) is not None
+
+
+# noinspection SpellCheckingInspection
+@verification
+def matches_xs_decimal(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:decimal``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#decimal
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    digit = "[0-9]"
+    unsigned_no_decimal_pt_numeral = f"{digit}+"
+    no_decimal_pt_numeral = rf"(\+|-)?{unsigned_no_decimal_pt_numeral}"
+    frac_frag = f"{digit}+"
+    unsigned_decimal_pt_numeral = (
+        rf"({unsigned_no_decimal_pt_numeral}\.{frac_frag}|\.{frac_frag})"
+    )
+    decimal_pt_numeral = rf"(\+|-)?{unsigned_decimal_pt_numeral}"
+    decimal_lexical_rep = f"({decimal_pt_numeral}|{no_decimal_pt_numeral})"
+
+    pattern = f"^{decimal_lexical_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_double(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:double``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#double
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See: https://www.w3.org/TR/xmlschema11-2/#nt-doubleRep
+    double_rep = (
+        r"(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?|(\+|-)?INF|NaN"
+    )
+
+    pattern = f"^{double_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_duration(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:duration``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#duration
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-durationRep
+
+    # fmt: off
+    duration_rep = (
+r"-?P((([0-9]+Y([0-9]+M)?([0-9]+D)?"
+      r"|([0-9]+M)([0-9]+D)?"
+      r"|([0-9]+D)"
+      r")"
+      r"(T(([0-9]+H)([0-9]+M)?([0-9]+(\.[0-9]+)?S)?"
+         r"|([0-9]+M)([0-9]+(\.[0-9]+)?S)?"
+         r"|([0-9]+(\.[0-9]+)?S)"
+         r")"
+      r")?"
+   r")"
+ r"|(T(([0-9]+H)([0-9]+M)?([0-9]+(\.[0-9]+)?S)?"
+      r"|([0-9]+M)([0-9]+(\.[0-9]+)?S)?"
+      r"|([0-9]+(\.[0-9]+)?S)"
+      r")"
+   r")"
+ r")"
+    )
+    # fmt: on
+
+    pattern = f"^{duration_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_float(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:float``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#float
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    float_rep = (
+        r"(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?" r"|(\+|-)?INF|NaN"
+    )
+
+    pattern = f"^{float_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_g_day(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:gDay``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#gDay
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-gDayRep
+    g_day_lexical_rep = (
+        r"---(0[1-9]|[12][0-9]|3[01])(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+    )
+
+    pattern = f"^{g_day_lexical_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_g_month(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:gMonth``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#gMonth
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-gMonthRep
+    g_month_lexical_rep = (
+        r"--(0[1-9]|1[0-2])(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+    )
+
+    pattern = f"^{g_month_lexical_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_g_month_day(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:gMonthDay``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#gMonthDay
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-gMonthDayRep
+    g_month_day_rep = (
+        r"--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
+        r"(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+    )
+
+    pattern = f"^{g_month_day_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_g_year(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:gYear``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#gYear
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-gYearRep
+    g_year_rep = (
+        r"-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+    )
+
+    pattern = f"^{g_year_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_g_year_month(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:gYearMonth``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#gYearMonth
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-gYearMonthRep
+
+    g_year_month_rep = (
+        r"-?([1-9][0-9]{3,}|0[0-9]{3})-(0[1-9]|1[0-2])"
+        r"(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+    )
+
+    pattern = f"^{g_year_month_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_hex_binary(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:hexBinary``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#hexBinary
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-hexBinary
+    hex_binary = r"([0-9a-fA-F]{2})*"
+
+    pattern = f"^{hex_binary}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_time(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:time``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#time
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-timeRep
+    time_rep = (
+        r"(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.[0-9]+)?|(24:00:00(\.0+)?))"
+        r"(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
+    )
+
+    pattern = f"^{time_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_day_time_duration(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:dayTimeDuration``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#dayTimeDuration
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # NOTE (mristin, 2022-04-6):
+    # See https://www.w3.org/TR/xmlschema11-2/#nt-durationRep and
+    # https://www.w3.org/TR/xmlschema11-2/#dayTimeDuration related to pattern
+    # intersection
+
+    # fmt: off
+    day_time_duration_rep = (
+        r"-?P(("
+        r"([0-9]+D)"
+        r"(T(([0-9]+H)([0-9]+M)?([0-9]+(\.[0-9]+)?S)?"
+        r"|([0-9]+M)([0-9]+(\.[0-9]+)?S)?"
+        r"|([0-9]+(\.[0-9]+)?S)"
+        r")"
+        r")?"
+        r")"
+        r"|(T(([0-9]+H)([0-9]+M)?([0-9]+(\.[0-9]+)?S)?"
+        r"|([0-9]+M)([0-9]+(\.[0-9]+)?S)?"
+        r"|([0-9]+(\.[0-9]+)?S)"
+        r")"
+        r")"
+        r")"
+    )
+    # fmt: on
+
+    pattern = f"^{day_time_duration_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_year_month_duration(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:yearMonthDuration``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#yearMonthDuration
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    year_month_duration_rep = r"-?P((([0-9]+Y)([0-9]+M)?)|([0-9]+M))"
+
+    pattern = f"^{year_month_duration_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_integer(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:integer``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#integer
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    integer_rep = r"[\-+]?[0-9]+"
+
+    pattern = f"^{integer_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_long(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:long``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#long
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    long_rep = r"[\-+]?[0-9]+"
+
+    pattern = f"^{long_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_int(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:int``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#int
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    int_rep = r"[\-+]?[0-9]+"
+
+    pattern = f"^{int_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_short(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:short``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#short
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    short_rep = r"[\-+]?[0-9]+"
+
+    pattern = f"^{short_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_byte(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:byte``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#byte
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    byte_rep = r"[\-+]?[0-9]+"
+
+    pattern = f"^{byte_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_non_negative_integer(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:nonNegativeInteger``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#nonNegativeInteger
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    non_negative_integer_rep = r"(-0|\+?[0-9]+)"
+
+    pattern = f"^{non_negative_integer_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_positive_integer(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:positiveInteger``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#positiveInteger
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    positive_integer_rep = r"\+?0*[1-9][0-9]*"
+
+    pattern = f"^{positive_integer_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_unsigned_long(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:unsignedLong``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#unsignedLong
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    unsigned_long_rep = r"(-0|\+?[0-9]+)"
+
+    pattern = f"^{unsigned_long_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_unsigned_int(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:unsignedInt``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#unsignedInt
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    unsigned_int_rep = r"(-0|\+?[0-9]+)"
+
+    pattern = f"^{unsigned_int_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_unsigned_short(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:unsignedShort``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#unsignedShort
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    unsigned_short_rep = r"(-0|\+?[0-9]+)"
+
+    pattern = f"^{unsigned_short_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_unsigned_byte(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:unsignedByte``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#unsignedByte
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    unsigned_byte_rep = r"(-0|\+?[0-9]+)"
+
+    pattern = f"^{unsigned_byte_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_non_positive_integer(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:nonPositiveInteger``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#nonPositiveInteger
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    non_positive_integer_rep = r"(\+0|0|-[0-9]+)"
+
+    pattern = f"^{non_positive_integer_rep}$"
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_negative_integer(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:negativeInteger``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#negativeInteger
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    negative_integer_rep = r"(-0*[1-9][0-9]*)"
+
+    pattern = f"^{negative_integer_rep}$"
+    return match(pattern, text) is not None
+
+
+# noinspection PyUnusedLocal
+@verification
+@implementation_specific
+def value_consistent_with_xsd_type(value: str, value_type: "Data_type_def_XSD") -> bool:
+    """
+    Check that the :paramref:`value` conforms to its :paramref:`value_type`.
+
+    :param value: which needs to conform
+    :param value_type: pre-defined value type
+    :return: True if the :paramref:`value` conforms
+    """
+    # NOTE (mristin, 2022-04-1):
+    # We specify the pattern-matching functions above, and they should be handy to check
+    # for most obvious pattern mismatches.
+    #
+    # However, bear in mind that the pattern checks are not enough! For example,
+    # consider a ``xs:dateTimeStamp``. You need to check not only that the value
+    # follows the pattern, but also that the day-of-month and leap seconds are taken
+    # into account.
 
 
 @verification
@@ -51,9 +1004,121 @@ def is_model_reference_to(
     reference: "Model_reference", expected_type: "Key_elements"
 ) -> bool:
     """Check that the target of the model reference matches the expected ``target``."""
-    # This implementation is only for reference. It needs to be adapted for each
-    # implementation separately.
+    # NOTE (mristin, 2022-03-28):
+    # This implementation is given here only as reference. It needs to be adapted
+    # for each implementation separately.
     return len(reference.keys) == 0 or reference.keys[-1].type == expected_type
+
+
+@verification
+@implementation_specific
+def id_shorts_are_unique(namespace: List["Referable"]) -> bool:
+    """
+    Check that the :attr:`~Referable.id_short`'s in the :paramref:`namespace` are
+    unique.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    id_short_set = set()
+    for referable in namespace:
+        if referable.id_short is not None:
+            if referable.id_short in id_short_set:
+                return False
+
+            id_short_set.add(referable.id_short)
+
+    return True
+
+
+@verification
+@implementation_specific
+def extension_names_are_unique(extensions: List["Extension"]) -> bool:
+    """Check that the extension names are unique."""
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    name_set = set()
+    for extension in extensions:
+        if extension.name in name_set:
+            return False
+        name_set.add(extension.name)
+
+    return True
+
+
+@verification
+@implementation_specific
+def submodel_elements_have_identical_semantic_ids(
+    elements: List["Submodel_element"],
+) -> bool:
+    """Check that all semantic IDs are identical, if specified."""
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as a reference.
+    semantic_id = None
+    for element in elements:
+        if element.semantic_id is not None:
+            if semantic_id is None:
+                semantic_id = element.semantic_id
+            else:
+                if semantic_id != element.semantic_id:
+                    return False
+    return True
+
+
+# noinspection PyUnusedLocal
+@verification
+@implementation_specific
+def submodel_element_is_of_type(
+    element: "Submodel_element", element_type: "Submodel_element_elements"
+) -> bool:
+    """
+    Check that the run-time type of the :paramref:`element` coincides with
+    :paramref:`element_type`.
+    """
+    raise NotImplementedError()
+
+
+@verification
+@implementation_specific
+def properties_or_ranges_have_value_type(
+    elements: List["Submodel_element"], value_type: "Data_type_def_XSD"
+) -> bool:
+    """Check that all the :paramref:`elements` have the :paramref:`value_type`."""
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    for element in elements:
+        if isinstance(element, (Property, Range)):
+            if element.value_type != value_type:
+                return False
+
+    return True
+
+
+@verification
+@implementation_specific
+def concept_description_category_is_valid(category: str) -> bool:
+    """
+    Check that the :paramref:`category` is a valid category for
+    a :class:`.Concept_description`.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    # Notably, the specific implementation should use a hash set or a trie for efficient
+    # lookups.
+    return category in (
+        "VALUE",
+        "PROPERTY",
+        "REFERENCE",
+        "DOCUMENT",
+        "CAPABILITY",
+        "RELATIONSHIP",
+        "COLLECTION",
+        "FUNCTION",
+        "EVENT",
+        "ENTITY",
+        "APPLICATION_CLASS",
+        "QUALIFIER",
+        "VIEW",
+    )
 
 
 # endregion
@@ -89,26 +1154,20 @@ class Resource(DBC):
         self.content_type = content_type
 
 
+@invariant(lambda self: is_xs_date_time_stamp_utc(self))
+@invariant(lambda self: matches_xs_date_time_stamp_utc(self))
 class Date_time_stamp_UTC(str, DBC):
-    # TODO (mristin, 2022-03-30): add invariant that the format is ISO 8601
-    pass
+    """Represent an ``xs:dateTimeStamp`` with the time zone fixed to UTC."""
 
 
 @invariant(lambda self: len(self) >= 1)
 class Non_empty_string(str, DBC):
     """Represent a string with at least one character."""
 
-    pass
-
 
 @reference_in_the_book(section=(5, 7, 12, 2))
 class Blob_type(bytearray, DBC):
-    """
-    Group of bytes to represent file content (binaries and non-binaries)
-
-    """
-
-    pass
+    """Group of bytes to represent file content (binaries and non-binaries)"""
 
 
 @reference_in_the_book(section=(5, 7, 12, 3), index=4)
@@ -276,8 +1335,34 @@ class Identifier(Non_empty_string, DBC):
     """
 
 
+# noinspection SpellCheckingInspection
+@invariant(lambda self: matches_BCP_47(self))
+class BCP_47_language_tag(str, DBC):
+    """
+    Represent a language tag conformant to BCP 47.
+
+    See: https://en.wikipedia.org/wiki/IETF_language_tag
+    """
+
+
+@reference_in_the_book(section=(5, 7, 12, 1))
+class Lang_string(DBC):
+    """Strings with language tags"""
+
+    language: BCP_47_language_tag
+    """Language tag conforming to BCP 47"""
+
+    text: str
+    """Text in the :attr:`~language`"""
+
+    def __init__(self, language: BCP_47_language_tag, text: str) -> None:
+        self.language = language
+        self.text = text
+
+
 @reference_in_the_book(section=(5, 7, 12, 2))
-@implementation_specific
+@invariant(lambda self: lang_strings_have_unique_languages(self.lang_strings))
+@invariant(lambda self: len(self.lang_strings) >= 1)
 class Lang_string_set(DBC):
     """
     Array of elements of type langString
@@ -291,14 +1376,21 @@ class Lang_string_set(DBC):
     this is realized.
     """
 
+    lang_strings: List[Lang_string]
+    """Strings in different languages"""
+
+    def __init__(self, lang_strings: List[Lang_string]) -> None:
+        self.lang_strings = lang_strings
+
 
 @reference_in_the_book(section=(5, 7, 12, 2))
-@invariant(lambda self: is_MIME_type(self))
+@invariant(lambda self: matches_MIME_type(self))
 class Content_type(Non_empty_string, DBC):
     """
     string
 
     .. note::
+
         Any content type as in RFC2046.
 
     A media type (also MIME type and content type) […] is a two-part
@@ -311,9 +1403,8 @@ class Content_type(Non_empty_string, DBC):
     type of email message content and attachments.
     """
 
-    pass
 
-
+@invariant(lambda self: matches_RFC_8089_path(self))
 @reference_in_the_book(section=(5, 7, 12, 2))
 class Path_type(Non_empty_string, DBC):
     """
@@ -333,8 +1424,6 @@ class Qualifier_type(Non_empty_string, DBC):
     """
     string
     """
-
-    pass
 
 
 class Value_data_type(str, DBC):
@@ -356,8 +1445,16 @@ class Reference(DBC):
     """
 
 
+# fmt: off
 @abstract
 @reference_in_the_book(section=(5, 7, 2, 1))
+@invariant(
+    lambda self:
+    not (self.extensions is not None) or extension_names_are_unique(self.extensions),
+    "Constraint AASd-077: The name of an extension within Has_extensions "
+    "needs to be unique."
+)
+# fmt: on
 class Has_extensions(DBC):
     """
     Element that can be extended by proprietary extensions.
@@ -374,9 +1471,16 @@ class Has_extensions(DBC):
         self.extensions = extensions
 
 
+# fmt: off
 @abstract
+@invariant(
+    lambda self:
+    not (self.id_short is not None) or len(self.id_short) <= 128,
+    "Constraint AASd-027: ID-short shall have a maximum length of 128 characters."
+)
 @reference_in_the_book(section=(5, 7, 2, 2))
 @serialization(with_model_type=True)
+# fmt: on
 class Referable(Has_extensions):
     """
     An element that is referable by its :attr:`~id_short`.
@@ -454,7 +1558,7 @@ class Referable(Has_extensions):
     checksum: Optional["Non_empty_string"]
     """
     Checksum to be used to determine if an Referable (including its
-    aggregated hild elements) has changed.
+    aggregated child elements) has changed.
 
     The checksum is calculated by the user's tool environment.
     The checksum has no semantic meaning for an asset administration
@@ -519,7 +1623,15 @@ class Has_semantics(DBC):
         self.semantic_id = semantic_id
 
 
+# fmt: off
 @abstract
+@invariant(
+    lambda self:
+    not (self.qualifiers is not None)
+    or qualifier_types_are_unique(self.qualifiers),
+    "Constraint AASd-021: Every qualifiable can only have one qualifier with "
+    "the same type."
+)
 @reference_in_the_book(section=(5, 7, 2, 7))
 @serialization(with_model_type=True)
 # fmt: on
@@ -534,7 +1646,7 @@ class Qualifiable(DBC):
     Additional qualification of a qualifiable element.
 
     :constraint AASd-021:
-        Every qualifiable can only have one qualifier with the same 
+        Every qualifiable can only have one qualifier with the same
         :attr:`~Qualifier.type`.
     """
 
@@ -609,12 +1721,13 @@ class Submodel_element(
 
 
 # fmt: off
-# TODO (mristin, 2021-11-17): rewrite using XSD constraints on strings
-# @invariant(
-#     lambda self:
-#     not (self.value is not None) or is_of_type(self.value, self.value_type),
-#     "Constraint AASd-020"
-# )
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or value_consistent_with_xsd_type(self.value, self.value_type),
+    "Constraint AASd-020: The value shall be consistent to the data type as defined "
+    "in value_type."
+)
 @reference_in_the_book(section=(5, 7, 2, 8))
 @serialization(with_model_type=True)
 # fmt: on
@@ -672,6 +1785,13 @@ class Qualifier(Has_semantics):
 
 
 @abstract
+@invariant(
+    lambda self: self.category == "CONSTANT"
+    or self.category == "PARAMETER"
+    or self.category == "VARIABLE",
+    "Constraint AASd-090: For data elements category shall be one "
+    "of the following values: CONSTANT, PARAMETER or VARIABLE",
+)
 @reference_in_the_book(section=(5, 7, 7, 5))
 class Data_element(Submodel_element):
     """
@@ -870,6 +1990,7 @@ class Global_reference(Reference):
 class Model_reference(Reference):
     """
     Reference to a model element of the same or another AAS.
+
     A model reference is an ordered list of keys, each key referencing an element.
     The complete list of keys may for example be concatenated to a path that then gives
     unique access to an element.
@@ -1055,7 +2176,9 @@ class Modeling_kind(Enum):
 @invariant(
     lambda self:
     not (self.revision is not None) or self.version is not None,
-    "Constraint AASd-005"
+    "Constraint AASd-005: If version is not specified than also revision shall "
+    "be unspecified. This means, a revision requires a version. If there is "
+    "no version there is no revision neither. Revision is optional."
 )
 @reference_in_the_book(section=(5, 7, 2, 5))
 # fmt: on
@@ -1088,15 +2211,36 @@ class Administrative_information(Has_data_specification):
         self.revision = revision
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 3))
 @serialization(with_model_type=True)
+@invariant(
+    lambda self:
+    not (self.submodels is not None)
+    or (
+        all(
+            is_model_reference_to(reference, Key_elements.Submodel)
+            for reference in self.submodels
+        )
+    )
+)
+@invariant(
+    lambda self:
+    not (self.derived_from is not None)
+    or (
+        is_model_reference_to(
+            self.derived_from,
+            Key_elements.Asset_administration_shell
+        )
+    )
+)
+# fmt: on
 class Asset_administration_shell(Identifiable, Has_data_specification):
     """An asset administration shell."""
 
     asset_information: "Asset_information"
     """Meta-information about the asset the AAS is representing."""
 
-    # todo: Nico Model_reference --> ModelReference<Submodel>
     submodels: Optional[List["Model_reference"]]
     """
     References to submodels of the AAS.
@@ -1106,7 +2250,6 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     Temporarily no submodel might be assigned to the AAS.
     """
 
-    # todo: Nico Model_reference --> ModelReference<AssetAdministrationShell>
     derived_from: Optional["Model_reference"]
     """The reference to the AAS the AAS was derived from."""
 
@@ -1263,7 +2406,23 @@ class Identifier_key_value_pair(Has_semantics):
         self.external_subject_id = external_subject_id
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 5))
+@invariant(
+    lambda self:
+    not (self.submodel_elements is not None)
+    or (id_shorts_are_unique(self.submodel_elements))
+)
+@invariant(
+    lambda self:
+    not (self.submodel_elements is not None)
+    or all(
+        element.id_short is not None
+        for element in self.submodel_elements
+    ),
+    "Short IDs need to be defined for all the submodel elements."
+)
+# fmt: on
 class Submodel(
     Identifiable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
 ):
@@ -1370,7 +2529,75 @@ class Relationship_element(Submodel_element):
         self.second = second
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 7, 17))
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or id_shorts_are_unique(self.value)
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or all(
+        element.id_short is not None
+        for element in self.value
+    ),
+    "Short IDs need to be defined for all the elements."
+)
+@invariant(
+    lambda self:
+    not (
+            self.value is not None
+            and self.type_value_list_element is not None
+            and (
+                    self.type_value_list_element == Submodel_element_elements.Property
+                    or self.type_value_list_element == Submodel_element_elements.Range
+            )
+    ) or (
+        self.value_type_list_element is not None
+        and properties_or_ranges_have_value_type(
+            self.value,
+            self.value_type_list_element
+        )
+    ),
+    "Constraint AASd-109: If type value list element is equal to "
+    "Property or Range value type list element shall be set "
+    "and all first level child elements shall have the value type as specified in "
+    "value type list element.")
+@invariant(
+    lambda self:
+    not (self.value is not None and self.type_value_list_element is not None)
+    or all(
+        submodel_element_is_of_type(element, self.type_value_list_element)
+        for element in self.value
+    ),
+    "Constraint AASd-108: All first level child elements shall have "
+    "the same submodel element type as specified in type value list element."
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or submodel_elements_have_identical_semantic_ids(self.value),
+    "Constraint AASd-114: If two first level child elements "
+    "have a semantic ID then they shall be identical."
+)
+@invariant(
+    lambda self:
+    not (
+            self.value is not None
+            and self.semantic_id_list_element is not None
+    ) or (
+        all(
+            not (child.semantic_id is not None)
+            or child.semantic_id == self.semantic_id_list_element
+            for child in self.value
+        )
+    ),
+    "Constraint AASd-107: If a first level child element has a semantic ID "
+    "it shall be identical to semantic ID list element."
+)
+# fmt: on
 class Submodel_element_list(Submodel_element):
     """
     A submodel element list is an ordered collection of submodel elements.
@@ -1415,7 +2642,7 @@ class Submodel_element_list(Submodel_element):
     Default: ``True``
     """
 
-    values: Optional[List["Submodel_element"]]
+    value: Optional[List["Submodel_element"]]
     """
     Submodel element contained in the list.
     The list is ordered.
@@ -1445,7 +2672,7 @@ class Submodel_element_list(Submodel_element):
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Global_reference"]] = None,
         order_relevant: Optional["bool"] = None,
-        values: Optional[List["Submodel_element"]] = None,
+        value: Optional[List["Submodel_element"]] = None,
         semantic_id_list_element: Optional["Global_reference"] = None,
         value_type_list_element: Optional["Data_type_def_XSD"] = None,
     ) -> None:
@@ -1465,19 +2692,35 @@ class Submodel_element_list(Submodel_element):
 
         self.type_value_list_element = type_value_list_element
         self.order_relevant = order_relevant
-        self.values = values
+        self.value = value
         self.semantic_id_list_element = semantic_id_list_element
         self.value_type_list_element = value_type_list_element
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 7, 18))
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or id_shorts_are_unique(self.value)
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or all(
+        element.id_short is not None
+        for element in self.value
+    ),
+    "Short IDs need to be defined for all the elements."
+)
+# fmt: on
 class Submodel_element_struct(Submodel_element):
     """
     A submodel element struct is is a logical encapsulation of multiple values. It has
     a number of of submodel elements.
     """
 
-    values: Optional[List["Submodel_element"]]
+    value: Optional[List["Submodel_element"]]
     """
     Submodel element contained in the struct.
     """
@@ -1494,7 +2737,7 @@ class Submodel_element_struct(Submodel_element):
         semantic_id: Optional["Global_reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Global_reference"]] = None,
-        values: Optional[List["Submodel_element"]] = None,
+        value: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -1510,10 +2753,17 @@ class Submodel_element_struct(Submodel_element):
             data_specifications=data_specifications,
         )
 
-        self.values = values
+        self.value = value
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 7, 13))
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or value_consistent_with_xsd_type(self.value, self.value_type)
+)
+# fmt: on
 class Property(Data_element):
     """
     A property is a data element that has a single value.
@@ -1628,7 +2878,19 @@ class Multi_language_property(Data_element):
         self.value_id = value_id
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 7, 14))
+@invariant(
+    lambda self:
+    not (self.min is not None)
+    or value_consistent_with_xsd_type(self.min, self.value_type)
+)
+@invariant(
+    lambda self:
+    not (self.max is not None)
+    or value_consistent_with_xsd_type(self.max, self.value_type)
+)
+# fmt: on
 class Range(Data_element):
     """
     A range data element is a data element that defines a range with min and max.
@@ -1925,9 +3187,9 @@ class Basic_event_element(Event_element):
 
     observed: "Model_reference"
     """
-    Reference to the :class:`.Referable`, which defines the scope of the event. 
-    Can be :class:`.Asset_administration_shell`, :class:`.Submodel`, or 
-    :class:`.Submodel_element`. Reference to a referable, e.g. a data element or 
+    Reference to the :class:`.Referable`, which defines the scope of the event.
+    Can be :class:`.Asset_administration_shell`, :class:`.Submodel`, or
+    :class:`.Submodel_element`. Reference to a referable, e.g. a data element or
     a submodel, that is being observed.
     """
 
@@ -1953,9 +3215,9 @@ class Basic_event_element(Event_element):
     """
     Information, which outer message infrastructure shall handle messages for
     the :class:`.Event_element`.
-    
-    Refers to a :class:`.Submodel`, :class:`.Submodel_element_list`, 
-    :class:`.Submodel_element_struct` or :class:`.Entity`, which contains 
+
+    Refers to a :class:`.Submodel`, :class:`.Submodel_element_list`,
+    :class:`.Submodel_element_struct` or :class:`.Entity`, which contains
     :class:`.Data_element`'s describing the proprietary specification for
     the message broker.
 
@@ -2038,14 +3300,15 @@ class Event_payload(DBC):
     Defines the necessary information of an event instance sent out or received.
 
     .. note::
-        the payload is not part of the information model as exchanged via
+
+        The payload is not part of the information model as exchanged via
         the AASX package format but used in re-active Asset Administration Shells.
     """
 
     source: "Model_reference"
     """
-    Reference to the source event element, including identification of 
-    :class:`.Asset_administration_shell`, :class:`.Submodel`, 
+    Reference to the source event element, including identification of
+    :class:`.Asset_administration_shell`, :class:`.Submodel`,
     :class:`.Submodel_element`'s.
     """
 
@@ -2057,14 +3320,14 @@ class Event_payload(DBC):
     observable_reference: "Model_reference"
     """
     Reference to the referable, which defines the scope of the event.
-    
+
     Can be :class:`.Asset_administration_shell`, :class:`.Submodel` or
     :class:`.Submodel_element`.
     """
 
     observable_semantic_id: Optional["Global_reference"]
     """
-    :attr:`~Has_semantics.semantic_id` of the referable which defines the scope of 
+    :attr:`~Has_semantics.semantic_id` of the referable which defines the scope of
     the event, if available.
     """
 
@@ -2100,7 +3363,6 @@ class Event_payload(DBC):
         subject_id: Optional["Global_reference"] = None,
         payload: Optional["Non_empty_string"] = None,
     ) -> None:
-
         self.source = source
         self.observable_reference = observable_reference
         self.time_stamp = time_stamp
@@ -2132,7 +3394,30 @@ class Entity_type(Enum):
     """
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 7, 6))
+@invariant(
+    lambda self:
+    (
+        self.entity_type == Entity_type.Self_managed_entity
+        and (
+            (
+                self.global_asset_id is not None
+                and self.global_asset_id is None
+            ) or (
+                self.global_asset_id is None
+                and self.global_asset_id is not None
+            )
+        )
+    ) or (
+        self.global_asset_id is None
+        and self.specific_asset_id is None
+    ),
+    "Constraint AASd-014: Either the attribute global asset ID or "
+    "specific asset ID must be set if entity type is set to 'SelfManagedEntity'. "
+    "They are not existing otherwise."
+)
+# fmt: on
 class Entity(Submodel_element):
     """
     An entity is a submodel element that is used to model entities.
@@ -2403,8 +3688,18 @@ class Capability(Submodel_element):
         )
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 8))
 @serialization(with_model_type=True)
+@invariant(
+    lambda self:
+    not (self.category is not None)
+    or concept_description_category_is_valid(self.category),
+    "Constraint AASd-051: A concept description shall have one of "
+    "the following categories: 'VALUE', 'PROPERTY', 'REFERENCE', 'DOCUMENT', "
+    "'CAPABILITY',; 'RELATIONSHIP', 'COLLECTION', 'FUNCTION', 'EVENT', 'ENTITY', "
+    "'APPLICATION_CLASS', 'QUALIFIER', 'VIEW'.")
+# fmt: on
 class Concept_description(Identifiable, Has_data_specification):
     """
     The semantics of a property or other elements that may have a semantic description
@@ -2537,7 +3832,7 @@ class Submodel_element_elements(Enum):
 
     .. note::
 
-        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element` 
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
         the reference may be a :class:`.Property`, a :class:`.File` etc.
     """
     Entity = "Entity"
@@ -2576,7 +3871,7 @@ class Submodel_element_elements(Enum):
 
     .. note::
 
-        Submodel Element is abstract, i.e. if a key uses 
+        Submodel Element is abstract, i.e. if a key uses
         :attr:`Submodel_element` the reference may be a :class:`.Property`,
         a :class:`.Submodel_element_list`, an :class:`.Operation` etc.
     """
@@ -2609,7 +3904,7 @@ class Referable_elements(Enum):
 
     .. note::
 
-        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element` 
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
         the reference may be a :class:`.Property`, a :class:`.File` *etc.*
     """
 
@@ -2750,6 +4045,7 @@ class Data_specification_content(DBC):
     Missing summary.
 
     .. note::
+
         The Data Specification Templates do not belong to the meta-model of the Asset
         Administration Shell. In serializations that choose specific templates
         the corresponding data specification content may be directly incorporated.
@@ -2761,7 +4057,7 @@ class Data_type_IEC61360(Enum):
     Date = "DATE"
     """
     values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd
-    
+
     Example from IEC 61360-1:2017: "1999-05-31" is the [DATE] representation of:
     31 May 1999.
     """
@@ -2918,7 +4214,7 @@ class Value_list(DBC):
         self.value_reference_pairs = value_reference_pairs
 
 
-@reference_in_the_book(section=(6, 8, 2, 3))
+@reference_in_the_book(section=(6, 3, 2, 3))
 class Data_specification_IEC61360(Data_specification_content):
     """
     Content of data specification template for concept descriptions conformant to
@@ -2966,7 +4262,7 @@ class Data_specification_IEC61360(Data_specification_content):
     Data Type
 
     :constraint AASd-070:
-        For a :class:`.Concept_description` with :attr:`~Concept_description.category` 
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category`
         ``PROPERTY`` or ``VALUE`` using data specification template IEC61360
         (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
         :attr:`~data_type` is mandatory and shall be defined.
@@ -2990,8 +4286,8 @@ class Data_specification_IEC61360(Data_specification_content):
         :attr:`~data_type` is mandatory and shall be defined.
 
     :constraint AASd-103:
-        If :attr:`~data_type` is one of: 
-        ``INTEGER_MEASURE``, ``REAL_MEASURE``, ``RATIONAL_MEASURE``, 
+        If :attr:`~data_type` is one of:
+        ``INTEGER_MEASURE``, ``REAL_MEASURE``, ``RATIONAL_MEASURE``,
         ``INTEGER_CURRENCY``, ``REAL_CURRENCY``, then
         :attr:`~unit` or :attr:`~unit_id` shall be defined.
     """
@@ -3001,8 +4297,8 @@ class Data_specification_IEC61360(Data_specification_content):
     Definition in different languages
 
     :constraint AASd-074:
-        For all :class:`.Concept_description`'s except for 
-        :class:`.Concept_description`'s of category ``VALUE`` using data specification 
+        For all :class:`.Concept_description`'s except for
+        :class:`.Concept_description`'s of category ``VALUE`` using data specification
         template IEC61360
         (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
         :attr:`~definition` is mandatory and shall be defined at least in English.
@@ -3076,61 +4372,66 @@ class Data_specification_IEC61360(Data_specification_content):
         self.level_type = level_type
 
 
-@reference_in_the_book(section=(6, 8, 3, 2))
+@reference_in_the_book(section=(6, 4, 3))
 class Data_specification_physical_unit(Data_specification_content):
-    """TODO"""
-
-    # TODO (sadu, 2021-11-17):
-    # No table for class in the book
+    """
+    Content of data specification template for concept descriptions for physical units
+    conformant to IEC 61360.
+    """
 
     unit_name: Optional[Non_empty_string]
     """
-    Unit Name
+    Name of the physical unit
     """
 
     unit_symbol: Optional[Non_empty_string]
     """
-    Unit Symbol
+    Symbol for the physical unit
     """
 
     definition: Optional["Lang_string_set"]
     """
-    Definition
+    Definition in different languages
     """
 
     SI_notation: Optional[Non_empty_string]
     """
-    SI Notation
+    Notation of SI physical unit 
+    """
+
+    SI_name: Optional[Non_empty_string]
+    """
+    Name of SI physical unit 
     """
 
     DIN_notation: Optional[Non_empty_string]
     """
-    DIN Notation
+    Notation of physical unit conformant to DIN
     """
 
     ECE_name: Optional[Non_empty_string]
     """
-    ECE Name
+    Name of physical unit conformant to ECE
     """
 
     ECE_code: Optional[Non_empty_string]
     """
-    ECE Code
+    Code of physical unit conformant to ECE
     """
 
     NIST_name: Optional[Non_empty_string]
     """
-    NIST Name
+    Name of NIST physical unit
     """
 
     source_of_definition: Optional[Non_empty_string]
     """
-    Source Of Definition
+    Source of definition
     """
 
     conversion_factor: Optional[Non_empty_string]
     """
-    Conversion Factor
+    Conversion factor
     """
 
     registration_authority_id: Optional[Non_empty_string]
@@ -3149,6 +4450,7 @@ class Data_specification_physical_unit(Data_specification_content):
         unit_symbol: Optional[Non_empty_string] = None,
         definition: Optional["Lang_string_set"] = None,
         SI_notation: Optional[Non_empty_string] = None,
+        SI_name: Optional[Non_empty_string] = None,
         DIN_notation: Optional[Non_empty_string] = None,
         ECE_name: Optional[Non_empty_string] = None,
         ECE_code: Optional[Non_empty_string] = None,
@@ -3162,6 +4464,7 @@ class Data_specification_physical_unit(Data_specification_content):
         self.unit_symbol = unit_symbol
         self.definition = definition
         self.SI_notation = SI_notation
+        self.SI_name = SI_name
         self.DIN_notation = DIN_notation
         self.ECE_name = ECE_name
         self.ECE_code = ECE_code
@@ -3172,18 +4475,15 @@ class Data_specification_physical_unit(Data_specification_content):
         self.supplier = supplier
 
 
-# TODO (Nico & Marko, 2021-09-24):
-#  We need to list in a comment all the constraints which were not implemented.
-
-
 @reference_in_the_book(section=(5, 7, 9))
 class Environment:
     """
     Container for the sets of different identifiables.
 
     .. note::
+
         w.r.t. file exchange: There is exactly one environment independent on how many
-        files the contained elements are splitted. If the file is splitted then there
+        files the contained elements are split. If the file is split then there
         shall be no element with the same identifier in two different files.
     """
 

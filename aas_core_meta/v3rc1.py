@@ -131,7 +131,7 @@ def is_ID_short(text: str) -> bool:
 
 # noinspection SpellCheckingInspection
 @verification
-def is_MIME_type(text: str) -> bool:
+def matches_MIME_type(text: str) -> bool:
     """
     Check that :paramref:`text` conforms to the pattern of MIME type.
 
@@ -173,7 +173,7 @@ class Non_empty_string(str, DBC):
     pass
 
 
-@invariant(lambda self: is_MIME_type(self))
+@invariant(lambda self: matches_MIME_type(self))
 class MIME_typed(Non_empty_string, DBC):
     """Represent a string that follows the pattern of a MIME type."""
 
