@@ -3,6 +3,12 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.4.30a5 (2022-04-09)
+========================
+This is a pre-release version.
+
+* Fix dangling references in V3RC02 (#63)
+
 2022.4.30a4 (2022-04-09)
 ========================
 This is a pre-release version.
