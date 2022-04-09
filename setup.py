@@ -41,7 +41,7 @@ setup(
         "dev": [
             "black==22.3.0",
             "mypy==0.910",
-            "aas-core-codegen==0.0.6"
+            "aas-core-codegen==0.0.7"
         ],
     },
     # fmt: on
