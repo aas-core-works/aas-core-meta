@@ -7,26 +7,11 @@ and can not be verified without it:
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
 * :constraintref:`AASd-064`
-* :constraintref:`AASd-078`
 
 Some of the constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
-
-The following constraints have not been implemented as they are not part of
-the meta-model, but are related to the templates for concept descriptions:
-
-* :constraintref:`AASd-070`
-* :constraintref:`AASd-071`
-* :constraintref:`AASd-072`
-* :constraintref:`AASd-073`
-* :constraintref:`AASd-074`
-* :constraintref:`AASd-076`
-* :constraintref:`AASd-101`
-* :constraintref:`AASd-102`
-* :constraintref:`AASd-103`
-
 
 We could not formalize the constraints which prescribed how to deal with
 the default values as the semantic of the default values has not been defined
