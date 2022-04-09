@@ -3,7 +3,14 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
-2022.4.30a1 (2022-04-07)
+2022.4.30a3 (2022-04-09)
+========================
+This is a pre-release version.
+
+* Review key.value and key_elements.fragment (#57)
+* Re-order V3RC02 classes to match V3RC01 (#59)
+
+2022.4.30a2 (2022-04-07)
 ========================
 This is a pre-release version.
 
