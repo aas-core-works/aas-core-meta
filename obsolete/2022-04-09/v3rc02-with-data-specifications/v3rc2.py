@@ -3881,6 +3881,501 @@ class Lang_string_set(DBC):
         self.lang_strings = lang_strings
 
 
+@abstract
+@serialization(with_model_type=True)
+@reference_in_the_book(section=(6, 1), index=0)
+class Data_specification_content(DBC):
+    """
+    Missing summary.
+
+    .. note::
+
+        The Data Specification Templates do not belong to the meta-model of the Asset
+        Administration Shell. In serializations that choose specific templates
+        the corresponding data specification content may be directly incorporated.
+    """
+
+
+@reference_in_the_book(section=(6, 1), index=1)
+class Data_specification(DBC):
+    """
+    A template consists of the :class:`.Data_specification_content` containing
+    the additional attributes to be added to the element instance that references
+    the data specification template and meta information about the template itself.
+
+    .. note::
+
+        The Data Specification Templates do not belong to the meta-model of the asset
+        administration shell. In serializations that choose specific templates
+        the corresponding data specification content may be directly incorporated.
+    """
+
+    id: "Identifier"
+    """The globally unique identification of the element."""
+
+    administration: Optional["Administrative_information"]
+    """
+    Administrative information of an identifiable element.
+
+    .. note::
+
+        Some of the administrative information like the version number might need to
+        be part of the identification.
+    """
+
+    description: Optional["Lang_string_set"]
+    """
+    Description or comments on the element.
+
+    The description can be provided in several languages.
+
+    If no description is defined, then the definition of the concept
+    description that defines the semantics of the element is used.
+
+    Additional information can be provided, *e.g.*, if the element is
+    qualified and which qualifier types can be expected in which
+    context or which additional data specification templates are
+    provided.
+    """
+
+    data_specification_content: Optional["Data_specification_content"]
+
+    def __init__(
+        self,
+        id: "Identifier",
+        administration: Optional["Administrative_information"] = None,
+        description: Optional["Lang_string_set"] = None,
+        data_specification_content: Optional["Data_specification_content"] = None,
+    ) -> None:
+        self.id = id
+        self.administration = administration
+        self.description = description
+        self.data_specification_content = data_specification_content
+
+
+@reference_in_the_book(section=(6, 8, 2, 3), index=2)
+class Data_type_IEC_61360(Enum):
+    Date = "DATE"
+    """
+    values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd
+
+    Example from IEC 61360-1:2017: "1999-05-31" is the [DATE] representation of:
+    31 May 1999.
+    """
+    String = "STRING"
+    """
+    values consisting of sequence of characters but cannot be translated into other
+    languages
+    """
+    String_translatable = "STRING_TRANSLATABLE"
+    """
+    values containing string but shall be represented as different string in different
+    languages
+    """
+    Integer_Measure = "INTEGER_MEASURE"
+    """
+    values containing values that are measure of type INTEGER. In addition such a value
+    comes with a physical unit.
+    """
+    Integer_count = "INTEGER_COUNT"
+    """
+    values containing values of type INTEGER but are no currencies or measures
+    """
+    Integer_currency = "INTEGER_CURRENCY"
+    """
+    values containing values of type INTEGER that are currencies
+    """
+    Real_measure = "REAL_MEASURE"
+    """
+    values containing values that are measures of type REAL. In addition such a value
+    comes with a physical unit.
+    """
+    Real_count = "REAL_COUNT"
+    """
+    values containing numbers that can be written as a terminating or non-terminating
+    decimal; a rational or irrational number but are no currencies or measures
+    """
+    Real_currency = "REAL_CURRENCY"
+    """
+    values containing values of type REAL that are currencies
+    """
+    Boolean = "BOOLEAN"
+    """
+    values representing truth of logic or Boolean algebra (TRUE, FALSE)
+    """
+    IRI = "IRI"
+    """
+    values containing values of type STRING conformant to Rfc 3987
+
+    .. note::
+        In IEC61360-1 (2017) only URI is supported. An Iri type allows in particular to
+        express a URL or an URI
+    """
+    IRDI = "IRDI"
+    """
+    values conforming to ISO/IEC 11179 series global identifier sequences IRDI can be
+    used instead of the more specific data types ICID or ISO29002_IRDI. ICID values are
+    value conformant to an IRDI, where the delimiter between RAI and ID is “#” while the
+    delimiter between DI and VI is confined to “##” ISO29002_IRDI values are values
+    containing a global identifier that identifies an administrated item in a registry.
+    The structure of this identifier complies with identifier syntax defined in ISO/TS
+    29002-5. The identifier shall fulfill the requirements specified in ISO/TS 29002-5
+    for an "international registration data identifier" (IRDI).
+    """
+    Rational = "RATIONAL"
+    """
+    values containing values of type rational
+    """
+    Rational_measure = "RATIONAL_MEASURE"
+    """
+    values containing values of type rational.
+    In addition such a value comes with a physical unit.
+    """
+    Time = "TIME"
+    """
+    values containing a time, conformant to ISO 8601:2004 but restricted to
+    what is allowed in the corresponding type in xml.
+    Format hh:mm (ECLASS) Example from IEC 61360-1:2017: "13:20:00-05:00" is the [TIME]
+    representation of: 1.20 p.m. for Eastern Standard Time,
+    which is 5 hours behind Coordinated Universal Time (UTC).
+    """
+    Timestamp = "TIMESTAMP"
+    """
+    values containing a time, conformant to ISO 8601:2004 but restricted to
+    what is allowed in the corresponding type in xml. Format yyyy-mm-dd hh:mm (ECLASS)
+    """
+    File = "FILE"
+    """
+    values containing an address to a file. The values are of type URI and can represent
+    an absolute or relative path. IEC61360 does not support the file type.
+    """
+    HTML = "HTML"
+    """
+    Values containing string with any sequence of characters, using the syntax of HTML5
+    (see W3C Recommendation 28:2014)
+    """
+    Blob = "BLOB"
+    """
+    values containing the content of a file. Values may be binaries.
+    HTML conformant to HTML5 is a special blob. In IEC61360 binary is for a sequence of
+    bits, each bit being represented by “0” and “1” only. A binary is a blob but a blob
+    may also contain other source code.
+    """
+
+
+@reference_in_the_book(section=(6, 8, 2, 3), index=5)
+class Level_type(Enum):
+    Min = "Min"
+    Max = "Max"
+    Nom = "Nom"
+    Type = "Type"
+
+
+@reference_in_the_book(section=(6, 8, 2, 3), index=4)
+class Value_reference_pair(DBC):
+    """
+    A value reference pair within a value list. Each value has a global unique id
+    defining its semantic.
+    """
+
+    value: Non_empty_string
+    """
+    The value of the referenced concept definition of the value in :attr:`~value_id`.
+    """
+
+    value_id: "Reference"
+    """
+    Global unique ID of the value.
+
+    :constraint AASd-078:
+        If the :attr:`value_id` of a :class:`.Value_reference_pair` references a
+        :class:`.Concept_description` then the :attr:`~Concept_description.category`
+        shall be one of following values: ``VALUE``.
+    """
+
+    def __init__(self, value: Non_empty_string, value_id: "Reference") -> None:
+        self.value = value
+        self.value_id = value_id
+
+
+@reference_in_the_book(section=(6, 8, 2, 3), index=3)
+class Value_list(DBC):
+    """
+    A set of value reference pairs.
+    """
+
+    value_reference_pairs: Optional[List["Value_reference_pair"]]
+    """
+    A pair of a value together with its global unique id.
+    """
+
+    def __init__(
+        self, value_reference_pairs: Optional[List["Value_reference_pair"]] = None
+    ) -> None:
+        self.value_reference_pairs = value_reference_pairs
+
+
+@reference_in_the_book(section=(6, 3, 2, 3))
+class Data_specification_IEC_61360(Data_specification_content):
+    """
+    Content of data specification template for concept descriptions conformant to
+    IEC 61360.
+    """
+
+    preferred_name: Optional["Lang_string_set"]
+    """
+    Preferred name
+
+    :constraint AASd-076:
+        For all :class`Concept_description`'s using data specification template
+        IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
+        at least a preferred name in English shall be defined.
+    """
+
+    short_name: Optional["Lang_string_set"]
+    """
+    Short name
+    """
+
+    unit: Optional[Non_empty_string]
+    """
+    Unit
+    """
+
+    unit_id: Optional["Reference"]
+    """
+    Unique unit id
+    """
+
+    source_of_definition: Optional[Non_empty_string]
+    """
+    Source of definition
+    """
+
+    symbol: Optional[Non_empty_string]
+    """
+    Symbol
+    """
+
+    data_type: Optional["Data_type_IEC_61360"]
+    """
+    Data Type
+
+    :constraint AASd-070:
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category`
+        ``PROPERTY`` or ``VALUE`` using data specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        :attr:`~data_type` is mandatory and shall be defined.
+
+    :constraint AASd-071:
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category`
+        ``REFERENCE`` using data specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        :attr:`~data_type` is ``STRING`` by default.
+
+    :constraint AASd-072:
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category`
+        ``DOCUMENT`` using data specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        :attr:`~data_type` shall be one of the following values: ``STRING`` or ``URL``.
+
+    :constraint AASd-073:
+        For a :class:`.Concept_description` with :attr:`~Concept_description.category`
+        ``QUALIFIER`` using data specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        :attr:`~data_type` is mandatory and shall be defined.
+
+    :constraint AASd-103:
+        If :attr:`~data_type` is one of:
+        ``INTEGER_MEASURE``, ``REAL_MEASURE``, ``RATIONAL_MEASURE``,
+        ``INTEGER_CURRENCY``, ``REAL_CURRENCY``, then
+        :attr:`~unit` or :attr:`~unit_id` shall be defined.
+    """
+
+    definition: Optional["Lang_string_set"]
+    """
+    Definition in different languages
+
+    :constraint AASd-074:
+        For all :class:`.Concept_description`'s except for
+        :class:`.Concept_description`'s of category ``VALUE`` using data specification
+        template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        :attr:`~definition` is mandatory and shall be defined at least in English.
+    """
+
+    value_format: Optional[Non_empty_string]
+    """
+    Value Format
+    """
+
+    value_list: Optional["Value_list"]
+    """
+    List of allowed values
+
+    See :constraintref:`AASd-102`
+    """
+
+    value: Optional[Non_empty_string]
+    """
+    Value
+
+    :constraint AASd-101:
+        If :attr:`~Referable.category` equal to ``VALUE`` then :attr:`~value` shall be
+        set.
+
+    :constraint AASd-102:
+        If :attr:`~value` or :attr:`~value_id` is not empty then :attr:`~value_list`
+        shall be empty and vice versa.
+    """
+
+    value_id: Optional["Reference"]
+    """
+    Unique value id
+
+    See :constraintref:`AASd-102`
+    """
+
+    level_type: Optional["Level_type"]
+    """
+    Set of levels.
+    """
+
+    def __init__(
+        self,
+        preferred_name: Optional["Lang_string_set"] = None,
+        short_name: Optional["Lang_string_set"] = None,
+        unit: Optional[Non_empty_string] = None,
+        unit_id: Optional["Reference"] = None,
+        source_of_definition: Optional[Non_empty_string] = None,
+        symbol: Optional[Non_empty_string] = None,
+        data_type: Optional["Data_type_IEC_61360"] = None,
+        definition: Optional["Lang_string_set"] = None,
+        value_format: Optional[Non_empty_string] = None,
+        value_list: Optional["Value_list"] = None,
+        value: Optional[Non_empty_string] = None,
+        value_id: Optional["Reference"] = None,
+        level_type: Optional["Level_type"] = None,
+    ) -> None:
+        self.preferred_name = preferred_name
+        self.short_name = short_name
+        self.unit = unit
+        self.unit_id = unit_id
+        self.source_of_definition = source_of_definition
+        self.symbol = symbol
+        self.data_type = data_type
+        self.definition = definition
+        self.value_format = value_format
+        self.value_list = value_list
+        self.value = value
+        self.value_id = value_id
+        self.level_type = level_type
+
+
+@reference_in_the_book(section=(6, 4, 3))
+class Data_specification_physical_unit(Data_specification_content):
+    """
+    Content of data specification template for concept descriptions for physical units
+    conformant to IEC 61360.
+    """
+
+    unit_name: Optional[Non_empty_string]
+    """
+    Name of the physical unit
+    """
+
+    unit_symbol: Optional[Non_empty_string]
+    """
+    Symbol for the physical unit
+    """
+
+    definition: Optional["Lang_string_set"]
+    """
+    Definition in different languages
+    """
+
+    SI_notation: Optional[Non_empty_string]
+    """
+    Notation of SI physical unit 
+    """
+
+    SI_name: Optional[Non_empty_string]
+    """
+    Name of SI physical unit 
+    """
+
+    DIN_notation: Optional[Non_empty_string]
+    """
+    Notation of physical unit conformant to DIN
+    """
+
+    ECE_name: Optional[Non_empty_string]
+    """
+    Name of physical unit conformant to ECE
+    """
+
+    ECE_code: Optional[Non_empty_string]
+    """
+    Code of physical unit conformant to ECE
+    """
+
+    NIST_name: Optional[Non_empty_string]
+    """
+    Name of NIST physical unit
+    """
+
+    source_of_definition: Optional[Non_empty_string]
+    """
+    Source of definition
+    """
+
+    conversion_factor: Optional[Non_empty_string]
+    """
+    Conversion factor
+    """
+
+    registration_authority_id: Optional[Non_empty_string]
+    """
+    Registration Authority ID
+    """
+
+    supplier: Optional[Non_empty_string]
+    """
+    Supplier
+    """
+
+    def __init__(
+        self,
+        unit_name: Optional[Non_empty_string] = None,
+        unit_symbol: Optional[Non_empty_string] = None,
+        definition: Optional["Lang_string_set"] = None,
+        SI_notation: Optional[Non_empty_string] = None,
+        SI_name: Optional[Non_empty_string] = None,
+        DIN_notation: Optional[Non_empty_string] = None,
+        ECE_name: Optional[Non_empty_string] = None,
+        ECE_code: Optional[Non_empty_string] = None,
+        NIST_name: Optional[Non_empty_string] = None,
+        source_of_definition: Optional[Non_empty_string] = None,
+        conversion_factor: Optional[Non_empty_string] = None,
+        registration_authority_id: Optional[Non_empty_string] = None,
+        supplier: Optional[Non_empty_string] = None,
+    ) -> None:
+        self.unit_name = unit_name
+        self.unit_symbol = unit_symbol
+        self.definition = definition
+        self.SI_notation = SI_notation
+        self.SI_name = SI_name
+        self.DIN_notation = DIN_notation
+        self.ECE_name = ECE_name
+        self.ECE_code = ECE_code
+        self.NIST_name = NIST_name
+        self.source_of_definition = source_of_definition
+        self.conversion_factor = conversion_factor
+        self.registration_authority_id = registration_authority_id
+        self.supplier = supplier
+
+
 @reference_in_the_book(section=(5, 7, 9))
 class Environment:
     """
