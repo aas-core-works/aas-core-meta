@@ -3,6 +3,12 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.4.30a6 (2022-04-20)
+========================
+This is a pre-release version.
+
+* Remove class ``View`` from V3RC02 (#65)
+
 2022.4.30a5 (2022-04-09)
 ========================
 This is a pre-release version.
