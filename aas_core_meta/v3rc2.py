@@ -6,7 +6,6 @@ and can not be verified without it:
 
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
-* :constraintref:`AASd-064`
 
 Some of the constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
@@ -3353,58 +3352,6 @@ class Concept_description(Identifiable, Has_data_specification):
         Has_data_specification.__init__(self, data_specifications=data_specifications)
 
         self.is_case_of = is_case_of
-
-
-@reference_in_the_book(section=(5, 7, 9))
-@serialization(with_model_type=True)
-class View(Referable, Has_semantics, Has_data_specification):
-    """
-    A view is a collection of referable elements w.r.t. to a specific viewpoint of one
-    or more stakeholders.
-
-    .. note::
-
-       Views are a projection of submodel elements for a given perspective.
-       They are not equivalent to submodels.
-
-    :constraint AASd-064:
-        If the :attr:`~semantic_id` references a :class:`.Concept_description`
-        then the :attr:`~Concept_description.category` of
-        the :class:`.Concept_description` shall be ``VIEW``.
-    """
-
-    contained_elements: Optional[List["Reference"]]
-    """
-    Reference to a referable element that is contained in the view.
-    """
-
-    def __init__(
-        self,
-        extensions: Optional[List["Extension"]] = None,
-        id_short: Optional[Non_empty_string] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        category: Optional[Non_empty_string] = None,
-        description: Optional["Lang_string_set"] = None,
-        checksum: Optional["Non_empty_string"] = None,
-        semantic_id: Optional["Global_reference"] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
-        contained_elements: Optional[List["Reference"]] = None,
-    ) -> None:
-        Referable.__init__(
-            self,
-            extensions=extensions,
-            id_short=id_short,
-            display_name=display_name,
-            category=category,
-            description=description,
-            checksum=checksum,
-        )
-
-        Has_semantics.__init__(self, semantic_id)
-
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
-
-        self.contained_elements = contained_elements
 
 
 @abstract
