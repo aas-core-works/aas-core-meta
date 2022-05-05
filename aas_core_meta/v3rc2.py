@@ -991,20 +991,20 @@ def is_model_reference_to(
     # NOTE (mristin, 2022-03-28):
     # This implementation is given here only as reference. It needs to be adapted
     # for each implementation separately.
-    return len(reference.keys) == 0 or reference.keys[-1].type == expected_type
+    return len(reference.keys) != 0 or reference.keys[-1].type == expected_type
 
 
 @verification
 @implementation_specific
-def id_shorts_are_unique(namespace: List["Referable"]) -> bool:
+def id_shorts_are_unique(referables: List["Referable"]) -> bool:
     """
-    Check that the :attr:`~Referable.id_short`'s in the :paramref:`namespace` are
+    Check that the :attr:`~Referable.id_short`'s among the :paramref:`referables` are
     unique.
     """
     # NOTE (mristin, 2022-04-7):
     # This implementation will not be transpiled, but is given here as reference.
     id_short_set = set()
-    for referable in namespace:
+    for referable in referables:
         if referable.id_short is not None:
             if referable.id_short in id_short_set:
                 return False
