@@ -2828,10 +2828,10 @@ class Entity_type(Enum):
         and (
             (
                 self.global_asset_id is not None
-                and self.global_asset_id is None
+                and self.specific_asset_id is None
             ) or (
                 self.global_asset_id is None
-                and self.global_asset_id is not None
+                and self.specific_asset_id is not None
             )
         )
     ) or (
