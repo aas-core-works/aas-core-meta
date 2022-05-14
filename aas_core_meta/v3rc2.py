@@ -2262,9 +2262,12 @@ class Submodel_element_struct(Submodel_element):
 
 @abstract
 @invariant(
-    lambda self: self.category == "CONSTANT"
-    or self.category == "PARAMETER"
-    or self.category == "VARIABLE",
+    lambda self: not (self.category is not None)
+    or (
+        self.category == "CONSTANT"
+        or self.category == "PARAMETER"
+        or self.category == "VARIABLE"
+    ),
     "Constraint AASd-090: For data elements category shall be one "
     "of the following values: CONSTANT, PARAMETER or VARIABLE",
 )
