@@ -1513,7 +1513,7 @@ class Has_kind(DBC):
     """
 
     def __init__(self, kind: Optional["Modeling_kind"] = None) -> None:
-        self.kind = kind if kind is not None else Modeling_kind.Instance
+        self.kind = kind
 
 
 @abstract
