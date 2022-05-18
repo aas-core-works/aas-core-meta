@@ -23,7 +23,7 @@ from enum import Enum
 from re import match
 from typing import List, Optional
 
-from icontract import invariant, DBC
+from icontract import invariant, DBC, ensure
 
 from aas_core_meta.marker import (
     abstract,
@@ -1256,6 +1256,14 @@ class Extension(Has_semantics):
     Default: xsd:string
     """
 
+    @implementation_specific
+    def value_type_or_default(self) -> "Data_type_def_XSD":
+        # NOTE (mristin, 2022-04-7):
+        # This implementation will not be transpiled, but is given here as reference.
+        return (
+            self.value_type if self.value_type is not None else Data_type_def_XSD.String
+        )
+
     value: Optional["Value_data_type"]
     """
     Value of the extension
@@ -1511,6 +1519,12 @@ class Has_kind(DBC):
 
     Default Value = Instance
     """
+
+    @implementation_specific
+    def kind_or_default(self) -> "Modeling_kind":
+        # NOTE (mristin, 2022-04-7):
+        # This implementation will not be transpiled, but is given here as reference.
+        return self.kind if self.kind is not None else Modeling_kind.Instance
 
     def __init__(self, kind: Optional["Modeling_kind"] = None) -> None:
         self.kind = kind
@@ -2145,6 +2159,12 @@ class Submodel_element_list(Submodel_element):
 
     Default: ``True``
     """
+
+    @implementation_specific
+    def order_relevant_or_default(self) -> bool:
+        # NOTE (mristin, 2022-04-7):
+        # This implementation will not be transpiled, but is given here as reference.
+        return self.order_relevant if self.order_relevant is not None else True
 
     value: Optional[List["Submodel_element"]]
     """
@@ -3318,6 +3338,13 @@ class Concept_description(Identifiable, Has_data_specification):
 
         Default: ``PROPERTY``.
     """
+
+    @implementation_specific
+    @ensure(lambda result: concept_description_category_is_valid(result))
+    def category_or_default(self) -> str:
+        # NOTE (mristin, 2022-04-7):
+        # This implementation will not be transpiled, but is given here as reference.
+        return self.category if self.category is not None else "PROPERTY"
 
     is_case_of: Optional[List["Global_reference"]]
     """
