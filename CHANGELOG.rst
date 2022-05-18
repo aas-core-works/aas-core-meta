@@ -3,6 +3,17 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.5.30a1 (2022-05-18)
+========================
+This is a pre-release version.
+
+* Introduce ``get_*_or_default`` as methods to V3rc2 (#71)
+* Remove setting default values in constructors (#70)
+* Fix the nonsensical invariant in Entity in V3RC02 (#69)
+* Check category only if set in V3RC02 (#68)
+* Fix invariants in V3RC02 (#67)
+
+
 2022.4.30a6 (2022-04-20)
 ========================
 This is a pre-release version.
