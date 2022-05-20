@@ -498,7 +498,7 @@ class Test_matches_xs_g_year_month(unittest.TestCase):
 
 class Test_matches_xs_hex_binary(unittest.TestCase):
     def test_empty(self) -> None:
-        assert not v3rc2.matches_xs_hex_binary('')
+        assert v3rc2.matches_xs_hex_binary('')
 
     def test_free_form_text(self) -> None:
         assert not v3rc2.matches_xs_hex_binary('some free form text')

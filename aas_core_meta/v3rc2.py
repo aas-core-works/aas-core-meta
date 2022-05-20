@@ -779,7 +779,7 @@ def matches_xs_long(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    long_rep = r"[\-+]?[0-9]+"
+    long_rep = r"[\-+]?0*[0-9]{1,20}"
 
     pattern = f"^{long_rep}$"
     return match(pattern, text) is not None
@@ -795,7 +795,7 @@ def matches_xs_int(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    int_rep = r"[\-+]?[0-9]+"
+    int_rep = r"[\-+]?0*[0-9]{1,10}"
 
     pattern = f"^{int_rep}$"
     return match(pattern, text) is not None
@@ -811,7 +811,7 @@ def matches_xs_short(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    short_rep = r"[\-+]?[0-9]+"
+    short_rep = r"[\-+]?0*[0-9]{1,5}"
 
     pattern = f"^{short_rep}$"
     return match(pattern, text) is not None
@@ -827,7 +827,7 @@ def matches_xs_byte(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    byte_rep = r"[\-+]?[0-9]+"
+    byte_rep = r"[\-+]?0*[0-9]{1,3}"
 
     pattern = f"^{byte_rep}$"
     return match(pattern, text) is not None
@@ -875,7 +875,7 @@ def matches_xs_unsigned_long(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    unsigned_long_rep = r"(-0|\+?[0-9]+)"
+    unsigned_long_rep = r"(-0|\+?0*[0-9]{1,20})"
 
     pattern = f"^{unsigned_long_rep}$"
     return match(pattern, text) is not None
@@ -891,7 +891,7 @@ def matches_xs_unsigned_int(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    unsigned_int_rep = r"(-0|\+?[0-9]+)"
+    unsigned_int_rep = r"(-0|\+?0*[0-9]{1,10})"
 
     pattern = f"^{unsigned_int_rep}$"
     return match(pattern, text) is not None
@@ -907,7 +907,7 @@ def matches_xs_unsigned_short(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    unsigned_short_rep = r"(-0|\+?[0-9]+)"
+    unsigned_short_rep = r"(-0|\+?0*[0-9]{1,5})"
 
     pattern = f"^{unsigned_short_rep}$"
     return match(pattern, text) is not None
@@ -923,7 +923,7 @@ def matches_xs_unsigned_byte(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    unsigned_byte_rep = r"(-0|\+?[0-9]+)"
+    unsigned_byte_rep = r"(-0|\+?0*[0-9]{1,3})"
 
     pattern = f"^{unsigned_byte_rep}$"
     return match(pattern, text) is not None
