@@ -22,6 +22,12 @@ class Test_matches_xs_date_time_stamp_utc(unittest.TestCase):
     def test_date_time_with_UTC(self) -> None:
         assert v3rc2.matches_xs_date_time_stamp_utc("2022-04-01T01:02:03Z")
 
+    def test_date_time_without_seconds(self) -> None:
+        assert not v3rc2.matches_xs_date_time_stamp_utc("2022-04-01T01:02Z")
+
+    def test_date_time_without_minutes(self) -> None:
+        assert not v3rc2.matches_xs_date_time_stamp_utc("2022-04-01T01Z")
+
     def test_date_time_with_UTC_and_suffix(self) -> None:
         assert not v3rc2.matches_xs_date_time_stamp_utc(
             "2022-04-01T01:02:03Z-unexpected-suffix")
@@ -186,6 +192,12 @@ class Test_matches_xs_date_time(unittest.TestCase):
     def test_date_time_with_UTC(self) -> None:
         assert v3rc2.matches_xs_date_time("2022-04-01T01:02:03Z")
 
+    def test_date_time_without_seconds(self) -> None:
+        assert not v3rc2.matches_xs_date_time("2022-04-01T01:02Z")
+
+    def test_date_time_without_minutes(self) -> None:
+        assert not v3rc2.matches_xs_date_time("2022-04-01T01Z")
+
     def test_date_time_with_unexpected_suffix(self) -> None:
         assert not v3rc2.matches_xs_date_time(
             "2022-04-01T01:02:03Z-unexpected-suffix")
@@ -216,6 +228,12 @@ class Test_matches_xs_date_time_stamp(unittest.TestCase):
 
     def test_date_time_stamp_with_UTC(self) -> None:
         assert v3rc2.matches_xs_date_time_stamp("2022-04-01T01:02:03Z")
+
+    def test_date_time_without_seconds(self) -> None:
+        assert not v3rc2.matches_xs_date_time_stamp("2022-04-01T01:02Z")
+
+    def test_date_time_without_minutes(self) -> None:
+        assert not v3rc2.matches_xs_date_time_stamp("2022-04-01T01Z")
 
     def test_date_time_stamp_with_unexpected_suffix(self) -> None:
         assert not v3rc2.matches_xs_date_time_stamp(
