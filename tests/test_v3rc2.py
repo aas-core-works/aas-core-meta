@@ -263,6 +263,9 @@ class Test_matches_xs_decimal(unittest.TestCase):
     def test_decimal_with_preceding_zeros(self) -> None:
         assert v3rc2.matches_xs_decimal('0001234.01234')
 
+    def test_scientific_notation(self) -> None:
+        assert not v3rc2.matches_xs_decimal('12.123e123')
+
 
 class Test_matches_xs_double(unittest.TestCase):
     def test_empty(self) -> None:
