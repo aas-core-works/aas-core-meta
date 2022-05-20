@@ -1253,7 +1253,7 @@ class Extension(Has_semantics):
     """
     Type of the value of the extension.
 
-    Default: xsd:string
+    Default: :attr:`~Data_type_def_XSD.String`
     """
 
     @implementation_specific
@@ -1517,7 +1517,7 @@ class Has_kind(DBC):
     """
     Kind of the element: either type or instance.
 
-    Default Value = Instance
+    Default: :attr:`~Modeling_kind.Instance`
     """
 
     @implementation_specific
