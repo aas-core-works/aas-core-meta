@@ -855,6 +855,16 @@ class Test_matches_xs_negative_integer(unittest.TestCase):
         assert not v3rc2.matches_xs_negative_integer('+1')
 
 
+class Test_matches_xs_string(unittest.TestCase):
+    def test_empty(self) -> None:
+        assert v3rc2.matches_xs_string('')
+
+    def test_free_form_text(self) -> None:
+        assert v3rc2.matches_xs_string('some free & <free> \uffff \ufffe form text')
+
+    def test_nul(self) -> None:
+        assert not v3rc2.matches_xs_string('\x00')
+
 
 if __name__ == "__main__":
     unittest.main()

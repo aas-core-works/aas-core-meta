@@ -961,6 +961,22 @@ def matches_xs_negative_integer(text: str) -> bool:
     return match(pattern, text) is not None
 
 
+@verification
+def matches_xs_string(text: str) -> bool:
+    """
+    Check that :paramref:`text` conforms to the pattern of an ``xs:string``.
+
+    See: https://www.w3.org/TR/xmlschema11-2/#string
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    # From: https://www.w3.org/TR/xml11/#NT-Char
+    # Any Unicode character, excluding the surrogate blocks, FFFE, and FFFF.
+    pattern = r"^[^\x00]*$"
+    return match(pattern, text) is not None
+
+
 # noinspection PyUnusedLocal
 @verification
 @implementation_specific
