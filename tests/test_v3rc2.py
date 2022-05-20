@@ -842,6 +842,9 @@ class Test_matches_xs_non_positive_integer(unittest.TestCase):
         ]:
             self.assertTrue(v3rc2.matches_xs_non_positive_integer(text), text)
 
+    def test_zero_prefixed_with_zeros(self) -> None:
+        assert not v3rc2.matches_xs_non_positive_integer('000')
+
     def test_decimal(self) -> None:
         assert not v3rc2.matches_xs_non_positive_integer('1.2')
 
