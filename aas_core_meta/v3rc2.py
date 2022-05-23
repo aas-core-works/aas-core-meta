@@ -1634,6 +1634,31 @@ class Qualifiable(DBC):
         self.qualifiers = qualifiers
 
 
+@reference_in_the_book(section=(5, 7, 2, 8), index=1)
+class Qualifier_kind(Enum):
+    """
+    Enumeration for kinds of qualifiers.
+    """
+
+    Value_qualifier = "ValueQualifier"
+    """
+    qualifies the value of the element and can change during run-time Value qualifiers 
+    are only applicable to elements with kind=„Instance”
+    """
+
+    Concept_qualifier = "ConceptQualifier"
+    """
+    qualifies the semantic definition the element is referring to 
+    (HasSemantics/semanticId)
+    """
+
+    Template_qualifier = "TemplateQualifier"
+    """
+    qualifies the elements within a specific submodel on concept level. 
+    Template qualifiers are only applicable to elements with kind=„Template”
+    """
+
+
 # fmt: off
 @invariant(
     lambda self:
@@ -1672,6 +1697,13 @@ class Qualifier(Has_semantics):
     Data type of the qualifier value.
     """
 
+    kind: Optional["Qualifier_kind"]
+    """
+    The qualifier kind describes the kind of the qualifier that is applied to the element.
+
+    Default: ConceptQualifier
+    """
+
     value: Optional["Value_data_type"]
     """
     The qualifier value is the value of the qualifier.
@@ -1687,6 +1719,7 @@ class Qualifier(Has_semantics):
         type: "Qualifier_type",
         value_type: "Data_type_def_XSD",
         semantic_id: Optional["Reference"] = None,
+        kind: Optional["Qualifier_kind"] = None,
         value: Optional["Value_data_type"] = None,
         value_id: Optional["Reference"] = None,
     ) -> None:
@@ -1694,6 +1727,7 @@ class Qualifier(Has_semantics):
 
         self.type = type
         self.value_type = value_type
+        self.kind = kind
         self.value = value
         self.value_id = value_id
 
