@@ -1634,7 +1634,12 @@ class Qualifiable(DBC):
         self.qualifiers = qualifiers
 
 
+@reference_in_the_book(section=(5, 7, 2, 8), index=1)
 class Qualifier_kind(Enum):
+    """
+    Enumeration for kinds of qualifiers.
+    """
+
     Value_qualifier = "ValueQualifier"
     """
     qualifies the value of the element and can change during run-time Value qualifiers 
@@ -1713,16 +1718,16 @@ class Qualifier(Has_semantics):
         self,
         type: "Qualifier_type",
         value_type: "Data_type_def_XSD",
-        kind: Optional["Qualifier_kind"] = None,
         semantic_id: Optional["Reference"] = None,
+        kind: Optional["Qualifier_kind"] = None,
         value: Optional["Value_data_type"] = None,
         value_id: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(self, semantic_id=semantic_id)
 
         self.type = type
-        self.kind = kind
         self.value_type = value_type
+        self.kind = kind
         self.value = value
         self.value_id = value_id
 
