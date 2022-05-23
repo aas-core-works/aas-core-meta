@@ -2250,7 +2250,7 @@ class Submodel_element_list(Submodel_element):
     "Short IDs need to be defined for all the elements."
 )
 # fmt: on
-class Submodel_element_struct(Submodel_element):
+class Submodel_element_collection(Submodel_element):
     """
     A submodel element struct is is a logical encapsulation of multiple values. It has
     a number of of submodel elements.
@@ -3130,7 +3130,7 @@ class Basic_event_element(Event_element):
     the :class:`.Event_element`.
 
     Refers to a :class:`.Submodel`, :class:`.Submodel_element_list`,
-    :class:`.Submodel_element_struct` or :class:`.Entity`, which contains
+    :class:`.Submodel_element_collection` or :class:`.Entity`, which contains
     :class:`.Data_element`'s describing the proprietary specification for
     the message broker.
 
@@ -3601,7 +3601,7 @@ class Aas_Submodel_Elements(Enum):
     """
     List of Submodel Elements
     """
-    Submodel_element_struct = "SubmodelElementStruct"
+    Submodel_element_collection = "SubmodelElementCollection"
     """
     Struct of Submodel Elements
     """
@@ -3671,7 +3671,7 @@ class AAS_referable_non_identifiables(Enum):
     """
     List of Submodel Elements
     """
-    Submodel_element_struct = "SubmodelElementStruct"
+    Submodel_element_collection = "SubmodelElementCollection"
     """
     Struct of Submodel Elements
     """
@@ -3763,7 +3763,7 @@ class Fragment_keys(Enum):
     """
     List of Submodel Elements
     """
-    Submodel_element_struct = "SubmodelElementStruct"
+    Submodel_element_collection = "SubmodelElementCollection"
     """
     Struct of Submodel Elements
     """
@@ -3841,7 +3841,7 @@ class Key_types(Enum):
     """
     List of Submodel Elements
     """
-    Submodel_element_struct = "SubmodelElementStruct"
+    Submodel_element_collection = "SubmodelElementCollection"
     """
     Struct of Submodel Elements
     """
