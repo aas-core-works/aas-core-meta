@@ -1000,9 +1000,7 @@ def value_consistent_with_xsd_type(value: str, value_type: "Data_type_def_XSD") 
 
 @verification
 @implementation_specific
-def is_model_reference_to(
-    reference: "Model_reference", expected_type: "Key_elements"
-) -> bool:
+def is_model_reference_to(reference: "Reference", expected_type: "Key_types") -> bool:
     """Check that the target of the model reference matches the expected ``target``."""
     # NOTE (mristin, 2022-03-28):
     # This implementation is given here only as reference. It needs to be adapted
@@ -1068,7 +1066,7 @@ def submodel_elements_have_identical_semantic_ids(
 @verification
 @implementation_specific
 def submodel_element_is_of_type(
-    element: "Submodel_element", element_type: "Submodel_element_elements"
+    element: "Submodel_element", element_type: "Aas_Submodel_Elements"
 ) -> bool:
     """
     Check that the run-time type of the :paramref:`element` coincides with
@@ -1241,13 +1239,13 @@ class Has_semantics(DBC):
     Element that can have a semantic definition.
     """
 
-    semantic_id: Optional["Global_reference"]
+    semantic_id: Optional["Reference"]
     """
     Identifier of the semantic definition of the element. It is called semantic ID
     of the element.
     """
 
-    def __init__(self, semantic_id: Optional["Global_reference"] = None) -> None:
+    def __init__(self, semantic_id: Optional["Reference"] = None) -> None:
         self.semantic_id = semantic_id
 
 
@@ -1285,7 +1283,7 @@ class Extension(Has_semantics):
     Value of the extension
     """
 
-    refers_to: Optional["Model_reference"]
+    refers_to: Optional["Reference"]
     """
     Reference to an element the extension refers to.
     """
@@ -1293,10 +1291,10 @@ class Extension(Has_semantics):
     def __init__(
         self,
         name: Non_empty_string,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         value_type: Optional["Data_type_def_XSD"] = None,
         value: Optional["Value_data_type"] = None,
-        refers_to: Optional["Model_reference"] = None,
+        refers_to: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(self, semantic_id=semantic_id)
 
@@ -1557,14 +1555,12 @@ class Has_data_specification(DBC):
     with their global ID.
     """
 
-    data_specifications: Optional[List["Global_reference"]]
+    data_specifications: Optional[List["Reference"]]
     """
     Global reference to the data specification template used by the element.
     """
 
-    def __init__(
-        self, data_specifications: Optional[List["Global_reference"]] = None
-    ) -> None:
+    def __init__(self, data_specifications: Optional[List["Reference"]] = None) -> None:
         self.data_specifications = data_specifications
 
 
@@ -1597,7 +1593,7 @@ class Administrative_information(Has_data_specification):
 
     def __init__(
         self,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         version: Optional[Non_empty_string] = None,
         revision: Optional[Non_empty_string] = None,
     ) -> None:
@@ -1681,7 +1677,7 @@ class Qualifier(Has_semantics):
     The qualifier value is the value of the qualifier.
     """
 
-    value_id: Optional["Global_reference"]
+    value_id: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
     """
@@ -1690,9 +1686,9 @@ class Qualifier(Has_semantics):
         self,
         type: "Qualifier_type",
         value_type: "Data_type_def_XSD",
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         value: Optional["Value_data_type"] = None,
-        value_id: Optional["Global_reference"] = None,
+        value_id: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(self, semantic_id=semantic_id)
 
@@ -1710,7 +1706,7 @@ class Qualifier(Has_semantics):
     not (self.submodels is not None)
     or (
         all(
-            is_model_reference_to(reference, Key_elements.Submodel)
+            is_model_reference_to(reference, Key_types.Submodel)
             for reference in self.submodels
         )
     )
@@ -1721,7 +1717,7 @@ class Qualifier(Has_semantics):
     or (
         is_model_reference_to(
             self.derived_from,
-            Key_elements.Asset_administration_shell
+            Key_types.Asset_administration_shell
         )
     )
 )
@@ -1732,7 +1728,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     asset_information: "Asset_information"
     """Meta-information about the asset the AAS is representing."""
 
-    submodels: Optional[List["Model_reference"]]
+    submodels: Optional[List["Reference"]]
     """
     References to submodels of the AAS.
 
@@ -1741,7 +1737,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     Temporarily no submodel might be assigned to the AAS.
     """
 
-    derived_from: Optional["Model_reference"]
+    derived_from: Optional["Reference"]
     """The reference to the AAS the AAS was derived from."""
 
     def __init__(
@@ -1755,9 +1751,9 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
-        submodels: Optional[List["Model_reference"]] = None,
-        derived_from: Optional["Model_reference"] = None,
+        data_specifications: Optional[List["Reference"]] = None,
+        submodels: Optional[List["Reference"]] = None,
+        derived_from: Optional["Reference"] = None,
     ) -> None:
         Identifiable.__init__(
             self,
@@ -1798,7 +1794,7 @@ class Asset_information(DBC):
     Denotes whether the Asset is of kind "Type" or "Instance".
     """
 
-    global_asset_id: Optional["Global_reference"]
+    global_asset_id: Optional["Reference"]
     """
     Reference to either an Asset object or a global reference to the asset the AAS is
     representing.
@@ -1826,7 +1822,7 @@ class Asset_information(DBC):
     def __init__(
         self,
         asset_kind: "Asset_kind",
-        global_asset_id: Optional["Global_reference"] = None,
+        global_asset_id: Optional["Reference"] = None,
         specific_asset_id: Optional["Identifier_key_value_pair"] = None,
         default_thumbnail: Optional["Resource"] = None,
     ) -> None:
@@ -1881,15 +1877,15 @@ class Identifier_key_value_pair(Has_semantics):
     value: Non_empty_string
     """The value of the identifier with the corresponding key."""
 
-    external_subject_id: Optional["Global_reference"]
+    external_subject_id: Optional["Reference"]
     """The (external) subject the key belongs to or has meaning to."""
 
     def __init__(
         self,
         key: Non_empty_string,
         value: Non_empty_string,
-        semantic_id: Optional["Global_reference"] = None,
-        external_subject_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
+        external_subject_id: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(self, semantic_id)
         self.key = key
@@ -1940,9 +1936,9 @@ class Submodel(
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         submodel_elements: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Identifiable.__init__(
@@ -1989,9 +1985,9 @@ class Submodel_element(
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -2042,9 +2038,9 @@ class Relationship_element(Submodel_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2085,8 +2081,8 @@ class Relationship_element(Submodel_element):
     not (
             self.value is not None
             and (
-                    self.type_value_list_element == Submodel_element_elements.Property
-                    or self.type_value_list_element == Submodel_element_elements.Range
+                    self.type_value_list_element == Aas_Submodel_Elements.Property
+                    or self.type_value_list_element == Aas_Submodel_Elements.Range
             )
     ) or (
         self.value_type_list_element is not None
@@ -2156,14 +2152,14 @@ class Submodel_element_list(Submodel_element):
 
     :constraint AASd-109:
         If :attr:`~type_value_list_element` is equal to
-        :attr:`Submodel_element_elements.Property` or
-        :attr:`Submodel_element_elements.Range`
+        :attr:`Aas_Submodel_Elements.Property` or
+        :attr:`Aas_Submodel_Elements.Range`
         :attr:`~value_type_list_element` shall be set and all first
         level child elements in the :class:`.Submodel_element_list` shall have
         the value type as specified in :attr:`~value_type_list_element`.
     """
 
-    type_value_list_element: "Submodel_element_elements"
+    type_value_list_element: "Aas_Submodel_Elements"
     """
     The submodel element type of the submodel elements contained in the list.
     """
@@ -2188,7 +2184,7 @@ class Submodel_element_list(Submodel_element):
     The list is ordered.
 
     """
-    semantic_id_list_element: Optional["Global_reference"]
+    semantic_id_list_element: Optional["Reference"]
     """
     The submodel element type of the submodel elements contained in the list.
     """
@@ -2200,7 +2196,7 @@ class Submodel_element_list(Submodel_element):
 
     def __init__(
         self,
-        type_value_list_element: "Submodel_element_elements",
+        type_value_list_element: "Aas_Submodel_Elements",
         extensions: Optional[List["Extension"]] = None,
         id_short: Optional[Non_empty_string] = None,
         display_name: Optional["Lang_string_set"] = None,
@@ -2208,12 +2204,12 @@ class Submodel_element_list(Submodel_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         order_relevant: Optional["bool"] = None,
         value: Optional[List["Submodel_element"]] = None,
-        semantic_id_list_element: Optional["Global_reference"] = None,
+        semantic_id_list_element: Optional["Reference"] = None,
         value_type_list_element: Optional["Data_type_def_XSD"] = None,
     ) -> None:
         Submodel_element.__init__(
@@ -2274,9 +2270,9 @@ class Submodel_element_struct(Submodel_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         value: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Submodel_element.__init__(
@@ -2333,9 +2329,9 @@ class Data_element(Submodel_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2380,7 +2376,7 @@ class Property(Data_element):
     The value of the property instance.
     """
 
-    value_id: Optional["Global_reference"]
+    value_id: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
     """
@@ -2395,11 +2391,11 @@ class Property(Data_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Value_data_type"] = None,
-        value_id: Optional["Global_reference"] = None,
+        value_id: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -2436,7 +2432,7 @@ class Multi_language_property(Data_element):
     The value of the property instance.
     """
 
-    value_id: Optional["Global_reference"]
+    value_id: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
     """
@@ -2450,11 +2446,11 @@ class Multi_language_property(Data_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Lang_string_set"] = None,
-        value_id: Optional["Global_reference"] = None,
+        value_id: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -2520,9 +2516,9 @@ class Range(Data_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         min: Optional["Value_data_type"] = None,
         max: Optional["Value_data_type"] = None,
     ) -> None:
@@ -2570,9 +2566,9 @@ class Reference_element(Data_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
@@ -2600,7 +2596,7 @@ class Reference_element(Data_element):
 #     A global reference element is a data element that references an external object or entity.
 #     """
 #
-#     value: Optional["Global_reference"]
+#     value: Optional["Reference"]
 #     """
 #     Global reference to an external object or entity.
 #     """
@@ -2613,10 +2609,10 @@ class Reference_element(Data_element):
 #         category: Optional[Non_empty_string] = None,
 #         description: Optional["Lang_string_set"] = None,
 #         kind: Optional["Modeling_kind"] = None,
-#         semantic_id: Optional["Global_reference"] = None,
+#         semantic_id: Optional["Reference"] = None,
 #         qualifiers: Optional[List[Qualifier]] = None,
-#         data_specifications: Optional[List["Global_reference"]] = None,
-#         value: Optional["Global_reference"] = None,
+#         data_specifications: Optional[List["Reference"]] = None,
+#         value: Optional["Reference"] = None,
 #     ) -> None:
 #         Reference_element.__init__(
 #             self,
@@ -2640,7 +2636,7 @@ class Reference_element(Data_element):
 #     a logical reference to another element within the same or another AAS
 #     """
 #
-#     value: Optional["Model_reference"]
+#     value: Optional["Reference"]
 #     """
 #     A logical reference to another element within the same or another AAS
 #     """
@@ -2653,10 +2649,10 @@ class Reference_element(Data_element):
 #         category: Optional[Non_empty_string] = None,
 #         description: Optional["Lang_string_set"] = None,
 #         kind: Optional["Modeling_kind"] = None,
-#         semantic_id: Optional["Global_reference"] = None,
+#         semantic_id: Optional["Reference"] = None,
 #         qualifiers: Optional[List[Qualifier]] = None,
-#         data_specifications: Optional[List["Global_reference"]] = None,
-#         value: Optional["Model_reference"] = None,
+#         data_specifications: Optional[List["Reference"]] = None,
+#         value: Optional["Reference"] = None,
 #     ) -> None:
 #         Reference_element.__init__(
 #             self,
@@ -2709,9 +2705,9 @@ class Blob(Data_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Blob_type"] = None,
     ) -> None:
         Data_element.__init__(
@@ -2763,9 +2759,9 @@ class File(Data_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Path_type"] = None,
     ) -> None:
         Data_element.__init__(
@@ -2810,9 +2806,9 @@ class Annotated_relationship_element(Relationship_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         annotation: Optional[List[Data_element]] = None,
     ) -> None:
         Relationship_element.__init__(
@@ -2921,9 +2917,9 @@ class Entity(Submodel_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_id: Optional["Reference"] = None,
         specific_asset_id: Optional["Identifier_key_value_pair"] = None,
@@ -2993,19 +2989,19 @@ class Event_payload(DBC):
         the AASX package format but used in re-active Asset Administration Shells.
     """
 
-    source: "Model_reference"
+    source: "Reference"
     """
     Reference to the source event element, including identification of
     :class:`.Asset_administration_shell`, :class:`.Submodel`,
     :class:`.Submodel_element`'s.
     """
 
-    source_semantic_id: Optional["Global_reference"]
+    source_semantic_id: Optional["Reference"]
     """
     :attr:`~Has_semantics.semantic_id` of the source event element, if available
     """
 
-    observable_reference: "Model_reference"
+    observable_reference: "Reference"
     """
     Reference to the referable, which defines the scope of the event.
 
@@ -3013,7 +3009,7 @@ class Event_payload(DBC):
     :class:`.Submodel_element`.
     """
 
-    observable_semantic_id: Optional["Global_reference"]
+    observable_semantic_id: Optional["Reference"]
     """
     :attr:`~Has_semantics.semantic_id` of the referable which defines the scope of
     the event, if available.
@@ -3025,7 +3021,7 @@ class Event_payload(DBC):
     the respective communication channel.
     """
 
-    subject_id: Optional["Global_reference"]
+    subject_id: Optional["Reference"]
     """
     Subject, who/which initiated the creation.
     """
@@ -3042,13 +3038,13 @@ class Event_payload(DBC):
 
     def __init__(
         self,
-        source: "Model_reference",
-        observable_reference: "Model_reference",
+        source: "Reference",
+        observable_reference: "Reference",
         time_stamp: "Date_time_stamp_UTC",
-        source_semantic_id: Optional["Global_reference"] = None,
-        observable_semantic_id: Optional["Global_reference"] = None,
+        source_semantic_id: Optional["Reference"] = None,
+        observable_semantic_id: Optional["Reference"] = None,
         topic: Optional["Non_empty_string"] = None,
-        subject_id: Optional["Global_reference"] = None,
+        subject_id: Optional["Reference"] = None,
         payload: Optional["Non_empty_string"] = None,
     ) -> None:
         self.source = source
@@ -3077,9 +3073,9 @@ class Event_element(Submodel_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3102,7 +3098,7 @@ class Basic_event_element(Event_element):
     A basic event element.
     """
 
-    observed: "Model_reference"
+    observed: "Reference"
     """
     Reference to the :class:`.Referable`, which defines the scope of the event.
     Can be :class:`.Asset_administration_shell`, :class:`.Submodel`, or
@@ -3128,7 +3124,7 @@ class Basic_event_element(Event_element):
     respective communication channel.
     """
 
-    message_broker: Optional["Model_reference"]
+    message_broker: Optional["Reference"]
     """
     Information, which outer message infrastructure shall handle messages for
     the :class:`.Event_element`.
@@ -3168,7 +3164,7 @@ class Basic_event_element(Event_element):
 
     def __init__(
         self,
-        observed: "Model_reference",
+        observed: "Reference",
         direction: "Direction",
         state: "State_of_event",
         extensions: Optional[List["Extension"]] = None,
@@ -3178,11 +3174,11 @@ class Basic_event_element(Event_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         message_topic: Optional["Non_empty_string"] = None,
-        message_broker: Optional["Model_reference"] = None,
+        message_broker: Optional["Reference"] = None,
         last_update: Optional["Date_time_stamp_UTC"] = None,
         min_interval: Optional["Date_time_stamp_UTC"] = None,
         max_interval: Optional["Date_time_stamp_UTC"] = None,
@@ -3241,9 +3237,9 @@ class Operation(Submodel_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
         input_variables: Optional[List["Operation_variable"]] = None,
         output_variables: Optional[List["Operation_variable"]] = None,
         inoutput_variables: Optional[List["Operation_variable"]] = None,
@@ -3309,9 +3305,9 @@ class Capability(Submodel_element):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
-        semantic_id: Optional["Global_reference"] = None,
+        semantic_id: Optional["Reference"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3362,7 +3358,7 @@ class Concept_description(Identifiable, Has_data_specification):
         # This implementation will not be transpiled, but is given here as reference.
         return self.category if self.category is not None else "PROPERTY"
 
-    is_case_of: Optional[List["Global_reference"]]
+    is_case_of: Optional[List["Reference"]]
     """
     Reference to an external definition the concept is compatible to or was derived from
 
@@ -3380,8 +3376,8 @@ class Concept_description(Identifiable, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
-        data_specifications: Optional[List["Global_reference"]] = None,
-        is_case_of: Optional[List["Global_reference"]] = None,
+        data_specifications: Optional[List["Reference"]] = None,
+        is_case_of: Optional[List["Reference"]] = None,
     ) -> None:
         Identifiable.__init__(
             self,
@@ -3400,45 +3396,70 @@ class Concept_description(Identifiable, Has_data_specification):
         self.is_case_of = is_case_of
 
 
-@abstract
-@reference_in_the_book(section=(5, 7, 10, 4))
-@serialization(with_model_type=True)
-class Reference(DBC):
-    """
-    Reference to either a model element of the same or another AAs or to an external
-    entity.
-    """
+# @abstract
+# @reference_in_the_book(section=(5, 7, 10, 4))
+# @serialization(with_model_type=True)
+# class Reference(DBC):
+#     """
+#     Reference to either a model element of the same or another AAs or to an external
+#     entity.
+#     """
+#
+#
+# @reference_in_the_book(section=(5, 7, 10, 2))
+# @serialization(with_model_type=True)
+# class Global_reference(Reference):
+#     """
+#     Reference to an external entity.
+#     """
+#
+#     value: "Identifier"
+#     """
+#     Unique identifier
+#
+#     The identifier can be a concatenation of different identifiers, for example
+#     representing an IRDI path etc.
+#     """
+#
+#     def __init__(self, value: "Identifier") -> None:
+#         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 10, 2))
-@serialization(with_model_type=True)
-class Global_reference(Reference):
+@reference_in_the_book(section=(5, 7, 10, 2), index=1)
+class Reference_types(Enum):
     """
-    Reference to an external entity.
-    """
-
-    value: "Identifier"
-    """
-    Unique identifier
-
-    The identifier can be a concatenation of different identifiers, for example
-    representing an IRDI path etc.
+    ReferenceTypes
     """
 
-    def __init__(self, value: "Identifier") -> None:
-        self.value = value
+    Global_reference = "GlobalReference"
+    """
+    GlobalReference.
+    """
+
+    Model_reference = "ModelReference"
+    """
+    ModelReference
+    """
 
 
 @invariant(lambda self: len(self.keys) >= 1)
-@reference_in_the_book(section=(5, 7, 10, 3))
+@reference_in_the_book(section=(5, 7, 10, 2))
 @serialization(with_model_type=True)
-class Model_reference(Reference):
+class Reference(DBC):
     """
-    Reference to a model element of the same or another AAS.
-
+    Reference to either a model element of the same or another AAS or to an external
+    entity.
+    A reference is an ordered list of keys.
     A model reference is an ordered list of keys, each key referencing an element.
     The complete list of keys may for example be concatenated to a path that then gives
     unique access to an element.
+    A global reference is a reference to an external entity.
+    """
+
+    type: "Reference_types"
+    """
+    Type of the reference.
+    Denotes, whether reference is a global reference or a model reference.
     """
 
     keys: List["Key"]
@@ -3446,16 +3467,18 @@ class Model_reference(Reference):
     Unique references in their name space.
     """
 
-    referred_semantic_id: Optional["Global_reference"]
+    referred_semantic_id: Optional["Reference"]
     """
     :attr:`Has_semantics.semantic_id` of the referenced model element.
     """
 
     def __init__(
         self,
+        type: Reference_types,
         keys: List["Key"],
-        referred_semantic_id: Optional["Global_reference"] = None,
+        referred_semantic_id: Optional["Reference"] = None,
     ) -> None:
+        self.type = type
         self.keys = keys
         self.referred_semantic_id = referred_semantic_id
 
@@ -3464,7 +3487,7 @@ class Model_reference(Reference):
 class Key(DBC):
     """A key is a reference to an element by its ID."""
 
-    type: "Key_elements"
+    type: "Key_types"
     """
     Denote which kind of entity is referenced.
 
@@ -3478,13 +3501,34 @@ class Key(DBC):
     value: Non_empty_string
     """The key value, for example an IRDI or an URI"""
 
-    def __init__(self, type: "Key_elements", value: Non_empty_string) -> None:
+    def __init__(self, type: "Key_types", value: Non_empty_string) -> None:
         self.type = type
         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 10, 3), index=5)
-class Identifiable_elements(Enum):
+@reference_in_the_book(section=(5, 7, 10, 3), index=6)
+class Generic_fragment_keys(Enum):
+    """
+    Enumeration of all identifiable elements within an asset administration shell.
+    """
+
+    Fragment_reference = "FragmentReference"
+    """
+    Bookmark or a similar local identifier of a subordinate part of a primary resource
+    """
+
+
+@reference_in_the_book(section=(5, 7, 10, 3), index=8)
+class Generic_globally_identifiables(Enum):
+    """
+    Enumeration of different key value types within a key.
+    """
+
+    Global_reference = "GlobalReference"
+
+
+@reference_in_the_book(section=(5, 7, 10, 9), index=7)
+class Aas_Identifiables(Enum):
     """
     Enumeration of all identifiable elements within an asset administration shell.
     """
@@ -3494,8 +3538,78 @@ class Identifiable_elements(Enum):
     Submodel = "Submodel"
 
 
-@reference_in_the_book(section=(5, 7, 10, 3), index=4)
-class Submodel_element_elements(Enum):
+@reference_in_the_book(section=(5, 7, 10, 3), index=5)
+class Aas_Submodel_Elements(Enum):
+    """
+    Enumeration of all referable elements within an asset administration shell.
+    """
+
+    Annotated_relationship_element = "AnnotatedRelationshipElement"
+    Basic_event_element = "BasicEventElement"
+    Blob = "Blob"
+    Capability = "Capability"
+    Data_element = "DataElement"
+    """
+    Data Element.
+
+    .. note::
+
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
+        the reference may be a :class:`.Property`, a :class:`.File` etc.
+    """
+    Entity = "Entity"
+    Event_element = "EventElement"
+    """
+    Event element
+
+    .. note::
+
+        :class:`.Event_element` is abstract.
+    """
+    File = "File"
+
+    Multi_language_property = "MultiLanguageProperty"
+    """
+    Property with a value that can be provided in multiple languages
+    """
+    Operation = "Operation"
+    Property = "Property"
+    Range = "Range"
+    """
+    Range with min and max
+    """
+    Reference_element = "ReferenceElement"
+    """
+    Reference
+    """
+    Relationship_element = "RelationshipElement"
+    """
+    Relationship
+    """
+
+    Submodel_element = "SubmodelElement"
+    """
+    Submodel Element
+
+    .. note::
+
+        Submodel Element is abstract, i.e. if a key uses
+        :attr:`Submodel_element` the reference may be a :class:`.Property`,
+        a :class:`.Submodel_element_list`, an :class:`.Operation` etc.
+    """
+    Submodel_element_list = "SubmodelElementList"
+    """
+    List of Submodel Elements
+    """
+    Submodel_element_struct = "SubmodelElementStruct"
+    """
+    Struct of Submodel Elements
+    """
+
+
+@reference_in_the_book(section=(5, 7, 10, 4), index=4)
+@is_superset_of(enums=[Aas_Submodel_Elements])
+class AAS_referable_non_identifiables(Enum):
     """
     Enumeration of all referable elements within an asset administration shell.
     """
@@ -3564,11 +3678,31 @@ class Submodel_element_elements(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=3)
-@is_superset_of(enums=[Submodel_element_elements, Identifiable_elements])
-class Referable_elements(Enum):
+@is_superset_of(enums=[Aas_Identifiables, Generic_globally_identifiables])
+class Globally_identifiables(Enum):
     """
     Enumeration of all referable elements within an asset administration shell
     """
+
+    Global_reference = "GlobalReference"
+
+    Asset_administration_shell = "AssetAdministrationShell"
+    Concept_description = "ConceptDescription"
+    Submodel = "Submodel"
+
+
+@reference_in_the_book(section=(5, 7, 10, 3), index=2)
+@is_superset_of(enums=[AAS_referable_non_identifiables, Generic_fragment_keys])
+class Fragment_keys(Enum):
+    """Enumeration of different key value types within a key."""
+
+    Fragment_reference = "FragmentReference"
+    """
+    Bookmark or a similar local identifier of a subordinate part of
+    a primary resource
+    """
+
+    Global_reference = "GlobalReference"
 
     Annotated_relationship_element = "AnnotatedRelationshipElement"
     Asset_administration_shell = "AssetAdministrationShell"
@@ -3583,7 +3717,7 @@ class Referable_elements(Enum):
     .. note::
 
         Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a :class:`.Property`, a :class:`.File` *etc.*
+        the reference may be a Property, a File *etc.*
     """
 
     Entity = "Entity"
@@ -3599,15 +3733,13 @@ class Referable_elements(Enum):
     File = "File"
 
     Multi_language_property = "MultiLanguageProperty"
-    """
-    Property with a value that can be provided in multiple languages
-    """
+    """Property with a value that can be provided in multiple languages"""
+
     Operation = "Operation"
     Property = "Property"
     Range = "Range"
-    """
-    Range with min and max
-    """
+    """Range with min and max"""
+
     Reference_element = "ReferenceElement"
     """
     Reference
@@ -3637,9 +3769,9 @@ class Referable_elements(Enum):
     """
 
 
-@reference_in_the_book(section=(5, 7, 10, 3), index=2)
-@is_superset_of(enums=[Referable_elements])
-class Key_elements(Enum):
+@reference_in_the_book(section=(5, 7, 10, 3), index=1)
+@is_superset_of(enums=[Fragment_keys, Globally_identifiables])
+class Key_types(Enum):
     """Enumeration of different key value types within a key."""
 
     Fragment_reference = "FragmentReference"
