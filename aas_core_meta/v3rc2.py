@@ -1839,7 +1839,7 @@ class Asset_information(DBC):
     modelled via :attr:`~specific_asset_id`.
     """
 
-    specific_asset_id: Optional["Identifier_key_value_pair"]
+    specific_asset_id: Optional["Specific_Asset_Id"]
     """
     Additional domain-specific, typically proprietary, Identifier for the asset.
 
@@ -1857,7 +1857,7 @@ class Asset_information(DBC):
         self,
         asset_kind: "Asset_kind",
         global_asset_id: Optional["Reference"] = None,
-        specific_asset_id: Optional["Identifier_key_value_pair"] = None,
+        specific_asset_id: Optional["Specific_Asset_Id"] = None,
         default_thumbnail: Optional["Resource"] = None,
     ) -> None:
         self.asset_kind = asset_kind
@@ -1899,30 +1899,34 @@ class Asset_kind(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 4), index=3)
-class Identifier_key_value_pair(Has_semantics):
+class Specific_Asset_Id(Has_semantics):
     """
-    An :class:`.Identifier_key_value_pair` describes a generic identifier as
-    key-value pair.
+    A specific asset ID describes a generic supplementary identifying attribute of the
+    asset. The specific asset ID is not necessarily globally unique.
     """
 
-    key: Non_empty_string
-    """Key of the identifier"""
+    name: Non_empty_string
+    """Name of the identifier"""
 
     value: Non_empty_string
-    """The value of the identifier with the corresponding key."""
+    """The value of the specific asset identificator with the corresponding name."""
 
     external_subject_id: Optional["Reference"]
-    """The (external) subject the key belongs to or has meaning to."""
+    """
+    The (external) subject the key belongs to or has meaning to.
+    
+    This is a global reference
+    """
 
     def __init__(
         self,
-        key: Non_empty_string,
+        name: Non_empty_string,
         value: Non_empty_string,
         semantic_id: Optional["Reference"] = None,
         external_subject_id: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(self, semantic_id)
-        self.key = key
+        self.name = name
         self.value = value
         self.external_subject_id = external_subject_id
 
@@ -2935,7 +2939,7 @@ class Entity(Submodel_element):
     Reference to the asset the entity is representing.
     """
 
-    specific_asset_id: Optional["Identifier_key_value_pair"]
+    specific_asset_id: Optional["Specific_Asset_Id"]
     """
     Reference to an identifier key value pair representing a specific identifier
     of the asset represented by the asset administration shell.
@@ -2956,7 +2960,7 @@ class Entity(Submodel_element):
         data_specifications: Optional[List["Reference"]] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_id: Optional["Reference"] = None,
-        specific_asset_id: Optional["Identifier_key_value_pair"] = None,
+        specific_asset_id: Optional["Specific_Asset_Id"] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
