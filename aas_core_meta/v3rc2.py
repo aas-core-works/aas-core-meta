@@ -1204,6 +1204,7 @@ class Value_data_type(str, DBC):
     """
 
 
+@reference_in_the_book(section=(5, 7, 4))
 class Resource(DBC):
     """
     Resource represents an address to a file (a locator). The value is an URI that
@@ -1225,7 +1226,7 @@ class Resource(DBC):
 
     def __init__(
         self,
-        path: "Asset_kind",
+        path: "Path_type",
         content_type: Optional["Content_type"] = None,
     ) -> None:
         self.path = path
@@ -1699,7 +1700,8 @@ class Qualifier(Has_semantics):
 
     kind: Optional["Qualifier_kind"]
     """
-    The qualifier kind describes the kind of the qualifier that is applied to the element.
+    The qualifier kind describes the kind of the qualifier that is applied to the 
+    element.
 
     Default: ConceptQualifier
     """
@@ -1920,8 +1922,8 @@ class Specific_Asset_Id(Has_semantics):
         self,
         name: Non_empty_string,
         value: Non_empty_string,
+        external_subject_id: "Reference",
         semantic_id: Optional["Reference"] = None,
-        external_subject_id: "Reference" = None,
     ) -> None:
         Has_semantics.__init__(self, semantic_id)
         self.name = name
@@ -2635,7 +2637,8 @@ class Reference_element(Data_element):
 # @reference_in_the_book(section=(5, 7, 7, 9))
 # class Global_reference_element(Reference_element):
 #     """
-#     A global reference element is a data element that references an external object or entity.
+#     A global reference element is a data element that references an external object
+#     or entity.
 #     """
 #
 #     value: Optional["Reference"]
@@ -2723,7 +2726,8 @@ class Blob(Data_element):
     Content type of the content of the :class:`.Blob`.
 
     The content type (MIME type) states which file extensions the file can have.
-    Valid values are content types like e.g. ``application/json``, ``application/xls``, ``image/jpg``.
+    Valid values are content types like e.g. ``application/json``, ``application/xls``, 
+    ``image/jpg``.
     The allowed values are defined as in RFC2046.
     """
 
@@ -2766,7 +2770,7 @@ class Blob(Data_element):
             data_specifications=data_specifications,
         )
 
-        self.MIME_type = MIME_type
+        self.content_type = content_type
         self.value = value
 
 
@@ -2988,8 +2992,6 @@ class Entity(Submodel_element):
         self.specific_asset_id = specific_asset_id
 
 
-
-
 @reference_in_the_book(section=(5, 7, 7, 2), index=1)
 class Direction(Enum):
     """
@@ -3205,7 +3207,7 @@ class Basic_event_element(Event_element):
     For input direction: not applicable.
     For output direction: maximum interval in time, the respective Referable shall send
     an update of the status of the event, even if no other trigger condition for
-    the event was not met. Might be not specified, that is, there is no maximum interval.
+    the event was not met. Might be not specified, that is, there is no maximum interval
     """
 
     def __init__(
