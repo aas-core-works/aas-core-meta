@@ -4037,6 +4037,59 @@ class Lang_string_set(DBC):
         self.lang_strings = lang_strings
 
 
+@abstract
+@reference_in_the_book(section=(6, 2, 1, 1), index=1)
+class Data_specification_content:
+    """
+    Data specification content is part of a data specification template and defines
+    which additional attributes shall be added to the element instance that references
+    the data specification template and meta information about the template itself.
+    """
+
+
+@abstract
+@reference_in_the_book(section=(6, 2, 1, 1))
+class Data_specification:
+    """
+    Data Specification Template
+    """
+
+    id: Identifier
+    """
+    The globally unique identification of the element.
+    """
+
+    data_specification_content: Data_specification_content
+    """
+    The content of the template without meta data
+    """
+
+    administration: Optional[Administrative_information]
+    """
+    Administrative information of an identifiable element.
+    Note: Some of the administrative information like the version number might need to 
+    be part of the identification.
+    """
+
+    description: Optional[Lang_string_set]
+    """
+    Description how and in which context the data specification template is applicable.
+    The description can be provided in several languages.
+    """
+
+    def __init__(
+        self,
+        id: Identifier,
+        data_specification_content: Data_specification_content,
+        administration: Optional[Administrative_information],
+        description: Optional[Lang_string_set],
+    ) -> None:
+        self.id = id
+        self.data_specification_content = data_specification_content
+        self.administration = administration
+        self.description = description
+
+
 @reference_in_the_book(section=(5, 7, 9))
 class Environment:
     """
@@ -4064,12 +4117,19 @@ class Environment:
     Concept description
     """
 
+    data_specification: Optional[List[Data_specification]]
+    """
+    Data specification
+    """
+
     def __init__(
         self,
         asset_administration_shells: Optional[List[Asset_administration_shell]] = None,
         submodels: Optional[List[Submodel]] = None,
         concept_descriptions: Optional[List[Concept_description]] = None,
+        data_specification: Optional[List[Data_specification]] = None,
     ) -> None:
         self.asset_administration_shells = asset_administration_shells
         self.submodels = submodels
         self.concept_descriptions = concept_descriptions
+        self.data_specification = data_specification
