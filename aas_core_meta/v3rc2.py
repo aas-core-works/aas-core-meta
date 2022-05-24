@@ -1204,16 +1204,17 @@ class Value_data_type(str, DBC):
     """
 
 
+@reference_in_the_book(section=(5, 7, 4))
 class Resource(DBC):
     """
     Resource represents an address to a file (a locator). The value is an URI that
     can represent an absolute or relative path
     """
 
-    path: "Asset_kind"
+    path: "Path_type"
     """
     Path and name of the resource (with file extension).
-    The path can be absolute or relative.
+    The path can be and or relative.
 
     """
     content_type: Optional["Content_type"]
@@ -1225,7 +1226,7 @@ class Resource(DBC):
 
     def __init__(
         self,
-        path: "Asset_kind",
+        path: "Path_type",
         content_type: Optional["Content_type"] = None,
     ) -> None:
         self.path = path
@@ -1642,19 +1643,19 @@ class Qualifier_kind(Enum):
 
     Value_qualifier = "ValueQualifier"
     """
-    qualifies the value of the element and can change during run-time Value qualifiers 
+    qualifies the value of the element and can change during run-time Value qualifiers
     are only applicable to elements with kind=„Instance”
     """
 
     Concept_qualifier = "ConceptQualifier"
     """
-    qualifies the semantic definition the element is referring to 
+    qualifies the semantic definition the element is referring to
     (HasSemantics/semanticId)
     """
 
     Template_qualifier = "TemplateQualifier"
     """
-    qualifies the elements within a specific submodel on concept level. 
+    qualifies the elements within a specific submodel on concept level.
     Template qualifiers are only applicable to elements with kind=„Template”
     """
 
@@ -1699,7 +1700,8 @@ class Qualifier(Has_semantics):
 
     kind: Optional["Qualifier_kind"]
     """
-    The qualifier kind describes the kind of the qualifier that is applied to the element.
+    The qualifier kind describes the kind of the qualifier that is applied to the 
+    element.
 
     Default: ConceptQualifier
     """
@@ -1830,8 +1832,7 @@ class Asset_information(DBC):
 
     global_asset_id: Optional["Reference"]
     """
-    Reference to either an Asset object or a global reference to the asset the AAS is
-    representing.
+    Global identifier of the asset the AAS is representing.
 
     This attribute is required as soon as the AAS is exchanged via partners in the life
     cycle of the asset. In a first phase of the life cycle the asset might not yet have
@@ -1841,14 +1842,13 @@ class Asset_information(DBC):
 
     specific_asset_id: Optional["Specific_Asset_Id"]
     """
-    Additional domain-specific, typically proprietary, Identifier for the asset.
-
-    For example, serial number.
+    Additional domain-specific, typically proprietary identifier for the asset like
+    e.g. serial number etc.
     """
 
     default_thumbnail: Optional["Resource"]
     """
-    Thumbnail of the asset represented by the asset administration shell.
+    Thumbnail of the asset represented by the Asset Administration Shell.
 
     Used as default.
     """
@@ -1911,19 +1911,19 @@ class Specific_Asset_Id(Has_semantics):
     value: Non_empty_string
     """The value of the specific asset identificator with the corresponding name."""
 
-    external_subject_id: Optional["Reference"]
+    external_subject_id: "Reference"
     """
     The (external) subject the key belongs to or has meaning to.
-    
-    This is a global reference
+
+    This is a global reference.
     """
 
     def __init__(
         self,
         name: Non_empty_string,
         value: Non_empty_string,
+        external_subject_id: "Reference",
         semantic_id: Optional["Reference"] = None,
-        external_subject_id: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(self, semantic_id)
         self.name = name
@@ -2225,6 +2225,8 @@ class Submodel_element_list(Submodel_element):
     semantic_id_list_element: Optional["Reference"]
     """
     The submodel element type of the submodel elements contained in the list.
+
+    It is recommended to use a global reference.
     """
 
     value_type_list_element: Optional["Data_type_def_XSD"]
@@ -2417,6 +2419,8 @@ class Property(Data_element):
     value_id: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
+
+    It is recommended to use a global reference.
     """
 
     def __init__(
@@ -2473,6 +2477,8 @@ class Multi_language_property(Data_element):
     value_id: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
+
+    It is recommended to use a global reference.
     """
 
     def __init__(
@@ -2631,7 +2637,8 @@ class Reference_element(Data_element):
 # @reference_in_the_book(section=(5, 7, 7, 9))
 # class Global_reference_element(Reference_element):
 #     """
-#     A global reference element is a data element that references an external object or entity.
+#     A global reference element is a data element that references an external object
+#     or entity.
 #     """
 #
 #     value: Optional["Reference"]
@@ -2707,19 +2714,20 @@ class Reference_element(Data_element):
 #         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 7, 4))
+@reference_in_the_book(section=(5, 7, 7, 3))
 class Blob(Data_element):
     """
     A :class:`.Blob` is a data element that represents a file that is contained with its
     source code in the value attribute.
     """
 
-    MIME_type: Content_type
+    content_type: Content_type
     """
-    MIME type of the content of the :class:`.Blob`.
+    Content type of the content of the :class:`.Blob`.
 
-    The MIME type states which file extensions the file can have.
-    Valid values are e.g. ``application/json``, ``application/xls``, ``image/jpg``.
+    The content type (MIME type) states which file extensions the file can have.
+    Valid values are content types like e.g. ``application/json``, ``application/xls``, 
+    ``image/jpg``.
     The allowed values are defined as in RFC2046.
     """
 
@@ -2735,7 +2743,7 @@ class Blob(Data_element):
 
     def __init__(
         self,
-        MIME_type: Content_type,
+        content_type: Content_type,
         extensions: Optional[List["Extension"]] = None,
         id_short: Optional[Non_empty_string] = None,
         display_name: Optional["Lang_string_set"] = None,
@@ -2762,7 +2770,7 @@ class Blob(Data_element):
             data_specifications=data_specifications,
         )
 
-        self.MIME_type = MIME_type
+        self.content_type = content_type
         self.value = value
 
 
@@ -2936,13 +2944,15 @@ class Entity(Submodel_element):
 
     global_asset_id: Optional["Reference"]
     """
-    Reference to the asset the entity is representing.
+    Global identifier of the asset the entity is representing.
+
+    This is a global reference.
     """
 
     specific_asset_id: Optional["Specific_Asset_Id"]
     """
-    Reference to an identifier key value pair representing a specific identifier
-    of the asset represented by the asset administration shell.
+    Reference to a specific asset ID representing a supplementary identifier
+    of the asset represented by the Asset Administration Shell.
     """
 
     def __init__(
@@ -3174,7 +3184,7 @@ class Basic_event_element(Event_element):
 
     .. note::
 
-        For different message infrastructure, e.g. OPC UA or MQTT or AMQP, these
+        For different message infrastructure, e.g. OPC UA or MQTT or AMQP, this
         proprietary specification could be standardized by having respective Submodels.
     """
 
@@ -3197,7 +3207,7 @@ class Basic_event_element(Event_element):
     For input direction: not applicable.
     For output direction: maximum interval in time, the respective Referable shall send
     an update of the status of the event, even if no other trigger condition for
-    the event was not met. Might be not specified, that is, there is no maximum interval.
+    the event was not met. Might be not specified, that is, there is no maximum interval
     """
 
     def __init__(
@@ -3529,10 +3539,10 @@ class Key(DBC):
     """
     Denote which kind of entity is referenced.
 
-    In case type = FragmentReference the key represents a bookmark or a similar local 
-    identifier within its parent element as specified by the key that precedes this key. 
+    In case type = FragmentReference the key represents a bookmark or a similar local
+    identifier within its parent element as specified by the key that precedes this key.
 
-    In all other cases the key references a model element of the same or of another AAS. 
+    In all other cases the key references a model element of the same or of another AAS.
     The name of the model element is explicitly listed.
     """
 
@@ -3565,10 +3575,10 @@ class Generic_globally_identifiables(Enum):
     Global_reference = "GlobalReference"
 
 
-@reference_in_the_book(section=(5, 7, 10, 9), index=7)
+@reference_in_the_book(section=(5, 7, 10, 3), index=7)
 class Aas_Identifiables(Enum):
     """
-    Enumeration of all identifiable elements within an asset administration shell.
+    Enumeration of different key value types within a key.
     """
 
     Asset_administration_shell = "AssetAdministrationShell"
@@ -3645,7 +3655,7 @@ class Aas_Submodel_Elements(Enum):
     """
 
 
-@reference_in_the_book(section=(5, 7, 10, 4), index=4)
+@reference_in_the_book(section=(5, 7, 10, 3), index=4)
 @is_superset_of(enums=[Aas_Submodel_Elements])
 class AAS_referable_non_identifiables(Enum):
     """
@@ -3705,13 +3715,13 @@ class AAS_referable_non_identifiables(Enum):
         :attr:`Submodel_element` the reference may be a :class:`.Property`,
         a :class:`.Submodel_element_list`, an :class:`.Operation` etc.
     """
-    Submodel_element_list = "SubmodelElementList"
-    """
-    List of Submodel Elements
-    """
     Submodel_element_collection = "SubmodelElementCollection"
     """
     Struct of Submodel Elements
+    """
+    Submodel_element_list = "SubmodelElementList"
+    """
+    List of Submodel Elements
     """
 
 
@@ -3739,8 +3749,6 @@ class Fragment_keys(Enum):
     Bookmark or a similar local identifier of a subordinate part of
     a primary resource
     """
-
-    Global_reference = "GlobalReference"
 
     Annotated_relationship_element = "AnnotatedRelationshipElement"
     Asset_administration_shell = "AssetAdministrationShell"
