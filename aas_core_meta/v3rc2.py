@@ -1213,7 +1213,7 @@ class Resource(DBC):
     path: "Path_type"
     """
     Path and name of the resource (with file extension).
-    The path and be and or relative.
+    The path can be and or relative.
 
     """
     content_type: Optional["Content_type"]
