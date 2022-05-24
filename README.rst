@@ -25,6 +25,7 @@ Contributors
 * Robert Lehmann
 * Marcin Sadurski
 * Manuel Sauer
+* Sebastian Bader
 
 Contributing
 ============
