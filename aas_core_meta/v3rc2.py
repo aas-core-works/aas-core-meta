@@ -1015,7 +1015,9 @@ def is_model_reference_to(reference: "Reference", expected_type: "Key_types") ->
     # NOTE (mristin, 2022-03-28):
     # This implementation is given here only as reference. It needs to be adapted
     # for each implementation separately.
-    return len(reference.keys) != 0 or reference.keys[-1].type == expected_type
+    return reference.type == Reference_types.Model_reference and (
+        len(reference.keys) != 0 or reference.keys[-1].type == expected_type
+    )
 
 
 @verification
@@ -3551,35 +3553,6 @@ class Concept_description(Identifiable, Has_data_specification):
         self.is_case_of = is_case_of
 
 
-# @abstract
-# @reference_in_the_book(section=(5, 7, 10, 4))
-# @serialization(with_model_type=True)
-# class Reference(DBC):
-#     """
-#     Reference to either a model element of the same or another AAs or to an external
-#     entity.
-#     """
-#
-#
-# @reference_in_the_book(section=(5, 7, 10, 2))
-# @serialization(with_model_type=True)
-# class Global_reference(Reference):
-#     """
-#     Reference to an external entity.
-#     """
-#
-#     value: "Identifier"
-#     """
-#     Unique identifier
-#
-#     The identifier can be a concatenation of different identifiers, for example
-#     representing an IRDI path etc.
-#     """
-#
-#     def __init__(self, value: "Identifier") -> None:
-#         self.value = value
-
-
 @reference_in_the_book(section=(5, 7, 10, 2), index=1)
 class Reference_types(Enum):
     """
@@ -3604,16 +3577,21 @@ class Reference(DBC):
     """
     Reference to either a model element of the same or another AAS or to an external
     entity.
+
     A reference is an ordered list of keys.
+
     A model reference is an ordered list of keys, each key referencing an element.
+
     The complete list of keys may for example be concatenated to a path that then gives
     unique access to an element.
+
     A global reference is a reference to an external entity.
     """
 
     type: "Reference_types"
     """
     Type of the reference.
+
     Denotes, whether reference is a global reference or a model reference.
     """
 
