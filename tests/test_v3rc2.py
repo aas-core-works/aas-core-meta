@@ -1,7 +1,7 @@
 import enum
 import inspect
 import unittest
-from typing import List, Any, Union
+from typing import List, Any, Union, Set
 
 from aas_core_meta import v3rc2
 
@@ -1082,6 +1082,99 @@ class Test_assertions(unittest.TestCase):
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
 
+    def test_AAS_identifiables_correspond_to_classes(self) -> None:
+        errors = []  # type: List[str]
+
+        class_name_set = set()  # type: Set[str]
+
+        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
+            if obj.__module__ != v3rc2.__name__:
+                continue
+
+            if obj == v3rc2.Identifiable:
+                continue
+
+            if issubclass(obj, v3rc2.Identifiable):
+                class_name_set.add(name)
+
+        literal_set = {
+            literal.name
+            for literal in v3rc2.AAS_identifiables
+        }
+
+        if class_name_set != literal_set:
+            errors.append(
+                f"""\
+The sub-classes of {v3rc2.Identifiable.__name__} do not correspond to {v3rc2.AAS_identifiables.__name__}.
+
+Observed classes:  {sorted(class_name_set)!r}
+Observed literals: {sorted(literal_set)!r}"""
+            )
+
+        if len(errors) != 0:
+            raise AssertionError("\n".join(f"* {error}" for error in errors))
+
+    def test_referable_non_identifiables_correspond_to_classes(self)->None:
+        errors = []  # type: List[str]
+
+        class_name_set = set()  # type: Set[str]
+
+        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
+            if obj.__module__ != v3rc2.__name__:
+                continue
+
+            if obj in (v3rc2.Referable, v3rc2.Identifiable):
+                continue
+
+            if issubclass(obj, v3rc2.Referable):
+                if not issubclass(obj, v3rc2.Identifiable):
+                    class_name_set.add(name)
+
+        literal_set = {
+            literal.name
+            for literal in v3rc2.AAS_referable_non_identifiables
+        }
+
+        if class_name_set != literal_set:
+            errors.append(
+                f"""\
+The sub-classes of {v3rc2.Referable.__name__} which are not {v3rc2.Identifiable.__name__} do not correspond to {v3rc2.AAS_referable_non_identifiables.__name__}.
+
+Observed classes:  {sorted(class_name_set)!r}
+Observed literals: {sorted(literal_set)!r}"""
+            )
+
+        if len(errors) != 0:
+            raise AssertionError("\n".join(f"* {error}" for error in errors))
+
+    def test_AAS_submodel_elements_corresponds_to_classes(self)->None:
+        errors = []  # type: List[str]
+
+        class_name_set = set()  # type: Set[str]
+
+        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
+            if obj.__module__ != v3rc2.__name__:
+                continue
+
+            if issubclass(obj, v3rc2.Submodel_element):
+                class_name_set.add(name)
+
+        literal_set = {
+            literal.name
+            for literal in v3rc2.AAS_submodel_elements
+        }
+
+        if class_name_set != literal_set:
+            errors.append(
+                f"""\
+The sub-classes of {v3rc2.Submodel_element.__name__} do not correspond to {v3rc2.AAS_submodel_elements.__name__}.
+
+Observed classes:  {sorted(class_name_set)!r}
+Observed literals: {sorted(literal_set)!r}"""
+            )
+
+        if len(errors) != 0:
+            raise AssertionError("\n".join(f"* {error}" for error in errors))
 
 if __name__ == "__main__":
     unittest.main()
