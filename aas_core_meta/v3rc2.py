@@ -2932,7 +2932,7 @@ class Annotated_relationship_element(Relationship_element):
     with additional data elements.
     """
 
-    annotation: Optional[List[Data_element]]
+    annotations: Optional[List[Data_element]]
     """
     A data element that represents an annotation that holds for the relationship
     between the two elements
@@ -2953,7 +2953,7 @@ class Annotated_relationship_element(Relationship_element):
         kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
-        annotation: Optional[List[Data_element]] = None,
+        annotations: Optional[List[Data_element]] = None,
     ) -> None:
         Relationship_element.__init__(
             self,
@@ -2972,7 +2972,7 @@ class Annotated_relationship_element(Relationship_element):
             data_specifications=data_specifications,
         )
 
-        self.annotation = annotation
+        self.annotations = annotations
 
 
 @reference_in_the_book(section=(5, 7, 7, 6), index=1)
@@ -4205,7 +4205,7 @@ class Environment:
     Concept description
     """
 
-    data_specification: Optional[List[Data_specification]]
+    data_specifications: Optional[List[Data_specification]]
     """
     Data specification
     """
@@ -4215,9 +4215,9 @@ class Environment:
         asset_administration_shells: Optional[List[Asset_administration_shell]] = None,
         submodels: Optional[List[Submodel]] = None,
         concept_descriptions: Optional[List[Concept_description]] = None,
-        data_specification: Optional[List[Data_specification]] = None,
+        data_specifications: Optional[List[Data_specification]] = None,
     ) -> None:
         self.asset_administration_shells = asset_administration_shells
         self.submodels = submodels
         self.concept_descriptions = concept_descriptions
-        self.data_specification = data_specification
+        self.data_specifications = data_specifications
