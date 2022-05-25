@@ -1654,13 +1654,15 @@ class Administrative_information(Has_data_specification):
 @abstract
 @invariant(
     lambda self:
-    any(
-        not (qualifier.kind == Qualifier_kind.Template_qualifier)
-        or self.kind == Modeling_kind.Template
-        for qualifier in self.qualifiers
+    not (self.kind_or_default() == Modeling_kind.Template)
+    or (
+        all(
+            qualifier.kind == Qualifier_kind.Template_qualifier
+            for qualifier in self.qualifiers
+        )
     ),
-    "Constraint AASd-119: If the Qualifier kind is equal to Template Qualifier then "
-    "the qualified element is of kind Template"
+    "Constraint AASd-119: If the qualified element is of kind ``Template`` "
+    "then all the qualifiers must have kind set to ``TemplateQualifier``."
 )
 @invariant(
     lambda self:
@@ -1679,9 +1681,10 @@ class Qualifiable(Has_kind):
 
     :constraint AASd-119:
 
-        If the :attr:`~Qualifier.kind` value is equal to
-        :attr:`~Qualifier_kind.Template_qualifier` then the qualified element is of
-        kind Template (:attr:`~Has_kind.kind` = :attr:`Modeling_kind.Template`)
+        If the qualified element is of kind ``Template``
+        (:attr:`~Has_kind.kind` = :attr:`Modeling_kind.Template`) then all
+        the qualifiers must have :attr:`~Qualifier.kind` set to
+        :attr:`~Qualifier_kind.Template_qualifier`.
     """
 
     qualifiers: Optional[List["Qualifier"]]
