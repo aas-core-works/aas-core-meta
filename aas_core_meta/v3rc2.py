@@ -1900,6 +1900,19 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         self.submodels = submodels
 
 
+@invariant(
+    lambda self: not (self.specific_asset_id is not None)
+    or (
+        not (self.specific_asset_id.name.lower() == "globalassetid")
+        or (
+            self.global_asset_id is not None
+            and self.specific_asset_id.value == self.global_asset_id
+        )
+    ),
+    "Constraint AASd-116: ``globalAssetId`` (case-insensitive) is a reserved key. "
+    "If used as value for name of the specific asset ID then "
+    "the value of the specific asset ID shall be identical to the global asset ID.",
+)
 @reference_in_the_book(section=(5, 7, 4), index=0)
 class Asset_information(DBC):
     """
@@ -1912,6 +1925,12 @@ class Asset_information(DBC):
     specific (proprietary) identifiers. However, to support the corner case of very
     first phase of lifecycle where a stabilised/constant global asset identifier does
     not already exist, the corresponding attribute :attr:`~global_asset_id` is optional.
+
+    :constraint AASd-116:
+
+        ``globalAssetId`` (case-insensitive) is a reserved key. If used as value for
+        :attr:`~Specific_asset_id.name` then :attr:`~Specific_asset_id.value` shall be
+        identical to :attr:`~global_asset_id`.
     """
 
     asset_kind: "Asset_kind"
@@ -1934,7 +1953,7 @@ class Asset_information(DBC):
         This is a global reference.
     """
 
-    specific_asset_id: Optional["Specific_Asset_Id"]
+    specific_asset_id: Optional["Specific_asset_id"]
     """
     Additional domain-specific, typically proprietary identifier for the asset like
     *e.g.*, serial number *etc.*
@@ -1951,7 +1970,7 @@ class Asset_information(DBC):
         self,
         asset_kind: "Asset_kind",
         global_asset_id: Optional["Reference"] = None,
-        specific_asset_id: Optional["Specific_Asset_Id"] = None,
+        specific_asset_id: Optional["Specific_asset_id"] = None,
         default_thumbnail: Optional["Resource"] = None,
     ) -> None:
         self.asset_kind = asset_kind
@@ -2023,7 +2042,7 @@ class Asset_kind(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 4), index=3)
-class Specific_Asset_Id(Has_semantics):
+class Specific_asset_id(Has_semantics):
     """
     A specific asset ID describes a generic supplementary identifying attribute of the
     asset.
@@ -3024,7 +3043,7 @@ class Entity(Submodel_element):
     This is a global reference.
     """
 
-    specific_asset_id: Optional["Specific_Asset_Id"]
+    specific_asset_id: Optional["Specific_asset_id"]
     """
     Reference to a specific asset ID representing a supplementary identifier
     of the asset represented by the Asset Administration Shell.
@@ -3046,7 +3065,7 @@ class Entity(Submodel_element):
         data_specifications: Optional[List["Reference"]] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_id: Optional["Reference"] = None,
-        specific_asset_id: Optional["Specific_Asset_Id"] = None,
+        specific_asset_id: Optional["Specific_asset_id"] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
