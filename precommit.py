@@ -15,6 +15,7 @@ class Step(enum.Enum):
     MYPY = "mypy"
     RUN = "run"
     AAS_CORE_CODEGEN_SMOKE = "aas-core-codegen-smoke"
+    TEST = "test"
     CHECK_INIT_AND_SETUP_COINCIDE = "check-init-and-setup-coincide"
 
 
@@ -166,6 +167,25 @@ def main() -> int:
                 return 1
     else:
         print("Skipped smoke tests with aas-core-codegen-smoke.")
+
+    if Step.TEST in selects and Step.TEST not in skips:
+        print("Running unit tests...")
+        env = os.environ.copy()
+        env["ICONTRACT_SLOW"] = "true"
+
+        exit_code = call_and_report(
+            verb="execute unit tests",
+            cmd=[
+                sys.executable,
+                "-m",
+                "unittest",
+                "discover",
+            ],
+            cwd=repo_root,
+            env=env,
+        )
+        if exit_code != 0:
+            return 1
 
     if (
         Step.CHECK_INIT_AND_SETUP_COINCIDE in selects
