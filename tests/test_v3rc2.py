@@ -1,7 +1,9 @@
 import enum
 import inspect
 import unittest
-from typing import List, Any, Union, Set
+from typing import List, Any, Set
+
+import icontract._represent
 
 from aas_core_meta import v3rc2
 
@@ -1114,7 +1116,7 @@ Observed literals: {sorted(literal_set)!r}"""
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
 
-    def test_referable_non_identifiables_correspond_to_classes(self)->None:
+    def test_referable_non_identifiables_correspond_to_classes(self) -> None:
         errors = []  # type: List[str]
 
         class_name_set = set()  # type: Set[str]
@@ -1147,7 +1149,7 @@ Observed literals: {sorted(literal_set)!r}"""
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
 
-    def test_AAS_submodel_elements_corresponds_to_classes(self)->None:
+    def test_AAS_submodel_elements_corresponds_to_classes(self) -> None:
         errors = []  # type: List[str]
 
         class_name_set = set()  # type: Set[str]
@@ -1175,6 +1177,71 @@ Observed literals: {sorted(literal_set)!r}"""
 
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
+
+    def test_constraint_119_in_all_qualifiable_with_has_kind(self) -> None:
+        renegade_classes = []  # type: List[str]
+
+        expected_condition_str = (
+            'lambda self:\n'
+            '    not any(\n'
+            '        qualifier.kind == Qualifier_kind.Template_qualifier\n'
+            '        for qualifier in self.qualifiers\n'
+            '    ) or (\n'
+            '        self.kind_or_default() == Modeling_kind.Template\n'
+            '    )'
+        )
+
+        expected_description = (
+            'Constraint AASd-119: If any qualifier kind value of '
+            'a qualifiable qualifier is equal to template qualifier and '
+            'the qualified element has kind then the qualified element '
+            'shall be of kind template.'
+        )
+
+        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
+            if obj.__module__ != v3rc2.__name__:
+                continue
+
+            if v3rc2.Qualifiable in obj.__bases__ and v3rc2.Has_kind in obj.__bases__:
+                invariants = getattr(obj, "__invariants__", None)
+                if invariants is None:
+                    renegade_classes.append(obj.__name__)
+                    continue
+
+                found_invariant = False
+                for invariant in invariants:
+                    condition_str = icontract._represent.represent_condition(
+                        invariant.condition)
+
+                    description = (
+                        invariant.description
+                        if invariant.description is not None
+                        else None
+                    )
+
+                    if condition_str == expected_condition_str and description == expected_description:
+                        found_invariant = True
+                        break
+
+                if not found_invariant:
+                    renegade_classes.append(obj.__name__)
+                    continue
+
+        if len(renegade_classes) > 0:
+            raise AssertionError(
+                f"The invariant corresponding to Constraint AASd-119 is "
+                f"expected in the class(es):\n{renegade_classes!r}\n"
+                f"which inherit both from {v3rc2.Has_kind} and {v3rc2.Qualifiable}, "
+                f"but it could not be found.\n"
+                f"\n"
+                f"Expected condition of the invariant was:\n"
+                f"{expected_condition_str}\n\n"
+                f"Expected description was:\n"
+                f"{expected_description}\n\n"
+                f"The expected condition and description need to be "
+                f"literally the same for this test to pass."
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
