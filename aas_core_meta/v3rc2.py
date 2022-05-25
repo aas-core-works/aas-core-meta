@@ -1656,18 +1656,6 @@ class Administrative_information(Has_data_specification):
 @abstract
 @invariant(
     lambda self:
-    not (self.kind_or_default() == Modeling_kind.Template)
-    or (
-        all(
-            qualifier.kind == Qualifier_kind.Template_qualifier
-            for qualifier in self.qualifiers
-        )
-    ),
-    "Constraint AASd-119: If the qualified element is of kind ``Template`` "
-    "then all the qualifiers must have kind set to ``TemplateQualifier``."
-)
-@invariant(
-    lambda self:
     not (self.qualifiers is not None)
     or qualifier_types_are_unique(self.qualifiers),
     "Constraint AASd-021: Every qualifiable can only have one qualifier with "
@@ -1676,17 +1664,17 @@ class Administrative_information(Has_data_specification):
 @reference_in_the_book(section=(5, 7, 2, 7))
 @serialization(with_model_type=True)
 # fmt: on
-class Qualifiable(Has_kind):
+class Qualifiable(DBC):
     """
     The value of a qualifiable element may be further qualified by one or more
     qualifiers.
 
     :constraint AASd-119:
 
-        If the qualified element is of kind ``Template``
-        (:attr:`~Has_kind.kind` = :attr:`Modeling_kind.Template`) then all
-        the qualifiers must have :attr:`~Qualifier.kind` set to
-        :attr:`~Qualifier_kind.Template_qualifier`.
+        If any :attr:`~Qualifier.kind` value of :attr:`~Qualifiable.qualifiers` is
+        equal to :attr:`~Qualifier_kind.Template_qualifier` and the qualified element
+        inherits from :class:`.Has_kind` then the qualified element shell be of
+        kind Template (:attr:`Has_kind.kind` = :attr:`Modeling_kind.Template`).
     """
 
     qualifiers: Optional[List["Qualifier"]]
@@ -1699,13 +1687,7 @@ class Qualifiable(Has_kind):
         :attr:`~Qualifier.type`.
     """
 
-    def __init__(
-        self,
-        kind: Optional["Modeling_kind"] = None,
-        qualifiers: Optional[List["Qualifier"]] = None,
-    ) -> None:
-        Has_kind.__init__(self, kind=kind)
-
+    def __init__(self, qualifiers: Optional[List["Qualifier"]] = None) -> None:
         self.qualifiers = qualifiers
 
 
@@ -2092,6 +2074,18 @@ class Specific_asset_id(Has_semantics):
 @reference_in_the_book(section=(5, 7, 5))
 @invariant(
     lambda self:
+    not any(
+        qualifier.kind == Qualifier_kind.Template_qualifier
+        for qualifier in self.qualifiers
+    ) or (
+        self.kind_or_default() == Modeling_kind.Template
+    ),
+    "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
+    "equal to template qualifier and the qualified element has kind then the qualified "
+    "element shall be of kind template."
+)
+@invariant(
+    lambda self:
     not (self.submodel_elements is not None)
     or (id_shorts_are_unique(self.submodel_elements))
 )
@@ -2105,7 +2099,9 @@ class Specific_asset_id(Has_semantics):
     "ID-shorts need to be defined for all the submodel elements."
 )
 # fmt: on
-class Submodel(Identifiable, Has_semantics, Qualifiable, Has_data_specification):
+class Submodel(
+    Identifiable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
+):
     """
     A submodel defines a specific aspect of the asset represented by the AAS.
 
@@ -2128,9 +2124,9 @@ class Submodel(Identifiable, Has_semantics, Qualifiable, Has_data_specification)
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         submodel_elements: Optional[List["Submodel_element"]] = None,
@@ -2147,22 +2143,40 @@ class Submodel(Identifiable, Has_semantics, Qualifiable, Has_data_specification)
             administration=administration,
         )
 
+        Has_kind.__init__(self, kind=kind)
+
         Has_semantics.__init__(
             self,
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
         )
 
-        Qualifiable.__init__(self, kind=kind, qualifiers=qualifiers)
+        Qualifiable.__init__(self, qualifiers=qualifiers)
 
         Has_data_specification.__init__(self, data_specifications=data_specifications)
 
         self.submodel_elements = submodel_elements
 
 
+# fmt: off
 @abstract
+@invariant(
+    lambda self:
+    not any(
+        qualifier.kind == Qualifier_kind.Template_qualifier
+        for qualifier in self.qualifiers
+    ) or (
+        self.kind_or_default() == Modeling_kind.Template
+    ),
+    "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
+    "equal to template qualifier and the qualified element has kind then the qualified "
+    "element shall be of kind template."
+)
 @reference_in_the_book(section=(5, 7, 6))
-class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specification):
+# fmt: on
+class Submodel_element(
+    Referable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
+):
     """
     A submodel element is an element suitable for the description and differentiation of
     assets.
@@ -2178,9 +2192,9 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -2194,13 +2208,15 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
             checksum=checksum,
         )
 
+        Has_kind.__init__(self, kind=kind)
+
         Has_semantics.__init__(
             self,
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
         )
 
-        Qualifiable.__init__(self, kind=kind, qualifiers=qualifiers)
+        Qualifiable.__init__(self, qualifiers=qualifiers)
 
         Has_data_specification.__init__(self, data_specifications=data_specifications)
 
@@ -2234,9 +2250,9 @@ class Relationship_element(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -2404,9 +2420,9 @@ class Submodel_element_list(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         order_relevant: Optional["bool"] = None,
@@ -2472,9 +2488,9 @@ class Submodel_element_collection(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional[List["Submodel_element"]] = None,
@@ -2533,9 +2549,9 @@ class Data_element(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -2599,9 +2615,9 @@ class Property(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Value_data_type"] = None,
@@ -2658,9 +2674,9 @@ class Multi_language_property(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Lang_string_set"] = None,
@@ -2730,9 +2746,9 @@ class Range(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         min: Optional["Value_data_type"] = None,
@@ -2782,9 +2798,9 @@ class Reference_element(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Reference"] = None,
@@ -2843,9 +2859,9 @@ class Blob(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Blob_type"] = None,
@@ -2899,9 +2915,9 @@ class File(Data_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         value: Optional["Path_type"] = None,
@@ -2925,7 +2941,21 @@ class File(Data_element):
         self.value = value
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not any(
+        qualifier.kind == Qualifier_kind.Template_qualifier
+        for qualifier in self.qualifiers
+    ) or (
+        self.kind_or_default() == Modeling_kind.Template
+    ),
+    "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
+    "equal to template qualifier and the qualified element has kind then the qualified "
+    "element shall be of kind template."
+)
 @reference_in_the_book(section=(5, 7, 7, 1))
+# fmt: on
 class Annotated_relationship_element(Relationship_element):
     """
     An annotated relationship element is a relationship element that can be annotated
@@ -2948,9 +2978,9 @@ class Annotated_relationship_element(Relationship_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         annotations: Optional[List[Data_element]] = None,
@@ -3063,9 +3093,9 @@ class Entity(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         statements: Optional[List["Submodel_element"]] = None,
@@ -3221,9 +3251,9 @@ class Event_element(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
@@ -3324,9 +3354,9 @@ class Basic_event_element(Event_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List[Qualifier]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         message_topic: Optional["Non_empty_string"] = None,
@@ -3389,9 +3419,9 @@ class Operation(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
         input_variables: Optional[List["Operation_variable"]] = None,
@@ -3459,9 +3489,9 @@ class Capability(Submodel_element):
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
+        kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        kind: Optional["Modeling_kind"] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
         data_specifications: Optional[List["Reference"]] = None,
     ) -> None:
