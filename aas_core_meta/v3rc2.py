@@ -1078,7 +1078,7 @@ def submodel_elements_have_identical_semantic_ids(
 @verification
 @implementation_specific
 def submodel_element_is_of_type(
-    element: "Submodel_element", element_type: "Aas_Submodel_Elements"
+    element: "Submodel_element", element_type: "AAS_submodel_elements"
 ) -> bool:
     """
     Check that the run-time type of the :paramref:`element` coincides with
@@ -1225,7 +1225,7 @@ class Value_data_type(str, DBC):
     lambda self: not (self.id_short is not None) or len(self.id_short) <= 128,
     "Constraint AASd-027: ID-short shall have a maximum length of 128 characters.",
 )
-class ID_short(str, DBC):
+class Id_short(str, DBC):
     """
     Represent a short ID of an :class:`.Referable`.
 
@@ -1412,7 +1412,7 @@ class Referable(Has_extensions):
         the element would denote that it is the measured temperature.
     """
 
-    id_short: Optional[ID_short]
+    id_short: Optional[Id_short]
     """
     In case of identifiables this attribute is a short name of the element.
     In case of referable this ID is an identifying string of the element within
@@ -1474,7 +1474,7 @@ class Referable(Has_extensions):
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -1503,15 +1503,15 @@ class Identifiable(Referable):
         be part of the identification.
     """
 
-    ID: "Identifier"
+    id: "Identifier"
     """The globally unique identification of the element."""
 
     def __init__(
         self,
-        ID: "Identifier",
+        id: "Identifier",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -1527,7 +1527,7 @@ class Identifiable(Referable):
             checksum=checksum,
         )
 
-        self.ID = ID
+        self.id = id
         self.administration = administration
 
 
@@ -1873,11 +1873,11 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 
     def __init__(
         self,
-        ID: Identifier,
+        id: Identifier,
         asset_information: "Asset_information",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -1888,7 +1888,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     ) -> None:
         Identifiable.__init__(
             self,
-            ID=ID,
+            id=id,
             extensions=extensions,
             category=category,
             id_short=id_short,
@@ -2120,10 +2120,10 @@ class Submodel(Identifiable, Has_semantics, Qualifiable, Has_data_specification)
 
     def __init__(
         self,
-        ID: Identifier,
+        id: Identifier,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2137,7 +2137,7 @@ class Submodel(Identifiable, Has_semantics, Qualifiable, Has_data_specification)
     ) -> None:
         Identifiable.__init__(
             self,
-            ID=ID,
+            id=id,
             extensions=extensions,
             category=category,
             id_short=id_short,
@@ -2174,7 +2174,7 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2230,7 +2230,7 @@ class Relationship_element(Submodel_element):
         second: "Reference",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2280,8 +2280,8 @@ class Relationship_element(Submodel_element):
     not (
             self.value is not None
             and (
-                    self.type_value_list_element == Aas_Submodel_Elements.Property
-                    or self.type_value_list_element == Aas_Submodel_Elements.Range
+                    self.type_value_list_element == AAS_submodel_elements.Property
+                    or self.type_value_list_element == AAS_submodel_elements.Range
             )
     ) or (
         self.value_type_list_element is not None
@@ -2351,14 +2351,14 @@ class Submodel_element_list(Submodel_element):
 
     :constraint AASd-109:
         If :attr:`~type_value_list_element` is equal to
-        :attr:`Aas_Submodel_Elements.Property` or
-        :attr:`Aas_Submodel_Elements.Range`
+        :attr:`AAS_submodel_elements.Property` or
+        :attr:`AAS_submodel_elements.Range`
         :attr:`~value_type_list_element` shall be set and all first
         level child elements in the :class:`.Submodel_element_list` shall have
         the value type as specified in :attr:`~value_type_list_element`.
     """
 
-    type_value_list_element: "Aas_Submodel_Elements"
+    type_value_list_element: "AAS_submodel_elements"
     """
     The submodel element type of the submodel elements contained in the list.
     """
@@ -2397,10 +2397,10 @@ class Submodel_element_list(Submodel_element):
 
     def __init__(
         self,
-        type_value_list_element: "Aas_Submodel_Elements",
+        type_value_list_element: "AAS_submodel_elements",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2468,7 +2468,7 @@ class Submodel_element_collection(Submodel_element):
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2529,7 +2529,7 @@ class Data_element(Submodel_element):
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2595,7 +2595,7 @@ class Property(Data_element):
         value_type: "Data_type_def_XSD",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2654,7 +2654,7 @@ class Multi_language_property(Data_element):
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2726,7 +2726,7 @@ class Range(Data_element):
         value_type: "Data_type_def_XSD",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2778,7 +2778,7 @@ class Reference_element(Data_element):
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2839,7 +2839,7 @@ class Blob(Data_element):
         content_type: Content_type,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2895,7 +2895,7 @@ class File(Data_element):
         content_type: "Content_type",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -2944,7 +2944,7 @@ class Annotated_relationship_element(Relationship_element):
         second: "Reference",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -3059,7 +3059,7 @@ class Entity(Submodel_element):
         entity_type: "Entity_type",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -3099,12 +3099,12 @@ class Direction(Enum):
     Direction
     """
 
-    input = "INPUT"
+    Input = "INPUT"
     """
     Input direction.
     """
 
-    output = "OUTPUT"
+    Output = "OUTPUT"
     """
     Output direction
     """
@@ -3116,12 +3116,12 @@ class State_of_event(Enum):
     State of an event
     """
 
-    on = "ON"
+    On = "ON"
     """
     Event is on
     """
 
-    off = "OFF"
+    Off = "OFF"
     """
     Event is off.
     """
@@ -3217,7 +3217,7 @@ class Event_element(Submodel_element):
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -3320,7 +3320,7 @@ class Basic_event_element(Event_element):
         state: "State_of_event",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -3385,7 +3385,7 @@ class Operation(Submodel_element):
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -3455,7 +3455,7 @@ class Capability(Submodel_element):
         self,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -3525,10 +3525,10 @@ class Concept_description(Identifiable, Has_data_specification):
 
     def __init__(
         self,
-        ID: Identifier,
+        id: Identifier,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
-        id_short: Optional[ID_short] = None,
+        id_short: Optional[Id_short] = None,
         display_name: Optional["Lang_string_set"] = None,
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
@@ -3538,7 +3538,7 @@ class Concept_description(Identifiable, Has_data_specification):
     ) -> None:
         Identifiable.__init__(
             self,
-            ID=ID,
+            id=id,
             extensions=extensions,
             category=category,
             id_short=id_short,
@@ -3661,7 +3661,7 @@ class Generic_globally_identifiables(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=7)
-class Aas_Identifiables(Enum):
+class AAS_identifiables(Enum):
     """
     Enumeration of different key value types within a key.
     """
@@ -3672,7 +3672,7 @@ class Aas_Identifiables(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=5)
-class Aas_Submodel_Elements(Enum):
+class AAS_submodel_elements(Enum):
     """
     Enumeration of all referable elements within an asset administration shell.
     """
@@ -3741,7 +3741,7 @@ class Aas_Submodel_Elements(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=4)
-@is_superset_of(enums=[Aas_Submodel_Elements])
+@is_superset_of(enums=[AAS_submodel_elements])
 class AAS_referable_non_identifiables(Enum):
     """
     Enumeration of all referable elements within an asset administration shell.
@@ -3811,7 +3811,7 @@ class AAS_referable_non_identifiables(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=3)
-@is_superset_of(enums=[Aas_Identifiables, Generic_globally_identifiables])
+@is_superset_of(enums=[AAS_identifiables, Generic_globally_identifiables])
 class Globally_identifiables(Enum):
     """
     Enumeration of all referable elements within an asset administration shell
