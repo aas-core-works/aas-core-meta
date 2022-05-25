@@ -1,4 +1,7 @@
+import enum
+import inspect
 import unittest
+from typing import List, Any, Union
 
 from aas_core_meta import v3rc2
 
@@ -888,6 +891,196 @@ class Test_matches_xs_string(unittest.TestCase):
 
     def test_nul(self) -> None:
         assert not v3rc2.matches_xs_string('\x00')
+
+
+class Test_assertions(unittest.TestCase):
+    ABBREVIATIONS = {
+        "AAS", "URL", "BCP", "URI", "UTC", "RDF", "XSD"
+    }
+
+    @staticmethod
+    def check_class_name(name: str) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        if parts[0] not in Test_assertions.ABBREVIATIONS:
+            if parts[0] != parts[0].capitalize():
+                errors.append(
+                    f"Expected first part of a class name "
+                    f"to be capitalized ({parts[0].capitalize()!r}), "
+                    f"but it was not ({parts[0]!r}) for class {name!r}")
+
+        for part in parts:
+            if part in Test_assertions.ABBREVIATIONS and part.upper() != part:
+                errors.append(
+                    f"Expected a part of a class name "
+                    f"to be uppercase ({part.upper()!r})"
+                    f"since it denotes an abbreviation, "
+                    f"but it was not ({part!r}) for class {name!r}")
+
+        for part in parts[1:]:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a non-first part of a class name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for class {name!r}")
+
+        return errors
+
+    @staticmethod
+    def check_enum_literal_name(name: str) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        if parts[0] not in Test_assertions.ABBREVIATIONS:
+            if parts[0] != parts[0].capitalize():
+                errors.append(
+                    f"Expected first part of an enumeration literal name "
+                    f"to be capitalized ({parts[0].capitalize()!r}), "
+                    f"but it was not ({parts[0]!r}) for enumeration literal {name!r}")
+
+        for part in parts:
+            if part in Test_assertions.ABBREVIATIONS and part.upper() != part:
+                errors.append(
+                    f"Expected a part of a enumeration literal name to be uppercase "
+                    f"since it denotes an abbreviation, "
+                    f"but it was not ({part!r}) for enumeration literal {name!r}")
+
+        for part in parts[1:]:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a non-first part of an enumeration literal name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for enumeration literal {name!r}")
+
+        return errors
+
+    @staticmethod
+    def check_property_name(name: str) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        for part in parts:
+            if part in Test_assertions.ABBREVIATIONS and part.upper() != part:
+                errors.append(
+                    f"Expected a part of a property name to be uppercase "
+                    f"since it denotes an abbreviation, "
+                    f"but it was not ({part!r}) for the property {name!r}")
+
+        for part in parts:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a part of a property name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for the property {name!r}")
+
+        return errors
+
+    @staticmethod
+    def check_method_name(name: str) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        for part in parts:
+            if part in Test_assertions.ABBREVIATIONS and part.upper() != part:
+                errors.append(
+                    f"Expected a part of a method name to be uppercase "
+                    f"since it denotes an abbreviation, "
+                    f"but it was not ({part!r}) for the method {name!r}")
+
+        for part in parts:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a part of a method name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for the method {name!r}")
+
+        return errors
+
+    @staticmethod
+    def needs_plural(annotation: Any) -> bool:
+        if isinstance(annotation, List):
+            return True
+        elif hasattr(annotation, "__args__"):
+            for arg in annotation.__args__:
+                origin = getattr(arg, "__origin__", None)
+                if origin == list:
+                    return True
+        else:
+            return False
+
+    def test_naming(self) -> None:
+        errors = []  # type: List[str]
+
+        plural_exceptions = {
+            "Concept_description.is_case_of",
+            "Submodel_element_collection.value",
+            "Submodel_element_list.value",
+        }
+
+        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
+            if obj.__module__ != v3rc2.__name__:
+                continue
+
+            errors.extend(Test_assertions.check_class_name(name=name))
+
+            if issubclass(obj, enum.Enum):
+                for attr_name in dir(obj):
+                    if attr_name.startswith("_"):
+                        continue
+
+                    errors.extend(
+                        Test_assertions.check_enum_literal_name(name=attr_name))
+            elif issubclass(obj, (bool, int, float, str, bytearray)):
+                # No properties and methods to be verified in constrained
+                # primitives.
+                continue
+            else:
+                annotations = getattr(obj, "__annotations__", None)
+                if annotations is not None:
+                    for property_name in sorted(annotations.keys()):
+                        annotation = annotations[property_name]
+
+                        errors.extend(
+                            Test_assertions.check_property_name(property_name))
+
+                        qualified_name = f"{obj.__name__}.{property_name}"
+                        if (
+                                Test_assertions.needs_plural(annotation)
+                                and qualified_name not in plural_exceptions
+                                and not property_name.endswith('s')
+                        ):
+                            errors.append(
+                                f"Expected the property to have a suffix '-s', "
+                                f"but it does not: {qualified_name}")
+
+                for attr_name in dir(obj):
+                    if attr_name.startswith("_"):
+                        continue
+
+                    attr = getattr(obj, attr_name, None)
+                    if inspect.ismethod(attr):
+                        errors.extend(
+                            Test_assertions.check_method_name(attr_name))
+
+        if len(errors) != 0:
+            raise AssertionError("\n".join(f"* {error}" for error in errors))
 
 
 if __name__ == "__main__":
