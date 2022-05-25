@@ -7,6 +7,7 @@ import pathlib
 import shlex
 import subprocess
 import sys
+from typing import Sequence, Optional, Mapping
 
 
 class Step(enum.Enum):
@@ -15,6 +16,28 @@ class Step(enum.Enum):
     RUN = "run"
     AAS_CORE_CODEGEN_SMOKE = "aas-core-codegen-smoke"
     CHECK_INIT_AND_SETUP_COINCIDE = "check-init-and-setup-coincide"
+
+
+def call_and_report(
+    verb: str,
+    cmd: Sequence[str],
+    cwd: Optional[pathlib.Path] = None,
+    env: Optional[Mapping[str, str]] = None,
+) -> int:
+    """
+    Wrap a subprocess call with the reporting to STDERR if it failed.
+
+    Return 1 if there is an error and 0 otherwise.
+    """
+    exit_code = subprocess.call(cmd, cwd=str(cwd) if cwd is not None else None, env=env)
+
+    if exit_code != 0:
+        cmd_str = " ".join(shlex.quote(part) for part in cmd)
+        print(
+            f"Failed to {verb} with exit code {exit_code}: {cmd_str}", file=sys.stderr
+        )
+
+    return exit_code
 
 
 def main() -> int:
@@ -77,13 +100,18 @@ def main() -> int:
         # fmt: on
 
         if overwrite:
-            subprocess.check_call(["black"] + black_targets, cwd=str(repo_root))
-        else:
-            exit_code = subprocess.call(
-                ["black", "--check"] + black_targets, cwd=str(repo_root)
+            exit_code = call_and_report(
+                verb="black", cmd=["black"] + black_targets, cwd=repo_root
             )
             if exit_code != 0:
-                print("The black failed on one or more files.", file=sys.stderr)
+                return 1
+        else:
+            exit_code = call_and_report(
+                verb="check with black",
+                cmd=["black", "--check"] + black_targets,
+                cwd=repo_root,
+            )
+            if exit_code != 0:
                 return 1
     else:
         print("Skipped black'ing.")
@@ -92,14 +120,13 @@ def main() -> int:
         print("Mypy'ing...")
         mypy_targets = ["aas_core_meta"]
 
-        exit_code = subprocess.call(
-            ["mypy", "--strict"] + mypy_targets, cwd=str(repo_root)
+        exit_code = call_and_report(
+            verb="mypy",
+            cmd=["mypy", "--strict"] + mypy_targets,
+            cwd=repo_root,
         )
-
         if exit_code != 0:
-            print("Mypy failed on one or more files.", file=sys.stderr)
             return 1
-
     else:
         print("Skipped mypy'ing.")
 
@@ -115,14 +142,12 @@ def main() -> int:
         env["ICONTRACT_SLOW"] = "true"
 
         for pth in sorted(pth for pth in module_dir.glob("v*.py") if pth.is_file()):
-            exit_code = subprocess.call([sys.executable, str(pth)], cwd=str(repo_root))
-
+            exit_code = call_and_report(
+                verb="run the meta-models",
+                cmd=[sys.executable, str(pth)],
+                cwd=repo_root,
+            )
             if exit_code != 0:
-                print(
-                    f"Failed to execute with python interpreter "
-                    f"{sys.executable}: {pth}",
-                    file=sys.stderr,
-                )
                 return 1
 
     if (
@@ -132,12 +157,12 @@ def main() -> int:
         print("Running smoke tests with aas-core-codegen-smoke...")
 
         for pth in sorted(pth for pth in module_dir.glob("v*.py") if pth.is_file()):
-            cmd = ["aas-core-codegen-smoke", "--model_path", str(pth)]
-
-            exit_code = subprocess.call(cmd, cwd=str(repo_root))
+            exit_code = call_and_report(
+                verb="Run smoke tests with aas-core-codegen-smoke",
+                cmd=["aas-core-codegen-smoke", "--model_path", str(pth)],
+                cwd=repo_root,
+            )
             if exit_code != 0:
-                cmd_text = " ".join(shlex.quote(part) for part in cmd)
-                print(f"Failed to execute: {cmd_text!r}", file=sys.stderr)
                 return 1
     else:
         print("Skipped smoke tests with aas-core-codegen-smoke.")
@@ -147,16 +172,12 @@ def main() -> int:
         and Step.CHECK_INIT_AND_SETUP_COINCIDE not in skips
     ):
         print("Checking that aas_core_meta/__init__.py and setup.py coincide...")
-        exit_code = subprocess.call(
-            [sys.executable, "check_init_and_setup_coincide.py"]
+        exit_code = call_and_report(
+            verb="Check that aas_core_meta/__init__.py and setup.py coincide",
+            cmd=[sys.executable, "check_init_and_setup_coincide.py"],
+            cwd=repo_root,
         )
-
         if exit_code != 0:
-            print(
-                f"Failed to execute with python interpreter "
-                f"{sys.executable}: check_init_and_setup_coincide.py",
-                file=sys.stderr,
-            )
             return 1
     else:
         print("Skipped checking that aas_core_meta/__init__.py and setup.py coincide.")
