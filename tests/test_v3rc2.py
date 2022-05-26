@@ -1,8 +1,13 @@
+import ast
 import enum
 import inspect
+import re
 import unittest
-from typing import List, Any, Set
+import uuid
+from typing import List, Any, Set, Optional, Callable, Tuple, Union
 
+import astpretty
+import asttokens
 import icontract._represent
 
 from aas_core_meta import v3rc2
@@ -896,6 +901,11 @@ class Test_matches_xs_string(unittest.TestCase):
 
 
 class Test_assertions(unittest.TestCase):
+    # NOTE (mristin, 2022-05-26):
+    # We do not state "ID" as an abbreviation (which might imply "Identity Document"),
+    # but rather expect "Id" or "id", short for "identifier".
+    #
+    # See: https://english.stackexchange.com/questions/101248/how-should-the-abbreviation-for-identifier-be-capitalized
     ABBREVIATIONS = {
         "AAS", "URL", "BCP", "URI", "UTC", "RDF", "XSD"
     }

@@ -1,6 +1,17 @@
 """
 Provide the meta model for Asset Administration Shell V3.0 Release Candidate 2.
 
+The following constraints apply to the meta-model in general:
+
+:constraint AASd-120:
+
+    :attr:`Referable.id_short` of non-identifiable referables shall be unique in its
+    namespace.
+
+:constraint AASd-003:
+
+    :attr:`Referable.id_short` of :class:`.Referable`'s shall be matched case-sensitive.
+
 We could not implement the following constraints since they depend on registry
 and can not be verified without it:
 
@@ -11,12 +22,6 @@ Some of the constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
-
-We could not formalize the constraints which prescribed how to deal with
-the default values as the semantic of the default values has not been defined
-in the meta-model:
-
-* :constraintref:`AASd-115`
 """
 
 from enum import Enum
@@ -98,7 +103,7 @@ def is_xs_date_time_stamp_utc(text: str) -> bool:
     Check that :paramref:`text` is a ``xs:dateTimeStamp`` with time zone set to UTC.
 
     The ``text`` is assumed to match a pre-defined pattern for ``xs:dateTimeStamp`` with
-    the time zone set to UTC. In this function, we check for days of month (*e.g.*,
+    the time zone set to UTC. In this function, we check for days of month (e.g.,
     February 29th).
 
     See: https://www.w3.org/TR/xmlschema11-2/#dateTimeStamp
@@ -1362,7 +1367,7 @@ class Extension(Has_semantics):
 @invariant(
     lambda self:
     not (self.extensions is not None) or extension_names_are_unique(self.extensions),
-    "Constraint AASd-077: The name of an extension within Has_extensions "
+    "Constraint AASd-077: The name of an extension within Has-Extensions "
     "needs to be unique."
 )
 # fmt: on
@@ -1407,7 +1412,7 @@ class Referable(Has_extensions):
     .. note::
 
         The category is not identical to the semantic definition
-        (:class:`.Has_semantics`) of an element. The category *e.g.* could denote that
+        (:class:`.Has_semantics`) of an element. The category e.g. could denote that
         the element is a measurement value whereas the semantic definition of
         the element would denote that it is the measured temperature.
     """
@@ -1452,7 +1457,7 @@ class Referable(Has_extensions):
     If no description is defined, then the definition of the concept
     description that defines the semantics of the element is used.
 
-    Additional information can be provided, *e.g.*, if the element is
+    Additional information can be provided, e.g., if the element is
     qualified and which qualifier types can be expected in which
     context or which additional data specification templates are
     provided.
@@ -1943,7 +1948,7 @@ class Asset_information(DBC):
     specific_asset_id: Optional["Specific_asset_id"]
     """
     Additional domain-specific, typically proprietary identifier for the asset like
-    *e.g.*, serial number *etc.*
+    e.g., serial number etc.
     """
 
     default_thumbnail: Optional["Resource"]
@@ -2087,7 +2092,9 @@ class Specific_asset_id(Has_semantics):
 @invariant(
     lambda self:
     not (self.submodel_elements is not None)
-    or (id_shorts_are_unique(self.submodel_elements))
+    or (id_shorts_are_unique(self.submodel_elements)),
+    "Constraint AASd-120: ID-short of non-identifiable referables shall be unique "
+    "in its namespace."
 )
 @invariant(
     lambda self:
@@ -2221,13 +2228,12 @@ class Submodel_element(
         Has_data_specification.__init__(self, data_specifications=data_specifications)
 
 
-@reference_in_the_book(section=(5, 7, 7, 16))
+@reference_in_the_book(section=(5, 7, 7, 14))
 @abstract
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two elements
     being either referable (model reference) or external (global reference).
-
     """
 
     first: "Reference"
@@ -2276,7 +2282,7 @@ class Relationship_element(Submodel_element):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 17))
+@reference_in_the_book(section=(5, 7, 7, 16))
 @invariant(
     lambda self:
     not (self.value is not None)
@@ -2286,10 +2292,11 @@ class Relationship_element(Submodel_element):
     lambda self:
     not (self.value is not None)
     or all(
-        element.id_short is not None
+        element.id_short is None
         for element in self.value
     ),
-    "Short IDs need to be defined for all the elements."
+    "Constraint AASd-120: ID-shorts of submodel elements within a SubmodelElementList "
+    "shall not be specified."
 )
 @invariant(
     lambda self:
@@ -2345,38 +2352,40 @@ class Relationship_element(Submodel_element):
 # fmt: on
 class Submodel_element_list(Submodel_element):
     """
-    A submodel element list is an ordered collection of submodel elements.
+    A submodel element list is an ordered list of submodel elements.
+
+    The numbering starts with zero (0).
 
     :constraint AASd-107:
+
         If a first level child element in a :class:`.Submodel_element_list` has
         a :attr:`~Submodel_element.semantic_id` it
         shall be identical to :attr:`~Submodel_element_list.semantic_id_list_element`.
 
     :constraint AASd-114:
+
         If two first level child elements in a :class:`.Submodel_element_list` have
         a :attr:`~Submodel_element.semantic_id` then they shall be identical.
 
     :constraint AASd-115:
+
         If a first level child element in a :class:`.Submodel_element_list` does not
         specify a :attr:`~Submodel_element.semantic_id` then the value is assumed to be
         identical to :attr:`~Submodel_element_list.semantic_id_list_element`.
 
     :constraint AASd-108:
+
         All first level child elements in a :class:`.Submodel_element_list` shall have
         the same submodel element type as specified in :attr:`~type_value_list_element`.
 
     :constraint AASd-109:
+
         If :attr:`~type_value_list_element` is equal to
         :attr:`AAS_submodel_elements.Property` or
         :attr:`AAS_submodel_elements.Range`
         :attr:`~value_type_list_element` shall be set and all first
         level child elements in the :class:`.Submodel_element_list` shall have
         the value type as specified in :attr:`~value_type_list_element`.
-    """
-
-    type_value_list_element: "AAS_submodel_elements"
-    """
-    The submodel element type of the submodel elements contained in the list.
     """
 
     order_relevant: Optional["bool"]
@@ -2396,14 +2405,22 @@ class Submodel_element_list(Submodel_element):
     value: Optional[List["Submodel_element"]]
     """
     Submodel element contained in the list.
-    The list is ordered.
 
+    The list is ordered.
     """
+
     semantic_id_list_element: Optional["Reference"]
     """
-    The submodel element type of the submodel elements contained in the list.
+    Semantic ID the submodel elements contained in the list match to.
+    
+    .. note::
 
-    It is recommended to use a global reference.
+        It is recommended to use a global reference.
+    """
+
+    type_value_list_element: "AAS_submodel_elements"
+    """
+    The submodel element type of the submodel elements contained in the list.
     """
 
     value_type_list_element: Optional["Data_type_def_XSD"]
@@ -2453,7 +2470,7 @@ class Submodel_element_list(Submodel_element):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 18))
+@reference_in_the_book(section=(5, 7, 7, 15))
 @invariant(
     lambda self:
     not (self.value is not None)
@@ -2466,18 +2483,18 @@ class Submodel_element_list(Submodel_element):
         element.id_short is not None
         for element in self.value
     ),
-    "Short IDs need to be defined for all the elements."
+    "ID-shorts need to be defined for all the elements."
 )
 # fmt: on
 class Submodel_element_collection(Submodel_element):
     """
-    A submodel element struct is is a logical encapsulation of multiple values. It has
-    a number of of submodel elements.
+    A submodel element collection is a kind of struct, i.e. a a logical encapsulation
+    of multiple named values. It has a fixed number of submodel elements.
     """
 
     value: Optional[List["Submodel_element"]]
     """
-    Submodel element contained in the struct.
+    Submodel element contained in the collection.
     """
 
     def __init__(
@@ -2533,12 +2550,12 @@ class Data_element(Submodel_element):
     A data element is a submodel element that has a value. The type of value differs
     for different subtypes of data elements.
 
-    A controlled value is a value whose meaning is given in an external source
-    (see “ISO/TS 29002-10:2009(E)”).
-
     :constraint AASd-090:
-        For data elements :attr:`~category` shall be one of the following
-        values: ``CONSTANT``, ``PARAMETER`` or ``VARIABLE``.
+
+        For data elements :attr:`~category` (inherited by :class:`.Referable`) shall be
+        one of the following values: ``CONSTANT``, ``PARAMETER`` or ``VARIABLE``.
+
+        Default: ``VARIABLE``
     """
 
     def __init__(
@@ -2570,9 +2587,15 @@ class Data_element(Submodel_element):
             data_specifications=data_specifications,
         )
 
+    @implementation_specific
+    def category_or_default(self) -> str:
+        # NOTE (mristin, 2022-04-7):
+        # This implementation will not be transpiled, but is given here as reference.
+        return self.category if self.category is not None else "VARIABLE"
+
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 13))
+@reference_in_the_book(section=(5, 7, 7, 11))
 @invariant(
     lambda self:
     not (self.value is not None)
@@ -2584,6 +2607,7 @@ class Property(Data_element):
     A property is a data element that has a single value.
 
     :constraint AASd-007:
+
         If both, the :attr:`~value` and the :attr:`~value_id` are
         present then the value of :attr:`~value` needs to be identical to
         the value of the referenced coded value in :attr:`~value_id`.
@@ -2603,7 +2627,9 @@ class Property(Data_element):
     """
     Reference to the global unique ID of a coded value.
 
-    It is recommended to use a global reference.
+    .. note::
+    
+        It is recommended to use a global reference.
     """
 
     def __init__(
@@ -2643,7 +2669,7 @@ class Property(Data_element):
         self.value_id = value_id
 
 
-@reference_in_the_book(section=(5, 7, 7, 11))
+@reference_in_the_book(section=(5, 7, 7, 9))
 class Multi_language_property(Data_element):
     """
     A property is a data element that has a multi-language value.
@@ -2663,7 +2689,9 @@ class Multi_language_property(Data_element):
     """
     Reference to the global unique ID of a coded value.
 
-    It is recommended to use a global reference.
+    .. note::
+    
+        It is recommended to use a global reference.
     """
 
     def __init__(
@@ -2702,7 +2730,7 @@ class Multi_language_property(Data_element):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 14))
+@reference_in_the_book(section=(5, 7, 7, 12))
 @invariant(
     lambda self:
     not (self.min is not None)
@@ -2717,7 +2745,6 @@ class Multi_language_property(Data_element):
 class Range(Data_element):
     """
     A range data element is a data element that defines a range with min and max.
-
     """
 
     value_type: "Data_type_def_XSD"
@@ -2728,12 +2755,14 @@ class Range(Data_element):
     min: Optional["Value_data_type"]
     """
     The minimum value of the range.
+
     If the min value is missing, then the value is assumed to be negative infinite.
     """
 
     max: Optional["Value_data_type"]
     """
     The maximum value of the range.
+
     If the max value is missing,  then the value is assumed to be positive infinite.
     """
 
@@ -2780,7 +2809,6 @@ class Reference_element(Data_element):
     A reference element is a data element that defines a logical reference to another
     element within the same or another AAS or a reference to an external object or
     entity.
-
     """
 
     value: Optional["Reference"]
@@ -2830,16 +2858,6 @@ class Blob(Data_element):
     source code in the value attribute.
     """
 
-    content_type: Content_type
-    """
-    Content type of the content of the :class:`.Blob`.
-
-    The content type (MIME type) states which file extensions the file can have.
-    Valid values are content types like e.g. ``application/json``, ``application/xls``,
-    ``image/jpg``.
-    The allowed values are defined as in RFC2046.
-    """
-
     value: Optional["Blob_type"]
     """
     The value of the :class:`.Blob` instance of a blob data element.
@@ -2848,6 +2866,18 @@ class Blob(Data_element):
 
         In contrast to the file property the file content is stored directly as value
         in the :class:`.Blob` data element.
+    """
+
+    content_type: Content_type
+    """
+    Content type of the content of the :class:`.Blob`.
+
+    The content type (MIME type) states which file extensions the file can have.
+
+    Valid values are content types like e.g. ``application/json``, ``application/xls``,
+    ``image/jpg``.
+
+    The allowed values are defined as in RFC2046.
     """
 
     def __init__(
@@ -2888,9 +2918,16 @@ class Blob(Data_element):
 @reference_in_the_book(section=(5, 7, 7, 8))
 class File(Data_element):
     """
-    A File is a data element that represents an address to a file.
+    A File is a data element that represents an address to a file (a locator).
 
     The value is an URI that can represent an absolute or relative path.
+    """
+
+    value: Optional["Path_type"]
+    """
+    Path and name of the referenced file (with file extension).
+
+    The path can be absolute or relative.
     """
 
     content_type: "Content_type"
@@ -2898,12 +2935,6 @@ class File(Data_element):
     Content type of the content of the file.
 
     The content type states which file extensions the file can have.
-    """
-
-    value: Optional["Path_type"]
-    """
-    Path and name of the referenced file (with file extension).
-    The path can be absolute or relative.
     """
 
     def __init__(
@@ -2941,21 +2972,7 @@ class File(Data_element):
         self.value = value
 
 
-# fmt: off
-@invariant(
-    lambda self:
-    not any(
-        qualifier.kind == Qualifier_kind.Template_qualifier
-        for qualifier in self.qualifiers
-    ) or (
-        self.kind_or_default() == Modeling_kind.Template
-    ),
-    "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
-    "equal to template qualifier and the qualified element has kind then the qualified "
-    "element shall be of kind template."
-)
 @reference_in_the_book(section=(5, 7, 7, 1))
-# fmt: on
 class Annotated_relationship_element(Relationship_element):
     """
     An annotated relationship element is a relationship element that can be annotated
@@ -3012,17 +3029,18 @@ class Entity_type(Enum):
     entity.
     """
 
-    Co_managed_entity = "COMANAGEDENTITY"
+    Co_managed_entity = "CoManagedEntity"
     """
     For co-managed entities there is no separate AAS. Co-managed entities need to be
     part of a self-managed entity.
     """
 
-    Self_managed_entity = "SELFMANAGEDENTITY"
+    Self_managed_entity = "SelfManagedEntity"
     """
     Self-Managed Entities have their own AAS but can be part of the bill of material of
-    a composite self-managed entity. The asset of an I4.0 Component is a self-managed
-    entity per definition."
+    a composite self-managed entity. 
+    
+    The asset of an I4.0 Component is a self-managed entity per definition."
     """
 
 
@@ -3055,14 +3073,10 @@ class Entity(Submodel_element):
     An entity is a submodel element that is used to model entities.
 
     :constraint AASd-014:
+
         Either the attribute :attr:`~global_asset_id` or :attr:`~specific_asset_id`
         of an :class:`.Entity` must be set if :attr:`~entity_type` is set to
-        ``SelfManagedEntity``. They are not existing otherwise.
-    """
-
-    entity_type: "Entity_type"
-    """
-    Describes whether the entity is a co- managed entity or a self-managed entity.
+        :attr:`~Entity_type.Self_managed_entity`. They are not existing otherwise.
     """
 
     statements: Optional[List["Submodel_element"]]
@@ -3071,11 +3085,18 @@ class Entity(Submodel_element):
     typically with a qualified value.
     """
 
+    entity_type: "Entity_type"
+    """
+    Describes whether the entity is a co-managed entity or a self-managed entity.
+    """
+
     global_asset_id: Optional["Reference"]
     """
     Global identifier of the asset the entity is representing.
 
-    This is a global reference.
+    .. note::
+
+        This is a global reference.
     """
 
     specific_asset_id: Optional["Specific_asset_id"]
@@ -3157,16 +3178,19 @@ class State_of_event(Enum):
     """
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    is_model_reference_to(self.observable_reference, Key_types.Referable)
+)
+@invariant(
+    lambda self:
+    is_model_reference_to(self.source, Key_types.Referable)
+)
 @reference_in_the_book(section=(5, 7, 7, 2), index=3)
+# fmt: on
 class Event_payload(DBC):
-    """
-    Defines the necessary information of an event instance sent out or received.
-
-    .. note::
-
-        The payload is not part of the information model as exchanged via
-        the AASX package format but used in re-active Asset Administration Shells.
-    """
+    """Defines the necessary information of an event instance sent out or received."""
 
     source: "Reference"
     """
@@ -3178,6 +3202,10 @@ class Event_payload(DBC):
     source_semantic_id: Optional["Reference"]
     """
     :attr:`~Has_semantics.semantic_id` of the source event element, if available
+    
+    .. note::
+    
+        It is recommended to use a global reference.
     """
 
     observable_reference: "Reference"
@@ -3192,6 +3220,10 @@ class Event_payload(DBC):
     """
     :attr:`~Has_semantics.semantic_id` of the referable which defines the scope of
     the event, if available.
+    
+    .. note::
+    
+        It is recommended to use a global reference.
     """
 
     topic: Optional["Non_empty_string"]
@@ -3203,6 +3235,10 @@ class Event_payload(DBC):
     subject_id: Optional["Reference"]
     """
     Subject, who/which initiated the creation.
+    
+    .. note::
+    
+        This is a global reference.
     """
 
     time_stamp: "Date_time_stamp_UTC"
@@ -3273,7 +3309,23 @@ class Event_element(Submodel_element):
         )
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 7, 7, 2))
+@invariant(
+    lambda self:
+    is_model_reference_to(self.message_broker, Key_types.Referable)
+)
+@invariant(
+    lambda self:
+    is_model_reference_to(self.observed, Key_types.Referable)
+)
+@invariant(
+    lambda self:
+    not (self.direction == Direction.Input)
+    or self.max_interval is None,
+    "Max. interval is not applicable for input direction"
+)
+# fmt: on
 class Basic_event_element(Event_element):
     """
     A basic event element.
@@ -3283,19 +3335,23 @@ class Basic_event_element(Event_element):
     """
     Reference to the :class:`.Referable`, which defines the scope of the event.
     Can be :class:`.Asset_administration_shell`, :class:`.Submodel`, or
-    :class:`.Submodel_element`. Reference to a referable, e.g. a data element or
+    :class:`.Submodel_element`.
+    
+    Reference to a referable, e.g., a data element or
     a submodel, that is being observed.
     """
 
     direction: "Direction"
     """
     Direction of event.
+
     Can be ``{ Input, Output }``.
     """
 
     state: "State_of_event"
     """
     State of event.
+
     Can be ``{ On, Off }``.
     """
 
@@ -3308,16 +3364,14 @@ class Basic_event_element(Event_element):
     message_broker: Optional["Reference"]
     """
     Information, which outer message infrastructure shall handle messages for
-    the :class:`.Event_element`.
-
-    Refers to a :class:`.Submodel`, :class:`.Submodel_element_list`,
-    :class:`.Submodel_element_collection` or :class:`.Entity`, which contains
-    :class:`.Data_element`'s describing the proprietary specification for
-    the message broker.
+    the :class:`.Event_element`. Refers to a :class:`.Submodel`, 
+    :class:`.Submodel_element_list`, :class:`.Submodel_element_collection` or 
+    :class:`.Entity`, which contains :class:`.Data_element`'s describing 
+    the proprietary specification for the message broker.
 
     .. note::
 
-        For different message infrastructure, e.g. OPC UA or MQTT or AMQP, this
+        For different message infrastructure, e.g., OPC UA or MQTT or AMQP, this
         proprietary specification could be standardized by having respective Submodels.
     """
 
@@ -3330,17 +3384,23 @@ class Basic_event_element(Event_element):
     min_interval: Optional["Date_time_stamp_UTC"]
     """
     For input direction, reports on the maximum frequency, the software entity behind
-    the respective Referable can handle input events. For output events, specifies
-    the maximum frequency of outputting this event to an outer infrastructure.
+    the respective Referable can handle input events.
+    
+    For output events, specifies the maximum frequency of outputting this event to 
+    an outer infrastructure.
+    
     Might be not specified, that is, there is no minimum interval.
     """
 
     max_interval: Optional["Date_time_stamp_UTC"]
     """
     For input direction: not applicable.
+
     For output direction: maximum interval in time, the respective Referable shall send
     an update of the status of the event, even if no other trigger condition for
-    the event was not met. Might be not specified, that is, there is no maximum interval
+    the event was not met.
+    
+    Might be not specified, that is, there is no maximum interval
     """
 
     def __init__(
@@ -3390,7 +3450,7 @@ class Basic_event_element(Event_element):
         self.max_interval = max_interval
 
 
-@reference_in_the_book(section=(5, 7, 7, 12))
+@reference_in_the_book(section=(5, 7, 7, 10))
 class Operation(Submodel_element):
     """
     An operation is a submodel element with input and output variables.
@@ -3448,21 +3508,16 @@ class Operation(Submodel_element):
         self.inoutput_variables = inoutput_variables
 
 
-@reference_in_the_book(section=(5, 7, 7, 13), index=1)
+@reference_in_the_book(section=(5, 7, 7, 10), index=1)
 class Operation_variable(DBC):
     """
-    An operation variable is a submodel element that is used as input or output variable
-    of an operation.
-
-    .. note::
-
-        :class:`.Operation_variable` is introduced as separate class to enable future
-        extensions, e.g. for adding a default value, cardinality (option/mandatory).
+    The value of an operation variable is a submodel element that is used as input
+    and/or output variable of an operation.
     """
 
     value: "Submodel_element"
     """
-    Describes the needed argument for an operation via a submodel element
+    Describes an argument or result of an operation via a submodel element
     """
 
     def __init__(self, value: "Submodel_element") -> None:
@@ -3526,10 +3581,13 @@ class Capability(Submodel_element):
 class Concept_description(Identifiable, Has_data_specification):
     """
     The semantics of a property or other elements that may have a semantic description
-    is defined by a concept description. The description of the concept should follow a
-    standardized schema (realized as data specification template).
+    is defined by a concept description.
+
+    The description of the concept should follow a standardized schema (realized as
+    data specification template).
 
     :constraint AASd-051:
+
         A :class:`.Concept_description` shall have one of the following categories
         ``VALUE``, ``PROPERTY``, ``REFERENCE``, ``DOCUMENT``, ``CAPABILITY``,
         ``RELATIONSHIP``, ``COLLECTION``, ``FUNCTION``, ``EVENT``, ``ENTITY``,
@@ -3547,9 +3605,15 @@ class Concept_description(Identifiable, Has_data_specification):
 
     is_case_of: Optional[List["Reference"]]
     """
-    Reference to an external definition the concept is compatible to or was derived from
+    Reference to an external definition the concept is compatible to or was derived 
+    from.
 
     .. note::
+
+       It is recommended to use a global reference.
+
+    .. note::
+
        Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360"
     """
 
@@ -3600,9 +3664,17 @@ class Reference_types(Enum):
     """
 
 
+# TODO (mristin, 2022-05-25): put aasd-122 in text
+# TODO (mristin, 2022-05-25): put aasd-123 in text
+# TODO (mristin, 2022-05-25): put aasd-123 in tests
+
+# TODO (mristin, 2022-05-25): write out aasd-124 description, in text and tests
+
+# fmt: off
 @invariant(lambda self: len(self.keys) >= 1)
 @reference_in_the_book(section=(5, 7, 10, 2))
 @serialization(with_model_type=True)
+# fmt: on
 class Reference(DBC):
     """
     Reference to either a model element of the same or another AAS or to an external
@@ -3610,12 +3682,81 @@ class Reference(DBC):
 
     A reference is an ordered list of keys.
 
-    A model reference is an ordered list of keys, each key referencing an element.
-
-    The complete list of keys may for example be concatenated to a path that then gives
+    A model reference is an ordered list of keys, each key referencing an element. The
+    complete list of keys may for example be concatenated to a path that then gives
     unique access to an element.
 
     A global reference is a reference to an external entity.
+
+    :constraint AASd-121:
+
+        For :class:`.Reference`'s the :attr:`~Key.type` of the first key of
+        :attr:`~keys` shall be one of :class:`.Globally_identifiables`.
+
+    :constraint AASd-122:
+
+        For global references, i.e. :class:`.Reference`'s with
+        :attr:`~Reference.type` = :attr:`~Reference_types.Global_reference`, the type
+        of the first key of :attr:`~Reference.keys` shall be one of
+        :class:`.Generic_globally_identifiables`.
+
+    :constraint AASd-123:
+
+        For model references, i.e. :class:`.Reference`'s with
+        :attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`, the type
+        of the first key of :attr:`~Reference.keys` shall be one of
+        :class:`.AAS_identifiables`.
+
+    :constraint AASd-124:
+
+        For global references, i.e. :class:`.Reference`'s with
+        :attr:`~Reference.type` = :attr:`~Reference_types.Global_reference`, the last
+        key of :attr:`~Reference.keys` shall be either one of
+        :class:`.Generic_globally_identifiables` or one of
+        :class:`.Generic_fragment_keys`.
+
+    :constraint AASd-125:
+
+        For model references, i.e. :class:`.Reference`'s with
+        :attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`, with more
+        than one key in :attr:`~Reference.keys` the type of the keys following the first
+        key of  :attr:`~Reference.keys` shall be one of :class:`.Fragment_keys`.
+
+        .. note::
+
+            :constraintref:`AASd-125` ensures that the shortest path is used.
+
+    :constraint AASd-126:
+
+        For model references, i.e. :class:`.Reference`'s with
+        :attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`, with more
+        than one key in :attr:`~Reference.keys` the type of the last key in the
+        reference key chain may be one of :class:`.Generic_fragment_keys` or no key
+        at all shall have a value out of :class:`.Generic_fragment_keys`.
+
+    :constraint AASd-127:
+
+        For model references, i.e. :class:`.Reference`'s with
+        :attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`, with more
+        than one key in :attr:`~Reference.keys` a key with :attr:`~Key.type`
+        :attr:`~Key_types.Fragment_reference` shall be preceded by a key with
+        :attr:`~Key.type` :attr:`~Key_types.File` or :attr:`~Key_types.Blob`. All other
+        AAS fragments, i.e. type values out of :class:`.AAS_submodel_elements`, do not
+        support fragments.
+
+        .. note::
+
+            Which kind of fragments are supported depends on the content type and the
+            specification of allowed fragment identifiers for the corrsponding resource
+            being referenced via the reference.
+
+    :constraint AASd-128:
+
+        For model references, i.e. :class:`.Reference`'s with
+        :attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`, the
+        :attr:`~Key.value` of a :class:`.Key` preceded by a :class:`.Key` with
+        :attr:`~Key.type` = :attr:`~Key_types.Submodel_element_list` is an integer
+        number denoting the position in the array of the submodel element list.
     """
 
     type: "Reference_types"
@@ -3625,14 +3766,21 @@ class Reference(DBC):
     Denotes, whether reference is a global reference or a model reference.
     """
 
+    referred_semantic_id: Optional["Reference"]
+    """
+    :attr:`Has_semantics.semantic_id` of the referenced model element 
+    (:attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`).
+    
+    For global references there typically is no semantic ID.
+    
+    .. note::
+    
+        It is recommended to use a global reference.
+    """
+
     keys: List["Key"]
     """
     Unique references in their name space.
-    """
-
-    referred_semantic_id: Optional["Reference"]
-    """
-    :attr:`Has_semantics.semantic_id` of the referenced model element.
     """
 
     def __init__(
@@ -3652,10 +3800,11 @@ class Key(DBC):
 
     type: "Key_types"
     """
-    Denote which kind of entity is referenced.
+    Denotes which kind of entity is referenced.
 
-    In case type = FragmentReference the key represents a bookmark or a similar local
-    identifier within its parent element as specified by the key that precedes this key.
+    In case :attr:`~type` = :attr:`~Key_types.Fragment_reference` the key represents 
+    a bookmark or a similar local identifier within its parent element as specified 
+    by the key that precedes this key.
 
     In all other cases the key references a model element of the same or of another AAS.
     The name of the model element is explicitly listed.
@@ -3878,7 +4027,7 @@ class Fragment_keys(Enum):
     .. note::
 
         Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a Property, a File *etc.*
+        the reference may be a Property, a File etc.
     """
 
     Entity = "Entity"
@@ -3917,7 +4066,7 @@ class Fragment_keys(Enum):
     .. note::
 
         Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
-        the reference may be a :class:`.Property`, an :class:`.Operation` *etc.*
+        the reference may be a :class:`.Property`, an :class:`.Operation` etc.
     """
 
     Submodel_element_list = "SubmodelElementList"
@@ -3956,7 +4105,7 @@ class Key_types(Enum):
     .. note::
 
         Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a Property, a File *etc.*
+        the reference may be a Property, a File etc.
     """
 
     Entity = "Entity"
@@ -3978,7 +4127,7 @@ class Key_types(Enum):
     Property = "Property"
     Range = "Range"
     """Range with min and max"""
-
+    Referable = "Referable"
     Reference_element = "ReferenceElement"
     """
     Reference
@@ -3995,7 +4144,7 @@ class Key_types(Enum):
     .. note::
 
         Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
-        the reference may be a :class:`.Property`, an :class:`.Operation` *etc.*
+        the reference may be a :class:`.Property`, an :class:`.Operation` etc.
     """
 
     Submodel_element_list = "SubmodelElementList"
