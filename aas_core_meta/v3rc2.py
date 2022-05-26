@@ -22,6 +22,12 @@ Some of the constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
+
+We could not formalize the constraints which prescribed how to deal with
+the default values as these are not really constraints in the strict sense, but more
+a guideline on how to resolve default values:
+
+* :constraintref:`AASd-115`
 """
 
 from enum import Enum
