@@ -3,6 +3,11 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.5.26 (2022-05-26)
+======================
+This is the version of our meta-model tailored to the finalized version
+of the book for V3RC02.
+
 2022.5.30a1 (2022-05-18)
 ========================
 This is a pre-release version.
