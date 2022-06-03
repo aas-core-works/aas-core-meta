@@ -1731,6 +1731,7 @@ class Qualifier_kind(Enum):
     """
 
 
+# fmt: off
 @invariant(
     lambda self: not (self.value is not None)
     or value_consistent_with_xsd_type(self.value, self.value_type),
@@ -1738,7 +1739,6 @@ class Qualifier_kind(Enum):
     "in value type.",
 )
 @reference_in_the_book(section=(5, 7, 2, 8))
-@serialization(with_model_type=True)
 # fmt: on
 class Qualifier(Has_semantics):
     """
@@ -1822,7 +1822,6 @@ class Qualifier(Has_semantics):
 
 # fmt: off
 @reference_in_the_book(section=(5, 7, 3))
-@serialization(with_model_type=True)
 @invariant(
     lambda self:
     not (self.submodels is not None)
@@ -3574,7 +3573,6 @@ class Capability(Submodel_element):
 
 # fmt: off
 @reference_in_the_book(section=(5, 7, 8))
-@serialization(with_model_type=True)
 @invariant(
     lambda self:
     not (self.category is not None)
@@ -3679,7 +3677,6 @@ class Reference_types(Enum):
 # fmt: off
 @invariant(lambda self: len(self.keys) >= 1)
 @reference_in_the_book(section=(5, 7, 10, 2))
-@serialization(with_model_type=True)
 # fmt: on
 class Reference(DBC):
     """
