@@ -2234,7 +2234,6 @@ class Submodel_element(
 
 
 @reference_in_the_book(section=(5, 7, 7, 14))
-@abstract
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two elements
