@@ -3,6 +3,14 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.6.3 (2022-06-03)
+=====================
+In this version we fix a couple of inconsistencies with the book which
+were spotted during the reviews.
+
+* Sort out ``modelType`` in V3RC02 (#104)
+* Make ``RelationshipElement`` concrete in V3RC02 (#103)
+
 2022.5.26 (2022-05-26)
 ======================
 This is the version of our meta-model tailored to the finalized version
