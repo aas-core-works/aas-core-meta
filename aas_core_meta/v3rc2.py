@@ -1235,7 +1235,7 @@ class Value_data_type(str, DBC):
     "starting mandatory with a letter. *I.e.* ``[a-zA-Z][a-zA-Z0-9_]+``.",
 )
 @invariant(
-    lambda self: not (self.id_short is not None) or len(self.id_short) <= 128,
+    lambda self: len(self) <= 128,
     "Constraint AASd-027: ID-short shall have a maximum length of 128 characters.",
 )
 class Id_short(str, DBC):
