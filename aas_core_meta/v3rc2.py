@@ -1022,6 +1022,22 @@ def value_consistent_with_xsd_type(value: str, value_type: "Data_type_def_XSD") 
 
 
 @verification
+def matches_global_asset_id_literally(text: str) -> bool:
+    """
+    Check that the :paramref:`text` matches ``globalAssetId`` case-insensitive.
+
+    The case-insensitivity depends on the culture. For example in Turkish, uppercase
+    "i" is "İ", not "I". We assume the culture to be English, and explicitly check
+    for English case-folding.
+
+    :param text: which needs to match ``globalAssetId`` literally
+    :return: True if the :paramref:`text` matches case-insensitive
+    """
+    pattern = "^[gG][lL][oO][bB][aA][lL][aA][sS][sS][eE][tT][iI][dD]$"
+    return match(pattern, text) is not None
+
+
+@verification
 @implementation_specific
 def is_model_reference_to(reference: "Reference", expected_type: "Key_types") -> bool:
     """Check that the target of the model reference matches the expected ``target``."""
@@ -1902,7 +1918,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 @invariant(
     lambda self: not (self.specific_asset_id is not None)
     or (
-        not (self.specific_asset_id.name.lower() == "globalassetid")
+        not (matches_global_asset_id_literally(self.specific_asset_id.name))
         or (
             self.global_asset_id is not None
             and self.specific_asset_id.value == self.global_asset_id
