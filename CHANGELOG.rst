@@ -3,6 +3,15 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.6.17
+=======
+This is a bug-fix version, where our spec turned out to be  incorrect
+from the programming point of view.
+
+* Fix invariant on specific_asset_id in V3RC2 (#108)
+* Fix length invariant of id-shorts in V3RC2 (#107)
+* Fix AnyURI patterns for UTF-32 (#106)
+
 2022.6.3 (2022-06-03)
 =====================
 In this version we fix a couple of inconsistencies with the book which
