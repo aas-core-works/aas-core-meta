@@ -18,7 +18,7 @@ and can not be verified without it:
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
 
-Some of the constraints are not enforceable as they depend on the wider context
+Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
@@ -28,6 +28,12 @@ the default values as these are not really constraints in the strict sense, but 
 a guideline on how to resolve default values:
 
 * :constraintref:`AASd-115`
+
+The constraint :constraintref:`AASd-116` is ill-defined. The type of the
+:attr:`~Specific_asset_id.value` is a string, but the type of
+:attr:`~Asset_information.global_asset_id` is a :class:`.Reference`. The comparison
+between a string and a reference is not defined, so we can not implement
+this constraint.
 """
 
 from enum import Enum
@@ -1915,19 +1921,6 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         self.submodels = submodels
 
 
-@invariant(
-    lambda self: not (self.specific_asset_id is not None)
-    or (
-        not (matches_global_asset_id_literally(self.specific_asset_id.name))
-        or (
-            self.global_asset_id is not None
-            and self.specific_asset_id.value == self.global_asset_id
-        )
-    ),
-    "Constraint AASd-116: ``globalAssetId`` (case-insensitive) is a reserved key. "
-    "If used as value for name of the specific asset ID then "
-    "the value of the specific asset ID shall be identical to the global asset ID.",
-)
 @reference_in_the_book(section=(5, 7, 4), index=0)
 class Asset_information(DBC):
     """
