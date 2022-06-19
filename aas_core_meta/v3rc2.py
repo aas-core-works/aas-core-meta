@@ -1002,7 +1002,8 @@ def matches_xs_string(text: str) -> bool:
     """
     # From: https://www.w3.org/TR/xml11/#NT-Char
     # Any Unicode character, excluding the surrogate blocks, FFFE, and FFFF.
-    pattern = r"^[^\x00]*$"
+    # noinspection SpellCheckingInspection
+    pattern = r"^[\u0001-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$"
     return match(pattern, text) is not None
 
 

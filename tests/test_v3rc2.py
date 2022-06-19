@@ -879,7 +879,18 @@ class Test_matches_xs_string(unittest.TestCase):
         assert v3rc2.matches_xs_string("")
 
     def test_free_form_text(self) -> None:
-        assert v3rc2.matches_xs_string("some free & <free> \uffff \ufffe form text")
+        assert v3rc2.matches_xs_string("some free & <free> \u1984 form text")
+
+    def test_fffe(self) -> None:
+        assert not v3rc2.matches_xs_string("\uFFFE")
+
+    def test_ffff(self) -> None:
+        assert not v3rc2.matches_xs_string("\uFFFF")
+
+    # noinspection SpellCheckingInspection
+    def test_surrogate_characters(self) -> None:
+        assert not v3rc2.matches_xs_string("\uD800")
+        assert not v3rc2.matches_xs_string("\uDFFF")
 
     def test_nul(self) -> None:
         assert not v3rc2.matches_xs_string("\x00")
