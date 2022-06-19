@@ -96,7 +96,8 @@ def main() -> int:
             "aas_core_meta",
             "precommit.py",
             "setup.py",
-            "check_init_and_setup_coincide.py"
+            "check_init_and_setup_coincide.py",
+            "tests"
         ]
         # fmt: on
 
