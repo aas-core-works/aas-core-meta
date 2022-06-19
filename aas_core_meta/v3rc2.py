@@ -3329,7 +3329,8 @@ class Event_element(Submodel_element):
 @reference_in_the_book(section=(5, 7, 7, 2))
 @invariant(
     lambda self:
-    is_model_reference_to(self.message_broker, Key_types.Referable)
+    not (self.message_broker is not None)
+    or is_model_reference_to(self.message_broker, Key_types.Referable)
 )
 @invariant(
     lambda self:
