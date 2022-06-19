@@ -2308,11 +2308,6 @@ class Relationship_element(Submodel_element):
 @invariant(
     lambda self:
     not (self.value is not None)
-    or id_shorts_are_unique(self.value)
-)
-@invariant(
-    lambda self:
-    not (self.value is not None)
     or all(
         element.id_short is None
         for element in self.value
