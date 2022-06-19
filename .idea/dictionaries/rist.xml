@@ -32,6 +32,7 @@
       <w>mypy</w>
       <w>nist</w>
       <w>nmtokens</w>
+      <w>nullness</w>
       <w>paramref</w>
       <w>precommit</w>
       <w>referables</w>
