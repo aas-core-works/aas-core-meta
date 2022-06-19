@@ -1179,15 +1179,17 @@ Observed literals: {sorted(literal_set)!r}"""
     def test_constraint_119_in_all_qualifiable_with_has_kind(self) -> None:
         renegade_classes = []  # type: List[str]
 
-        expected_condition_str = (
-            "lambda self:\n"
-            "    not any(\n"
-            "        qualifier.kind == Qualifier_kind.Template_qualifier\n"
-            "        for qualifier in self.qualifiers\n"
-            "    ) or (\n"
-            "        self.kind_or_default() == Modeling_kind.Template\n"
-            "    )"
+        expected_condition_str = f"""\
+lambda self:
+    not (self.qualifiers is not None)
+    or (
+        not any(
+            qualifier.kind == Qualifier_kind.Template_qualifier
+            for qualifier in self.qualifiers
+        ) or (
+            self.kind_or_default() == Modeling_kind.Template
         )
+    )"""
 
         expected_description = (
             "Constraint AASd-119: If any qualifier kind value of "
