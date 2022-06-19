@@ -3,8 +3,24 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.6.19
+=========
+This is a version with fixes which were necessary for generating
+the JSON test data automatically using aas-core3.0rc02-testgen,
+and making sure that the aas-core-codegen generates the C# code
+such that it passes all the unit tests for JSON.
+
+XML tests are still pending.
+
+* Invert AASd-119 in V3RC02 (#116)
+* Fix ``xs:string`` pattern for V3RC02 (#115)
+* Check non-none of message broker in inv. of V3RC02 (#114)
+* Fix nullness in inv. AASd-119 in V3RC02 (#113)
+* Remove ill-defined constraint 116 from V3RC02 (#111)
+* Remove unique idShort from list elements in V3RC02 (#110)
+
 2022.6.17
-=======
+=========
 This is a bug-fix version, where our spec turned out to be  incorrect
 from the programming point of view.
 
