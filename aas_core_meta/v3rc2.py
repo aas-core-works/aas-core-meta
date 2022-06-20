@@ -1331,6 +1331,15 @@ class Has_semantics(DBC):
         self.supplemental_semantic_ids = supplemental_semantic_ids
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or (
+        value_consistent_with_xsd_type(self.value, self.value_type_or_default())
+    )
+)
+# fmt: on
 @reference_in_the_book(section=(5, 7, 2, 1), index=1)
 class Extension(Has_semantics):
     """
