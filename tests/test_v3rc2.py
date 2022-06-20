@@ -1192,14 +1192,13 @@ Observed literals: {sorted(literal_set)!r}"""
 
         expected_condition_str = f"""\
 lambda self:
-    not (self.kind_or_default() == Modeling_kind.Template)
+    not (self.qualifiers is not None)
     or (
-        not (self.qualifiers is not None)
-        or (
-            all(
-                qualifier.kind == Qualifier_kind.Template_qualifier
-                for qualifier in self.qualifiers
-            )
+        not any(
+            qualifier.kind == Qualifier_kind.Template_qualifier
+            for qualifier in self.qualifiers
+        ) or (
+            self.kind_or_default() == Modeling_kind.Template
         )
     )"""
 

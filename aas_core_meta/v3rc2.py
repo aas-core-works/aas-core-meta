@@ -2096,14 +2096,13 @@ class Specific_asset_id(Has_semantics):
 @reference_in_the_book(section=(5, 7, 5))
 @invariant(
     lambda self:
-    not (self.kind_or_default() == Modeling_kind.Template)
+    not (self.qualifiers is not None)
     or (
-        not (self.qualifiers is not None)
-        or (
-            all(
-                qualifier.kind == Qualifier_kind.Template_qualifier
-                for qualifier in self.qualifiers
-            )
+        not any(
+            qualifier.kind == Qualifier_kind.Template_qualifier
+            for qualifier in self.qualifiers
+        ) or (
+            self.kind_or_default() == Modeling_kind.Template
         )
     ),
     "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
@@ -2190,14 +2189,13 @@ class Submodel(
 @abstract
 @invariant(
     lambda self:
-    not (self.kind_or_default() == Modeling_kind.Template)
+    not (self.qualifiers is not None)
     or (
-        not (self.qualifiers is not None)
-        or (
-            all(
-                qualifier.kind == Qualifier_kind.Template_qualifier
-                for qualifier in self.qualifiers
-            )
+        not any(
+            qualifier.kind == Qualifier_kind.Template_qualifier
+            for qualifier in self.qualifiers
+        ) or (
+            self.kind_or_default() == Modeling_kind.Template
         )
     ),
     "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
