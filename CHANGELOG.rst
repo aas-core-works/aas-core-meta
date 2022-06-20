@@ -3,6 +3,14 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.6.20
+=========
+This is a minor bug-fix version. We release it so we can start working
+on tests with XML data.
+
+* Enforce Extension value match type in V3RC02 (#119)
+* Revert back AASd-119 in V3RC02 (#118)
+
 2022.6.19
 =========
 This is a version with fixes which were necessary for generating
