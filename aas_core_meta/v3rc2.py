@@ -1167,6 +1167,26 @@ def concept_description_category_is_valid(category: str) -> bool:
     )
 
 
+@verification
+@implementation_specific
+def data_element_category_is_valid(category: str) -> bool:
+    """
+    Check that the :paramref:`category` is a valid category for
+    a :class:`.Data_element`.
+
+    This function is directly related to :constraintref:`AASd-090`.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    # Notably, the specific implementation should use a hash set or a trie for efficient
+    # lookups.
+    return category in (
+        "CONSTANT",
+        "PARAMETER",
+        "VARIABLE",
+    )
+
+
 # endregion
 
 
@@ -2556,18 +2576,17 @@ class Submodel_element_collection(Submodel_element):
         self.value = value
 
 
+# fmt: off
 @abstract
 @invariant(
-    lambda self: not (self.category is not None)
-    or (
-        self.category == "CONSTANT"
-        or self.category == "PARAMETER"
-        or self.category == "VARIABLE"
-    ),
+    lambda self:
+    not (self.category is not None)
+    or data_element_category_is_valid(self.category),
     "Constraint AASd-090: For data elements category shall be one "
     "of the following values: CONSTANT, PARAMETER or VARIABLE",
 )
 @reference_in_the_book(section=(5, 7, 7, 5))
+# fmt: on
 class Data_element(Submodel_element):
     """
     A data element is a submodel element that is not further composed out of
@@ -2614,13 +2633,7 @@ class Data_element(Submodel_element):
         )
 
     @implementation_specific
-    @ensure(
-        lambda result: result == "CONSTANT"
-        or result == "PARAMETER"
-        or result == "VARIABLE",
-        "Constraint AASd-090: For data elements category shall be one "
-        "of the following values: CONSTANT, PARAMETER or VARIABLE",
-    )
+    @ensure(lambda result: data_element_category_is_valid(result))
     def category_or_default(self) -> str:
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
