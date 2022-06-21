@@ -4346,7 +4346,6 @@ class Lang_string_set(DBC):
         self.lang_strings = lang_strings
 
 
-@abstract
 @reference_in_the_book(section=(6, 2, 1, 1), index=1)
 class Data_specification_content:
     """
