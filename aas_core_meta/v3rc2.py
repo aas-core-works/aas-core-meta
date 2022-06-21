@@ -2614,6 +2614,13 @@ class Data_element(Submodel_element):
         )
 
     @implementation_specific
+    @ensure(
+        lambda result: result == "CONSTANT"
+        or result == "PARAMETER"
+        or result == "VARIABLE",
+        "Constraint AASd-090: For data elements category shall be one "
+        "of the following values: CONSTANT, PARAMETER or VARIABLE",
+    )
     def category_or_default(self) -> str:
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
