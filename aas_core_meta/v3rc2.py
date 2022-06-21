@@ -4356,7 +4356,6 @@ class Data_specification_content:
     """
 
 
-@abstract
 @reference_in_the_book(section=(6, 2, 1, 1))
 class Data_specification:
     """
