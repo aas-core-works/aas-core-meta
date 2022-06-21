@@ -3,6 +3,14 @@
     Please keep this file at 72 line width so that we can copy-paste
     the release logs directly into commit messages.
 
+2022.6.21
+=========
+This is a minor enhancement version. We implement the invariant on
+the category of a data element in a more systematic manner.
+
+* Encapsulate data element category in V3RC02 (#121)
+* Ensure Data element category in V3RC02
+
 2022.6.20
 =========
 This is a minor bug-fix version. We release it so we can start working
