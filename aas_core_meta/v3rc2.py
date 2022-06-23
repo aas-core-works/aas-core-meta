@@ -53,7 +53,7 @@ from aas_core_meta.marker import (
 
 __book_url__ = (
     "https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/"
-    "Details_of_the_Asset_Administration_Shell_Part1_V3.pdf?__blob=publicationFile"
+    "Details_of_the_Asset_Administration_Shell_Part1_V3.pdf?__blob=publicationFile&v=10"
 )
 __book_version__ = "V3.0RC02"
 
