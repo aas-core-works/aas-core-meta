@@ -52,10 +52,8 @@ from aas_core_meta.marker import (
 )
 
 __book_url__ = (
-    "https://plattform-i40.coyocloud.com/files/"
-    "442df5bf-72e7-4ad4-ade1-4ddee70dd392/4d299251-a723-4858-afe7-9f656af07bcb/"
-    "DetailsOfTheAssetAdministrationShell_Part1_"
-    "V3%200RC02_EN%20Working%20Version%20docx"
+    "https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/"
+    "Details_of_the_Asset_Administration_Shell_Part1_V3.pdf?__blob=publicationFile"
 )
 __book_version__ = "V3.0RC02"
 
