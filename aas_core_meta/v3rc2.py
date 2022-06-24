@@ -1654,6 +1654,12 @@ class Has_kind(DBC):
 
 
 @abstract
+@invariant(
+    lambda self: all(
+        is_model_reference_to(data_specification, Key_types.Data_specification)
+        for data_specification in self.data_specifications
+    )
+)
 @reference_in_the_book(section=(5, 7, 2, 9))
 class Has_data_specification(DBC):
     """
@@ -3893,6 +3899,7 @@ class AAS_identifiables(Enum):
     Asset_administration_shell = "AssetAdministrationShell"
     Concept_description = "ConceptDescription"
     Submodel = "Submodel"
+    Data_specification = "DataSpecification"
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=5)
@@ -4153,6 +4160,8 @@ class Key_types(Enum):
         the reference may be a Property, a File etc.
     """
 
+    Data_specification = "DataSpecification"
+
     Entity = "Entity"
     Event_element = "EventElement"
     """
@@ -4346,58 +4355,52 @@ class Lang_string_set(DBC):
         self.lang_strings = lang_strings
 
 
-@reference_in_the_book(section=(6, 2, 1, 1), index=1)
-class Data_specification_content:
-    """
-    Data specification content is part of a data specification template and defines
-    which additional attributes shall be added to the element instance that references
-    the data specification template and meta information about the template itself.
-    """
-
-
+@invariant(lambda self: (self.content is None) ^ (self.path is None))
 @reference_in_the_book(section=(6, 2, 1, 1))
-class Data_specification:
+class Data_specification(Identifiable):
     """
-    Data Specification Template
-    """
-
-    id: Identifier
-    """
-    The globally unique identification of the element.
+    Data Specification
     """
 
-    data_specification_content: Data_specification_content
-    """
-    The content of the template without meta data
-    """
+    content: Optional[bytearray]
 
-    administration: Optional[Administrative_information]
-    """
-    Administrative information of an identifiable element.
+    path: Optional[Path_type]
 
-    .. note::
+    contentType: Content_type
 
-        Some of the administrative information like the version number might need to
-        be part of the identification.
-    """
-
-    description: Optional[Lang_string_set]
-    """
-    Description how and in which context the data specification template is applicable.
-    The description can be provided in several languages.
-    """
+    schema: Optional[Reference]
 
     def __init__(
         self,
-        id: Identifier,
-        data_specification_content: Data_specification_content,
-        administration: Optional[Administrative_information],
-        description: Optional[Lang_string_set],
+        id: "Identifier",
+        contentType: "Content_type",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Non_empty_string] = None,
+        id_short: Optional[Id_short] = None,
+        display_name: Optional["Lang_string_set"] = None,
+        description: Optional["Lang_string_set"] = None,
+        checksum: Optional["Non_empty_string"] = None,
+        administration: Optional["Administrative_information"] = None,
+        content: Optional[bytearray] = None,
+        path: Optional[Path_type] = None,
+        schema: Optional[Reference] = None,
     ) -> None:
-        self.id = id
-        self.data_specification_content = data_specification_content
-        self.administration = administration
-        self.description = description
+        Identifiable.__init__(
+            self,
+            id=id,
+            extensions=extensions,
+            category=category,
+            id_short=id_short,
+            display_name=display_name,
+            description=description,
+            checksum=checksum,
+            administration=administration,
+        )
+
+        self.content = content
+        self.path = path
+        self.contentType = contentType
+        self.schema = schema
 
 
 @reference_in_the_book(section=(5, 7, 9))
