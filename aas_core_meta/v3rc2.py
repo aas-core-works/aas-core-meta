@@ -3882,7 +3882,7 @@ class Key(DBC):
         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 10, 3), index=6)
+@reference_in_the_book(section=(5, 7, 10, 3), index=9)
 class Generic_fragment_keys(Enum):
     """
     Enumeration of all identifiable elements within an asset administration shell.
@@ -3911,10 +3911,19 @@ class AAS_identifiables(Enum):
 
     Asset_administration_shell = "AssetAdministrationShell"
     Concept_description = "ConceptDescription"
+    Identifiable = "Identifiable"
+    """
+    Identifiable.
+
+    .. note::
+
+        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference 
+        may be an Asset Administration Shell, a Submodel or a Concept Description.
+    """
     Submodel = "Submodel"
 
 
-@reference_in_the_book(section=(5, 7, 10, 3), index=5)
+@reference_in_the_book(section=(5, 7, 10, 3), index=6)
 class AAS_submodel_elements(Enum):
     """
     Enumeration of all referable elements within an asset administration shell.
@@ -3987,8 +3996,101 @@ class AAS_submodel_elements(Enum):
 @is_superset_of(enums=[AAS_submodel_elements])
 class AAS_referable_non_identifiables(Enum):
     """
-    Enumeration of all referable elements within an asset administration shell.
+    Enumeration of different fragment key value types within a key.
     """
+
+    Annotated_relationship_element = "AnnotatedRelationshipElement"
+    Basic_event_element = "BasicEventElement"
+    Blob = "Blob"
+    Capability = "Capability"
+    Data_element = "DataElement"
+    """
+    Data Element.
+
+    .. note::
+
+        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
+        the reference may be a :class:`.Property`, a :class:`.File` etc.
+    """
+    Entity = "Entity"
+    Event_element = "EventElement"
+    """
+    Event element
+
+    .. note::
+
+        :class:`.Event_element` is abstract.
+    """
+    File = "File"
+
+    Multi_language_property = "MultiLanguageProperty"
+    """
+    Property with a value that can be provided in multiple languages
+    """
+    Operation = "Operation"
+    Property = "Property"
+    Range = "Range"
+    """
+    Range with min and max
+    """
+    Reference_element = "ReferenceElement"
+    """
+    Reference
+    """
+    Relationship_element = "RelationshipElement"
+    """
+    Relationship
+    """
+
+    Submodel_element = "SubmodelElement"
+    """
+    Submodel Element
+
+    .. note::
+
+        Submodel Element is abstract, i.e. if a key uses
+        :attr:`Submodel_element` the reference may be a :class:`.Property`,
+        a :class:`.Submodel_element_list`, an :class:`.Operation` etc.
+    """
+    Submodel_element_collection = "SubmodelElementCollection"
+    """
+    Struct of Submodel Elements
+    """
+    Submodel_element_list = "SubmodelElementList"
+    """
+    List of Submodel Elements
+    """
+
+
+@reference_in_the_book(section=(5, 7, 10, 3), index=5)
+@is_superset_of(enums=[AAS_referable_non_identifiables, AAS_identifiables])
+class AAS_referables(Enum):
+    """
+    Enumeration of referables.
+    """
+
+    Referable = "Referable"
+    """
+    Referable
+
+    .. note::
+
+        Referable is abstract, i.e. if a key uses “Referable” the reference 
+        may be an Asset Administration Shell, a Property etc
+    """
+
+    Asset_administration_shell = "AssetAdministrationShell"
+    Concept_description = "ConceptDescription"
+    Identifiable = "Identifiable"
+    """
+    Identifiable.
+
+    .. note::
+
+        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference 
+        may be an Asset Administration Shell, a Submodel or a Concept Description.
+    """
+    Submodel = "Submodel"
 
     Annotated_relationship_element = "AnnotatedRelationshipElement"
     Basic_event_element = "BasicEventElement"
@@ -4064,6 +4166,15 @@ class Globally_identifiables(Enum):
 
     Asset_administration_shell = "AssetAdministrationShell"
     Concept_description = "ConceptDescription"
+    Identifiable = "Identifiable"
+    """
+    Identifiable.
+
+    .. note::
+
+        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference 
+        may be an Asset Administration Shell, a Submodel or a Concept Description.
+    """
     Submodel = "Submodel"
 
 
@@ -4162,6 +4273,15 @@ class Key_types(Enum):
     Blob = "Blob"
     Capability = "Capability"
     Concept_description = "ConceptDescription"
+    Identifiable = "Identifiable"
+    """
+    Identifiable.
+
+    .. note::
+
+        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference 
+        may be an Asset Administration Shell, a Submodel or a Concept Description.
+    """
     Data_element = "DataElement"
     """
     Data element.
