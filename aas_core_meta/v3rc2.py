@@ -27,7 +27,7 @@ We could not formalize the constraints which prescribed how to deal with
 the default values as these are not really constraints in the strict sense, but more
 a guideline on how to resolve default values:
 
-* :constraintref:`AASd-115`
+* :constraintref:`AASd-116`
 
 The constraint :constraintref:`AASd-116` is ill-defined. The type of the
 :attr:`~Specific_asset_id.value` is a string, but the type of
@@ -2001,14 +2001,14 @@ class Asset_information(DBC):
     This attribute is required as soon as the AAS is exchanged via partners in the life
     cycle of the asset. In a first phase of the life cycle the asset might not yet have
     a global ID but already an internal identifier. The internal identifier would be
-    modelled via :attr:`~specific_asset_id`.
+    modelled via :attr:`~specific_asset_ids`.
     
     .. note::
     
         This is a global reference.
     """
 
-    specific_asset_id: Optional["Specific_asset_id"]
+    specific_asset_ids: Optional[List["Specific_asset_id"]]
     """
     Additional domain-specific, typically proprietary identifier for the asset like
     e.g., serial number etc.
@@ -2025,12 +2025,12 @@ class Asset_information(DBC):
         self,
         asset_kind: "Asset_kind",
         global_asset_id: Optional["Reference"] = None,
-        specific_asset_id: Optional["Specific_asset_id"] = None,
+        specific_asset_ids: Optional[List["Specific_asset_id"]] = None,
         default_thumbnail: Optional["Resource"] = None,
     ) -> None:
         self.asset_kind = asset_kind
         self.global_asset_id = global_asset_id
-        self.specific_asset_id = specific_asset_id
+        self.specific_asset_ids = specific_asset_ids
         self.default_thumbnail = default_thumbnail
 
 
