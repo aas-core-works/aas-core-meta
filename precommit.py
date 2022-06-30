@@ -4,14 +4,15 @@ import argparse
 import enum
 import os
 import pathlib
+import re
 import shlex
 import subprocess
 import sys
-from typing import Sequence, Optional, Mapping
+from typing import Sequence, Optional, Mapping, List
 
 
 class Step(enum.Enum):
-    BLACK = "black"
+    REFORMAT = "reformat"
     MYPY = "mypy"
     RUN = "run"
     AAS_CORE_CODEGEN_SMOKE = "aas-core-codegen-smoke"
@@ -89,8 +90,8 @@ def main() -> int:
 
     repo_root = pathlib.Path(__file__).parent
 
-    if Step.BLACK in selects and Step.BLACK not in skips:
-        print("Black'ing...")
+    if Step.REFORMAT in selects and Step.REFORMAT not in skips:
+        print("Re-formatting...")
         # fmt: off
         black_targets = [
             "aas_core_meta",
@@ -100,6 +101,51 @@ def main() -> int:
             "tests"
         ]
         # fmt: on
+
+        # region Check or remove trailing whitespace
+        trailing_whitespace_pths = []  # type: List[pathlib.Path]
+
+        for relative_pth in black_targets:
+            pth = repo_root / relative_pth
+            if pth.is_file():
+                trailing_whitespace_pths.append(pth)
+            elif pth.is_dir():
+                trailing_whitespace_pths.extend(pth.glob("**/*.py"))
+            else:
+                raise RuntimeError(
+                    f"Unexpected path to neither a file nor a directory: {pth}"
+                )
+
+        trailing_whitespace_pths.sort()
+
+        offending_lines = []  # type: List[int]
+
+        for pth in trailing_whitespace_pths:
+            text = pth.read_text(encoding="utf-8")
+            lines = text.splitlines()
+            if overwrite:
+                lines = [re.sub(r"[ \t]+$", "", line) for line in lines]
+
+                new_text = "\n".join(lines)
+                if text.endswith("\n") and not new_text.endswith("\n"):
+                    new_text = new_text + "\n"
+
+                pth.write_text(new_text, encoding="utf-8")
+            else:
+                for i, line in enumerate(lines):
+                    if re.match(r"[ \t]+$", line) is not None:
+                        offending_lines.append(i)
+
+            if len(offending_lines) > 0:
+                for i in offending_lines:
+                    print(
+                        f"{pth.relative_to(repo_root)}:{i + 1}: "
+                        f"unexpected trailing whitespace",
+                        file=sys.stderr,
+                    )
+                return 1
+
+        # endregion
 
         if overwrite:
             exit_code = call_and_report(
@@ -116,7 +162,7 @@ def main() -> int:
             if exit_code != 0:
                 return 1
     else:
-        print("Skipped black'ing.")
+        print("Skipped reformatting.")
 
     if Step.MYPY in selects and Step.MYPY not in skips:
         print("Mypy'ing...")
