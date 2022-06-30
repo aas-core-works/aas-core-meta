@@ -1340,19 +1340,19 @@ class Has_semantics(DBC):
     """
     Identifier of the semantic definition of the element. It is called semantic ID
     of the element or also main semantic ID of the element.
-    
+
     .. note::
-    
+
         It is recommended to use a global reference.
     """
 
     supplemental_semantic_ids: Optional[List["Reference"]]
     """
-    Identifier of a supplemental semantic definition of the element. 
+    Identifier of a supplemental semantic definition of the element.
     It is called supplemental semantic ID of the element.
-    
+
     .. note::
-    
+
         It is recommended to use a global reference.
     """
 
@@ -1681,9 +1681,9 @@ class Has_data_specification(DBC):
     data_specifications: Optional[List["Reference"]]
     """
     Global reference to the data specification template used by the element.
-    
+
     .. note::
-    
+
         This is a global reference.
     """
 
@@ -1779,7 +1779,7 @@ class Qualifier_kind(Enum):
     Value_qualifier = "ValueQualifier"
     """
     qualifies the value of the element and can change during run-time.
-    
+
     Value qualifiers are only applicable to elements with kind
     :attr:`~Modeling_kind.Instance`.
     """
@@ -1793,7 +1793,7 @@ class Qualifier_kind(Enum):
     Template_qualifier = "TemplateQualifier"
     """
     qualifies the elements within a specific submodel on concept level.
-    
+
     Template qualifiers are only applicable to elements with kind
     :attr:`~Modeling_kind.Template`.
     """
@@ -1859,9 +1859,9 @@ class Qualifier(Has_semantics):
     value_id: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
-    
+
     .. note::
-    
+
         It is recommended to use a global reference.
     """
 
@@ -1925,9 +1925,9 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     References to submodels of the AAS.
 
     A submodel is a description of an aspect of the asset the AAS is representing.
-    
+
     The asset of an AAS is typically described by one or more submodels.
-    
+
     Temporarily no submodel might be assigned to the AAS.
     """
 
@@ -1999,9 +1999,9 @@ class Asset_information(DBC):
     cycle of the asset. In a first phase of the life cycle the asset might not yet have
     a global ID but already an internal identifier. The internal identifier would be
     modelled via :attr:`~specific_asset_ids`.
-    
+
     .. note::
-    
+
         This is a global reference.
     """
 
@@ -2113,7 +2113,7 @@ class Specific_asset_id(Has_semantics):
     The (external) subject the key belongs to or has meaning to.
 
     .. note::
-    
+
         This is a global reference.
     """
 
@@ -2474,7 +2474,7 @@ class Submodel_element_list(Submodel_element):
     semantic_id_list_element: Optional["Reference"]
     """
     Semantic ID the submodel elements contained in the list match to.
-    
+
     .. note::
 
         It is recommended to use a global reference.
@@ -2690,7 +2690,7 @@ class Property(Data_element):
     Reference to the global unique ID of a coded value.
 
     .. note::
-    
+
         It is recommended to use a global reference.
     """
 
@@ -2752,7 +2752,7 @@ class Multi_language_property(Data_element):
     Reference to the global unique ID of a coded value.
 
     .. note::
-    
+
         It is recommended to use a global reference.
     """
 
@@ -3100,8 +3100,8 @@ class Entity_type(Enum):
     Self_managed_entity = "SelfManagedEntity"
     """
     Self-Managed Entities have their own AAS but can be part of the bill of material of
-    a composite self-managed entity. 
-    
+    a composite self-managed entity.
+
     The asset of an I4.0 Component is a self-managed entity per definition."
     """
 
@@ -3264,9 +3264,9 @@ class Event_payload(DBC):
     source_semantic_id: Optional["Reference"]
     """
     :attr:`~Has_semantics.semantic_id` of the source event element, if available
-    
+
     .. note::
-    
+
         It is recommended to use a global reference.
     """
 
@@ -3282,9 +3282,9 @@ class Event_payload(DBC):
     """
     :attr:`~Has_semantics.semantic_id` of the referable which defines the scope of
     the event, if available.
-    
+
     .. note::
-    
+
         It is recommended to use a global reference.
     """
 
@@ -3297,9 +3297,9 @@ class Event_payload(DBC):
     subject_id: Optional["Reference"]
     """
     Subject, who/which initiated the creation.
-    
+
     .. note::
-    
+
         This is a global reference.
     """
 
@@ -3399,7 +3399,7 @@ class Basic_event_element(Event_element):
     Reference to the :class:`.Referable`, which defines the scope of the event.
     Can be :class:`.Asset_administration_shell`, :class:`.Submodel`, or
     :class:`.Submodel_element`.
-    
+
     Reference to a referable, e.g., a data element or
     a submodel, that is being observed.
     """
@@ -3427,9 +3427,9 @@ class Basic_event_element(Event_element):
     message_broker: Optional["Reference"]
     """
     Information, which outer message infrastructure shall handle messages for
-    the :class:`.Event_element`. Refers to a :class:`.Submodel`, 
-    :class:`.Submodel_element_list`, :class:`.Submodel_element_collection` or 
-    :class:`.Entity`, which contains :class:`.Data_element`'s describing 
+    the :class:`.Event_element`. Refers to a :class:`.Submodel`,
+    :class:`.Submodel_element_list`, :class:`.Submodel_element_collection` or
+    :class:`.Entity`, which contains :class:`.Data_element`'s describing
     the proprietary specification for the message broker.
 
     .. note::
@@ -3448,10 +3448,10 @@ class Basic_event_element(Event_element):
     """
     For input direction, reports on the maximum frequency, the software entity behind
     the respective Referable can handle input events.
-    
-    For output events, specifies the maximum frequency of outputting this event to 
+
+    For output events, specifies the maximum frequency of outputting this event to
     an outer infrastructure.
-    
+
     Might be not specified, that is, there is no minimum interval.
     """
 
@@ -3462,7 +3462,7 @@ class Basic_event_element(Event_element):
     For output direction: maximum interval in time, the respective Referable shall send
     an update of the status of the event, even if no other trigger condition for
     the event was not met.
-    
+
     Might be not specified, that is, there is no maximum interval
     """
 
@@ -3667,7 +3667,7 @@ class Concept_description(Identifiable, Has_data_specification):
 
     is_case_of: Optional[List["Reference"]]
     """
-    Reference to an external definition the concept is compatible to or was derived 
+    Reference to an external definition the concept is compatible to or was derived
     from.
 
     .. note::
@@ -3829,13 +3829,13 @@ class Reference(DBC):
 
     referred_semantic_id: Optional["Reference"]
     """
-    :attr:`Has_semantics.semantic_id` of the referenced model element 
+    :attr:`Has_semantics.semantic_id` of the referenced model element
     (:attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`).
-    
+
     For global references there typically is no semantic ID.
-    
+
     .. note::
-    
+
         It is recommended to use a global reference.
     """
 
@@ -3863,8 +3863,8 @@ class Key(DBC):
     """
     Denotes which kind of entity is referenced.
 
-    In case :attr:`~type` = :attr:`~Key_types.Fragment_reference` the key represents 
-    a bookmark or a similar local identifier within its parent element as specified 
+    In case :attr:`~type` = :attr:`~Key_types.Fragment_reference` the key represents
+    a bookmark or a similar local identifier within its parent element as specified
     by the key that precedes this key.
 
     In all other cases the key references a model element of the same or of another AAS.
