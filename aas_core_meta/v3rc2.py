@@ -1187,18 +1187,15 @@ def data_element_category_is_valid(category: str) -> bool:
 
 @verification
 @implementation_specific
-def reference_keys_and_type_equal(that: "Reference", other: "Reference") -> bool:
-    """Check that the two references are equal by comparing their keys and type."""
+def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
+    """Check that the two references are equal by comparing their key values."""
     # NOTE (mristin, 2022-04-7):
     # This implementation will not be transpiled, but is given here as reference.
-    if that.type != other.type:
-        return False
-
     if len(that.keys) != len(other.keys):
         return False
 
     for that_key, other_key in zip(that.keys, other.keys):
-        if that_key.type != other_key.type or that_key.value != other_key.value:
+        if that_key.value != other_key.value:
             return False
 
     return True
@@ -2405,7 +2402,7 @@ class Relationship_element(Submodel_element):
     ) or (
         all(
             not (child.semantic_id is not None)
-            or reference_keys_and_type_equal(
+            or reference_key_values_equal(
                 child.semantic_id,
                 self.semantic_id_list_element)
             for child in self.value
