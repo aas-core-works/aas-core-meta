@@ -36,3 +36,4 @@ revise
 fork
 invert
 formalize
+deprecate
