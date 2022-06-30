@@ -1109,9 +1109,7 @@ class Test_assertions(unittest.TestCase):
             if obj.__module__ != v3rc2.__name__:
                 continue
 
-            if obj == v3rc2.Identifiable:
-                continue
-
+            # We also include ``Identifiable``.
             if issubclass(obj, v3rc2.Identifiable):
                 class_name_set.add(name)
 
