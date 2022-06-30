@@ -1,7 +1,11 @@
 """
-Provide the meta model for Asset Administration Shell V3.0 Release Candidate 2.
+Provide the meta-model for Asset Administration Shell V3.0 Release Candidate 2.
 
-The following constraints apply to the meta-model in general:
+We had to diverge from the book in the following points.
+
+We could not implement the following constraints as they are too general and can not
+be formalized as part of the core library, but affects external components such as
+AAS registry or AAS server:
 
 :constraint AASd-120:
 
@@ -34,11 +38,34 @@ The constraint :constraintref:`AASd-116` is ill-defined. The type of the
 :attr:`~Asset_information.global_asset_id` is a :class:`.Reference`. The comparison
 between a string and a reference is not defined, so we can not implement
 this constraint.
+
+Furthermore, we diverge from the book in the following points regarding
+the enumerations. We have to implement subsets of enumerations as sets as common
+programming languages do not support inheritance of enumerations. The relationship
+between the properties and the sets is defined through invariants. This causes
+the following divergences:
+
+* We decided therefore to remove the enumerations ``DataTypeDef`` and ``DataTypeDefRDF``
+  and keep only :class:`.Data_type_def_XSD` as enumeration. Otherwise, we would have
+  to write redundant invariants all over the meta-model because ``DataTypeDef`` and
+  ``DataTypeDefRDF`` are actually never used in any type definition.
+
+* The enumeration ``AasSubmodelElements`` is used in two different contexts. One context
+  is the definition of key types in a reference. Another context is the definition
+  of element types in a :class:`.Submodel_element_list`. It is very counter-intuitive
+  to see the type of :attr:`~Submodel_element_list.type_value_list_element` as
+  :class:`.Key_types` even though an invariant might specify that it is an element of
+  ``AasSubmodelElements``.
+
+  To avoid confusion, we introduce a set of :class:`.Key_types`,
+  :const:`.AAS_submodel_elements_as_keys` to represent the first context (key type
+  in a reference). The enumeration :class:`.AAS_submodel_elements` is kept as designator
+  for :attr:`~Submodel_element_list.type_value_list_element`.
 """
 
 from enum import Enum
 from re import match
-from typing import List, Optional
+from typing import List, Optional, Set
 
 from icontract import invariant, DBC, ensure
 
@@ -47,8 +74,8 @@ from aas_core_meta.marker import (
     serialization,
     implementation_specific,
     reference_in_the_book,
-    is_superset_of,
     verification,
+    constant_set,
 )
 
 __book_url__ = (
@@ -1045,13 +1072,39 @@ def matches_global_asset_id_literally(text: str) -> bool:
 @verification
 @implementation_specific
 def is_model_reference_to(reference: "Reference", expected_type: "Key_types") -> bool:
-    """Check that the target of the model reference matches the expected ``target``."""
+    """Check that the target of the model reference matches the ``expected_type``."""
     # NOTE (mristin, 2022-03-28):
     # This implementation is given here only as reference. It needs to be adapted
     # for each implementation separately.
-    return reference.type == Reference_types.Model_reference and (
-        len(reference.keys) != 0 or reference.keys[-1].type == expected_type
+
+    # fmt: off
+    return (
+        reference.type == Reference_types.Model_reference
+        and (
+            len(reference.keys) != 0
+            or reference.keys[-1].type == expected_type
+        )
     )
+    # fmt: on
+
+
+@verification
+@implementation_specific
+def is_model_reference_to_referable(reference: "Reference") -> bool:
+    """Check that the target of the reference matches a :const:`.AAS_referables`."""
+    # NOTE (mristin, 2022-03-28):
+    # This implementation is given here only as reference. It needs to be adapted
+    # for each implementation separately.
+
+    # fmt: off
+    return (
+        reference.type == Reference_types.Model_reference
+        and (
+            len(reference.keys) != 0
+            or reference.keys[-1].type in AAS_referables
+        )
+    )
+    # fmt: on
 
 
 @verification
@@ -1135,54 +1188,6 @@ def properties_or_ranges_have_value_type(
                 return False
 
     return True
-
-
-@verification
-@implementation_specific
-def concept_description_category_is_valid(category: str) -> bool:
-    """
-    Check that the :paramref:`category` is a valid category for
-    a :class:`.Concept_description`.
-    """
-    # NOTE (mristin, 2022-04-7):
-    # This implementation will not be transpiled, but is given here as reference.
-    # Notably, the specific implementation should use a hash set or a trie for efficient
-    # lookups.
-    return category in (
-        "VALUE",
-        "PROPERTY",
-        "REFERENCE",
-        "DOCUMENT",
-        "CAPABILITY",
-        "RELATIONSHIP",
-        "COLLECTION",
-        "FUNCTION",
-        "EVENT",
-        "ENTITY",
-        "APPLICATION_CLASS",
-        "QUALIFIER",
-        "VIEW",
-    )
-
-
-@verification
-@implementation_specific
-def data_element_category_is_valid(category: str) -> bool:
-    """
-    Check that the :paramref:`category` is a valid category for
-    a :class:`.Data_element`.
-
-    This function is directly related to :constraintref:`AASd-090`.
-    """
-    # NOTE (mristin, 2022-04-7):
-    # This implementation will not be transpiled, but is given here as reference.
-    # Notably, the specific implementation should use a hash set or a trie for efficient
-    # lookups.
-    return category in (
-        "CONSTANT",
-        "PARAMETER",
-        "VARIABLE",
-    )
 
 
 @verification
@@ -1415,13 +1420,13 @@ class Extension(Has_semantics):
     """
 
     def __init__(
-        self,
-        name: Non_empty_string,
-        semantic_id: Optional["Reference"] = None,
-        supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        value_type: Optional["Data_type_def_XSD"] = None,
-        value: Optional["Value_data_type"] = None,
-        refers_to: Optional["Reference"] = None,
+            self,
+            name: Non_empty_string,
+            semantic_id: Optional["Reference"] = None,
+            supplemental_semantic_ids: Optional[List["Reference"]] = None,
+            value_type: Optional["Data_type_def_XSD"] = None,
+            value: Optional["Value_data_type"] = None,
+            refers_to: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(
             self,
@@ -1975,7 +1980,7 @@ class Asset_information(DBC):
 
     The asset has a globally unique identifier plus – if needed – additional domain
     specific (proprietary) identifiers. However, to support the corner case of very
-    first phase of lifecycle where a stabilised/constant global asset identifier does
+    first phase of lifecycle where a stabilised/constant_set global asset identifier does
     not already exist, the corresponding attribute :attr:`~global_asset_id` is optional.
 
     :constraint AASd-116:
@@ -2346,6 +2351,28 @@ class Relationship_element(Submodel_element):
         self.second = second
 
 
+class AAS_submodel_elements(Enum):
+    """Enumeration of all possible elements of a :class:`.Submodel_element_list`."""
+
+    Annotated_relationship_element = "AnnotatedRelationshipElement"
+    Basic_event_element = "BasicEventElement"
+    Blob = "Blob"
+    Capability = "Capability"
+    Data_element = "DataElement"
+    Entity = "Entity"
+    Event_element = "EventElement"
+    File = "File"
+    Multi_language_property = "MultiLanguageProperty"
+    Operation = "Operation"
+    Property = "Property"
+    Range = "Range"
+    Reference_element = "ReferenceElement"
+    Relationship_element = "RelationshipElement"
+    Submodel_element = "SubmodelElement"
+    Submodel_element_list = "SubmodelElementList"
+    Submodel_element_collection = "SubmodelElementCollection"
+
+
 # fmt: off
 @reference_in_the_book(section=(5, 7, 7, 16))
 @invariant(
@@ -2592,12 +2619,23 @@ class Submodel_element_collection(Submodel_element):
         self.value = value
 
 
+Valid_categories_for_data_element: Set[str] = constant_set(
+    values=[
+        "CONSTANT",
+        "PARAMETER",
+        "VARIABLE",
+    ],
+    description="""\
+Categories for :class:.Data_element` as defined in :constraintref:`AASd-090`""",
+)
+
+
 # fmt: off
 @abstract
 @invariant(
     lambda self:
     not (self.category is not None)
-    or data_element_category_is_valid(self.category),
+    or self.category in Valid_categories_for_data_element,
     "Constraint AASd-090: For data elements category shall be one "
     "of the following values: CONSTANT, PARAMETER or VARIABLE",
 )
@@ -2649,7 +2687,7 @@ class Data_element(Submodel_element):
         )
 
     @implementation_specific
-    @ensure(lambda result: data_element_category_is_valid(result))
+    @ensure(lambda result: result in Valid_categories_for_data_element)
     def category_or_default(self) -> str:
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
@@ -3243,11 +3281,11 @@ class State_of_event(Enum):
 # fmt: off
 @invariant(
     lambda self:
-    is_model_reference_to(self.observable_reference, Key_types.Referable)
+    is_model_reference_to_referable(self.observable_reference)
 )
 @invariant(
     lambda self:
-    is_model_reference_to(self.source, Key_types.Referable)
+    is_model_reference_to_referable(self.source)
 )
 @reference_in_the_book(section=(5, 7, 7, 2), index=3)
 # fmt: on
@@ -3376,11 +3414,11 @@ class Event_element(Submodel_element):
 @invariant(
     lambda self:
     not (self.message_broker is not None)
-    or is_model_reference_to(self.message_broker, Key_types.Referable)
+    or is_model_reference_to_referable(self.message_broker)
 )
 @invariant(
     lambda self:
-    is_model_reference_to(self.observed, Key_types.Referable)
+    is_model_reference_to_referable(self.observed)
 )
 @invariant(
     lambda self:
@@ -3629,12 +3667,33 @@ class Capability(Submodel_element):
         )
 
 
+Valid_categories_for_concept_description: Set[str] = constant_set(
+    values=[
+        "VALUE",
+        "PROPERTY",
+        "REFERENCE",
+        "DOCUMENT",
+        "CAPABILITY",
+        "RELATIONSHIP",
+        "COLLECTION",
+        "FUNCTION",
+        "EVENT",
+        "ENTITY",
+        "APPLICATION_CLASS",
+        "QUALIFIER",
+        "VIEW",
+    ],
+    description="""\
+Categories for :class:.Concept_description` as defined in :constraintref:`AASd-051`""",
+)
+
+
 # fmt: off
 @reference_in_the_book(section=(5, 7, 8))
 @invariant(
     lambda self:
     not (self.category is not None)
-    or concept_description_category_is_valid(self.category),
+    or self.category in Valid_categories_for_concept_description,
     "Constraint AASd-051: A concept description shall have one of "
     "the following categories: 'VALUE', 'PROPERTY', 'REFERENCE', 'DOCUMENT', "
     "'CAPABILITY',; 'RELATIONSHIP', 'COLLECTION', 'FUNCTION', 'EVENT', 'ENTITY', "
@@ -3659,7 +3718,7 @@ class Concept_description(Identifiable, Has_data_specification):
     """
 
     @implementation_specific
-    @ensure(lambda result: concept_description_category_is_valid(result))
+    @ensure(lambda result: result in Valid_categories_for_concept_description)
     def category_or_default(self) -> str:
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
@@ -3726,11 +3785,7 @@ class Reference_types(Enum):
     """
 
 
-# TODO (mristin, 2022-05-25): put aasd-122 in text
-# TODO (mristin, 2022-05-25): put aasd-123 in text
-# TODO (mristin, 2022-05-25): put aasd-123 in tests
-
-# TODO (mristin, 2022-05-25): write out aasd-124 description, in text and tests
+# TODO (mristin, 2022-05-25): formalize AASd-122 to 128
 
 # fmt: off
 @invariant(lambda self: len(self.keys) >= 1)
@@ -3752,36 +3807,36 @@ class Reference(DBC):
     :constraint AASd-121:
 
         For :class:`.Reference`'s the :attr:`~Key.type` of the first key of
-        :attr:`~keys` shall be one of :class:`.Globally_identifiables`.
+        :attr:`~keys` shall be one of :const:`.Globally_identifiables`.
 
     :constraint AASd-122:
 
         For global references, i.e. :class:`.Reference`'s with
         :attr:`~Reference.type` = :attr:`~Reference_types.Global_reference`, the type
         of the first key of :attr:`~Reference.keys` shall be one of
-        :class:`.Generic_globally_identifiables`.
+        :const:`.Generic_globally_identifiables`.
 
     :constraint AASd-123:
 
         For model references, i.e. :class:`.Reference`'s with
         :attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`, the type
         of the first key of :attr:`~Reference.keys` shall be one of
-        :class:`.AAS_identifiables`.
+        :const:`.AAS_identifiables`.
 
     :constraint AASd-124:
 
         For global references, i.e. :class:`.Reference`'s with
         :attr:`~Reference.type` = :attr:`~Reference_types.Global_reference`, the last
         key of :attr:`~Reference.keys` shall be either one of
-        :class:`.Generic_globally_identifiables` or one of
-        :class:`.Generic_fragment_keys`.
+        :const:`.Generic_globally_identifiables` or one of
+        :const:`.Generic_fragment_keys`.
 
     :constraint AASd-125:
 
         For model references, i.e. :class:`.Reference`'s with
         :attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`, with more
         than one key in :attr:`~Reference.keys` the type of the keys following the first
-        key of  :attr:`~Reference.keys` shall be one of :class:`.Fragment_keys`.
+        key of  :attr:`~Reference.keys` shall be one of :const:`.Fragment_keys`.
 
         .. note::
 
@@ -3792,8 +3847,8 @@ class Reference(DBC):
         For model references, i.e. :class:`.Reference`'s with
         :attr:`~Reference.type` = :attr:`~Reference_types.Model_reference`, with more
         than one key in :attr:`~Reference.keys` the type of the last key in the
-        reference key chain may be one of :class:`.Generic_fragment_keys` or no key
-        at all shall have a value out of :class:`.Generic_fragment_keys`.
+        reference key chain may be one of :const:`.Generic_fragment_keys` or no key
+        at all shall have a value out of :const:`.Generic_fragment_keys`.
 
     :constraint AASd-127:
 
@@ -3802,13 +3857,13 @@ class Reference(DBC):
         than one key in :attr:`~Reference.keys` a key with :attr:`~Key.type`
         :attr:`~Key_types.Fragment_reference` shall be preceded by a key with
         :attr:`~Key.type` :attr:`~Key_types.File` or :attr:`~Key_types.Blob`. All other
-        AAS fragments, i.e. type values out of :class:`.AAS_submodel_elements`, do not
-        support fragments.
+        AAS fragments, i.e. type values out of :const:`.AAS_submodel_elements_as_keys`,
+        do not support fragments.
 
         .. note::
 
             Which kind of fragments are supported depends on the content type and the
-            specification of allowed fragment identifiers for the corrsponding resource
+            specification of allowed fragment identifiers for the corresponding resource
             being referenced via the reference.
 
     :constraint AASd-128:
@@ -3879,378 +3934,7 @@ class Key(DBC):
         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 10, 3), index=9)
-class Generic_fragment_keys(Enum):
-    """
-    Enumeration of all identifiable elements within an asset administration shell.
-    """
-
-    Fragment_reference = "FragmentReference"
-    """
-    Bookmark or a similar local identifier of a subordinate part of a primary resource
-    """
-
-
-@reference_in_the_book(section=(5, 7, 10, 3), index=8)
-class Generic_globally_identifiables(Enum):
-    """
-    Enumeration of different key value types within a key.
-    """
-
-    Global_reference = "GlobalReference"
-
-
-@reference_in_the_book(section=(5, 7, 10, 3), index=7)
-class AAS_identifiables(Enum):
-    """
-    Enumeration of different key value types within a key.
-    """
-
-    Asset_administration_shell = "AssetAdministrationShell"
-    Concept_description = "ConceptDescription"
-    Identifiable = "Identifiable"
-    """
-    Identifiable.
-
-    .. note::
-
-        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference
-        may be an Asset Administration Shell, a Submodel or a Concept Description.
-    """
-    Submodel = "Submodel"
-
-
-@reference_in_the_book(section=(5, 7, 10, 3), index=6)
-class AAS_submodel_elements(Enum):
-    """
-    Enumeration of all referable elements within an asset administration shell.
-    """
-
-    Annotated_relationship_element = "AnnotatedRelationshipElement"
-    Basic_event_element = "BasicEventElement"
-    Blob = "Blob"
-    Capability = "Capability"
-    Data_element = "DataElement"
-    """
-    Data Element.
-
-    .. note::
-
-        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a :class:`.Property`, a :class:`.File` etc.
-    """
-    Entity = "Entity"
-    Event_element = "EventElement"
-    """
-    Event element
-
-    .. note::
-
-        :class:`.Event_element` is abstract.
-    """
-    File = "File"
-
-    Multi_language_property = "MultiLanguageProperty"
-    """
-    Property with a value that can be provided in multiple languages
-    """
-    Operation = "Operation"
-    Property = "Property"
-    Range = "Range"
-    """
-    Range with min and max
-    """
-    Reference_element = "ReferenceElement"
-    """
-    Reference
-    """
-    Relationship_element = "RelationshipElement"
-    """
-    Relationship
-    """
-
-    Submodel_element = "SubmodelElement"
-    """
-    Submodel Element
-
-    .. note::
-
-        Submodel Element is abstract, i.e. if a key uses
-        :attr:`Submodel_element` the reference may be a :class:`.Property`,
-        a :class:`.Submodel_element_list`, an :class:`.Operation` etc.
-    """
-    Submodel_element_list = "SubmodelElementList"
-    """
-    List of Submodel Elements
-    """
-    Submodel_element_collection = "SubmodelElementCollection"
-    """
-    Struct of Submodel Elements
-    """
-
-
-@reference_in_the_book(section=(5, 7, 10, 3), index=4)
-@is_superset_of(enums=[AAS_submodel_elements])
-class AAS_referable_non_identifiables(Enum):
-    """Enumeration of different fragment key value types within a key."""
-
-    Annotated_relationship_element = "AnnotatedRelationshipElement"
-    Basic_event_element = "BasicEventElement"
-    Blob = "Blob"
-    Capability = "Capability"
-    Data_element = "DataElement"
-    """
-    Data Element.
-
-    .. note::
-
-        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a :class:`.Property`, a :class:`.File` etc.
-    """
-    Entity = "Entity"
-    Event_element = "EventElement"
-    """
-    Event element
-
-    .. note::
-
-        :class:`.Event_element` is abstract.
-    """
-    File = "File"
-
-    Multi_language_property = "MultiLanguageProperty"
-    """
-    Property with a value that can be provided in multiple languages
-    """
-    Operation = "Operation"
-    Property = "Property"
-    Range = "Range"
-    """
-    Range with min and max
-    """
-    Reference_element = "ReferenceElement"
-    """
-    Reference
-    """
-    Relationship_element = "RelationshipElement"
-    """
-    Relationship
-    """
-
-    Submodel_element = "SubmodelElement"
-    """
-    Submodel Element
-
-    .. note::
-
-        Submodel Element is abstract, i.e. if a key uses
-        :attr:`Submodel_element` the reference may be a :class:`.Property`,
-        a :class:`.Submodel_element_list`, an :class:`.Operation` etc.
-    """
-    Submodel_element_collection = "SubmodelElementCollection"
-    """
-    Struct of Submodel Elements
-    """
-    Submodel_element_list = "SubmodelElementList"
-    """
-    List of Submodel Elements
-    """
-
-
-@reference_in_the_book(section=(5, 7, 10, 3), index=5)
-@is_superset_of(enums=[AAS_referable_non_identifiables, AAS_identifiables])
-class AAS_referables(Enum):
-    """
-    Enumeration of referables.
-    """
-
-    Referable = "Referable"
-    """
-    Referable
-
-    .. note::
-
-        Referable is abstract, i.e. if a key uses “Referable” the reference
-        may be an Asset Administration Shell, a Property etc
-    """
-
-    Asset_administration_shell = "AssetAdministrationShell"
-    Concept_description = "ConceptDescription"
-    Identifiable = "Identifiable"
-    """
-    Identifiable.
-
-    .. note::
-
-        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference
-        may be an Asset Administration Shell, a Submodel or a Concept Description.
-    """
-    Submodel = "Submodel"
-
-    Annotated_relationship_element = "AnnotatedRelationshipElement"
-    Basic_event_element = "BasicEventElement"
-    Blob = "Blob"
-    Capability = "Capability"
-    Data_element = "DataElement"
-    """
-    Data Element.
-
-    .. note::
-
-        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a :class:`.Property`, a :class:`.File` etc.
-    """
-    Entity = "Entity"
-    Event_element = "EventElement"
-    """
-    Event element
-
-    .. note::
-
-        :class:`.Event_element` is abstract.
-    """
-    File = "File"
-
-    Multi_language_property = "MultiLanguageProperty"
-    """
-    Property with a value that can be provided in multiple languages
-    """
-    Operation = "Operation"
-    Property = "Property"
-    Range = "Range"
-    """
-    Range with min and max
-    """
-    Reference_element = "ReferenceElement"
-    """
-    Reference
-    """
-    Relationship_element = "RelationshipElement"
-    """
-    Relationship
-    """
-
-    Submodel_element = "SubmodelElement"
-    """
-    Submodel Element
-
-    .. note::
-
-        Submodel Element is abstract, i.e. if a key uses
-        :attr:`Submodel_element` the reference may be a :class:`.Property`,
-        a :class:`.Submodel_element_list`, an :class:`.Operation` etc.
-    """
-    Submodel_element_collection = "SubmodelElementCollection"
-    """
-    Struct of Submodel Elements
-    """
-    Submodel_element_list = "SubmodelElementList"
-    """
-    List of Submodel Elements
-    """
-
-
-@reference_in_the_book(section=(5, 7, 10, 3), index=3)
-@is_superset_of(enums=[AAS_identifiables, Generic_globally_identifiables])
-class Globally_identifiables(Enum):
-    """
-    Enumeration of all referable elements within an asset administration shell
-    """
-
-    Global_reference = "GlobalReference"
-
-    Asset_administration_shell = "AssetAdministrationShell"
-    Concept_description = "ConceptDescription"
-    Identifiable = "Identifiable"
-    """
-    Identifiable.
-
-    .. note::
-
-        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference
-        may be an Asset Administration Shell, a Submodel or a Concept Description.
-    """
-    Submodel = "Submodel"
-
-
-@reference_in_the_book(section=(5, 7, 10, 3), index=2)
-@is_superset_of(enums=[AAS_referable_non_identifiables, Generic_fragment_keys])
-class Fragment_keys(Enum):
-    """Enumeration of different key value types within a key."""
-
-    Fragment_reference = "FragmentReference"
-    """
-    Bookmark or a similar local identifier of a subordinate part of
-    a primary resource
-    """
-
-    Annotated_relationship_element = "AnnotatedRelationshipElement"
-    Asset_administration_shell = "AssetAdministrationShell"
-    Basic_event_element = "BasicEventElement"
-    Blob = "Blob"
-    Capability = "Capability"
-    Concept_description = "ConceptDescription"
-    Data_element = "DataElement"
-    """
-    Data element.
-
-    .. note::
-
-        Data Element is abstract, *i.e.* if a key uses :attr:`~Data_element`
-        the reference may be a Property, a File etc.
-    """
-
-    Entity = "Entity"
-    Event_element = "EventElement"
-    """
-    Event.
-
-    .. note::
-
-        :class:`.Event_element` is abstract.
-    """
-
-    File = "File"
-
-    Multi_language_property = "MultiLanguageProperty"
-    """Property with a value that can be provided in multiple languages"""
-
-    Operation = "Operation"
-    Property = "Property"
-    Range = "Range"
-    """Range with min and max"""
-
-    Reference_element = "ReferenceElement"
-    """
-    Reference
-    """
-    Relationship_element = "RelationshipElement"
-    """
-    Relationship
-    """
-    Submodel = "Submodel"
-    Submodel_element = "SubmodelElement"
-    """
-    Submodel Element
-
-    .. note::
-
-        Submodel Element is abstract, *i.e.* if a key uses :attr:`~Submodel_element`
-        the reference may be a :class:`.Property`, an :class:`.Operation` etc.
-    """
-
-    Submodel_element_list = "SubmodelElementList"
-    """
-    List of Submodel Elements
-    """
-    Submodel_element_collection = "SubmodelElementCollection"
-    """
-    Struct of Submodel Elements
-    """
-
-
 @reference_in_the_book(section=(5, 7, 10, 3), index=1)
-@is_superset_of(enums=[Fragment_keys, Globally_identifiables])
 class Key_types(Enum):
     """Enumeration of different key value types within a key."""
 
@@ -4306,11 +3990,11 @@ class Key_types(Enum):
     Property = "Property"
     Range = "Range"
     """Range with min and max"""
-    Referable = "Referable"
     Reference_element = "ReferenceElement"
     """
     Reference
     """
+    Referable = "Referable"
     Relationship_element = "RelationshipElement"
     """
     Relationship
@@ -4334,6 +4018,155 @@ class Key_types(Enum):
     """
     Struct of Submodel Elements
     """
+
+
+Generic_fragment_keys: Set[Key_types] = constant_set(
+    values=[
+        Key_types.Fragment_reference,
+    ],
+    description="""\
+Enumeration of all identifiable elements within an asset administration shell.""",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=9),
+)
+
+Generic_globally_identifiables: Set[Key_types] = constant_set(
+    values=[
+        Key_types.Global_reference,
+    ],
+    description="Enumeration of different key value types within a key.",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=8),
+)
+
+AAS_identifiables: Set[Key_types] = constant_set(
+    values=[
+        Key_types.Asset_administration_shell,
+        Key_types.Concept_description,
+        Key_types.Identifiable,
+        Key_types.Submodel,
+    ],
+    description="Enumeration of different key value types within a key.",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=7),
+)
+
+AAS_submodel_elements_as_keys: Set[Key_types] = constant_set(
+    values=[
+        Key_types.Annotated_relationship_element,
+        Key_types.Basic_event_element,
+        Key_types.Blob,
+        Key_types.Capability,
+        Key_types.Data_element,
+        Key_types.Entity,
+        Key_types.Event_element,
+        Key_types.File,
+        Key_types.Multi_language_property,
+        Key_types.Operation,
+        Key_types.Property,
+        Key_types.Range,
+        Key_types.Reference_element,
+        Key_types.Relationship_element,
+        Key_types.Submodel_element,
+        Key_types.Submodel_element_list,
+        Key_types.Submodel_element_collection,
+    ],
+    description="""\
+Enumeration of all referable elements within an asset administration shell.""",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=6),
+)
+
+AAS_referable_non_identifiables: Set[Key_types] = constant_set(
+    values=[
+        Key_types.Annotated_relationship_element,
+        Key_types.Basic_event_element,
+        Key_types.Blob,
+        Key_types.Capability,
+        Key_types.Data_element,
+        Key_types.Entity,
+        Key_types.Event_element,
+        Key_types.File,
+        Key_types.Multi_language_property,
+        Key_types.Operation,
+        Key_types.Property,
+        Key_types.Range,
+        Key_types.Reference_element,
+        Key_types.Relationship_element,
+        Key_types.Submodel_element,
+        Key_types.Submodel_element_collection,
+        Key_types.Submodel_element_list,
+    ],
+    description="Enumeration of different fragment key value types within a key.",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=4),
+    superset_of=[AAS_submodel_elements_as_keys],
+)
+
+AAS_referables: Set[Key_types] = constant_set(
+    values=[
+        Key_types.Asset_administration_shell,
+        Key_types.Concept_description,
+        Key_types.Identifiable,
+        Key_types.Submodel,
+        Key_types.Annotated_relationship_element,
+        Key_types.Basic_event_element,
+        Key_types.Blob,
+        Key_types.Capability,
+        Key_types.Data_element,
+        Key_types.Entity,
+        Key_types.Event_element,
+        Key_types.File,
+        Key_types.Multi_language_property,
+        Key_types.Operation,
+        Key_types.Property,
+        Key_types.Range,
+        Key_types.Reference_element,
+        Key_types.Referable,
+        Key_types.Relationship_element,
+        Key_types.Submodel_element,
+        Key_types.Submodel_element_collection,
+        Key_types.Submodel_element_list,
+    ],
+    description="Enumeration of referables.",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=5),
+    superset_of=[AAS_referable_non_identifiables, AAS_identifiables],
+)
+
+Globally_identifiables: Set[Key_types] = constant_set(
+    values=[
+        Key_types.Global_reference,
+        Key_types.Asset_administration_shell,
+        Key_types.Concept_description,
+        Key_types.Identifiable,
+        Key_types.Submodel,
+    ],
+    description="""\
+Enumeration of all referable elements within an asset administration shell""",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=3),
+    superset_of=[AAS_identifiables, Generic_globally_identifiables],
+)
+
+Fragment_keys: Set[Key_types] = constant_set(
+    values=[
+        Key_types.Fragment_reference,
+        Key_types.Annotated_relationship_element,
+        Key_types.Basic_event_element,
+        Key_types.Blob,
+        Key_types.Capability,
+        Key_types.Data_element,
+        Key_types.Entity,
+        Key_types.Event_element,
+        Key_types.File,
+        Key_types.Multi_language_property,
+        Key_types.Operation,
+        Key_types.Property,
+        Key_types.Range,
+        Key_types.Reference_element,
+        Key_types.Relationship_element,
+        Key_types.Submodel_element,
+        Key_types.Submodel_element_list,
+        Key_types.Submodel_element_collection,
+    ],
+    description="Enumeration of different key value types within a key.",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=2),
+    superset_of=[AAS_referable_non_identifiables, Generic_fragment_keys],
+)
 
 
 @reference_in_the_book(section=(5, 7, 11, 3))
@@ -4375,71 +4208,6 @@ class Data_type_def_XSD(Enum):
     Unsigned_byte = "xs:unsignedByte"
     Non_positive_integer = "xs:nonPositiveInteger"
     Negative_integer = "xs:negativeInteger"
-
-
-@reference_in_the_book(section=(5, 7, 12, 3), index=4)
-class Data_type_def_RDF(Enum):
-    """
-    Enumeration listing all RDF types
-    """
-
-    Lang_string = "rdf:langString"
-    """
-    String with a language tag
-
-    .. note::
-
-        RDF requires IETF BCP 47  language tags, i.e. simple two-letter language tags
-        for Locales like “de” conformant to ISO 639-1 are allowed as well as language
-        tags plus extension like “de-DE” for country code, dialect etc. like in “en-US”
-        or “en-GB” for English (United Kingdom) and English (United States).
-        IETF language tags are referencing ISO 639, ISO 3166 and ISO 15924.
-
-    """
-
-
-@reference_in_the_book(section=(5, 7, 12, 2))
-@is_superset_of(enums=[Data_type_def_XSD, Data_type_def_RDF])
-class Data_type_def(Enum):
-    """
-    string with values of enumerations :class:`.Data_type_def_XSD`,
-    :class:`.Data_type_def_RDF`
-    """
-
-    Any_URI = "xs:anyURI"
-    Base_64_binary = "xs:base64Binary"
-    Boolean = "xs:boolean"
-    Date = "xs:date"
-    Date_time = "xs:dateTime"
-    Date_time_stamp = "xs:dateTimeStamp"
-    Decimal = "xs:decimal"
-    Double = "xs:double"
-    Duration = "xs:duration"
-    Float = "xs:float"
-    G_day = "xs:gDay"
-    G_month = "xs:gMonth"
-    G_month_day = "xs:gMonthDay"
-    G_year = "xs:gYear"
-    G_year_month = "xs:gYearMonth"
-    Hex_binary = "xs:hexBinary"
-    String = "xs:string"
-    Time = "xs:time"
-    Day_time_duration = "xs:dayTimeDuration"
-    Year_month_duration = "xs:yearMonthDuration"
-    Integer = "xs:integer"
-    Long = "xs:long"
-    Int = "xs:int"
-    Short = "xs:short"
-    Byte = "xs:byte"
-    Non_negative_integer = "xs:NonNegativeInteger"
-    Positive_integer = "xs:positiveInteger"
-    Unsigned_long = "xs:unsignedLong"
-    Unsigned_int = "xs:unsignedInt"
-    Unsigned_short = "xs:unsignedShort"
-    Unsigned_byte = "xs:unsignedByte"
-    Non_positive_integer = "xs:nonPositiveInteger"
-    Negative_integer = "xs:negativeInteger"
-    Lang_string = "rdf:langString"
 
 
 @reference_in_the_book(section=(5, 7, 12, 1))

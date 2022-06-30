@@ -1773,7 +1773,7 @@ class Asset_information(DBC):
     The asset may either represent an asset type or an asset instance.
     The asset has a globally unique identifier plus – if needed – additional domain
     specific (proprietary) identifiers. However, to support the corner case of very
-    first phase of lifecycle where a stabilised/constant global asset identifier does
+    first phase of lifecycle where a stabilised/constant_set global asset identifier does
     not already exist, the corresponding attribute
     :attr:`~global_asset_id` is optional.
 
