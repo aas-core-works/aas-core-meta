@@ -11,6 +11,8 @@ from typing import (
     Any,
     Union,
     overload,
+    Set,
+    List,
 )
 
 from icontract import require
@@ -131,25 +133,89 @@ class serialization:
         return func
 
 
-EnumT = TypeVar("EnumT", bound=Enum)
-
-
-class is_superset_of:
-    """Mark the contained enumeration subsets of the decoratee."""
-
-    def __init__(self, enums: Sequence[Type[EnumT]]) -> None:
-        """
-        Initialize with the given values.
-
-        :param enums:
-            The contained subset enumerations
-        """
-        self.enums = enums
-
-    def __call__(self, func: Type[T]) -> Type[T]:
-        return func
-
-
 def verification(thing: CallableT) -> CallableT:
     """Mark the function as a verification function used in contracts."""
     return thing
+
+
+# noinspection PyUnusedLocal,PyShadowingNames
+def constant_bool(
+    value: bool,
+    description: Optional[str] = None,
+    reference_in_the_book: Optional[reference_in_the_book] = None,
+) -> bool:
+    """Define a constant boolean in the meta-model."""
+    return value
+
+
+# noinspection PyUnusedLocal,PyShadowingNames
+def constant_int(
+    value: int,
+    description: Optional[str] = None,
+    reference_in_the_book: Optional[reference_in_the_book] = None,
+) -> int:
+    """Define a constant integer in the meta-model."""
+    return value
+
+
+# noinspection PyUnusedLocal,PyShadowingNames
+def constant_float(
+    value: float,
+    description: Optional[str] = None,
+    reference_in_the_book: Optional[reference_in_the_book] = None,
+) -> float:
+    """Define a constant floating-point number in the meta-model."""
+    return value
+
+
+# noinspection PyUnusedLocal,PyShadowingNames
+def constant_str(
+    value: str,
+    description: Optional[str] = None,
+    reference_in_the_book: Optional[reference_in_the_book] = None,
+) -> str:
+    """Define a constant string in the meta-model."""
+    return value
+
+
+# noinspection PyUnusedLocal,PyShadowingNames
+def constant_bytearray(
+    value: bytearray,
+    description: Optional[str] = None,
+    reference_in_the_book: Optional[reference_in_the_book] = None,
+) -> bytearray:
+    """Define a constant bytearray in the meta-model."""
+    return value
+
+
+# noinspection PyUnusedLocal,PyShadowingNames
+def constant_set(
+    values: Sequence[T],
+    description: Optional[str] = None,
+    reference_in_the_book: Optional[reference_in_the_book] = None,
+    superset_of: Optional[Sequence[Set[T]]] = None,
+) -> Set[T]:
+    """
+    Define a constant set in the meta-model.
+
+    The values need to be given as a list so that we can follow the order in
+    the generated code.
+    """
+    result = set(values)
+
+    if superset_of is not None:
+        for i, subset in enumerate(superset_of):
+            offending_values = []  # type: List[T]
+            for value in subset:
+                if value not in result:
+                    offending_values.append(value)
+
+            if len(offending_values) > 0:
+                offending_values_str = ",\n".join(map(str, offending_values))
+                raise AssertionError(
+                    f"The following values "
+                    f"from the subset {i + 1} (index starts from 1) "
+                    f"are not contained in the values:\n{offending_values_str}"
+                )
+
+    return result
