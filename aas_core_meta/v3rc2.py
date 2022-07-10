@@ -3785,9 +3785,107 @@ class Reference_types(Enum):
     """
 
 
-# TODO (mristin, 2022-05-25): formalize AASd-122 to 128
-
 # fmt: off
+@invariant(
+    lambda self:
+    not (
+        self.type == Reference_types.Model_reference
+        and len(self.keys) > 2
+    ) or (
+        all(
+            not (self.keys[i].type == Key_types.Submodel_element_list)
+            or matches_xs_positive_integer(self.keys[i + 1].value)
+            for i in range(0, len(self.keys) - 1)
+        )
+    ),
+    "Constraint AASd-128: For model references, the value of a key preceded by a key "
+    "with type Submodel element list is an integer number denoting the position in "
+    "the array of the submodel element list."
+)
+# NOTE (mristin, 2022-07-10):
+# We can write AASd-127 in this simpler form assuming that AASd-126 ensures that
+# only the last key can be a fragment reference.
+@invariant(
+    lambda self:
+    not (
+        self.type == Reference_types.Model_reference
+        and len(self.keys) > 1
+        and self.keys[-1].type == Key_types.Fragment_reference
+    ) or (
+      self.keys[-2].type == Key_types.File
+      or self.keys[-2].type == Key_types.Blob
+    ),
+    "Constraint AASd-127: For model references with more than one key, a key with type "
+    "Fragment reference shall be preceded by a key with type File or Blob."
+)
+@invariant(
+    lambda self:
+    not (
+            self.type == Reference_types.Model_reference
+            and len(self.keys) > 1
+    )
+    or (
+        all(
+            not (self.keys[i].type in Generic_fragment_keys)
+            for i in range(0, len(self.keys) - 1)
+        )
+    ),
+    "Constraint AASd-126: For model references with more than one key, the type of the "
+    "last key in the reference key chain may be one of Generic fragment keys or "
+    "no key at all shall have a value out of Generic fragment keys."
+)
+@invariant(
+    lambda self:
+    not (self.type == Reference_types.Model_reference and len(self.keys) > 1)
+    or (
+        all(
+            self.keys[i].type in Fragment_keys
+            for i in range(1, len(self.keys))
+        )
+    ),
+    "Constraint AASd-125: For model references with more than one key, the type of "
+    "the keys following the first key shall be one of Fragment keys."
+)
+@invariant(
+    lambda self:
+    not (
+        self.type == Reference_types.Global_reference
+        and len(self.keys) > 0
+    )
+    or (
+        self.keys[-1].type in Generic_globally_identifiables
+        or self.keys[-1].type in Generic_fragment_keys
+    ),
+    "Constraint AASd-124: For global references the last key shall be either one of "
+    "Generic globally identifiables or one of Generic fragment keys."
+)
+@invariant(
+    lambda self:
+    not (
+        self.type == Reference_types.Model_reference
+        and len(self.keys) > 0
+    )
+    or self.keys[0].type in AAS_identifiables,
+    "Constraint AASd-123: For model references the type of the first key shall be one "
+    "of AAS identifiables"
+)
+@invariant(
+    lambda self:
+    not (
+        self.type == Reference_types.Global_reference
+        and len(self.keys) > 0
+    )
+    or self.keys[0].type in Generic_globally_identifiables,
+    "Constraint AASd-122: For global references the type of the first key shall be one "
+    "of Generic globally identifiables."
+)
+@invariant(
+    lambda self:
+    not (len(self.keys) > 0)
+    or self.keys[0].type in Globally_identifiables,
+    "Constraint AASd-121: For References the type of the first key shall be one of "
+    "Globally identifiables."
+)
 @invariant(lambda self: len(self.keys) >= 1)
 @reference_in_the_book(section=(5, 7, 10, 2))
 # fmt: on
@@ -4027,6 +4125,12 @@ Generic_fragment_keys: Set[Key_types] = constant_set(
     description="""\
 Enumeration of all identifiable elements within an asset administration shell.""",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=9),
+)
+
+assert Key_types.Fragment_reference in Generic_fragment_keys, (
+    "We assume that fragment reference is in the generic fragment keys so that "
+    "AASd-126 ensures that a key of type Fragment reference can only be the last key "
+    "in the reference. This is necessary for our simpler formulation of AASd-127."
 )
 
 Generic_globally_identifiables: Set[Key_types] = constant_set(
