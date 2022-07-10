@@ -41,7 +41,7 @@ setup(
         "dev": [
             "black==22.3.0",
             "mypy==0.910",
-            "aas-core-codegen==0.0.10",
+            "aas-core-codegen@git+https://github.com/aas-core-works/aas-core-codegen@6b55dbc#egg=aas-core-codegen",
             "astpretty==3.0.0"
         ],
     },
