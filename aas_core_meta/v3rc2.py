@@ -1070,39 +1070,27 @@ def matches_global_asset_id_literally(text: str) -> bool:
 
 
 @verification
-@implementation_specific
 def is_model_reference_to(reference: "Reference", expected_type: "Key_types") -> bool:
-    """Check that the target of the model reference matches the ``expected_type``."""
-    # NOTE (mristin, 2022-03-28):
-    # This implementation is given here only as reference. It needs to be adapted
-    # for each implementation separately.
-
+    """
+    Check that the target of the model reference matches the :paramref:`expected_type`.
+    """
     # fmt: off
     return (
         reference.type == Reference_types.Model_reference
-        and (
-            len(reference.keys) != 0
-            or reference.keys[-1].type == expected_type
-        )
+        and len(reference.keys) != 0
+        and reference.keys[-1].type == expected_type
     )
     # fmt: on
 
 
 @verification
-@implementation_specific
 def is_model_reference_to_referable(reference: "Reference") -> bool:
     """Check that the target of the reference matches a :const:`.AAS_referables`."""
-    # NOTE (mristin, 2022-03-28):
-    # This implementation is given here only as reference. It needs to be adapted
-    # for each implementation separately.
-
     # fmt: off
     return (
         reference.type == Reference_types.Model_reference
-        and (
-            len(reference.keys) != 0
-            or reference.keys[-1].type in AAS_referables
-        )
+        and len(reference.keys) != 0
+        and reference.keys[-1].type in AAS_referables
     )
     # fmt: on
 
