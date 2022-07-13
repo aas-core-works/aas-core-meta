@@ -31,13 +31,31 @@ def call_and_report(
 
     Return 1 if there is an error and 0 otherwise.
     """
-    exit_code = subprocess.call(cmd, cwd=str(cwd) if cwd is not None else None, env=env)
-
-    if exit_code != 0:
-        cmd_str = " ".join(shlex.quote(part) for part in cmd)
-        print(
-            f"Failed to {verb} with exit code {exit_code}: {cmd_str}", file=sys.stderr
+    exit_code = None  # type: Optional[int]
+    observed_exception = None  # type: Optional[Exception]
+    try:
+        exit_code = subprocess.call(
+            cmd, cwd=str(cwd) if cwd is not None else None, env=env
         )
+    except FileNotFoundError as exception:
+        observed_exception = exception
+
+    if (exit_code is not None and exit_code != 0) or observed_exception is not None:
+        cmd_str = " ".join(shlex.quote(part) for part in cmd)
+
+        if exit_code != 0:
+            print(
+                f"Failed to {verb} with exit code {exit_code}: {cmd_str}",
+                file=sys.stderr,
+            )
+        elif observed_exception is not None:
+            print(
+                f"Failed to {verb}: {cmd_str}; with exception: {observed_exception}",
+                file=sys.stderr,
+            )
+            return -1
+        else:
+            raise AssertionError("Unexpected executiong path")
 
     return exit_code
 
