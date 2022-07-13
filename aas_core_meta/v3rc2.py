@@ -1661,6 +1661,16 @@ class Has_kind(DBC):
 
 
 @abstract
+@invariant(
+    lambda self: not (self.data_specifications is not None)
+    or (
+        all(
+            data_specification.type == Reference_types.Global_reference
+            for data_specification in self.data_specifications
+        )
+    ),
+    "References to data specifications are global references.",
+)
 @reference_in_the_book(section=(5, 7, 2, 9))
 class Has_data_specification(DBC):
     """
