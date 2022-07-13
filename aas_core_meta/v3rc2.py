@@ -4431,19 +4431,12 @@ class Environment:
     Concept description
     """
 
-    data_specifications: Optional[List[Data_specification]]
-    """
-    Data specification
-    """
-
     def __init__(
         self,
         asset_administration_shells: Optional[List[Asset_administration_shell]] = None,
         submodels: Optional[List[Submodel]] = None,
         concept_descriptions: Optional[List[Concept_description]] = None,
-        data_specifications: Optional[List[Data_specification]] = None,
     ) -> None:
         self.asset_administration_shells = asset_administration_shells
         self.submodels = submodels
         self.concept_descriptions = concept_descriptions
-        self.data_specifications = data_specifications
