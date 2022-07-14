@@ -1317,6 +1317,7 @@ class Id_short(str, DBC):
     "then there shall be also a main semantic ID."
 )
 # fmt: on
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 @reference_in_the_book(section=(5, 7, 2, 6))
 class Has_semantics(DBC):
     """
@@ -1367,6 +1368,7 @@ class Has_semantics(DBC):
     )
 )
 # fmt: on
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 @reference_in_the_book(section=(5, 7, 2, 1), index=1)
 class Extension(Has_semantics):
     """
@@ -1437,6 +1439,7 @@ class Extension(Has_semantics):
     "Constraint AASd-077: The name of an extension within Has-Extensions "
     "needs to be unique."
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Has_extensions(DBC):
     """
@@ -1459,7 +1462,8 @@ class Has_extensions(DBC):
 # fmt: off
 @abstract
 @reference_in_the_book(section=(5, 7, 2, 2))
-@serialization(with_model_type=True)
+@serialization(
+    xml_namespace="https://www.admin-shell.io/aas/3/0/RC02", with_model_type=True)
 # fmt: on
 class Referable(Has_extensions):
     """
@@ -1562,6 +1566,7 @@ class Referable(Has_extensions):
 
 @abstract
 @reference_in_the_book(section=(5, 7, 2, 3))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Identifiable(Referable):
     """An element that has a globally unique identifier."""
 
@@ -1604,6 +1609,7 @@ class Identifiable(Referable):
 
 
 @reference_in_the_book(section=(5, 7, 2, 4), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Modeling_kind(Enum):
     """Enumeration for denoting whether an element is a template or an instance."""
 
@@ -1635,6 +1641,7 @@ class Modeling_kind(Enum):
 
 @abstract
 @reference_in_the_book(section=(5, 7, 2, 4))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Has_kind(DBC):
     """
     An element with a kind is an element that can either represent a template or an
@@ -1672,6 +1679,7 @@ class Has_kind(DBC):
     "References to data specifications are global references.",
 )
 @reference_in_the_book(section=(5, 7, 2, 9))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Has_data_specification(DBC):
     """
     Element that can be extended by using data specification templates.
@@ -1703,6 +1711,7 @@ class Has_data_specification(DBC):
     "no version there is no revision either. Revision is optional."
 )
 @reference_in_the_book(section=(5, 7, 2, 5))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Administrative_information(Has_data_specification):
     """
@@ -1744,7 +1753,8 @@ class Administrative_information(Has_data_specification):
     "the same type."
 )
 @reference_in_the_book(section=(5, 7, 2, 7))
-@serialization(with_model_type=True)
+@serialization(
+    xml_namespace="https://www.admin-shell.io/aas/3/0/RC02", with_model_type=True)
 # fmt: on
 class Qualifiable(DBC):
     """
@@ -1774,6 +1784,7 @@ class Qualifiable(DBC):
 
 
 @reference_in_the_book(section=(5, 7, 2, 8), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Qualifier_kind(Enum):
     """
     Enumeration for kinds of qualifiers.
@@ -1810,6 +1821,7 @@ class Qualifier_kind(Enum):
     "in value type.",
 )
 @reference_in_the_book(section=(5, 7, 2, 8))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Qualifier(Has_semantics):
     """
@@ -1913,6 +1925,7 @@ class Qualifier(Has_semantics):
         )
     )
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Asset_administration_shell(Identifiable, Has_data_specification):
     """An asset administration shell."""
@@ -1968,6 +1981,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         self.submodels = submodels
 
 
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 @reference_in_the_book(section=(5, 7, 4), index=0)
 class Asset_information(DBC):
     """
@@ -2035,6 +2049,7 @@ class Asset_information(DBC):
 
 
 @reference_in_the_book(section=(5, 7, 4), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Resource(DBC):
     """
     Resource represents an address to a file (a locator). The value is an URI that
@@ -2065,6 +2080,7 @@ class Resource(DBC):
 
 
 @reference_in_the_book(section=(5, 7, 4), index=2)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Asset_kind(Enum):
     """
     Enumeration for denoting whether an asset is a type asset or an instance asset.
@@ -2097,6 +2113,7 @@ class Asset_kind(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 4), index=3)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Specific_asset_id(Has_semantics):
     """
     A specific asset ID describes a generic supplementary identifying attribute of the
@@ -2171,6 +2188,7 @@ class Specific_asset_id(Has_semantics):
     ),
     "ID-shorts need to be defined for all the submodel elements."
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Submodel(
     Identifiable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
@@ -2249,6 +2267,7 @@ class Submodel(
     "element shall be of kind template."
 )
 @reference_in_the_book(section=(5, 7, 6))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Submodel_element(
     Referable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
@@ -2298,6 +2317,7 @@ class Submodel_element(
 
 
 @reference_in_the_book(section=(5, 7, 7, 14))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two elements
@@ -2349,6 +2369,7 @@ class Relationship_element(Submodel_element):
         self.second = second
 
 
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class AAS_submodel_elements(Enum):
     """Enumeration of all possible elements of a :class:`.Submodel_element_list`."""
 
@@ -2436,6 +2457,7 @@ class AAS_submodel_elements(Enum):
     "Constraint AASd-107: If a first level child element has a semantic ID "
     "it shall be identical to semantic ID list element."
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Submodel_element_list(Submodel_element):
     """
@@ -2572,6 +2594,7 @@ class Submodel_element_list(Submodel_element):
     ),
     "ID-shorts need to be defined for all the elements."
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Submodel_element_collection(Submodel_element):
     """
@@ -2638,6 +2661,7 @@ Categories for :class:.Data_element` as defined in :constraintref:`AASd-090`""",
     "of the following values: CONSTANT, PARAMETER or VARIABLE",
 )
 @reference_in_the_book(section=(5, 7, 7, 5))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Data_element(Submodel_element):
     """
@@ -2699,6 +2723,7 @@ class Data_element(Submodel_element):
     not (self.value is not None)
     or value_consistent_with_xsd_type(self.value, self.value_type)
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Property(Data_element):
     """
@@ -2768,6 +2793,7 @@ class Property(Data_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 9))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Multi_language_property(Data_element):
     """
     A property is a data element that has a multi-language value.
@@ -2839,6 +2865,7 @@ class Multi_language_property(Data_element):
     not (self.max is not None)
     or value_consistent_with_xsd_type(self.max, self.value_type)
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Range(Data_element):
     """
@@ -2902,6 +2929,7 @@ class Range(Data_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 15))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Reference_element(Data_element):
     """
     A reference element is a data element that defines a logical reference to another
@@ -2950,6 +2978,7 @@ class Reference_element(Data_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 3))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Blob(Data_element):
     """
     A :class:`.Blob` is a data element that represents a file that is contained with its
@@ -3014,6 +3043,7 @@ class Blob(Data_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 8))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class File(Data_element):
     """
     A File is a data element that represents an address to a file (a locator).
@@ -3071,6 +3101,7 @@ class File(Data_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 1))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Annotated_relationship_element(Relationship_element):
     """
     An annotated relationship element is a relationship element that can be annotated
@@ -3121,6 +3152,7 @@ class Annotated_relationship_element(Relationship_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 6), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Entity_type(Enum):
     """
     Enumeration for denoting whether an entity is a self-managed entity or a co-managed
@@ -3165,6 +3197,7 @@ class Entity_type(Enum):
     "specific asset ID must be set if entity type is set to 'SelfManagedEntity'. "
     "They are not existing otherwise."
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Entity(Submodel_element):
     """
@@ -3243,6 +3276,7 @@ class Entity(Submodel_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 2), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Direction(Enum):
     """
     Direction
@@ -3260,6 +3294,7 @@ class Direction(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 7, 2), index=2)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class State_of_event(Enum):
     """
     State of an event
@@ -3286,6 +3321,7 @@ class State_of_event(Enum):
     is_model_reference_to_referable(self.source)
 )
 @reference_in_the_book(section=(5, 7, 7, 2), index=3)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Event_payload(DBC):
     """Defines the necessary information of an event instance sent out or received."""
@@ -3372,6 +3408,7 @@ class Event_payload(DBC):
 
 @abstract
 @reference_in_the_book(section=(5, 7, 7, 7))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Event_element(Submodel_element):
     """
     An event element.
@@ -3424,6 +3461,7 @@ class Event_element(Submodel_element):
     or self.max_interval is None,
     "Max. interval is not applicable for input direction"
 )
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Basic_event_element(Event_element):
     """
@@ -3550,6 +3588,7 @@ class Basic_event_element(Event_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 10))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Operation(Submodel_element):
     """
     An operation is a submodel element with input and output variables.
@@ -3608,6 +3647,7 @@ class Operation(Submodel_element):
 
 
 @reference_in_the_book(section=(5, 7, 7, 10), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Operation_variable(DBC):
     """
     The value of an operation variable is a submodel element that is used as input
@@ -3624,6 +3664,7 @@ class Operation_variable(DBC):
 
 
 @reference_in_the_book(section=(5, 7, 7, 4))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Capability(Submodel_element):
     """
     A capability is the implementation-independent description of the potential of an
@@ -3696,6 +3737,7 @@ Categories for :class:.Concept_description` as defined in :constraintref:`AASd-0
     "the following categories: 'VALUE', 'PROPERTY', 'REFERENCE', 'DOCUMENT', "
     "'CAPABILITY',; 'RELATIONSHIP', 'COLLECTION', 'FUNCTION', 'EVENT', 'ENTITY', "
     "'APPLICATION_CLASS', 'QUALIFIER', 'VIEW'.")
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Concept_description(Identifiable, Has_data_specification):
     """
@@ -3767,6 +3809,7 @@ class Concept_description(Identifiable, Has_data_specification):
 
 
 @reference_in_the_book(section=(5, 7, 10, 2), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Reference_types(Enum):
     """
     ReferenceTypes
@@ -3886,6 +3929,7 @@ class Reference_types(Enum):
 )
 @invariant(lambda self: len(self.keys) >= 1)
 @reference_in_the_book(section=(5, 7, 10, 2))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 # fmt: on
 class Reference(DBC):
     """
@@ -4007,6 +4051,7 @@ class Reference(DBC):
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Key(DBC):
     """A key is a reference to an element by its ID."""
 
@@ -4031,6 +4076,7 @@ class Key(DBC):
 
 
 @reference_in_the_book(section=(5, 7, 10, 3), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Key_types(Enum):
     """Enumeration of different key value types within a key."""
 
@@ -4272,6 +4318,7 @@ Fragment_keys: Set[Key_types] = constant_set(
 
 
 @reference_in_the_book(section=(5, 7, 11, 3))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Data_type_def_XSD(Enum):
     """
     Enumeration listing all xsd anySimpleTypes
@@ -4313,6 +4360,7 @@ class Data_type_def_XSD(Enum):
 
 
 @reference_in_the_book(section=(5, 7, 12, 1))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Lang_string(DBC):
     """Strings with language tags"""
 
@@ -4330,6 +4378,7 @@ class Lang_string(DBC):
 @reference_in_the_book(section=(5, 7, 12, 2))
 @invariant(lambda self: lang_strings_have_unique_languages(self.lang_strings))
 @invariant(lambda self: len(self.lang_strings) >= 1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Lang_string_set(DBC):
     """
     Array of elements of type langString
@@ -4351,6 +4400,7 @@ class Lang_string_set(DBC):
 
 
 @reference_in_the_book(section=(6, 2, 1, 1), index=1)
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Data_specification_content:
     """
     Data specification content is part of a data specification template and defines
@@ -4360,6 +4410,7 @@ class Data_specification_content:
 
 
 @reference_in_the_book(section=(6, 2, 1, 1))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Data_specification:
     """
     Data Specification Template
@@ -4405,6 +4456,7 @@ class Data_specification:
 
 
 @reference_in_the_book(section=(5, 7, 9))
+@serialization(xml_namespace="https://www.admin-shell.io/aas/3/0/RC02")
 class Environment:
     """
     Container for the sets of different identifiables.

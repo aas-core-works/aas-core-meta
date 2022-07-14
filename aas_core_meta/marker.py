@@ -118,15 +118,26 @@ class reference_in_the_book:
 class serialization:
     """Mark the settings for the general serialization schemas."""
 
-    def __init__(self, with_model_type: bool) -> None:
+    def __init__(
+            self,
+            xml_namespace: str,
+            with_model_type: Optional[bool] = None,
+    ) -> None:
         """
         Initialize with the given values.
+
+        :param xml_namespace:
+            Specify the XML namespace the de/serialization of the class lives in.
 
         :param with_model_type:
             The serialization needs to specify the concrete type since the given
             type is abstract and the implemented de-serializations need to know the
             concrete type up-front.
+
+            This setting is inherited to the descendants, unless they specify their
+            own value.
         """
+        self.xml_namespace = xml_namespace
         self.with_model_type = with_model_type
 
     def __call__(self, func: Type[T]) -> Type[T]:
