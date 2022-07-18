@@ -4350,7 +4350,49 @@ class Lang_string_set(DBC):
         self.lang_strings = lang_strings
 
 
+@reference_in_the_book(section=(5, 7, 9))
+class Environment:
+    """
+    Container for the sets of different identifiables.
+
+    .. note::
+
+        w.r.t. file exchange: There is exactly one environment independent on how many
+        files the contained elements are split. If the file is split then there
+        shall be no element with the same identifier in two different files.
+    """
+
+    asset_administration_shells: Optional[List[Asset_administration_shell]]
+    """
+    Asset administration shell
+    """
+
+    submodels: Optional[List[Submodel]]
+    """
+    Submodel
+    """
+
+    concept_descriptions: Optional[List[Concept_description]]
+    """
+    Concept description
+    """
+
+    def __init__(
+        self,
+        asset_administration_shells: Optional[List[Asset_administration_shell]] = None,
+        submodels: Optional[List[Submodel]] = None,
+        concept_descriptions: Optional[List[Concept_description]] = None,
+    ) -> None:
+        self.asset_administration_shells = asset_administration_shells
+        self.submodels = submodels
+        self.concept_descriptions = concept_descriptions
+
+
+# region DataSpecifications
+
+
 @reference_in_the_book(section=(6, 2, 1, 1), index=1)
+@serialization(with_model_type=True)
 class Data_specification_content:
     """
     Data specification content is part of a data specification template and defines
@@ -4404,39 +4446,642 @@ class Data_specification:
         self.description = description
 
 
-@reference_in_the_book(section=(5, 7, 9))
-class Environment:
-    """
-    Container for the sets of different identifiables.
+@reference_in_the_book(
+    section=(6, 3, 2),
+    index=1,
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+)
+class Data_type_iec_61360(Enum):
+    Date = "DATE"
+    String = "STRING"
+    String_translatable = "STRING_TRANSLATABLE"
+    Integer_measure = "INTEGER_MEASURE"
+    Integer_count = "INTEGER_COUNT"
+    Integer_currency = "INTEGER_CURRENCY"
+    Real_measure = "REAL_MEASURE"
+    Real_count = "REAL_COUNT"
+    Real_currency = "REAL_CURRENCY"
+    Boolean = "BOOLEAN"
+    URL = "URL"
+    Rational = "RATIONAL"
+    Rational_measure = "RATIONAL_MEASURE"
+    Time = "TIME"
+    Timestamp = "TIMESTAMP"
 
-    .. note::
 
-        w.r.t. file exchange: There is exactly one environment independent on how many
-        files the contained elements are split. If the file is split then there
-        shall be no element with the same identifier in two different files.
+@reference_in_the_book(
+    section=(6, 3, 2),
+    index=4,
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+)
+class Level_type(Enum):
+    Min = "Min"
+    Max = "Max"
+    Nom = "Nom"
+    Typ = "Typ"
+
+
+@reference_in_the_book(
+    section=(6, 3, 2),
+    index=3,
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+)
+class Value_reference_pair(DBC):
+    """
+    A value reference pair within a value list. Each value has a global unique id
+    defining its semantic.
     """
 
-    asset_administration_shells: Optional[List[Asset_administration_shell]]
+    value: str
     """
-    Asset administration shell
-    """
-
-    submodels: Optional[List[Submodel]]
-    """
-    Submodel
+    The value of the referenced concept definition of the value in valueId.
     """
 
-    concept_descriptions: Optional[List[Concept_description]]
+    value_id: "Reference"
     """
-    Concept description
+    Global unique id of the value.
+    """
+
+    def __init__(self, value: str, value_id: "Reference") -> None:
+        self.value = value
+        self.value_id = value_id
+
+
+@invariant(lambda self: len(self.value_reference_pair_types) >= 1)
+@reference_in_the_book(
+    section=(6, 3, 2),
+    index=2,
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+)
+class Value_list(DBC):
+    """
+    A set of value reference pairs.
+    """
+
+    value_reference_pair_types: List["Value_reference_pair"]
+    """
+    A pair of a value together with its global unique id.
+    """
+
+    def __init__(
+        self, value_reference_pair_types: List["Value_reference_pair"]
+    ) -> None:
+        self.value_reference_pair_types = value_reference_pair_types
+
+
+@reference_in_the_book(
+    section=(6, 3, 2),
+    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+)
+@serialization(with_model_type=True)
+class Data_specification_iec_61360(Data_specification_content):
+    """
+    Content of data specification template for concept descriptions conformant to
+    IEC 61360.
+    Although the IEC61360 attributes listed in this template are defined for properties
+    and values and value lists only it is also possible to use the template for other
+    definition This is shown in the tables Table 7, Table 8, Table 9 and Table 10.
+
+    :constraint AASd-075:
+        For all ConceptDescriptions using data specification template
+        IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
+        values for the attributes not being marked as mandatory or optional in tables
+        Table 7, Table 8, Table 9 and Table 10.depending on its category are ignored and
+        handled as undefined.
+    """
+
+    preferred_name: "Lang_string_set"
+    """
+    Preferred name
+
+    :constraint AASd-076:
+        For all ConceptDescriptions using data specification template
+        IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
+        at least a preferred name in English shall be defined.
+    """
+
+    short_name: Optional["Lang_string_set"]
+    """
+    Short name
+    """
+
+    unit: Optional[Non_empty_string]
+    """
+    Unit
+    """
+
+    unit_id: Optional["Reference"]
+    """
+    Unique unit id
+    """
+
+    source_of_definition: Optional[Non_empty_string]
+    """
+    Source of definition
+    """
+
+    symbol: Optional[Non_empty_string]
+    """
+    Symbol
+    """
+
+    data_type: Optional["Data_type_iec_61360"]
+    """
+    Data Type
+
+    :constraint AASd-070:
+        For a ConceptDescription with category PROPERTY or VALUE using
+        data specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        DataSpecificationIEC61360/dataType is mandatory and shall be defined.
+
+    :constraint AASd-071:
+        For a ConceptDescription with category REFERENCE using data
+        specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        DataSpecificationIEC61360/dataType is STRING by default.
+
+    :constraint AASd-072:
+        For a ConceptDescription with category DOCUMENT using data
+        specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        DataSpecificationIEC61360/dataType shall be one of the following values:
+        STRING or URL.
+
+    :constraint AASd-073:
+        For a ConceptDescription with category QUALIFIER using data
+        specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        DataSpecificationIEC61360/dataType is mandatory and shall be defined.
+    """
+
+    definition: Optional["Lang_string_set"]
+    """
+    Definition in different languages
+
+    :constraint AASd-074:
+        For all ConceptDescriptions except for ConceptDescriptions of
+        category VALUE using data specification template IEC61360
+        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
+        DataSpecificationIEC61360/definition is mandatory and shall be defined at least
+        in English.
+    """
+
+    value_format: Optional[Non_empty_string]
+    """
+    Value Format
+    """
+
+    value_list: Optional["Value_list"]
+    """
+    List of allowed values
+    """
+
+    value: Optional[str]
+    """
+    Value
+    """
+
+    value_id: Optional["Reference"]
+    """
+    Unique value id
+    """
+
+    level_type: Optional["Level_type"]
+    """
+    Set of levels.
     """
 
     def __init__(
         self,
-        asset_administration_shells: Optional[List[Asset_administration_shell]] = None,
-        submodels: Optional[List[Submodel]] = None,
-        concept_descriptions: Optional[List[Concept_description]] = None,
+        preferred_name: "Lang_string_set",
+        short_name: Optional["Lang_string_set"] = None,
+        unit: Optional[Non_empty_string] = None,
+        unit_id: Optional["Reference"] = None,
+        source_of_definition: Optional[Non_empty_string] = None,
+        symbol: Optional[Non_empty_string] = None,
+        data_type: Optional["Data_type_iec_61360"] = None,
+        definition: Optional["Lang_string_set"] = None,
+        value_format: Optional[Non_empty_string] = None,
+        value_list: Optional["Value_list"] = None,
+        value: Optional[str] = None,
+        value_id: Optional["Reference"] = None,
+        level_type: Optional["Level_type"] = None,
     ) -> None:
-        self.asset_administration_shells = asset_administration_shells
-        self.submodels = submodels
-        self.concept_descriptions = concept_descriptions
+        self.preferred_name = preferred_name
+        self.short_name = short_name
+        self.unit = unit
+        self.unit_id = unit_id
+        self.source_of_definition = source_of_definition
+        self.symbol = symbol
+        self.data_type = data_type
+        self.definition = definition
+        self.value_format = value_format
+        self.value_list = value_list
+        self.value = value
+        self.value_id = value_id
+        self.level_type = level_type
+
+
+@reference_in_the_book(
+    section=(6, 4, 2, 1),
+    fragment="4.8.3 Predefined Templates for Unit Concept Descriptions",
+)
+@serialization(with_model_type=True)
+class Data_specification_physical_unit(Data_specification_content):
+    # TODO (sadu, 2021-11-17): No table for class in the book
+
+    unit_name: Non_empty_string
+    """
+    TODO
+    """
+
+    unit_symbol: Non_empty_string
+    """
+    TODO
+    """
+
+    definition: "Lang_string_set"
+    """
+    TODO
+    """
+
+    SI_notation: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    SI_name: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    DIN_notation: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    ECE_name: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    ECE_code: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    NIST_name: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    source_of_definition: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    conversion_factor: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    registration_authority_id: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    supplier: Optional[Non_empty_string]
+    """
+    TODO
+    """
+
+    def __init__(
+        self,
+        unit_name: Non_empty_string,
+        unit_symbol: Non_empty_string,
+        definition: "Lang_string_set",
+        SI_notation: Optional[Non_empty_string] = None,
+        SI_name: Optional[Non_empty_string] = None,
+        DIN_notation: Optional[Non_empty_string] = None,
+        ECE_name: Optional[Non_empty_string] = None,
+        ECE_code: Optional[Non_empty_string] = None,
+        NIST_name: Optional[Non_empty_string] = None,
+        source_of_definition: Optional[Non_empty_string] = None,
+        conversion_factor: Optional[Non_empty_string] = None,
+        registration_authority_id: Optional[Non_empty_string] = None,
+        supplier: Optional[Non_empty_string] = None,
+    ) -> None:
+        self.unit_name = unit_name
+        self.unit_symbol = unit_symbol
+        self.definition = definition
+        self.SI_notation = SI_notation
+        self.SI_name = SI_name
+        self.DIN_notation = DIN_notation
+        self.ECE_name = ECE_name
+        self.ECE_code = ECE_code
+        self.NIST_name = NIST_name
+        self.source_of_definition = source_of_definition
+        self.conversion_factor = conversion_factor
+        self.registration_authority_id = registration_authority_id
+        self.supplier = supplier
+
+
+# region security
+
+
+@reference_in_the_book(section=(7, 4, 2))
+class Security(DBC):
+    """
+    Container for security relevant information of the AAS.
+    """
+
+    access_control_policy_points: "Access_control_policy_points"
+    """
+    Access control policy points of the AAS.
+    """
+
+    def __init__(
+        self,
+        access_control_policy_points: "Access_control_policy_points",
+    ) -> None:
+        self.access_control_policy_points = access_control_policy_points
+
+
+@reference_in_the_book(section=(7, 4, 3))
+class Access_control_policy_points(DBC):
+    """
+    Container for access control policy points.
+    """
+
+    policy_administration_point: "Access_control"
+    """
+    The access control administration policy point of the AAS.
+    """
+
+    def __init__(
+        self,
+        policy_administration_point: "Access_control",
+    ) -> None:
+        self.policy_administration_point = policy_administration_point
+
+
+@reference_in_the_book(section=(7, 4, 4))
+class Access_control(DBC):
+    """
+    Access Control defines the local access control policy administration point.
+    Access Control has the major task to define the access permission rules.
+    """
+
+    access_permission_rules: Optional[List["Access_permission_rule"]]
+    """
+    Access permission rules of the AAS describing the rights assigned to (already
+    authenticated) subjects to access elements of the AAS.
+    """
+
+    selectable_subject_attributes: Optional[Reference]
+    """
+    Reference to a submodel defining the authenticated subjects that are configured for
+    the AAS. They are selectable by the access permission rules to assign permissions
+    to the subjects.
+
+    Default: reference to the submodel referenced via defaultSubjectAttributes.
+    """
+
+    default_subject_attributes: Reference
+    """
+    Reference to a submodel defining the default subjects’ attributes for the AAS that
+    can be used to describe access permission rules.
+
+    The submodel is of kind=Template.
+    """
+
+    selectable_permissions: Optional[Reference]
+    """
+    Reference to a submodel defining which permissions can be assigned to the subjects.
+
+    Default: reference to the submodel referenced via defaultPermissions
+    """
+
+    default_permissions: Reference
+    """
+    Reference to a submodel defining the default permissions for the AAS.
+    """
+
+    selectable_environment_attributes: Optional[Reference]
+    """
+    Reference to a submodel defining which environment attributes can be accessed
+    *via* the permission rules defined for the AAS, i.e. attributes that are
+    not describing the asset itself.
+
+    Default: reference to the submodel referenced via defaultEnvironmentAttributes
+    """
+
+    default_environment_attributes: Optional[Reference]
+    """
+    Reference to a submodel defining default environment attributes, *i.e.* attributes
+    that are not describing the asset itself.
+
+    The submodel is of kind=Template.
+
+    At the same type the values of these environment attributes need to be accessible
+    when evaluating the access permission rules. This is realized as a policy
+    information point.
+    """
+
+    def __init__(
+        self,
+        default_subject_attributes: Reference,
+        default_permissions: Reference,
+        access_permission_rules: Optional[List["Access_permission_rule"]] = None,
+        selectable_subject_attributes: Optional[Reference] = None,
+        selectable_permissions: Optional[Reference] = None,
+        selectable_environment_attributes: Optional[Reference] = None,
+        default_environment_attributes: Optional[Reference] = None,
+    ) -> None:
+        self.default_subject_attributes = default_subject_attributes
+        self.selectable_permissions = selectable_permissions
+        self.default_permissions = default_permissions
+        self.access_permission_rules = access_permission_rules
+        self.selectable_subject_attributes = selectable_subject_attributes
+        self.selectable_environment_attributes = selectable_environment_attributes
+        self.default_environment_attributes = default_environment_attributes
+
+
+@abstract
+@reference_in_the_book(section=(4, 7, 6))
+@serialization(with_model_type=True)
+class Formula(DBC):
+    """
+    A formula is used to describe constraints by a logical expression.
+    """
+
+
+@reference_in_the_book(section=(7, 4, 5))
+class Access_permission_rule(DBC):
+    """
+    Table that defines access permissions per authenticated subject for a set of objects
+    (referable elements).
+    """
+
+    target_subject_attributes: "Subject_attributes"
+    """
+    Target subject attributes that need to be fulfilled by accessing subject to get the
+    permissions defined by this rule.
+    """
+
+    permissions_per_object: Optional[List["Permissions_per_object"]]
+    """
+    Set of object-permission pairs that define the permissions per object within
+    the access permission rule.
+    """
+
+    constraint: Optional[Formula]
+    """
+    Constraint that needs to be validated to true so that access permission rule holds.
+    """
+
+    def __init__(
+        self,
+        target_subject_attributes: "Subject_attributes",
+        permissions_per_object: Optional[List["Permissions_per_object"]] = None,
+        constraint: Optional[Formula] = None,
+    ) -> None:
+        self.target_subject_attributes = target_subject_attributes
+        self.permissions_per_object = permissions_per_object
+        self.constraint = constraint
+
+
+@reference_in_the_book(section=(7, 4, 5), index=1)
+class Permissions_per_object(DBC):
+    """
+    Table that defines access permissions for a specified object. The object is any
+    referable element in the AAS. Additionally, object attributes can be defined that
+    further specify the kind of object the permissions apply to.
+    """
+
+    object: Reference
+    """
+    Element to which permission shall be assigned.
+    """
+
+    target_object_attributes: Optional["Object_attributes"]
+    """
+    Target object attributes that need to be fulfilled so that the access permissions
+    apply to the accessing subject.
+    """
+
+    permissions: Optional[List["Permission"]]
+    """
+    Permissions assigned to the object.
+    The permissions hold for all subjects as specified in the access permission rule."
+    """
+
+    def __init__(
+        self,
+        object: Reference,
+        target_object_attributes: Optional["Object_attributes"] = None,
+        permissions: Optional[List["Permission"]] = None,
+    ) -> None:
+        self.object = object
+        self.target_object_attributes = target_object_attributes
+        self.permissions = permissions
+
+
+@reference_in_the_book(section=(7, 4, 5), index=2)
+@invariant(lambda self: len(self.object_attributes) >= 1)
+class Object_attributes(DBC):
+    """
+    A set of data elements that describe object attributes. These attributes need to
+    refer to a data element within an existing submodel.
+    """
+
+    object_attributes: List[Reference]
+    """
+    Reference to a data element that further classifies an object.
+    """
+
+    def __init__(self, object_attributes: List[Reference]) -> None:
+        self.object_attributes = object_attributes
+
+
+@reference_in_the_book(section=(7, 4, 5), index=3)
+class Permission(DBC):
+    """
+    Description of a single permission.
+    """
+
+    permission: Reference
+    """
+    Reference to a property that defines the semantics of the permission.
+    """
+
+    kind_of_permission: "Permission_kind"
+    """
+    Description of the kind of permission. Possible kind of permission also include the
+    denial of the permission.
+
+    Values:
+    * Allow
+    * Deny
+    * NotApplicable
+    * Undefined"
+    """
+
+    def __init__(
+        self, permission: Reference, kind_of_permission: "Permission_kind"
+    ) -> None:
+        self.permission = permission
+        self.kind_of_permission = kind_of_permission
+
+
+@reference_in_the_book(section=(7, 4, 5), index=4)
+@invariant(lambda self: len(self.subject_attributes) >= 1)
+class Subject_attributes:
+    """
+    A set of data elements that further classifies a specific subject.
+    """
+
+    subject_attributes: List["Data_element"]
+    """
+    A data element that further classifies a specific subject.
+
+    :constraint AASs-015:
+        The data element SubjectAttributes/subjectAttribute shall be
+        part of the submodel that is referenced within the “selectableSubjectAttributes”
+        attribute of “AccessControl”."
+    """
+
+    def __init__(self, subject_attributes: List["Data_element"]) -> None:
+        self.subject_attributes = subject_attributes
+
+
+@reference_in_the_book(section=(7, 4, 5), index=5)
+class Permission_kind(Enum):
+    """
+    Enumeration of the kind of permissions that is given to the assignment of
+    a permission to a subject.
+    """
+
+    Allow = "Allow"
+    """
+    Allow the permission given to the subject.
+    """
+
+    Deny = "Deny"
+    """
+    Explicitly deny the permission given to the subject.
+    """
+
+    Not_applicable = "NotApplicable"
+    """
+    The permission is not applicable to the subject.
+    """
+
+    Undefined = "Undefined"
+    """
+    It is undefined whether the permission is allowed, not applicable or denied to
+    the subject.
+    """
