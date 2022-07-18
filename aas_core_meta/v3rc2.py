@@ -4920,7 +4920,7 @@ class Formula(DBC):
 
 
 @reference_in_the_book(section=(7, 4, 5))
-class Access_permission_rule(Referable, Qualifiable):
+class Access_permission_rule(DBC):
     """
     Table that defines access permissions per authenticated subject for a set of objects
     (referable elements).
@@ -4946,28 +4946,9 @@ class Access_permission_rule(Referable, Qualifiable):
     def __init__(
         self,
         target_subject_attributes: "Subject_attributes",
-        extensions: Optional[List["Extension"]] = None,
-        category: Optional[Non_empty_string] = None,
-        id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
-        checksum: Optional["Non_empty_string"] = None,
-        qualifiers: Optional[List["Qualifier"]] = None,
         permissions_per_object: Optional[List["Permissions_per_object"]] = None,
         constraint: Optional[Formula] = None,
     ) -> None:
-        Referable.__init__(
-            self,
-            extensions=extensions,
-            category=category,
-            id_short=id_short,
-            display_name=display_name,
-            description=description,
-            checksum=checksum,
-        )
-
-        Qualifiable.__init__(self, qualifiers=qualifiers)
-
         self.target_subject_attributes = target_subject_attributes
         self.permissions_per_object = permissions_per_object
         self.constraint = constraint
