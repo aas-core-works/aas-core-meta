@@ -902,7 +902,19 @@ class Test_assertions(unittest.TestCase):
     # but rather expect "Id" or "id", short for "identifier".
     #
     # See: https://english.stackexchange.com/questions/101248/how-should-the-abbreviation-for-identifier-be-capitalized
-    ABBREVIATIONS = {"AAS", "URL", "BCP", "URI", "UTC", "RDF", "XSD"}
+    ABBREVIATIONS = {
+        "AAS",
+        "URL",
+        "BCP",
+        "URI",
+        "UTC",
+        "RDF",
+        "XSD",
+        "DIN",
+        "ECE",
+        "NIST",
+        "SI",
+    }
 
     @staticmethod
     def check_class_name(name: str) -> List[str]:
@@ -1048,6 +1060,7 @@ class Test_assertions(unittest.TestCase):
             "Concept_description.is_case_of",
             "Submodel_element_collection.value",
             "Submodel_element_list.value",
+            "Access_permission_rule.permissions_per_object",
         }
 
         for name, obj in inspect.getmembers(v3rc2, inspect.isclass):

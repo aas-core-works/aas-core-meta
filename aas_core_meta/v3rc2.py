@@ -4451,11 +4451,11 @@ class Data_specification:
     index=1,
     fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
 )
-class Data_type_IEC_61360(Enum):
+class Data_type_iec_61360(Enum):
     Date = "DATE"
     String = "STRING"
     String_translatable = "STRING_TRANSLATABLE"
-    Integer_Measure = "INTEGER_MEASURE"
+    Integer_measure = "INTEGER_MEASURE"
     Integer_count = "INTEGER_COUNT"
     Integer_currency = "INTEGER_CURRENCY"
     Real_measure = "REAL_MEASURE"
@@ -4497,14 +4497,14 @@ class Value_reference_pair(DBC):
     The value of the referenced concept definition of the value in valueId.
     """
 
-    value_ID: "Reference"
+    value_id: "Reference"
     """
     Global unique id of the value.
     """
 
-    def __init__(self, value: str, value_ID: "Reference") -> None:
+    def __init__(self, value: str, value_id: "Reference") -> None:
         self.value = value
-        self.value_ID = value_ID
+        self.value_id = value_id
 
 
 @invariant(lambda self: len(self.value_reference_pair_types) >= 1)
@@ -4534,7 +4534,7 @@ class Value_list(DBC):
     fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
 )
 @serialization(with_model_type=True)
-class Data_specification_IEC_61360(Data_specification_content):
+class Data_specification_iec_61360(Data_specification_content):
     """
     Content of data specification template for concept descriptions conformant to
     IEC 61360.
@@ -4572,7 +4572,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Unit
     """
 
-    unit_ID: Optional["Reference"]
+    unit_id: Optional["Reference"]
     """
     Unique unit id
     """
@@ -4587,7 +4587,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Symbol
     """
 
-    data_type: Optional["Data_type_IEC_61360"]
+    data_type: Optional["Data_type_iec_61360"]
     """
     Data Type
 
@@ -4644,7 +4644,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Value
     """
 
-    value_ID: Optional["Reference"]
+    value_id: Optional["Reference"]
     """
     Unique value id
     """
@@ -4659,21 +4659,21 @@ class Data_specification_IEC_61360(Data_specification_content):
         preferred_name: "Lang_string_set",
         short_name: Optional["Lang_string_set"] = None,
         unit: Optional[Non_empty_string] = None,
-        unit_ID: Optional["Reference"] = None,
+        unit_id: Optional["Reference"] = None,
         source_of_definition: Optional[Non_empty_string] = None,
         symbol: Optional[Non_empty_string] = None,
-        data_type: Optional["Data_type_IEC_61360"] = None,
+        data_type: Optional["Data_type_iec_61360"] = None,
         definition: Optional["Lang_string_set"] = None,
         value_format: Optional[Non_empty_string] = None,
         value_list: Optional["Value_list"] = None,
         value: Optional[str] = None,
-        value_ID: Optional["Reference"] = None,
+        value_id: Optional["Reference"] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
         self.short_name = short_name
         self.unit = unit
-        self.unit_ID = unit_ID
+        self.unit_id = unit_id
         self.source_of_definition = source_of_definition
         self.symbol = symbol
         self.data_type = data_type
@@ -4681,7 +4681,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         self.value_format = value_format
         self.value_list = value_list
         self.value = value
-        self.value_ID = value_ID
+        self.value_id = value_id
         self.level_type = level_type
 
 
@@ -4748,7 +4748,7 @@ class Data_specification_physical_unit(Data_specification_content):
     TODO
     """
 
-    registration_authority_ID: Optional[Non_empty_string]
+    registration_authority_id: Optional[Non_empty_string]
     """
     TODO
     """
@@ -4771,7 +4771,7 @@ class Data_specification_physical_unit(Data_specification_content):
         NIST_name: Optional[Non_empty_string] = None,
         source_of_definition: Optional[Non_empty_string] = None,
         conversion_factor: Optional[Non_empty_string] = None,
-        registration_authority_ID: Optional[Non_empty_string] = None,
+        registration_authority_id: Optional[Non_empty_string] = None,
         supplier: Optional[Non_empty_string] = None,
     ) -> None:
         self.unit_name = unit_name
@@ -4785,7 +4785,7 @@ class Data_specification_physical_unit(Data_specification_content):
         self.NIST_name = NIST_name
         self.source_of_definition = source_of_definition
         self.conversion_factor = conversion_factor
-        self.registration_authority_ID = registration_authority_ID
+        self.registration_authority_id = registration_authority_id
         self.supplier = supplier
 
 
