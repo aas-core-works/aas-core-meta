@@ -4391,6 +4391,7 @@ class Environment:
 # region DataSpecifications
 
 
+@abstract
 @reference_in_the_book(section=(6, 2, 1, 1), index=1)
 @serialization(with_model_type=True)
 class Data_specification_content:
@@ -4470,9 +4471,32 @@ class Data_type_iec_61360(Enum):
 
 
 @reference_in_the_book(
+    section=(6, 3, 4),
+    index=1,
+    fragment=("6.3.4 Category of Concept Descriptions"),
+)
+class Concept_descriptions_categories(Enum):
+    Application_class = "APPLICATION_CLASS"
+    Capability = "CAPABILITY"
+    Collections = "COLLECTIONS"
+    Documentation = "DOCUMENTATION"
+    Entity = "ENTITY"
+    Event = "EVENT"
+    Function = "FUNCTION"
+    Property = "PROPERTY"
+    Value = "VALUE"
+    Range = "RANGE"
+    Qualifier_type = "QUALIFIER_TYPE"
+    Referencing = "REFERENCING"
+    Relationship = "RELATIONSHIP"
+
+
+@reference_in_the_book(
     section=(6, 3, 2),
     index=4,
-    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+    fragment=(
+        "6.3 Predefined Template for IEC61360 Properties, Value Lists and Values"
+    ),
 )
 class Level_type(Enum):
     Min = "Min"
