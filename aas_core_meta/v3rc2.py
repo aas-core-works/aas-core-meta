@@ -4448,12 +4448,19 @@ class Data_specification:
 
 
 @reference_in_the_book(
-    section=(6, 3, 2),
+    section=(6, 3, 3, 1),
     index=1,
-    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
 )
 class Data_type_iec_61360(Enum):
     Date = "DATE"
+    """
+    values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd 
+    Example from IEC 61360-1:2017: "1999-05-31" is the [DATE] representation of: 
+    "31 May 1999".
+    """
+
+
     String = "STRING"
     String_translatable = "STRING_TRANSLATABLE"
     Integer_measure = "INTEGER_MEASURE"
@@ -4494,7 +4501,7 @@ class Concept_descriptions_categories(Enum):
     section=(6, 3, 3, 1),
     index=4,
     fragment=(
-        "6.3 Predefined Template for IEC61360 Properties, Value Lists and Values"
+        "6.3.3.1 Data Specification IEC61360 Template Attributes"
     ),
 )
 # TODO (g1zzm0, 2022-07-21): No table for class in the book
