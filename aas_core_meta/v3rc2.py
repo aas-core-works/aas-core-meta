@@ -4598,6 +4598,7 @@ class Data_type_iec_61360(Enum):
     section=(6, 3, 4),
     fragment=("6.3.4 Category of Concept Descriptions"),
 )
+# TODO (g1zzm0, 2022-07-21): is nowhere used
 class Concept_descriptions_categories(Enum):
     Application_class = "APPLICATION_CLASS"
     Capability = "CAPABILITY"
@@ -4646,6 +4647,11 @@ class Value_reference_pair(DBC):
     value_id: "Reference"
     """
     Global unique id of the value.
+
+    .. note::
+
+        It is recommended to use a global reference.
+
     """
 
     def __init__(self, value: str, value_id: "Reference") -> None:
