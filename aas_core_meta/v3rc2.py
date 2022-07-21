@@ -4455,26 +4455,143 @@ class Data_specification:
 class Data_type_iec_61360(Enum):
     Date = "DATE"
     """
-    values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd 
-    Example from IEC 61360-1:2017: "1999-05-31" is the [DATE] representation of: 
+    values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd
+    Example from IEC 61360-1:2017: "1999-05-31" is the [DATE] representation of:
     "31 May 1999".
     """
 
-
     String = "STRING"
+    """
+    values consisting of sequence of characters but cannot be translated into other
+    languages
+    """
+
     String_translatable = "STRING_TRANSLATABLE"
+    """
+    values containing string but shall be represented as different string in different
+    languages
+    """
+
     Integer_measure = "INTEGER_MEASURE"
+    """
+    values containing values that are measure of type INTEGER. In addition such a value
+    comes with a physical unit.
+    """
+
     Integer_count = "INTEGER_COUNT"
+    """
+    values containing values of type INTEGER but are no currencies or measures
+    """
+
     Integer_currency = "INTEGER_CURRENCY"
+    """
+    values containing values of type INTEGER that are currencies
+    """
+
     Real_measure = "REAL_MEASURE"
+    """
+    values containing values that are measures of type REAL. In addition such a value
+    comes with a physical unit.
+    """
+
     Real_count = "REAL_COUNT"
+    """
+    values containing numbers that can be written as a terminating or non-terminating
+    decimal; a rational or irrational number but are no currencies or measures
+    """
+
     Real_currency = "REAL_CURRENCY"
+    """
+    values containing values of type REAL that are currencies
+    """
+
     Boolean = "BOOLEAN"
-    URL = "URL"
+    """
+    values representing truth of logic or Boolean algebra (TRUE, FALSE)
+    """
+
+    IRI = "IRI"
+    """
+    values containing values of type STRING conformant to Rfc 3987
+
+    .. note::
+
+        In IEC61360-1 (2017) only URI is supported.
+        An IRI type allows in particular to express an URL or an URI.
+    """
+
+    IRDI = "IRDI"
+    """
+    values conforming to ISO/IEC 11179 series global identifier sequences
+
+    IRDI can be used instead of the more specific data types ICID or ISO29002_IRDI.
+
+    ICID values are value conformant to an IRDI, where the delimiter between RAI and ID
+    is “#” while the delimiter between DI and VI is confined to “##”
+
+    ISO29002_IRDI values are values containing a global identifier that identifies an
+    administrated item in a registry. The structure of this identifier complies with
+    identifier syntax defined in ISO/TS 29002-5. The identifier shall fulfil the
+    requirements specified in ISO/TS 29002-5 for an "international registration data
+    identifier" (IRDI).
+    """
+
     Rational = "RATIONAL"
+    """
+    values containing values of type rational
+    """
+
     Rational_measure = "RATIONAL_MEASURE"
+    """
+    values containing values of type rational. In addition such a value comes with a
+    physical unit.
+    """
+
     Time = "TIME"
+    """
+    values containing a time, conformant to ISO 8601:2004 but restricted to what is
+    allowed in the corresponding type in xml.
+
+    Format hh:mm (ECLASS)
+
+    Example from IEC 61360-1:2017: "13:20:00-05:00" is the [TIME] representation of:
+    1.20 p.m. for Eastern Standard Time, which is 5 hours behind Coordinated
+    Universal Time (UTC).
+    """
+
     Timestamp = "TIMESTAMP"
+    """
+    values containing a time, conformant to ISO 8601:2004 but restricted to what is
+    allowed in the corresponding type in xml.
+
+    Format yyyy-mm-dd hh:mm (ECLASS)
+    """
+
+    File = "FILE"
+    """
+    values containing an address to a file. The values are of type URI and can represent
+    an absolute or relative path.
+
+    .. note::
+
+        IEC61360 does not support the file type.
+    """
+
+    Html = "HTML"
+    """
+    Values containing string with any sequence of characters, using the syntax of HTML5
+    (see W3C Recommendation 28:2014)
+    """
+
+    Blob = "BLOB"
+    """
+    values containing the content of a file. Values may be binaries.
+
+    HTML conformant to HTML5 is a special blob.
+
+    In IEC61360 binary is for a sequence of bits, each bit being represented by “0” and
+    “1” only. A binary is a blob but a blob may also contain other source code.
+    """
 
 
 @reference_in_the_book(
@@ -4500,9 +4617,7 @@ class Concept_descriptions_categories(Enum):
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=4,
-    fragment=(
-        "6.3.3.1 Data Specification IEC61360 Template Attributes"
-    ),
+    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
 )
 # TODO (g1zzm0, 2022-07-21): No table for class in the book
 class Level_type(Enum):
