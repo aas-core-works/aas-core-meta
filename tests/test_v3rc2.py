@@ -905,16 +905,17 @@ class Test_assertions(unittest.TestCase):
     ABBREVIATIONS = {
         "AAS",
         "BCP",
-        "URI",
-        "UTC",
-        "RDF",
-        "XSD",
         "DIN",
         "ECE",
-        "NIST",
-        "SI",
+        "IEC",
         "IRDI",
         "IRI",
+        "NIST",
+        "RDF",
+        "SI",
+        "URI",
+        "UTC",
+        "XSD",
     }
 
     @staticmethod

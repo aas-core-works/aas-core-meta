@@ -4459,7 +4459,7 @@ class Data_specification:
     index=1,
     fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
 )
-class Data_type_iec_61360(Enum):
+class Data_type_IEC_61360(Enum):
     Date = "DATE"
     """
     values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd
@@ -4693,7 +4693,7 @@ class Value_list(DBC):
     fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
 )
 @serialization(with_model_type=True)
-class Data_specification_iec_61360(Data_specification_content):
+class Data_specification_IEC_61360(Data_specification_content):
     """
     Content of data specification template for concept descriptions for properties,
     values and value lists conformant to IEC 61360.
@@ -4770,7 +4770,7 @@ class Data_specification_iec_61360(Data_specification_content):
     Symbol
     """
 
-    data_type: Optional["Data_type_iec_61360"]
+    data_type: Optional["Data_type_IEC_61360"]
     """
     Data Type
     """
@@ -4808,7 +4808,7 @@ class Data_specification_iec_61360(Data_specification_content):
         unit_id: Optional["Reference"] = None,
         source_of_definition: Optional[Non_empty_string] = None,
         symbol: Optional[Non_empty_string] = None,
-        data_type: Optional["Data_type_iec_61360"] = None,
+        data_type: Optional["Data_type_IEC_61360"] = None,
         definition: Optional["Lang_string_set"] = None,
         value_format: Optional[Non_empty_string] = None,
         value_list: Optional["Value_list"] = None,
