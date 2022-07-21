@@ -4492,12 +4492,13 @@ class Concept_descriptions_categories(Enum):
 
 
 @reference_in_the_book(
-    section=(6, 3, 2),
+    section=(6, 3, 3, 1),
     index=4,
     fragment=(
         "6.3 Predefined Template for IEC61360 Properties, Value Lists and Values"
     ),
 )
+# TODO (nb, 2022-07-21): No table for class in the book
 class Level_type(Enum):
     Min = "Min"
     Max = "Max"
@@ -4506,7 +4507,7 @@ class Level_type(Enum):
 
 
 @reference_in_the_book(
-    section=(6, 3, 2),
+    section=(6, 3, 3, 1),
     index=3,
     fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
 )
@@ -4533,9 +4534,9 @@ class Value_reference_pair(DBC):
 
 @invariant(lambda self: len(self.value_reference_pair_types) >= 1)
 @reference_in_the_book(
-    section=(6, 3, 2),
+    section=(6, 3, 3, 1),
     index=2,
-    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
 )
 class Value_list(DBC):
     """
@@ -4554,8 +4555,8 @@ class Value_list(DBC):
 
 
 @reference_in_the_book(
-    section=(6, 3, 2),
-    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+    section=(6, 3, 3, 1),
+    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
 )
 @serialization(with_model_type=True)
 class Data_specification_iec_61360(Data_specification_content):
@@ -4711,75 +4712,74 @@ class Data_specification_iec_61360(Data_specification_content):
 
 @reference_in_the_book(
     section=(6, 4, 2, 1),
-    fragment="4.8.3 Predefined Templates for Unit Concept Descriptions",
+    fragment="6.4.2.1 Data Specification Template Physical Unit Attributes",
 )
 @serialization(with_model_type=True)
 class Data_specification_physical_unit(Data_specification_content):
-    # TODO (sadu, 2021-11-17): No table for class in the book
 
     unit_name: Non_empty_string
     """
-    TODO
+    Name of the physical unit
     """
 
     unit_symbol: Non_empty_string
     """
-    TODO
+    Symbol for the physical unit
     """
 
     definition: "Lang_string_set"
     """
-    TODO
+    Definition in different languages
     """
 
     SI_notation: Optional[Non_empty_string]
     """
-    TODO
+    Notation of SI physical unit
     """
 
     SI_name: Optional[Non_empty_string]
     """
-    TODO
+    Name of SI physical unit
     """
 
     DIN_notation: Optional[Non_empty_string]
     """
-    TODO
+    Notation of physical unit conformant to DIN
     """
 
     ECE_name: Optional[Non_empty_string]
     """
-    TODO
+    Name of physical unit conformant to ECE
     """
 
     ECE_code: Optional[Non_empty_string]
     """
-    TODO
+    Code of physical unit conformant to ECE
     """
 
     NIST_name: Optional[Non_empty_string]
     """
-    TODO
+    Name of NIST physical unit
     """
 
     source_of_definition: Optional[Non_empty_string]
     """
-    TODO
+    Source of definition
     """
 
     conversion_factor: Optional[Non_empty_string]
     """
-    TODO
+    Conversion factor
     """
 
     registration_authority_id: Optional[Non_empty_string]
     """
-    TODO
+    Registration authority ID
     """
 
     supplier: Optional[Non_empty_string]
     """
-    TODO
+    Supplier
     """
 
     def __init__(
