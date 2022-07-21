@@ -119,9 +119,9 @@ class serialization:
     """Mark the settings for the general serialization schemas."""
 
     def __init__(
-            self,
-            xml_namespace: str,
-            with_model_type: Optional[bool] = None,
+        self,
+        xml_namespace: str,
+        with_model_type: Optional[bool] = None,
     ) -> None:
         """
         Initialize with the given values.
