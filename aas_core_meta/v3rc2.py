@@ -4472,7 +4472,6 @@ class Data_type_iec_61360(Enum):
 
 @reference_in_the_book(
     section=(6, 3, 4),
-    index=1,
     fragment=("6.3.4 Category of Concept Descriptions"),
 )
 class Concept_descriptions_categories(Enum):
@@ -4498,7 +4497,7 @@ class Concept_descriptions_categories(Enum):
         "6.3 Predefined Template for IEC61360 Properties, Value Lists and Values"
     ),
 )
-# TODO (nb, 2022-07-21): No table for class in the book
+# TODO (g1zzm0, 2022-07-21): No table for class in the book
 class Level_type(Enum):
     Min = "Min"
     Max = "Max"
@@ -4561,30 +4560,42 @@ class Value_list(DBC):
 @serialization(with_model_type=True)
 class Data_specification_iec_61360(Data_specification_content):
     """
-    Content of data specification template for concept descriptions conformant to
-    IEC 61360.
-    Although the IEC61360 attributes listed in this template are defined for properties
-    and values and value lists only it is also possible to use the template for other
-    definition This is shown in the tables Table 7, Table 8, Table 9 and Table 10.
+    Content of data specification template for concept descriptions for properties,
+    values and value lists conformant to IEC 61360.
 
-    :constraint AASd-075:
-        For all ConceptDescriptions using data specification template
-        IEC61360
-        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
-        values for the attributes not being marked as mandatory or optional in tables
-        Table 7, Table 8, Table 9 and Table 10.depending on its category are ignored and
-        handled as undefined.
+    :constraint AASd-010:
+        If DataSpecificationIEC61360/value is not empty then
+        DataSpecificationIEC61360/valueList shall be empty and vice versa.
+
+    :constraint AASd-009:
+        If DataSpecificationIEC61360/dataType one of: INTEGER_MEASURE, REAL_MEASURE,
+        RATIONAL_MEASURE, INTEGER_CURRENCY, REAL_CURRENCY, then
+        DataSpecificationIEC61360/unit or DataSpecificationIEC61360/unitId shall be
+        defined.
+
+    .. note::
+
+        IEC61360 requires also a globally unique identifier for a concept description.
+        This ID is not part of the data specification template. Instead the
+        ConceptDescription/id as inherited via Identifiable is used. Same holds for
+        administrative information like the version and revision.
+
+    .. note::
+
+        ConceptDescription/idShort and DataSpecificationIEC61360/shortName are very
+        similar. However, in this case the decision was to add shortName explicitly to
+        the data specification. Same holds for ConceptDescription/displayName and
+        DataSpecificationIEC61360/preferredName. Same holds for
+        ConceptDescription/description and DataSpecificationIEC61360/definition.
+
     """
 
     preferred_name: "Lang_string_set"
     """
     Preferred name
 
-    :constraint AASd-076:
-        For all ConceptDescriptions using data specification template
-        IEC61360
-        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0)
-        at least a preferred name in English shall be defined.
+    :constraint AASc-002:
+        DataSpecification-IEC61360/preferredName shall be provided at least in English.
     """
 
     short_name: Optional["Lang_string_set"]
@@ -4600,6 +4611,18 @@ class Data_specification_iec_61360(Data_specification_content):
     unit_id: Optional["Reference"]
     """
     Unique unit id
+
+    unit and unitId need to be consistent if both attributes are set
+
+    .. note::
+
+        It is recommended to use a global reference.
+
+    .. note::
+
+        Although the unitId is a global reference there might exist a ConceptDescription
+        with data specification DataSpecificationPhysicalUnit with the same ID.
+
     """
 
     source_of_definition: Optional[Non_empty_string]
@@ -4615,43 +4638,11 @@ class Data_specification_iec_61360(Data_specification_content):
     data_type: Optional["Data_type_iec_61360"]
     """
     Data Type
-
-    :constraint AASd-070:
-        For a ConceptDescription with category PROPERTY or VALUE using
-        data specification template IEC61360
-        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/dataType is mandatory and shall be defined.
-
-    :constraint AASd-071:
-        For a ConceptDescription with category REFERENCE using data
-        specification template IEC61360
-        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/dataType is STRING by default.
-
-    :constraint AASd-072:
-        For a ConceptDescription with category DOCUMENT using data
-        specification template IEC61360
-        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/dataType shall be one of the following values:
-        STRING or URL.
-
-    :constraint AASd-073:
-        For a ConceptDescription with category QUALIFIER using data
-        specification template IEC61360
-        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/dataType is mandatory and shall be defined.
     """
 
     definition: Optional["Lang_string_set"]
     """
     Definition in different languages
-
-    :constraint AASd-074:
-        For all ConceptDescriptions except for ConceptDescriptions of
-        category VALUE using data specification template IEC61360
-        (http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/2/0) -
-        DataSpecificationIEC61360/definition is mandatory and shall be defined at least
-        in English.
     """
 
     value_format: Optional[Non_empty_string]
@@ -4667,11 +4658,6 @@ class Data_specification_iec_61360(Data_specification_content):
     value: Optional[str]
     """
     Value
-    """
-
-    value_id: Optional["Reference"]
-    """
-    Unique value id
     """
 
     level_type: Optional["Level_type"]
@@ -4692,7 +4678,6 @@ class Data_specification_iec_61360(Data_specification_content):
         value_format: Optional[Non_empty_string] = None,
         value_list: Optional["Value_list"] = None,
         value: Optional[str] = None,
-        value_id: Optional["Reference"] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
@@ -4706,7 +4691,6 @@ class Data_specification_iec_61360(Data_specification_content):
         self.value_format = value_format
         self.value_list = value_list
         self.value = value
-        self.value_id = value_id
         self.level_type = level_type
 
 
