@@ -4392,11 +4392,11 @@ class Environment:
 
 
 @abstract
-@reference_in_the_book(section=(6, 2, 1, 1),
-                       index=1,
-                       fragment=(
-                       "6.2.1.1 Data Specification Template Attributes"),
-                       )
+@reference_in_the_book(
+    section=(6, 2, 1, 1),
+    index=1,
+    fragment=("6.2.1.1 Data Specification Template Attributes"),
+)
 @serialization(with_model_type=True)
 class Data_specification_content:
     """
@@ -4406,10 +4406,10 @@ class Data_specification_content:
     """
 
 
-@reference_in_the_book(section=(6, 2, 1, 1),
-                       fragment=(
-                       "6.2.1.1 Data Specification Template Attributes"),
-                       )
+@reference_in_the_book(
+    section=(6, 2, 1, 1),
+    fragment=("6.2.1.1 Data Specification Template Attributes"),
+)
 class Data_specification:
     """
     Data Specification Template
