@@ -907,6 +907,7 @@ class Test_assertions(unittest.TestCase):
         "BCP",
         "DIN",
         "ECE",
+        "HTML",
         "IEC",
         "IRDI",
         "IRI",

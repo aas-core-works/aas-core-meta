@@ -4699,7 +4699,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     values and value lists conformant to IEC 61360.
 
     :constraint AASd-010:
-        If :attr:`~value` is not empty then :attr:`~value_list` shall be empty 
+        If :attr:`~value` is not empty then :attr:`~value_list` shall be empty
         and vice versa.
 
     :constraint AASd-009:
@@ -4709,17 +4709,17 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     .. note::
 
-        IEC61360 requires also a globally unique identifier for a concept 
-        description. This ID is not part of the data specification template. 
-        Instead the :attr:`~Concept_description.id` as inherited via 
-        :class:`.Identifiable` is used. Same holds for administrative 
+        IEC61360 requires also a globally unique identifier for a concept
+        description. This ID is not part of the data specification template.
+        Instead the :attr:`~Concept_description.id` as inherited via
+        :class:`.Identifiable` is used. Same holds for administrative
         information like the version and revision.
 
     .. note::
 
         :attr:`Concept_description.id_short` and :attr:`~short_name` are very
-        similar. However, in this case the decision was to add 
-        :attr:`~short_name` explicitly to the data specification. Same holds for 
+        similar. However, in this case the decision was to add
+        :attr:`~short_name` explicitly to the data specification. Same holds for
         :attr:`~Concept_description.display_name` and
         :attr:`~preferred_name`. Same holds for
         :attr:`Concept_description.description` and :attr:`~definition`.
@@ -4757,7 +4757,7 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     .. note::
 
-        Although the :attr:`~unit_id` is a global reference there might exist a 
+        Although the :attr:`~unit_id` is a global reference there might exist a
         :class:`.Concept_description`
         with data specification :class:`.Data_specification_physical_unit` with
         the same ID.
