@@ -4627,7 +4627,7 @@ class Concept_descriptions_categories(Enum):
     index=4,
     fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
 )
-# TODO (g1zzm0, 2022-07-21): No table for class in the book
+# NOTE (g1zzm0, 2022-07-21): There is no table for this class in the book at the moment.
 class Level_type(Enum):
     Min = "Min"
     Max = "Max"
@@ -4703,25 +4703,26 @@ class Data_specification_IEC_61360(Data_specification_content):
         DataSpecificationIEC61360/valueList shall be empty and vice versa.
 
     :constraint AASd-009:
-        If DataSpecificationIEC61360/dataType one of: INTEGER_MEASURE, REAL_MEASURE,
-        RATIONAL_MEASURE, INTEGER_CURRENCY, REAL_CURRENCY, then
-        DataSpecificationIEC61360/unit or DataSpecificationIEC61360/unitId shall be
-        defined.
+        If :attr:`~data_type` one of: ``INTEGER_MEASURE``, ``REAL_MEASURE``,
+        ``RATIONAL_MEASURE``, ``INTEGER_CURRENCY``, ``REAL_CURRENCY``, then
+        :attr:`~unit` or :attr:`~unit_id` shall be defined.
 
     .. note::
 
-        IEC61360 requires also a globally unique identifier for a concept description.
-        This ID is not part of the data specification template. Instead the
-        ConceptDescription/id as inherited via Identifiable is used. Same holds for
-        administrative information like the version and revision.
+        IEC61360 requires also a globally unique identifier for a concept 
+        description. This ID is not part of the data specification template. 
+        Instead the :attr:`~Concept_description.id` as inherited via 
+        :class:`.Identifiable` is used. Same holds for administrative 
+        information like the version and revision.
 
     .. note::
 
-        ConceptDescription/idShort and DataSpecificationIEC61360/shortName are very
-        similar. However, in this case the decision was to add shortName explicitly to
-        the data specification. Same holds for ConceptDescription/displayName and
-        DataSpecificationIEC61360/preferredName. Same holds for
-        ConceptDescription/description and DataSpecificationIEC61360/definition.
+        :attr:`Concept_description.id_short` and :attr:`~short_name` are very
+        similar. However, in this case the decision was to add 
+        :attr:`~short_name` explicitly to the data specification. Same holds for 
+        :attr:`~Concept_description.display_name` and
+        :attr:`~preferred_name`. Same holds for
+        :attr:`Concept_description.description` and :attr:`~definition`.
 
     """
 
@@ -4730,7 +4731,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Preferred name
 
     :constraint AASc-002:
-        DataSpecification-IEC61360/preferredName shall be provided at least in English.
+        :attr:`~preferred_name` shall be provided at least in English.
     """
 
     short_name: Optional["Lang_string_set"]
@@ -4747,7 +4748,8 @@ class Data_specification_IEC_61360(Data_specification_content):
     """
     Unique unit id
 
-    unit and unitId need to be consistent if both attributes are set
+    :attr:`~unit` and :attr:`~unit_id` need to be consistent if both attributes
+    are set
 
     .. note::
 
