@@ -4755,8 +4755,10 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     .. note::
 
-        Although the unitId is a global reference there might exist a ConceptDescription
-        with data specification DataSpecificationPhysicalUnit with the same ID.
+        Although the :attr:`~unit_id` is a global reference there might exist a 
+        :class:`.Concept_description`
+        with data specification :class:`.Data_specification_physical_unit` with
+        the same ID.
 
     """
 
