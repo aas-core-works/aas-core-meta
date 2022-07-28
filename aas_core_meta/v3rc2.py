@@ -4699,8 +4699,8 @@ class Data_specification_IEC_61360(Data_specification_content):
     values and value lists conformant to IEC 61360.
 
     :constraint AASd-010:
-        If DataSpecificationIEC61360/value is not empty then
-        DataSpecificationIEC61360/valueList shall be empty and vice versa.
+        If :attr:`~value` is not empty then :attr:`~value_list` shall be empty 
+        and vice versa.
 
     :constraint AASd-009:
         If :attr:`~data_type` one of: ``INTEGER_MEASURE``, ``REAL_MEASURE``,
