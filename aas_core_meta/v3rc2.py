@@ -4584,7 +4584,7 @@ class Data_type_IEC_61360(Enum):
         IEC61360 does not support the file type.
     """
 
-    Html = "HTML"
+    HTML = "HTML"
     """
     Values containing string with any sequence of characters, using the syntax of HTML5
     (see W3C Recommendation 28:2014)
