@@ -16,22 +16,19 @@ AAS registry or AAS server:
 
     :attr:`Referable.id_short` of :class:`.Referable`'s shall be matched case-sensitive.
 
-We could not implement the following constraints since they depend on registry
-and can not be verified without it:
+We could not implement the following constraints since they depend on registry and
+de-referencing, so we can not formalize them with formalizing such external dependncies:
 
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
+* :constraintref:`AASs-010`
+* :constraintref:`AASs-011`
+* :constraintref:`AASs-015`
 
 Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
-
-We could not formalize the constraints which prescribed how to deal with
-the default values as these are not really constraints in the strict sense, but more
-a guideline on how to resolve default values:
-
-* :constraintref:`AASd-116`
 
 The constraint :constraintref:`AASd-116` is ill-defined. The type of the
 :attr:`~Specific_asset_id.value` is a string, but the type of
@@ -68,6 +65,16 @@ The working group decided to change the rules for serialization *after* the book
 published. The data specifications are critical in applications, but there is no
 possibility to access them through a data channel as they are not part of
 an environment.
+
+Since the data specifications are now embedded, the following constraints became futile:
+
+* ``AASd-050``
+* ``AASd-050b``
+
+The class ``Formula`` from Chapter 7, "The Meta-Model [...] w.r.t. Security", could not
+be implemented as the mixed-content XML representation is not interoperable with JSON,
+nor could we automatically generate any schema or code for it. Furthermore, we remove
+the attribute ``AccessPermissionRule/constraint`` since it depends on ``Formula``.
 """
 
 from enum import Enum
@@ -1748,7 +1755,7 @@ class Qualifiable(DBC):
 
         If any :attr:`~Qualifier.kind` value of :attr:`~Qualifiable.qualifiers` is
         equal to :attr:`~Qualifier_kind.Template_qualifier` and the qualified element
-        inherits from :class:`.Has_kind` then the qualified element shell be of
+        inherits from :class:`.Has_kind` then the qualified element shall be of
         kind Template (:attr:`Has_kind.kind` = :attr:`Modeling_kind.Template`).
     """
 
@@ -4381,14 +4388,13 @@ class Environment:
         self.concept_descriptions = concept_descriptions
 
 
-# region DataSpecifications
-
+# region Data specifications
 
 @abstract
 @reference_in_the_book(
     section=(6, 2, 1, 1),
     index=1,
-    fragment=("6.2.1.1 Data Specification Template Attributes"),
+    fragment="6.2.1.1 Data Specification Template Attributes",
 )
 @serialization(with_model_type=True)
 class Data_specification_content:
@@ -4401,7 +4407,7 @@ class Data_specification_content:
 
 @reference_in_the_book(
     section=(6, 2, 1, 1),
-    fragment=("6.2.1.1 Data Specification Template Attributes"),
+    fragment="6.2.1.1 Data Specification Template Attributes",
 )
 class Data_specification:
     """
@@ -4450,7 +4456,7 @@ class Data_specification:
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=1,
-    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
+    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 class Data_type_IEC_61360(Enum):
     Date = "DATE"
@@ -4595,30 +4601,9 @@ class Data_type_IEC_61360(Enum):
 
 
 @reference_in_the_book(
-    section=(6, 3, 4),
-    fragment=("6.3.4 Category of Concept Descriptions"),
-)
-# TODO (g1zzm0, 2022-07-21): is nowhere used
-class Concept_descriptions_categories(Enum):
-    Application_class = "APPLICATION_CLASS"
-    Capability = "CAPABILITY"
-    Collections = "COLLECTIONS"
-    Documentation = "DOCUMENTATION"
-    Entity = "ENTITY"
-    Event = "EVENT"
-    Function = "FUNCTION"
-    Property = "PROPERTY"
-    Value = "VALUE"
-    Range = "RANGE"
-    Qualifier_type = "QUALIFIER_TYPE"
-    Referencing = "REFERENCING"
-    Relationship = "RELATIONSHIP"
-
-
-@reference_in_the_book(
     section=(6, 3, 3, 1),
     index=4,
-    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
+    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 # NOTE (g1zzm0, 2022-07-21): There is no table for this class in the book at the moment.
 class Level_type(Enum):
@@ -4631,7 +4616,7 @@ class Level_type(Enum):
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=3,
-    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+    fragment="4.8.2 Predefined Templates for Property and Value Descriptions",
 )
 class Value_reference_pair(DBC):
     """
@@ -4663,7 +4648,7 @@ class Value_reference_pair(DBC):
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=2,
-    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
+    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 class Value_list(DBC):
     """
@@ -4681,24 +4666,76 @@ class Value_list(DBC):
         self.value_reference_pair_types = value_reference_pair_types
 
 
+IEC_61360_data_types_with_unit: Set[Data_type_IEC_61360] = constant_set(
+    values=[
+        Data_type_IEC_61360.Integer_measure,
+        Data_type_IEC_61360.Real_measure,
+        Data_type_IEC_61360.Rational_measure,
+        Data_type_IEC_61360.Integer_currency,
+        Data_type_IEC_61360.Real_currency,
+    ],
+    description="""\
+These data types imply that the unit is defined in the data specification.""",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=9),
+)
+
+
+def is_BCP_47_for_english(text: str) -> bool:
+    """Check that the :paramref:`text` corresponds to a BCP47 code for english."""
+    pattern = f'^(en|EN)(-.*)?$'
+
+    return match(pattern, text) is not None
+
+# fmt: off
+@invariant(
+    lambda self:
+    any(
+        is_BCP_47_for_english(lang_string.language)
+        for lang_string in self.preferred_name.lang_strings
+    ),
+    "Constraint AASc-002: preferred name shall be provided at least in English."
+)
+@invariant(
+    lambda self:
+    not (self.data_type is None and self.data_type in IEC_61360_data_types_with_unit)
+    or (
+            self.unit is not None or self.unit_id is not None
+    ),
+    "Constraint AASc-009: If data type is a an integer, real or rational with "
+    "a measure or currency, unit or unit ID shall be defined."
+)
+@invariant(
+    lambda self:
+    (self.value is not None and (self.value_list is None or len(self.value_list) == 0))
+    or (
+        self.value is None and self.value_list is not None and len(self.value_list) > 0
+    ),
+    "Constraint AASc-010: If value is not empty then value list shall be empty and "
+    "vice versa."
+)
 @reference_in_the_book(
     section=(6, 3, 3, 1),
-    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
+    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 @serialization(with_model_type=True)
+# fmt: on
 class Data_specification_IEC_61360(Data_specification_content):
     """
     Content of data specification template for concept descriptions for properties,
     values and value lists conformant to IEC 61360.
 
-    :constraint AASd-010:
+    :constraint AASc-010:
         If :attr:`~value` is not empty then :attr:`~value_list` shall be empty
         and vice versa.
 
-    :constraint AASd-009:
-        If :attr:`~data_type` one of: ``INTEGER_MEASURE``, ``REAL_MEASURE``,
-        ``RATIONAL_MEASURE``, ``INTEGER_CURRENCY``, ``REAL_CURRENCY``, then
-        :attr:`~unit` or :attr:`~unit_id` shall be defined.
+    :constraint AASc-009:
+        If :attr:`~data_type` one of:
+        :attr:`~Data_type_IEC_61360.Integer_measure`,
+        :attr:`~Data_type_IEC_61360.Real_measure`,
+        :attr:`~Data_type_IEC_61360.Rational_measure`,
+        :attr:`~Data_type_IEC_61360.Integer_currency`,
+        :attr:`~Data_type_IEC_61360.Real_currency`, then :attr:`~unit` or
+        :attr:`~unit_id` shall be defined.
 
     .. note::
 
@@ -4968,10 +5005,41 @@ class Access_control_policy_points(DBC):
         self.policy_administration_point = policy_administration_point
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    (not self.default_environment_attributes)
+    or is_model_reference_to(self.default_environment_attributes, Key_types.Submodel)
+)
+@invariant(
+    lambda self:
+    (not self.selectable_environment_attributes)
+    or is_model_reference_to(self.selectable_environment_attributes, Key_types.Submodel)
+)
+@invariant(
+    lambda self:
+    is_model_reference_to(self.default_permissions, Key_types.Submodel)
+)
+@invariant(
+    lambda self:
+    (not self.selectable_permissions)
+    or is_model_reference_to(self.selectable_permissions, Key_types.Submodel)
+)
+@invariant(
+    lambda self:
+    is_model_reference_to(self.default_subject_attributes, Key_types.Submodel)
+)
+@invariant(
+    lambda self:
+    (not self.selectable_subject_attributes)
+    or is_model_reference_to(self.selectable_subject_attributes, Key_types.Submodel)
+)
 @reference_in_the_book(section=(7, 4, 4))
+# fmt: on
 class Access_control(DBC):
     """
     Access Control defines the local access control policy administration point.
+
     Access Control has the major task to define the access permission rules.
     """
 
@@ -4987,8 +5055,19 @@ class Access_control(DBC):
     the AAS. They are selectable by the access permission rules to assign permissions
     to the subjects.
 
-    Default: reference to the submodel referenced via defaultSubjectAttributes.
+    Default: reference to the submodel referenced *via* 
+    :attr:`~default_subject_attributes`.
     """
+
+    @implementation_specific
+    def selectable_subject_attributes_or_default(self) -> Reference:
+        # NOTE (mristin, 2022-08-01):
+        # This implementation will not be transpiled, but is given here as reference.
+        return (
+            self.selectable_subject_attributes
+            if self.selectable_subject_attributes is not None
+            else self.default_subject_attributes
+        )
 
     default_subject_attributes: Reference
     """
@@ -5002,8 +5081,18 @@ class Access_control(DBC):
     """
     Reference to a submodel defining which permissions can be assigned to the subjects.
 
-    Default: reference to the submodel referenced via defaultPermissions
+    Default: reference to the submodel referenced *via* :attr:~default_permissions`.
     """
+
+    @implementation_specific
+    def selectable_permissions_or_default(self) -> Reference:
+        # NOTE (mristin, 2022-08-01):
+        # This implementation will not be transpiled, but is given here as reference.
+        return (
+            self.selectable_permissions
+            if self.selectable_permissions is not None
+            else self.default_permissions
+        )
 
     default_permissions: Reference
     """
@@ -5013,13 +5102,24 @@ class Access_control(DBC):
     selectable_environment_attributes: Optional[Reference]
     """
     Reference to a submodel defining which environment attributes can be accessed
-    *via* the permission rules defined for the AAS, i.e. attributes that are
+    *via* the permission rules defined for the AAS, *i.e.* attributes that are
     not describing the asset itself.
 
-    Default: reference to the submodel referenced via defaultEnvironmentAttributes
+    Default: reference to the submodel referenced via 
+    :attr:`default_environment_attributes`.
     """
 
-    default_environment_attributes: Optional[Reference]
+    @implementation_specific
+    def selectable_environment_attributes_or_default(self) -> Reference:
+        # NOTE (mristin, 2022-08-01):
+        # This implementation will not be transpiled, but is given here as reference.
+        return (
+            self.selectable_environment_attributes
+            if self.selectable_environment_attributes is not None
+            else self.default_environment_attributes
+        )
+
+    default_environment_attributes: Reference
     """
     Reference to a submodel defining default environment attributes, *i.e.* attributes
     that are not describing the asset itself.
@@ -5035,11 +5135,11 @@ class Access_control(DBC):
         self,
         default_subject_attributes: Reference,
         default_permissions: Reference,
+        default_environment_attributes: Reference,
         access_permission_rules: Optional[List["Access_permission_rule"]] = None,
         selectable_subject_attributes: Optional[Reference] = None,
         selectable_permissions: Optional[Reference] = None,
         selectable_environment_attributes: Optional[Reference] = None,
-        default_environment_attributes: Optional[Reference] = None,
     ) -> None:
         self.default_subject_attributes = default_subject_attributes
         self.selectable_permissions = selectable_permissions
@@ -5048,15 +5148,6 @@ class Access_control(DBC):
         self.selectable_subject_attributes = selectable_subject_attributes
         self.selectable_environment_attributes = selectable_environment_attributes
         self.default_environment_attributes = default_environment_attributes
-
-
-@abstract
-@reference_in_the_book(section=(4, 7, 6))
-@serialization(with_model_type=True)
-class Formula(DBC):
-    """
-    A formula is used to describe constraints by a logical expression.
-    """
 
 
 @reference_in_the_book(section=(7, 4, 5))
@@ -5078,22 +5169,16 @@ class Access_permission_rule(DBC):
     the access permission rule.
     """
 
-    constraint: Optional[Formula]
-    """
-    Constraint that needs to be validated to true so that access permission rule holds.
-    """
-
     def __init__(
         self,
         target_subject_attributes: "Subject_attributes",
         permissions_per_object: Optional[List["Permissions_per_object"]] = None,
-        constraint: Optional[Formula] = None,
     ) -> None:
         self.target_subject_attributes = target_subject_attributes
         self.permissions_per_object = permissions_per_object
-        self.constraint = constraint
 
 
+@invariant(lambda self: is_model_reference_to_referable(self.object))
 @reference_in_the_book(section=(7, 4, 5), index=1)
 class Permissions_per_object(DBC):
     """
@@ -5130,6 +5215,7 @@ class Permissions_per_object(DBC):
         self.permissions = permissions
 
 
+@invariant(lambda self: is_model_reference_to_data_element(self.object_attributes))
 @reference_in_the_book(section=(7, 4, 5), index=2)
 @invariant(lambda self: len(self.object_attributes) >= 1)
 class Object_attributes(DBC):
@@ -5147,10 +5233,23 @@ class Object_attributes(DBC):
         self.object_attributes = object_attributes
 
 
+@invariant(
+    lambda self:
+    is_model_reference_to(self.permission, Key_types.Property)
+)
 @reference_in_the_book(section=(7, 4, 5), index=3)
 class Permission(DBC):
     """
     Description of a single permission.
+
+    :constraint AASs-010:
+        The property referenced in :attr:`~permission` shall have the category
+        ``CONSTANT``.
+
+    :constraint AASs-011:
+        The property referenced in :attr:`~permission` shall be part of the submodel
+        that is referenced within the :attr:`~Access_control.selectable_permissions`
+        attribute of :class:`.Access_control`.
     """
 
     permission: Reference
@@ -5180,18 +5279,17 @@ class Permission(DBC):
 @reference_in_the_book(section=(7, 4, 5), index=4)
 @invariant(lambda self: len(self.subject_attributes) >= 1)
 class Subject_attributes:
-    """
-    A set of data elements that further classifies a specific subject.
-    """
+    """A set of data elements that further classifies a specific subject."""
 
     subject_attributes: List["Data_element"]
     """
     A data element that further classifies a specific subject.
 
     :constraint AASs-015:
-        The data element SubjectAttributes/subjectAttribute shall be
-        part of the submodel that is referenced within the “selectableSubjectAttributes”
-        attribute of “AccessControl”."
+        Every data element in :attr:`~subject_attributes` shall be part of the submodel 
+        that is referenced within 
+        the :attr:`~Access_control.selectable_subject_attributes` attribute of 
+        :class:`.Access_control`.
     """
 
     def __init__(self, subject_attributes: List["Data_element"]) -> None:
