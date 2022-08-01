@@ -904,16 +904,19 @@ class Test_assertions(unittest.TestCase):
     # See: https://english.stackexchange.com/questions/101248/how-should-the-abbreviation-for-identifier-be-capitalized
     ABBREVIATIONS = {
         "AAS",
-        "URL",
         "BCP",
-        "URI",
-        "UTC",
-        "RDF",
-        "XSD",
         "DIN",
         "ECE",
+        "HTML",
+        "IEC",
+        "IRDI",
+        "IRI",
         "NIST",
+        "RDF",
         "SI",
+        "URI",
+        "UTC",
+        "XSD",
     }
 
     @staticmethod
