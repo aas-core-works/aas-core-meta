@@ -1227,6 +1227,31 @@ Observed literals: {sorted(literal_set)!r}"""
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
 
+    def test_AAS_data_elements_corresponds_to_classes(self) -> None:
+        class_name_set = set()  # type: Set[str]
+
+        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
+            if obj.__module__ != v3rc2.__name__:
+                continue
+
+            if issubclass(obj, v3rc2.Data_element):
+                class_name_set.add(name)
+
+        literal_set_name = "AAS_data_elements"
+        literal_set = getattr(v3rc2, literal_set_name)
+        assert isinstance(literal_set, set)
+
+        literal_set = {literal.name for literal in literal_set}
+
+        if class_name_set != literal_set:
+            raise AssertionError(
+                f"""\
+The sub-classes of {v3rc2.Data_element.__name__} do not correspond to v3rc2.{literal_set_name}.
+
+Observed classes:  {sorted(class_name_set)!r}
+Observed literals: {sorted(literal_set)!r}"""
+            )
+
     def test_constraint_119_in_all_qualifiable_with_has_kind(self) -> None:
         renegade_classes = []  # type: List[str]
 
