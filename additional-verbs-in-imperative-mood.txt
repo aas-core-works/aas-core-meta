@@ -6,6 +6,7 @@ deduplicate
 default
 deprecate
 dispatch
+embed
 enable
 enhance
 export
