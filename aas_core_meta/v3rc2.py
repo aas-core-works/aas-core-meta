@@ -1678,13 +1678,16 @@ class Has_data_specification(DBC):
     with their global ID.
     """
 
-    data_specifications: Optional[List["Data_specification"]]
+    embedded_data_specifications: Optional[List["Embedded_data_specification"]]
     """Embedded data specification."""
 
     def __init__(
-        self, data_specifications: Optional[List["Data_specification"]] = None
+        self,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
-        self.data_specifications = data_specifications
+        self.embedded_data_specifications = embedded_data_specifications
 
 
 # fmt: off
@@ -1717,11 +1720,15 @@ class Administrative_information(Has_data_specification):
 
     def __init__(
         self,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         version: Optional[Non_empty_string] = None,
         revision: Optional[Non_empty_string] = None,
     ) -> None:
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
 
         self.version = version
         self.revision = revision
@@ -1938,7 +1945,9 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         derived_from: Optional["Reference"] = None,
         submodels: Optional[List["Reference"]] = None,
     ) -> None:
@@ -1954,7 +1963,9 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
             administration=administration,
         )
 
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
 
         self.derived_from = derived_from
         self.asset_information = asset_information
@@ -2194,7 +2205,9 @@ class Submodel(
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         submodel_elements: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Identifiable.__init__(
@@ -2219,7 +2232,9 @@ class Submodel(
 
         Qualifiable.__init__(self, qualifiers=qualifiers)
 
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
 
         self.submodel_elements = submodel_elements
 
@@ -2265,7 +2280,9 @@ class Submodel_element(
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -2287,7 +2304,9 @@ class Submodel_element(
 
         Qualifiable.__init__(self, qualifiers=qualifiers)
 
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
 
 
 @reference_in_the_book(section=(5, 7, 7, 14))
@@ -2321,7 +2340,9 @@ class Relationship_element(Submodel_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2335,7 +2356,7 @@ class Relationship_element(Submodel_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.first = first
@@ -2521,7 +2542,9 @@ class Submodel_element_list(Submodel_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         order_relevant: Optional["bool"] = None,
         value: Optional[List["Submodel_element"]] = None,
         semantic_id_list_element: Optional["Reference"] = None,
@@ -2539,7 +2562,7 @@ class Submodel_element_list(Submodel_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.type_value_list_element = type_value_list_element
@@ -2589,7 +2612,9 @@ class Submodel_element_collection(Submodel_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         value: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Submodel_element.__init__(
@@ -2604,7 +2629,7 @@ class Submodel_element_collection(Submodel_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.value = value
@@ -2660,7 +2685,9 @@ class Data_element(Submodel_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2674,7 +2701,7 @@ class Data_element(Submodel_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
     @implementation_specific
@@ -2736,7 +2763,9 @@ class Property(Data_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         value: Optional["Value_data_type"] = None,
         value_id: Optional["Reference"] = None,
     ) -> None:
@@ -2752,7 +2781,7 @@ class Property(Data_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.value_type = value_type
@@ -2797,7 +2826,9 @@ class Multi_language_property(Data_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         value: Optional["Lang_string_set"] = None,
         value_id: Optional["Reference"] = None,
     ) -> None:
@@ -2813,7 +2844,7 @@ class Multi_language_property(Data_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.value = value
@@ -2870,7 +2901,9 @@ class Range(Data_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         min: Optional["Value_data_type"] = None,
         max: Optional["Value_data_type"] = None,
     ) -> None:
@@ -2886,7 +2919,7 @@ class Range(Data_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.value_type = value_type
@@ -2921,7 +2954,9 @@ class Reference_element(Data_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         value: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
@@ -2936,7 +2971,7 @@ class Reference_element(Data_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.value = value
@@ -2984,7 +3019,9 @@ class Blob(Data_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         value: Optional["Blob_type"] = None,
     ) -> None:
         Data_element.__init__(
@@ -2999,7 +3036,7 @@ class Blob(Data_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.content_type = content_type
@@ -3041,7 +3078,9 @@ class File(Data_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         value: Optional["Path_type"] = None,
     ) -> None:
         Data_element.__init__(
@@ -3056,7 +3095,7 @@ class File(Data_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.content_type = content_type
@@ -3090,7 +3129,9 @@ class Annotated_relationship_element(Relationship_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         annotations: Optional[List[Data_element]] = None,
     ) -> None:
         Relationship_element.__init__(
@@ -3107,7 +3148,7 @@ class Annotated_relationship_element(Relationship_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.annotations = annotations
@@ -3209,7 +3250,9 @@ class Entity(Submodel_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_id: Optional["Reference"] = None,
         specific_asset_id: Optional["Specific_asset_id"] = None,
@@ -3226,7 +3269,7 @@ class Entity(Submodel_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.statements = statements
@@ -3382,7 +3425,9 @@ class Event_element(Submodel_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3396,7 +3441,7 @@ class Event_element(Submodel_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
 
@@ -3510,7 +3555,9 @@ class Basic_event_element(Event_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List[Qualifier]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         message_topic: Optional["Non_empty_string"] = None,
         message_broker: Optional["Reference"] = None,
         last_update: Optional["Date_time_stamp_UTC"] = None,
@@ -3529,7 +3576,7 @@ class Basic_event_element(Event_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.observed = observed
@@ -3575,7 +3622,9 @@ class Operation(Submodel_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         input_variables: Optional[List["Operation_variable"]] = None,
         output_variables: Optional[List["Operation_variable"]] = None,
         inoutput_variables: Optional[List["Operation_variable"]] = None,
@@ -3592,7 +3641,7 @@ class Operation(Submodel_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
         self.input_variables = input_variables
@@ -3640,7 +3689,9 @@ class Capability(Submodel_element):
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3654,7 +3705,7 @@ class Capability(Submodel_element):
             semantic_id=semantic_id,
             supplemental_semantic_ids=supplemental_semantic_ids,
             qualifiers=qualifiers,
-            data_specifications=data_specifications,
+            embedded_data_specifications=embedded_data_specifications,
         )
 
 
@@ -3739,7 +3790,9 @@ class Concept_description(Identifiable, Has_data_specification):
         description: Optional["Lang_string_set"] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
-        data_specifications: Optional[List["Data_specification"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
         is_case_of: Optional[List["Reference"]] = None,
     ) -> None:
         Identifiable.__init__(
@@ -3754,7 +3807,9 @@ class Concept_description(Identifiable, Has_data_specification):
             administration=administration,
         )
 
-        Has_data_specification.__init__(self, data_specifications=data_specifications)
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
 
         self.is_case_of = is_case_of
 
@@ -4400,51 +4455,25 @@ class Data_specification_content:
 
 
 @reference_in_the_book(
-    section=(6, 2, 1, 1),
-    fragment="6.2.1.1 Data Specification Template Attributes",
+    section=(9, 2, 5),
+    fragment="9.2.5 Embedded Data Specifications",
 )
-class Data_specification:
-    """
-    Data Specification Template
-    """
+class Embedded_data_specification:
+    """Embed the content of a data specification."""
 
-    id: Identifier
-    """
-    The globally unique identification of the element.
-    """
+    data_specification: Reference
+    """Reference to the data specification"""
 
     data_specification_content: Data_specification_content
-    """
-    The content of the template without meta data
-    """
-
-    administration: Optional[Administrative_information]
-    """
-    Administrative information of an identifiable element.
-
-    .. note::
-
-        Some of the administrative information like the version number might need to
-        be part of the identification.
-    """
-
-    description: Optional[Lang_string_set]
-    """
-    Description how and in which context the data specification template is applicable.
-    The description can be provided in several languages.
-    """
+    """Actual content of the data specification"""
 
     def __init__(
         self,
-        id: Identifier,
+        data_specification: Reference,
         data_specification_content: Data_specification_content,
-        administration: Optional[Administrative_information],
-        description: Optional[Lang_string_set],
     ) -> None:
-        self.id = id
+        self.data_specification = data_specification
         self.data_specification_content = data_specification_content
-        self.administration = administration
-        self.description = description
 
 
 @reference_in_the_book(
@@ -4598,7 +4627,6 @@ class Data_type_IEC_61360(Enum):
     section=(6, 3, 4),
     fragment="6.3.4 Category of Concept Descriptions",
 )
-# TODO (g1zzm0, 2022-07-21): is nowhere used
 class Concept_descriptions_categories(Enum):
     Application_class = "APPLICATION_CLASS"
     Capability = "CAPABILITY"
