@@ -91,6 +91,7 @@ __book_url__ = (
 )
 __book_version__ = "V3.0RC02"
 
+__xml_namespace__ = "http://www.admin-shell.io/aas/3/0/RC02"
 
 # region Verification
 
