@@ -4388,7 +4388,7 @@ class Environment:
 @reference_in_the_book(
     section=(6, 2, 1, 1),
     index=1,
-    fragment=("6.2.1.1 Data Specification Template Attributes"),
+    fragment="6.2.1.1 Data Specification Template Attributes",
 )
 @serialization(with_model_type=True)
 class Data_specification_content:
@@ -4401,7 +4401,7 @@ class Data_specification_content:
 
 @reference_in_the_book(
     section=(6, 2, 1, 1),
-    fragment=("6.2.1.1 Data Specification Template Attributes"),
+    fragment="6.2.1.1 Data Specification Template Attributes",
 )
 class Data_specification:
     """
@@ -4450,7 +4450,7 @@ class Data_specification:
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=1,
-    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
+    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 class Data_type_IEC_61360(Enum):
     Date = "DATE"
@@ -4596,7 +4596,7 @@ class Data_type_IEC_61360(Enum):
 
 @reference_in_the_book(
     section=(6, 3, 4),
-    fragment=("6.3.4 Category of Concept Descriptions"),
+    fragment="6.3.4 Category of Concept Descriptions",
 )
 # TODO (g1zzm0, 2022-07-21): is nowhere used
 class Concept_descriptions_categories(Enum):
@@ -4618,7 +4618,7 @@ class Concept_descriptions_categories(Enum):
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=4,
-    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
+    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 # NOTE (g1zzm0, 2022-07-21): There is no table for this class in the book at the moment.
 class Level_type(Enum):
@@ -4631,7 +4631,7 @@ class Level_type(Enum):
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=3,
-    fragment=("4.8.2 Predefined Templates for Property and Value Descriptions"),
+    fragment="4.8.2 Predefined Templates for Property and Value Descriptions",
 )
 class Value_reference_pair(DBC):
     """
@@ -4663,7 +4663,7 @@ class Value_reference_pair(DBC):
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=2,
-    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
+    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 class Value_list(DBC):
     """
@@ -4683,7 +4683,7 @@ class Value_list(DBC):
 
 @reference_in_the_book(
     section=(6, 3, 3, 1),
-    fragment=("6.3.3.1 Data Specification IEC61360 Template Attributes"),
+    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 @serialization(with_model_type=True)
 class Data_specification_IEC_61360(Data_specification_content):
