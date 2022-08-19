@@ -1478,6 +1478,30 @@ class Has_extensions(DBC):
 
 # fmt: off
 @abstract
+@invariant(
+    lambda self:
+    not (self.display_name is not None)
+    or lang_strings_have_unique_languages(self.display_name),
+    "Display name specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.display_name is not None)
+    or len(self.display_name) >= 1,
+    "Display name must be either null or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.description is not None)
+    or lang_strings_have_unique_languages(self.description),
+    "Description specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.description is not None)
+    or len(self.description) >= 1,
+    "Description must be either null or have at least one item"
+)
 @reference_in_the_book(section=(5, 7, 2, 2))
 @serialization(with_model_type=True)
 # fmt: on
@@ -1517,7 +1541,7 @@ class Referable(Has_extensions):
         the :attr:`~id_short` is typically identical to the short name in English.
     """
 
-    display_name: Optional["Lang_string_set"]
+    display_name: Optional[List["Lang_string"]]
     """
     Display name. Can be provided in several languages.
 
@@ -1535,7 +1559,7 @@ class Referable(Has_extensions):
     * the :attr:`~id_short` of the element
     """
 
-    description: Optional["Lang_string_set"]
+    description: Optional[List["Lang_string"]]
     """
     Description or comments on the element.
 
@@ -1567,8 +1591,8 @@ class Referable(Has_extensions):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
     ) -> None:
         Has_extensions.__init__(self, extensions=extensions)
@@ -1604,8 +1628,8 @@ class Identifiable(Referable):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
     ) -> None:
@@ -1974,8 +1998,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
         embedded_data_specifications: Optional[
@@ -2244,8 +2268,8 @@ class Submodel(
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
         kind: Optional["Modeling_kind"] = None,
@@ -2320,8 +2344,8 @@ class Submodel_element(
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -2380,8 +2404,8 @@ class Relationship_element(Submodel_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -2582,8 +2606,8 @@ class Submodel_element_list(Submodel_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -2652,8 +2676,8 @@ class Submodel_element_collection(Submodel_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -2725,8 +2749,8 @@ class Data_element(Submodel_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -2803,8 +2827,8 @@ class Property(Data_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -2836,7 +2860,21 @@ class Property(Data_element):
         self.value_id = value_id
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or len(self.value) > 0,
+    "Value must be either null or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or lang_strings_have_unique_languages(self.value),
+    "Value specifies no duplicate languages"
+)
 @reference_in_the_book(section=(5, 7, 7, 9))
+# fmt: on
 class Multi_language_property(Data_element):
     """
     A property is a data element that has a multi-language value.
@@ -2847,7 +2885,7 @@ class Multi_language_property(Data_element):
         :attr:`~value_id`.
     """
 
-    value: Optional["Lang_string_set"]
+    value: Optional[List["Lang_string"]]
     """
     The value of the property instance.
     """
@@ -2866,8 +2904,8 @@ class Multi_language_property(Data_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -2876,7 +2914,7 @@ class Multi_language_property(Data_element):
         embedded_data_specifications: Optional[
             List["Embedded_data_specification"]
         ] = None,
-        value: Optional["Lang_string_set"] = None,
+        value: Optional[List["Lang_string"]] = None,
         value_id: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
@@ -2941,8 +2979,8 @@ class Range(Data_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -2994,8 +3032,8 @@ class Reference_element(Data_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3059,8 +3097,8 @@ class Blob(Data_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3118,8 +3156,8 @@ class File(Data_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3177,8 +3215,8 @@ class Annotated_relationship_element(Relationship_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3304,8 +3342,8 @@ class Entity(Submodel_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3479,8 +3517,8 @@ class Event_element(Submodel_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3609,8 +3647,8 @@ class Basic_event_element(Event_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3696,8 +3734,8 @@ class Operation(Submodel_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3763,8 +3801,8 @@ class Capability(Submodel_element):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         kind: Optional["Modeling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
@@ -3873,8 +3911,8 @@ class Concept_description(Identifiable, Has_data_specification):
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
-        display_name: Optional["Lang_string_set"] = None,
-        description: Optional["Lang_string_set"] = None,
+        display_name: Optional[List["Lang_string"]] = None,
+        description: Optional[List["Lang_string"]] = None,
         checksum: Optional["Non_empty_string"] = None,
         administration: Optional["Administrative_information"] = None,
         embedded_data_specifications: Optional[
@@ -4462,29 +4500,6 @@ class Lang_string(DBC):
         self.text = text
 
 
-@reference_in_the_book(section=(5, 7, 12, 2))
-@invariant(lambda self: lang_strings_have_unique_languages(self.lang_strings))
-@invariant(lambda self: len(self.lang_strings) >= 1)
-class Lang_string_set(DBC):
-    """
-    Array of elements of type langString
-
-    .. note::
-
-        langString is a RDF data type.
-
-    A langString is a string value tagged with a language code.
-    It depends on the serialization rules for a technology how
-    this is realized.
-    """
-
-    lang_strings: List[Lang_string]
-    """Strings in different languages"""
-
-    def __init__(self, lang_strings: List[Lang_string]) -> None:
-        self.lang_strings = lang_strings
-
-
 # fmt: off
 @invariant(
     lambda self:
@@ -4816,11 +4831,47 @@ class Value_list(DBC):
         self.value_reference_pair_types = value_reference_pair_types
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    lang_strings_have_unique_languages(self.preferred_name),
+    "Preferred name specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    len(self.preferred_name) > 0,
+    "Preferred name must be either null or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.short_name is not None)
+    or lang_strings_have_unique_languages(self.short_name),
+    "Short name specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.short_name is not None)
+    or len(self.short_name) > 0,
+    "Short name must be either null or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.definition is not None)
+    or lang_strings_have_unique_languages(self.definition),
+    "Definition specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.definition is not None)
+    or len(self.definition) > 0,
+    "Definition must be either null or have at least one item"
+)
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 @serialization(with_model_type=True)
+# fmt: on
 class Data_specification_IEC_61360(Data_specification_content):
     """
     Content of data specification template for concept descriptions for properties,
@@ -4854,7 +4905,7 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     """
 
-    preferred_name: "Lang_string_set"
+    preferred_name: List["Lang_string"]
     """
     Preferred name
 
@@ -4862,7 +4913,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         :attr:`~preferred_name` shall be provided at least in English.
     """
 
-    short_name: Optional["Lang_string_set"]
+    short_name: Optional[List["Lang_string"]]
     """
     Short name
     """
@@ -4907,7 +4958,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Data Type
     """
 
-    definition: Optional["Lang_string_set"]
+    definition: Optional[List["Lang_string"]]
     """
     Definition in different languages
     """
@@ -4934,14 +4985,14 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     def __init__(
         self,
-        preferred_name: "Lang_string_set",
-        short_name: Optional["Lang_string_set"] = None,
+        preferred_name: List["Lang_string"],
+        short_name: Optional[List["Lang_string"]] = None,
         unit: Optional[Non_empty_string] = None,
         unit_id: Optional["Reference"] = None,
         source_of_definition: Optional[Non_empty_string] = None,
         symbol: Optional[Non_empty_string] = None,
         data_type: Optional["Data_type_IEC_61360"] = None,
-        definition: Optional["Lang_string_set"] = None,
+        definition: Optional[List["Lang_string"]] = None,
         value_format: Optional[Non_empty_string] = None,
         value_list: Optional["Value_list"] = None,
         value: Optional[str] = None,
@@ -4961,11 +5012,25 @@ class Data_specification_IEC_61360(Data_specification_content):
         self.level_type = level_type
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.definition is not None)
+    or lang_strings_have_unique_languages(self.definition),
+    "Definition specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.definition is not None)
+    or len(self.definition) > 0,
+    "Definition must be either null or have at least one item"
+)
 @reference_in_the_book(
     section=(6, 4, 2, 1),
     fragment="6.4.2.1 Data Specification Template Physical Unit Attributes",
 )
 @serialization(with_model_type=True)
+# fmt: on
 class Data_specification_physical_unit(Data_specification_content):
 
     unit_name: Non_empty_string
@@ -4978,7 +5043,7 @@ class Data_specification_physical_unit(Data_specification_content):
     Symbol for the physical unit
     """
 
-    definition: "Lang_string_set"
+    definition: List["Lang_string"]
     """
     Definition in different languages
     """
@@ -5037,7 +5102,7 @@ class Data_specification_physical_unit(Data_specification_content):
         self,
         unit_name: Non_empty_string,
         unit_symbol: Non_empty_string,
-        definition: "Lang_string_set",
+        definition: List["Lang_string"],
         SI_notation: Optional[Non_empty_string] = None,
         SI_name: Optional[Non_empty_string] = None,
         DIN_notation: Optional[Non_empty_string] = None,

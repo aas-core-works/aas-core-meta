@@ -52,6 +52,13 @@
             </Attribute>
           </value>
         </entry>
+        <entry key="\tests\common.py">
+          <value>
+            <Attribute>
+              <option name="separator" value="," />
+            </Attribute>
+          </value>
+        </entry>
         <entry key="\tests\test_v3rc2.py">
           <value>
             <Attribute>

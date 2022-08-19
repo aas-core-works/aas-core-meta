@@ -1,7 +1,7 @@
 """Provide common functionalities used across the tests."""
 import io
 import pathlib
-from typing import Tuple, MutableMapping
+from typing import Tuple, MutableMapping, List
 
 import aas_core_codegen.common
 import aas_core_codegen.parse
@@ -127,3 +127,38 @@ def load_atok_symbol_table_and_infer_constraints_for_schema(
     assert constraints_by_class is not None
 
     return atok, ir_symbol_table, constraints_by_class
+
+
+def human_readable_property_name(name: str) -> str:
+    """
+    Convert the property name from the specs to a human-readable property name.
+
+    The abbreviation "id" is upper-cased to "ID" for human-readable text, though we
+    leave it as "id" in the code.
+
+    >>> human_readable_property_name('some_URL_to_id')
+    "some URL to ID"
+
+    >>> human_readable_property_name('some_URL_to_ids')
+    "some URL to IDs"
+    """
+    if name == "id":
+        return "ID"
+
+    if name == "ids":
+        return "IDs"
+
+    parts = name.split("_")
+    if len(parts) == 1:
+        return name
+
+    human_readable_parts = []  # type: List[str]
+    for part in parts:
+        if part == "id":
+            human_readable_parts.append("ID")
+        elif part == "ids":
+            human_readable_parts.append("IDs")
+        else:
+            human_readable_parts.append(part)
+
+    return " ".join(human_readable_parts)

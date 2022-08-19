@@ -1,19 +1,13 @@
-import enum
-import inspect
 import pathlib
-import re
 import threading
 import unittest
-from typing import List, Any, Set, Optional
+from typing import List, Set, Optional
 from typing import MutableMapping, Tuple
 
 import aas_core_codegen.common
 import asttokens
-import icontract._represent
-import icontract._represent
-import icontract._represent
-import icontract._represent
 from aas_core_codegen import intermediate, infer_for_schema
+from aas_core_codegen.infer_for_schema import match as infer_for_schema_match
 
 import tests.common
 import tests.common
@@ -1508,6 +1502,123 @@ not (self.qualifiers is not None)
             raise AssertionError(
                 f"Expected to infer the minimum length for the following lists "
                 f"as at least 1, but:\n"
+                f"{joined_errors}"
+            )
+
+    # noinspection PyUnresolvedReferences
+    def test_that_all_list_of_lang_strings_are_lang_string_sets(self) -> None:
+        symbol_table = Test_assertions._symbol_table()
+
+        # List of (property reference, error message)
+        errors = []  # type: List[Tuple[str, str]]
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
+                continue
+
+            lang_string_set_props_with_uniqueness_invariant = (
+                set()
+            )  # type: Set[aas_core_codegen.common.Identifier]
+
+            for invariant in our_type.invariants:
+                node = invariant.body
+                expected_prop_name: Optional[aas_core_codegen.common.Identifier] = None
+
+                conditional_on_prop = infer_for_schema_match.try_conditional_on_prop(
+                    invariant.body
+                )
+                if conditional_on_prop is not None:
+                    node = conditional_on_prop.consequent
+                    expected_prop_name = conditional_on_prop.prop_name
+
+                single_arg_function_on_member_or_name = (
+                    infer_for_schema_match.try_single_arg_function_on_member_or_name(
+                        node
+                    )
+                )
+                if single_arg_function_on_member_or_name is None:
+                    continue
+
+                if single_arg_function_on_member_or_name.function_name != (
+                    "lang_strings_have_unique_languages"
+                ):
+                    continue
+
+                prop_name = infer_for_schema_match.try_property(
+                    single_arg_function_on_member_or_name.member_or_name
+                )
+                if prop_name is None:
+                    continue
+
+                if expected_prop_name is not None and prop_name != expected_prop_name:
+                    errors.append(
+                        (
+                            f"{our_type.name}.{prop_name}",
+                            f"Unexpected invariant conditioned "
+                            f"on the property {expected_prop_name!r} while "
+                            f"the function call refers to the property {prop_name!r}",
+                        )
+                    )
+                    continue
+
+                human_readable_prop_name = tests.common.human_readable_property_name(
+                    prop_name
+                )
+
+                expected_description = (
+                    f"{human_readable_prop_name.capitalize()} specifies no duplicate "
+                    f"languages"
+                )
+
+                if invariant.description is None:
+                    errors.append(
+                        (
+                            f"{our_type.name}.{prop_name}",
+                            f"Expected the description of the invariant "
+                            f"to be {expected_description!r}, but got none",
+                        )
+                    )
+                elif invariant.description != expected_description:
+                    errors.append(
+                        (
+                            f"{our_type.name}.{prop_name}",
+                            f"Expected the description of the invariant "
+                            f"to be {expected_description!r}, "
+                            f"but got {invariant.description!r}",
+                        )
+                    )
+                else:
+                    # Everything's OK.
+                    pass
+
+                lang_string_set_props_with_uniqueness_invariant.add(prop_name)
+
+            for prop in our_type.properties:
+                type_anno = intermediate.beneath_optional(prop.type_annotation)
+                if (
+                    isinstance(type_anno, intermediate.ListTypeAnnotation)
+                    and isinstance(type_anno.items, intermediate.OurTypeAnnotation)
+                    and isinstance(type_anno.items.our_type, intermediate.Class)
+                    and type_anno.items.our_type.name == "Lang_string"
+                ):
+                    if prop.name not in lang_string_set_props_with_uniqueness_invariant:
+                        errors.append(
+                            (
+                                f"{our_type.name}.{prop.name}",
+                                f"The invariant of no duplicate languages could not "
+                                f"be inferred from the invariants of {our_type.name!r}",
+                            )
+                        )
+
+        if len(errors) != 0:
+            joined_errors = "\n".join(
+                f"* {prop_ref}: {message}" for prop_ref, message in errors
+            )
+            raise AssertionError(
+                f"Expected to the invariants for sets of language strings, "
+                f"but:\n"
                 f"{joined_errors}"
             )
 
