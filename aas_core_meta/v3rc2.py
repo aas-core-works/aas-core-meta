@@ -1324,6 +1324,12 @@ class Id_short(str, DBC):
     "Constraint AASd-118: If there are supplemental semantic IDs defined "
     "then there shall be also a main semantic ID."
 )
+@invariant(
+    lambda self:
+    not (self.supplemental_semantic_ids is not None)
+    or len(self.supplemental_semantic_ids) > 0,
+    "Supplemental semantic IDs must be either null or have at least one item"
+)
 # fmt: on
 @reference_in_the_book(section=(5, 7, 2, 6))
 class Has_semantics(DBC):
@@ -1444,6 +1450,12 @@ class Extension(Has_semantics):
     not (self.extensions is not None) or extension_names_are_unique(self.extensions),
     "Constraint AASd-077: The name of an extension within Has-Extensions "
     "needs to be unique."
+)
+@invariant(
+    lambda self:
+    not (self.extensions is not None)
+    or len(self.extensions) > 0,
+    "Extensions must be either null or have at least one item"
 )
 # fmt: on
 class Has_extensions(DBC):
@@ -1668,8 +1680,16 @@ class Has_kind(DBC):
         self.kind = kind
 
 
+# fmt: off
 @abstract
+@invariant(
+    lambda self:
+    not (self.embedded_data_specifications is not None)
+    or len(self.embedded_data_specifications) > 0,
+    "Embedded data specifications must be either null or have at least one item"
+)
 @reference_in_the_book(section=(5, 7, 2, 9))
+# fmt: on
 class Has_data_specification(DBC):
     """
     Element that can be extended by using data specification templates.
@@ -1743,6 +1763,12 @@ class Administrative_information(Has_data_specification):
     or qualifier_types_are_unique(self.qualifiers),
     "Constraint AASd-021: Every qualifiable can only have one qualifier with "
     "the same type."
+)
+@invariant(
+    lambda self:
+    not (self.qualifiers is not None)
+    or len(self.qualifiers) > 0,
+    "Qualifiers must be either null or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 2, 7))
 @serialization(with_model_type=True)
@@ -1914,6 +1940,12 @@ class Qualifier(Has_semantics):
         )
     )
 )
+@invariant(
+    lambda self:
+    not (self.submodels is not None)
+    or len(self.submodels) > 0,
+    "Submodels must be either null or have at least one item"
+)
 # fmt: on
 class Asset_administration_shell(Identifiable, Has_data_specification):
     """An asset administration shell."""
@@ -1973,7 +2005,15 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         self.submodels = submodels
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.specific_asset_ids is not None)
+    or len(self.specific_asset_ids) > 0,
+    "Specific asset IDs must be either null or have at least one item"
+)
 @reference_in_the_book(section=(5, 7, 4), index=0)
+# fmt: on
 class Asset_information(DBC):
     """
     In :class:`.Asset_information` identifying meta data of the asset that is
@@ -2175,6 +2215,12 @@ class Specific_asset_id(Has_semantics):
         for element in self.submodel_elements
     ),
     "ID-shorts need to be defined for all the submodel elements."
+)
+@invariant(
+    lambda self:
+    not (self.submodel_elements is not None)
+    or len(self.submodel_elements) > 0,
+    "Submodel elements must be either null or have at least one item"
 )
 # fmt: on
 class Submodel(
@@ -3103,7 +3149,15 @@ class File(Data_element):
         self.value = value
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.annotations is not None)
+    or len(self.annotations) > 0,
+    "Annotations must be either null or have at least one item"
+)
 @reference_in_the_book(section=(5, 7, 7, 1))
+# fmt: on
 class Annotated_relationship_element(Relationship_element):
     """
     An annotated relationship element is a relationship element that can be annotated
@@ -3199,6 +3253,12 @@ class Entity_type(Enum):
     "Constraint AASd-014: Either the attribute global asset ID or "
     "specific asset ID must be set if entity type is set to 'SelfManagedEntity'. "
     "They are not existing otherwise."
+)
+@invariant(
+    lambda self:
+    not (self.statements is not None)
+    or len(self.statements) > 0,
+    "Statements must be either null or have at least one item"
 )
 # fmt: on
 class Entity(Submodel_element):
@@ -3590,7 +3650,27 @@ class Basic_event_element(Event_element):
         self.max_interval = max_interval
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.inoutput_variables is not None)
+    or len(self.inoutput_variables) > 0,
+    "Inoutput variables must be either null or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.output_variables is not None)
+    or len(self.output_variables) > 0,
+    "Output variables must be either null or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.input_variables is not None)
+    or len(self.input_variables) > 0,
+    "Input variables must be either null or have at least one item"
+)
 @reference_in_the_book(section=(5, 7, 7, 10))
+# fmt: on
 class Operation(Submodel_element):
     """
     An operation is a submodel element with input and output variables.
@@ -3741,6 +3821,12 @@ Categories for :class:.Concept_description` as defined in :constraintref:`AASd-0
     "the following categories: 'VALUE', 'PROPERTY', 'REFERENCE', 'DOCUMENT', "
     "'CAPABILITY',; 'RELATIONSHIP', 'COLLECTION', 'FUNCTION', 'EVENT', 'ENTITY', "
     "'APPLICATION_CLASS', 'QUALIFIER', 'VIEW'.")
+@invariant(
+    lambda self:
+    not (self.is_case_of is not None)
+    or len(self.is_case_of) > 0,
+    "Is-case-of must be either null or have at least one item"
+)
 # fmt: on
 class Concept_description(Identifiable, Has_data_specification):
     """
@@ -4399,7 +4485,27 @@ class Lang_string_set(DBC):
         self.lang_strings = lang_strings
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.asset_administration_shells is not None)
+    or len(self.asset_administration_shells) > 0,
+    "Asset administration shells must be either null or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.submodels is not None)
+    or len(self.submodels) > 0,
+    "Submodels must be either null or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.concept_descriptions is not None)
+    or len(self.concept_descriptions) > 0,
+    "Concept descriptions must be either null or have at least one item"
+)
 @reference_in_the_book(section=(5, 7, 9))
+# fmt: on
 class Environment:
     """
     Container for the sets of different identifiables.
