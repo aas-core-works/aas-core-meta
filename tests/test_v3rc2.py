@@ -1,11 +1,14 @@
 import enum
 import inspect
 import pathlib
+import re
 import threading
 import unittest
 from typing import List, Any, Set, Optional
 from typing import MutableMapping, Tuple
 
+import aas_core_codegen.common
+import asttokens
 import icontract._represent
 import icontract._represent
 import icontract._represent
@@ -924,7 +927,7 @@ class Test_assertions(unittest.TestCase):
     }
 
     @staticmethod
-    def check_class_name(name: str) -> List[str]:
+    def check_class_name(name: aas_core_codegen.common.Identifier) -> List[str]:
         errors = []  # type: List[str]
 
         parts = name.split("_")  # type: List[str]
@@ -960,7 +963,7 @@ class Test_assertions(unittest.TestCase):
         return errors
 
     @staticmethod
-    def check_enum_literal_name(name: str) -> List[str]:
+    def check_enum_literal_name(name: aas_core_codegen.common.Identifier) -> List[str]:
         errors = []  # type: List[str]
 
         parts = name.split("_")  # type: List[str]
@@ -995,7 +998,7 @@ class Test_assertions(unittest.TestCase):
         return errors
 
     @staticmethod
-    def check_property_name(name: str) -> List[str]:
+    def check_property_name(name: aas_core_codegen.common.Identifier) -> List[str]:
         errors = []  # type: List[str]
 
         parts = name.split("_")  # type: List[str]
@@ -1022,7 +1025,7 @@ class Test_assertions(unittest.TestCase):
         return errors
 
     @staticmethod
-    def check_method_name(name: str) -> List[str]:
+    def check_method_name(name: aas_core_codegen.common.Identifier) -> List[str]:
         errors = []  # type: List[str]
 
         parts = name.split("_")  # type: List[str]
@@ -1049,73 +1052,128 @@ class Test_assertions(unittest.TestCase):
         return errors
 
     @staticmethod
-    def needs_plural(annotation: Any) -> bool:
-        if isinstance(annotation, List):
-            return True
-        elif hasattr(annotation, "__args__"):
-            for arg in annotation.__args__:
-                origin = getattr(arg, "__origin__", None)
-                if origin == list:
-                    return True
-        else:
-            return False
+    def needs_plural(type_annotation: intermediate.TypeAnnotationUnion) -> bool:
+        type_anno = intermediate.beneath_optional(type_annotation)
+        return isinstance(type_anno, intermediate.ListTypeAnnotation) and not (
+            isinstance(type_anno.items, intermediate.OurTypeAnnotation)
+            and type_anno.items.our_type.name == "Lang_string"
+        )
+
+    _atok_symbol_table_and_constraints_by_class_singleton: Optional[
+        Tuple[
+            asttokens.ASTTokens,
+            intermediate.SymbolTable,
+            MutableMapping[
+                intermediate.ClassUnion, infer_for_schema.ConstraintsByProperty
+            ],
+        ]
+    ] = None
+
+    @staticmethod
+    def _atok_symbol_table_and_constraints_by_class() -> Tuple[
+        asttokens.ASTTokens,
+        intermediate.SymbolTable,
+        MutableMapping[intermediate.ClassUnion, infer_for_schema.ConstraintsByProperty],
+    ]:
+        if (
+            Test_assertions._atok_symbol_table_and_constraints_by_class_singleton
+            is None
+        ):
+            with threading.Lock():
+                # fmt: off
+                Test_assertions._atok_symbol_table_and_constraints_by_class_singleton = (
+                    tests
+                    .common
+                    .load_atok_symbol_table_and_infer_constraints_for_schema(
+                        model_path=pathlib.Path(v3rc2.__file__)
+                    )
+                )
+                # fmt: on
+
+        return Test_assertions._atok_symbol_table_and_constraints_by_class_singleton
+
+    # NOTE (mristin, 2022-08-19):
+    # We provide the functions to deconstruct the singleton into its components for more
+    # maintainable client code. We do not want to be forced to update client code
+    # whenever we add a new property to the singleton.
+
+    @staticmethod
+    def _atok() -> asttokens.ASTTokens:
+        atok, _, _ = Test_assertions._atok_symbol_table_and_constraints_by_class()
+        return atok
+
+    @staticmethod
+    def _symbol_table() -> intermediate.SymbolTable:
+        (
+            _,
+            symbol_table,
+            _,
+        ) = Test_assertions._atok_symbol_table_and_constraints_by_class()
+        return symbol_table
+
+    @staticmethod
+    def _constraints_by_class() -> MutableMapping[
+        intermediate.ClassUnion, infer_for_schema.ConstraintsByProperty
+    ]:
+        (
+            _,
+            _,
+            constraints_by_class,
+        ) = Test_assertions._atok_symbol_table_and_constraints_by_class()
+        return constraints_by_class
 
     def test_naming(self) -> None:
         errors = []  # type: List[str]
 
-        plural_exceptions = {
+        hard_wired_plural_exceptions = {
             "Concept_description.is_case_of",
             "Submodel_element_collection.value",
             "Submodel_element_list.value",
             "Access_permission_rule.permissions_per_object",
         }
 
-        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
-            if obj.__module__ != v3rc2.__name__:
-                continue
+        symbol_table = Test_assertions._symbol_table()
 
-            errors.extend(Test_assertions.check_class_name(name=name))
+        for our_type in symbol_table.our_types:
+            errors.extend(Test_assertions.check_class_name(name=our_type.name))
 
-            if issubclass(obj, enum.Enum):
-                for attr_name in dir(obj):
-                    if attr_name.startswith("_"):
-                        continue
+            # NOTE (mristin, 2022-08-19):
+            # We descend and check literals, properties *etc.*
 
+            if isinstance(our_type, intermediate.Enumeration):
+                for literal in our_type.literals:
                     errors.extend(
-                        Test_assertions.check_enum_literal_name(name=attr_name)
+                        Test_assertions.check_enum_literal_name(name=literal.name)
                     )
-            elif issubclass(obj, (bool, int, float, str, bytearray)):
-                # No properties and methods to be verified in constrained
-                # primitives.
-                continue
-            else:
-                annotations = getattr(obj, "__annotations__", None)
-                if annotations is not None:
-                    for property_name in sorted(annotations.keys()):
-                        annotation = annotations[property_name]
 
-                        errors.extend(
-                            Test_assertions.check_property_name(property_name)
+            elif isinstance(our_type, intermediate.ConstrainedPrimitive):
+                # NOTE (mristin, 2022-08-19):
+                # There are no names to be checked beneath the constrained primitive.
+                pass
+
+            elif isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
+                for prop in our_type.properties:
+                    errors.extend(Test_assertions.check_property_name(prop.name))
+
+                    qualified_name = f"{our_type.name}.{prop.name}"
+
+                    if (
+                        Test_assertions.needs_plural(prop.type_annotation)
+                        and qualified_name not in hard_wired_plural_exceptions
+                        and not prop.name.endswith("s")
+                    ):
+                        errors.append(
+                            f"Expected the property to have a suffix '-s', "
+                            f"but it does not: {qualified_name}"
                         )
 
-                        qualified_name = f"{obj.__name__}.{property_name}"
-                        if (
-                            Test_assertions.needs_plural(annotation)
-                            and qualified_name not in plural_exceptions
-                            and not property_name.endswith("s")
-                        ):
-                            errors.append(
-                                f"Expected the property to have a suffix '-s', "
-                                f"but it does not: {qualified_name}"
-                            )
+                for method in our_type.methods:
+                    errors.extend(Test_assertions.check_method_name(method.name))
 
-                for attr_name in dir(obj):
-                    if attr_name.startswith("_"):
-                        continue
-
-                    attr = getattr(obj, attr_name, None)
-                    if inspect.ismethod(attr):
-                        errors.extend(Test_assertions.check_method_name(attr_name))
+            else:
+                aas_core_codegen.common.assert_never(our_type)
 
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
@@ -1123,22 +1181,38 @@ class Test_assertions(unittest.TestCase):
     def test_AAS_identifiables_correspond_to_classes(self) -> None:
         errors = []  # type: List[str]
 
-        class_name_set = set()  # type: Set[str]
+        symbol_table = Test_assertions._symbol_table()
 
-        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
-            if obj.__module__ != v3rc2.__name__:
+        class_name_set = set()  # type: Set[aas_core_codegen.common.Identifier]
+
+        identifiable_cls = symbol_table.must_find_abstract_class(
+            aas_core_codegen.common.Identifier("Identifiable")
+        )
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
                 continue
 
             # We also include ``Identifiable``.
-            if issubclass(obj, v3rc2.Identifiable):
-                class_name_set.add(name)
+            if our_type.is_subclass_of(identifiable_cls):
+                class_name_set.add(our_type.name)
 
-        literal_set = {literal.name for literal in v3rc2.AAS_identifiables}
+        aas_identifiables_set = symbol_table.constants_by_name.get(
+            aas_core_codegen.common.Identifier("AAS_identifiables"), None
+        )
+
+        assert isinstance(
+            aas_identifiables_set, intermediate.ConstantSetOfEnumerationLiterals
+        )
+
+        literal_set = {literal.name for literal in aas_identifiables_set.literals}
 
         if class_name_set != literal_set:
             errors.append(
                 f"""\
-The sub-classes of {v3rc2.Identifiable.__name__} do not correspond to AAS_identifiables.
+The sub-classes of {identifiable_cls.name} do not correspond to {aas_identifiables_set.name}.
 
 Observed classes:  {sorted(class_name_set)!r}
 Observed literals: {sorted(literal_set)!r}"""
@@ -1150,27 +1224,49 @@ Observed literals: {sorted(literal_set)!r}"""
     def test_referable_non_identifiables_correspond_to_classes(self) -> None:
         errors = []  # type: List[str]
 
-        class_name_set = set()  # type: Set[str]
+        symbol_table = Test_assertions._symbol_table()
 
-        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
-            if obj.__module__ != v3rc2.__name__:
+        class_name_set = set()  # type: Set[aas_core_codegen.common.Identifier]
+
+        identifiable_cls = symbol_table.must_find_abstract_class(
+            aas_core_codegen.common.Identifier("Identifiable")
+        )
+
+        referable_cls = symbol_table.must_find_abstract_class(
+            aas_core_codegen.common.Identifier("Referable")
+        )
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
                 continue
 
-            if obj in (v3rc2.Referable, v3rc2.Identifiable):
+            if our_type in (referable_cls, identifiable_cls):
                 continue
 
-            if issubclass(obj, v3rc2.Referable):
-                if not issubclass(obj, v3rc2.Identifiable):
-                    class_name_set.add(name)
+            if our_type.is_subclass_of(referable_cls) and not our_type.is_subclass_of(
+                identifiable_cls
+            ):
+                class_name_set.add(our_type.name)
+
+        aas_referable_non_identifiables_set = symbol_table.constants_by_name.get(
+            aas_core_codegen.common.Identifier("AAS_referable_non_identifiables"), None
+        )
+
+        assert isinstance(
+            aas_referable_non_identifiables_set,
+            intermediate.ConstantSetOfEnumerationLiterals,
+        )
 
         literal_set = {
-            literal.name for literal in v3rc2.AAS_referable_non_identifiables
+            literal.name for literal in aas_referable_non_identifiables_set.literals
         }
 
         if class_name_set != literal_set:
             errors.append(
                 f"""\
-The sub-classes of {v3rc2.Referable.__name__} which are not {v3rc2.Identifiable.__name__} do not correspond to AAS_referable_non_identifiables.
+The sub-classes of {referable_cls.name} which are not {identifiable_cls.name} do not correspond to {aas_referable_non_identifiables_set.name}.
 
 Observed classes:  {sorted(class_name_set)!r}
 Observed literals: {sorted(literal_set)!r}"""
@@ -1182,21 +1278,40 @@ Observed literals: {sorted(literal_set)!r}"""
     def test_AAS_submodel_elements_as_keys_corresponds_to_classes(self) -> None:
         errors = []  # type: List[str]
 
-        class_name_set = set()  # type: Set[str]
+        symbol_table = Test_assertions._symbol_table()
 
-        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
-            if obj.__module__ != v3rc2.__name__:
+        class_name_set = set()  # type: Set[aas_core_codegen.common.Identifier]
+
+        submodel_element_cls = symbol_table.must_find_abstract_class(
+            aas_core_codegen.common.Identifier("Submodel_element")
+        )
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
                 continue
 
-            if issubclass(obj, v3rc2.Submodel_element):
-                class_name_set.add(name)
+            if our_type.is_subclass_of(submodel_element_cls):
+                class_name_set.add(our_type.name)
 
-        literal_set = {literal.name for literal in v3rc2.AAS_submodel_elements_as_keys}
+        aas_submodel_elements_as_keys_set = symbol_table.constants_by_name.get(
+            aas_core_codegen.common.Identifier("AAS_submodel_elements_as_keys"), None
+        )
+
+        assert isinstance(
+            aas_submodel_elements_as_keys_set,
+            intermediate.ConstantSetOfEnumerationLiterals,
+        )
+
+        literal_set = {
+            literal.name for literal in aas_submodel_elements_as_keys_set.literals
+        }
 
         if class_name_set != literal_set:
             errors.append(
                 f"""\
-The sub-classes of {v3rc2.Submodel_element.__name__} do not correspond to AAS_submodel_elements_as_keys.
+The sub-classes of {submodel_element_cls.name} do not correspond to {aas_submodel_elements_as_keys_set.name}.
 
 Observed classes:  {sorted(class_name_set)!r}
 Observed literals: {sorted(literal_set)!r}"""
@@ -1208,21 +1323,33 @@ Observed literals: {sorted(literal_set)!r}"""
     def test_AAS_submodel_elements_corresponds_to_classes(self) -> None:
         errors = []  # type: List[str]
 
-        class_name_set = set()  # type: Set[str]
+        symbol_table = Test_assertions._symbol_table()
 
-        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
-            if obj.__module__ != v3rc2.__name__:
+        class_name_set = set()  # type: Set[aas_core_codegen.common.Identifier]
+
+        submodel_element_cls = symbol_table.must_find_abstract_class(
+            aas_core_codegen.common.Identifier("Submodel_element")
+        )
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
                 continue
 
-            if issubclass(obj, v3rc2.Submodel_element):
-                class_name_set.add(name)
+            if our_type.is_subclass_of(submodel_element_cls):
+                class_name_set.add(our_type.name)
 
-        literal_set = {literal.name for literal in v3rc2.AAS_submodel_elements}
+        aas_submodel_elements_enum = symbol_table.must_find_enumeration(
+            aas_core_codegen.common.Identifier("AAS_submodel_elements")
+        )
+
+        literal_set = {literal.name for literal in aas_submodel_elements_enum.literals}
 
         if class_name_set != literal_set:
             errors.append(
                 f"""\
-The sub-classes of {v3rc2.Submodel_element.__name__} do not correspond to {v3rc2.AAS_submodel_elements.__name__}.
+The sub-classes of {submodel_element_cls} do not correspond to {aas_submodel_elements_enum.name}.
 
 Observed classes:  {sorted(class_name_set)!r}
 Observed literals: {sorted(literal_set)!r}"""
@@ -1235,8 +1362,7 @@ Observed literals: {sorted(literal_set)!r}"""
         renegade_classes = []  # type: List[str]
 
         expected_condition_str = f"""\
-lambda self:
-    not (self.qualifiers is not None)
+not (self.qualifiers is not None)
     or (
         not any(
             qualifier.kind == Qualifier_kind.Template_qualifier
@@ -1253,44 +1379,46 @@ lambda self:
             "shall be of kind template."
         )
 
-        for name, obj in inspect.getmembers(v3rc2, inspect.isclass):
-            if obj.__module__ != v3rc2.__name__:
+        atok = Test_assertions._atok()
+        symbol_table = Test_assertions._symbol_table()
+
+        qualifiable_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Qualifiable")
+        )
+
+        has_kind_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Has_kind")
+        )
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
                 continue
 
-            if v3rc2.Qualifiable in obj.__bases__ and v3rc2.Has_kind in obj.__bases__:
-                invariants = getattr(obj, "__invariants__", None)
-                if invariants is None:
-                    renegade_classes.append(obj.__name__)
-                    continue
-
+            if our_type.is_subclass_of(qualifiable_cls) and our_type.is_subclass_of(
+                has_kind_cls
+            ):
                 found_invariant = False
-                for invariant in invariants:
-                    condition_str = icontract._represent.represent_condition(
-                        invariant.condition
-                    )
-
-                    description = (
-                        invariant.description
-                        if invariant.description is not None
-                        else None
-                    )
+                for invariant in our_type.invariants:
+                    condition_str = atok.get_text(invariant.body.original_node)
 
                     if (
                         condition_str == expected_condition_str
-                        and description == expected_description
+                        and invariant.description == expected_description
                     ):
                         found_invariant = True
                         break
 
                 if not found_invariant:
-                    renegade_classes.append(obj.__name__)
+                    renegade_classes.append(our_type.name)
                     continue
 
         if len(renegade_classes) > 0:
             raise AssertionError(
                 f"The invariant corresponding to Constraint AASd-119 is "
                 f"expected in the class(es):\n{renegade_classes!r}\n"
-                f"which inherit both from {v3rc2.Has_kind} and {v3rc2.Qualifiable}, "
+                f"which inherit both from {has_kind_cls.name} and {qualifiable_cls.name}, "
                 f"but it could not be found.\n"
                 f"\n"
                 f"Expected condition of the invariant was:\n"
@@ -1301,36 +1429,9 @@ lambda self:
                 f"literally the same for this test to pass."
             )
 
-    _symbol_table: Optional[intermediate.SymbolTable] = None
-    _constraints_by_class: Optional[
-        MutableMapping[intermediate.ClassUnion, infer_for_schema.ConstraintsByProperty]
-    ] = None
-
-    @staticmethod
-    def _symbol_table_and_constraints_by_class() -> Tuple[
-        intermediate.SymbolTable,
-        MutableMapping[intermediate.ClassUnion, infer_for_schema.ConstraintsByProperty],
-    ]:
-        if (
-            Test_assertions._symbol_table is None
-            or Test_assertions._constraints_by_class is None
-        ):
-            with threading.Lock():
-                # fmt: off
-                Test_assertions._symbol_table, Test_assertions._constraints_by_class = (
-                    tests.common.load_symbol_table_and_infer_constraints_for_schema(
-                        model_path=pathlib.Path(v3rc2.__file__)
-                    )
-                )
-                # fmt: on
-
-        return Test_assertions._symbol_table, Test_assertions._constraints_by_class
-
     def test_all_lists_have_min_length_at_least_one(self) -> None:
-        (
-            symbol_table,
-            constraints_by_class,
-        ) = Test_assertions._symbol_table_and_constraints_by_class()
+        symbol_table = Test_assertions._symbol_table()
+        constraints_by_class = Test_assertions._constraints_by_class()
 
         # List of (property reference, error message)
         errors = []  # type: List[Tuple[str, str]]

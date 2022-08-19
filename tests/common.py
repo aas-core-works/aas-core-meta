@@ -6,12 +6,14 @@ from typing import Tuple, MutableMapping
 import aas_core_codegen.common
 import aas_core_codegen.parse
 import aas_core_codegen.run
+import asttokens
 from aas_core_codegen import intermediate, infer_for_schema
 
 
-def load_symbol_table_and_infer_constraints_for_schema(
+def load_atok_symbol_table_and_infer_constraints_for_schema(
     model_path: pathlib.Path,
 ) -> Tuple[
+    asttokens.ASTTokens,
     intermediate.SymbolTable,
     MutableMapping[intermediate.ClassUnion, infer_for_schema.ConstraintsByProperty],
 ]:
@@ -124,4 +126,4 @@ def load_symbol_table_and_infer_constraints_for_schema(
 
     assert constraints_by_class is not None
 
-    return ir_symbol_table, constraints_by_class
+    return atok, ir_symbol_table, constraints_by_class
