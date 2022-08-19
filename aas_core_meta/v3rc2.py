@@ -5015,15 +5015,13 @@ class Data_specification_IEC_61360(Data_specification_content):
 # fmt: off
 @invariant(
     lambda self:
-    not (self.definition is not None)
-    or lang_strings_have_unique_languages(self.definition),
+    lang_strings_have_unique_languages(self.definition),
     "Definition specifies no duplicate languages"
 )
 @invariant(
     lambda self:
-    not (self.definition is not None)
-    or len(self.definition) > 0,
-    "Definition must be either null or have at least one item"
+    len(self.definition) > 0,
+    "Definition must have at least one item"
 )
 @reference_in_the_book(
     section=(6, 4, 2, 1),
