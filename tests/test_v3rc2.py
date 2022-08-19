@@ -1,15 +1,19 @@
-import ast
 import enum
 import inspect
-import re
+import pathlib
+import threading
 import unittest
-import uuid
-from typing import List, Any, Set, Optional, Callable, Tuple, Union
+from typing import List, Any, Set, Optional
+from typing import MutableMapping, Tuple
 
-import astpretty
-import asttokens
 import icontract._represent
+import icontract._represent
+import icontract._represent
+import icontract._represent
+from aas_core_codegen import intermediate, infer_for_schema
 
+import tests.common
+import tests.common
 from aas_core_meta import v3rc2
 
 
@@ -1295,6 +1299,115 @@ lambda self:
                 f"{expected_description}\n\n"
                 f"The expected condition and description need to be "
                 f"literally the same for this test to pass."
+            )
+
+    _symbol_table: Optional[intermediate.SymbolTable] = None
+    _constraints_by_class: Optional[
+        MutableMapping[intermediate.ClassUnion, infer_for_schema.ConstraintsByProperty]
+    ] = None
+
+    @staticmethod
+    def _symbol_table_and_constraints_by_class() -> Tuple[
+        intermediate.SymbolTable,
+        MutableMapping[intermediate.ClassUnion, infer_for_schema.ConstraintsByProperty],
+    ]:
+        if (
+            Test_assertions._symbol_table is None
+            or Test_assertions._constraints_by_class is None
+        ):
+            with threading.Lock():
+                # fmt: off
+                Test_assertions._symbol_table, Test_assertions._constraints_by_class = (
+                    tests.common.load_symbol_table_and_infer_constraints_for_schema(
+                        model_path=pathlib.Path(v3rc2.__file__)
+                    )
+                )
+                # fmt: on
+
+        return Test_assertions._symbol_table, Test_assertions._constraints_by_class
+
+    def test_all_lists_have_min_length_at_least_one(self) -> None:
+        (
+            symbol_table,
+            constraints_by_class,
+        ) = Test_assertions._symbol_table_and_constraints_by_class()
+
+        # List of (property reference, error message)
+        errors = []  # type: List[Tuple[str, str]]
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
+                continue
+
+            constraints_by_prop = constraints_by_class.get(our_type, None)
+
+            for prop in our_type.properties:
+                # NOTE (mristin, 2022-08-19):
+                # The following properties are exception to the rule as it is
+                # the end user who defines their semantics and not us.
+
+                if (
+                    our_type.name == "Submodel_element_list" and prop.name == "value"
+                ) or (
+                    our_type.name == "Submodel_element_collection"
+                    and prop.name == "value"
+                ):
+                    continue
+
+                if isinstance(
+                    intermediate.beneath_optional(prop.type_annotation),
+                    intermediate.ListTypeAnnotation,
+                ):
+                    if constraints_by_prop is None:
+                        errors.append(
+                            (
+                                f"{our_type.name}.{prop.name}",
+                                f"Inferred no constraints for our type {our_type.name}",
+                            )
+                        )
+                        continue
+
+                    len_constraints = (
+                        constraints_by_prop.len_constraints_by_property.get(prop, None)
+                    )
+                    if len_constraints is None:
+                        errors.append(
+                            (
+                                f"{our_type.name}.{prop.name}",
+                                "Inferred no length constraints for the property",
+                            )
+                        )
+                        continue
+
+                    if len_constraints.min_value is None:
+                        errors.append(
+                            (
+                                f"{our_type.name}.{prop.name}",
+                                "Inferred no minimum length constraint for the property",
+                            )
+                        )
+                        continue
+
+                    if len_constraints.min_value < 1:
+                        errors.append(
+                            (
+                                f"{our_type.name}.{prop.name}",
+                                f"Inferred the minimum length constraints of "
+                                f"{len_constraints.min_value}",
+                            )
+                        )
+                        continue
+
+        if len(errors) != 0:
+            joined_errors = "\n".join(
+                f"* {prop_ref}: {message}" for prop_ref, message in errors
+            )
+            raise AssertionError(
+                f"Expected to infer the minimum length for the following lists "
+                f"as at least 1, but:\n"
+                f"{joined_errors}"
             )
 
 
