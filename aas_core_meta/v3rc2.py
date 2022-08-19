@@ -16,8 +16,8 @@ AAS registry or AAS server:
 
     :attr:`Referable.id_short` of :class:`.Referable`'s shall be matched case-sensitive.
 
-We could not implement the following constraints since they depend on registry
-and can not be verified without it:
+We could not implement the following constraints since they depend on registry and
+de-referencing, so we can not formalize them with formalizing such external dependncies:
 
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
@@ -26,12 +26,6 @@ Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
-
-We could not formalize the constraints which prescribed how to deal with
-the default values as these are not really constraints in the strict sense, but more
-a guideline on how to resolve default values:
-
-* :constraintref:`AASd-116`
 
 The constraint :constraintref:`AASd-116` is ill-defined. The type of the
 :attr:`~Specific_asset_id.value` is a string, but the type of
@@ -68,6 +62,11 @@ The working group decided to change the rules for serialization *after* the book
 published. The data specifications are critical in applications, but there is no
 possibility to access them through a data channel as they are not part of
 an environment.
+
+Since the data specifications are now embedded, the following constraints became futile:
+
+* ``AASd-050``
+* ``AASd-050b``
 """
 
 from enum import Enum
@@ -1806,7 +1805,7 @@ class Qualifiable(DBC):
 
         If any :attr:`~Qualifier.kind` value of :attr:`~Qualifiable.qualifiers` is
         equal to :attr:`~Qualifier_kind.Template_qualifier` and the qualified element
-        inherits from :class:`.Has_kind` then the qualified element shell be of
+        inherits from :class:`.Has_kind` then the qualified element shall be of
         kind Template (:attr:`Has_kind.kind` = :attr:`Modeling_kind.Template`).
     """
 
@@ -3848,9 +3847,271 @@ Valid_categories_for_concept_description: Set[str] = constant_set(
 Categories for :class:.Concept_description` as defined in :constraintref:`AASd-051`""",
 )
 
+# NOTE (mristin, 2022-08-19):
+# We make the following verification functions implementation-specific since the casts
+# are very clumsy to formalize and transpile in a readable way across languages.
+# For example, since Python does not have a null-coalescing operator, formalizing
+# the constraints such as :constraintref:`AASc-004` would involve walrus operator and
+# would result in an unreadable invariant.
+#
+# Therefore, we decided to encapsulate the logic in these few functions and estimate
+# the maintenance effort to dwarf the effort needed to get this right in
+# aas-core-codegen.
+
+
+@verification
+@implementation_specific
+def data_specification_IEC_61360s_for_property_or_value_have_appropriate_data_type(
+    embedded_data_specifications: List["Embedded_data_specification"],
+) -> bool:
+    """
+    Check that the :attr:`~Data_specification_IEC_61360.data_type` is defined
+    appropriately for all data specifications whose content is given as IEC 61360.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    return all(
+        not (
+            isinstance(
+                data_specification.data_specification_content,
+                Data_specification_IEC_61360,
+            )
+        )
+        or (
+            data_specification.data_specification_content.data_type is not None
+            and (
+                data_specification.data_specification_content.data_type
+                in Data_type_IEC_61360_for_property_or_value
+            )
+        )
+        for data_specification in embedded_data_specifications
+    )
+
+
+@verification
+@implementation_specific
+def data_specification_IEC_61360s_for_reference_have_appropriate_data_type(
+    embedded_data_specifications: List["Embedded_data_specification"],
+) -> bool:
+    """
+    Check that the :attr:`~Data_specification_IEC_61360.data_type` is defined
+    appropriately for all data specifications whose content is given as IEC 61360.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    return all(
+        not (
+            isinstance(
+                data_specification.data_specification_content,
+                Data_specification_IEC_61360,
+            )
+        )
+        or (
+            data_specification.data_specification_content.data_type is not None
+            and (
+                data_specification.data_specification_content.data_type
+                in Data_type_IEC_61360_for_reference
+            )
+        )
+        for data_specification in embedded_data_specifications
+    )
+
+
+@verification
+@implementation_specific
+def data_specification_IEC_61360s_for_document_have_appropriate_data_type(
+    embedded_data_specifications: List["Embedded_data_specification"],
+) -> bool:
+    """
+    Check that the :attr:`~Data_specification_IEC_61360.data_type` is defined
+    appropriately for all data specifications whose content is given as IEC 61360.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    return all(
+        not (
+            isinstance(
+                data_specification.data_specification_content,
+                Data_specification_IEC_61360,
+            )
+        )
+        or (
+            data_specification.data_specification_content.data_type is not None
+            and (
+                data_specification.data_specification_content.data_type
+                in Data_type_IEC_61360_for_document
+            )
+        )
+        for data_specification in embedded_data_specifications
+    )
+
+
+@verification
+@implementation_specific
+def data_specification_IEC_61360s_have_data_type(
+    embedded_data_specifications: List["Embedded_data_specification"],
+) -> bool:
+    """
+    Check that the :attr:`~Data_specification_IEC_61360.data_type` is defined for all
+    data specifications whose content is given as IEC 61360.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    return all(
+        not (
+            isinstance(
+                data_specification.data_specification_content,
+                Data_specification_IEC_61360,
+            )
+        )
+        or (data_specification.data_specification_content.data_type is not None)
+        for data_specification in embedded_data_specifications
+    )
+
+
+@verification
+@implementation_specific
+def data_specification_IEC_61360s_have_value(
+    embedded_data_specifications: List["Embedded_data_specification"],
+) -> bool:
+    """
+    Check that the :attr:`~Data_specification_IEC_61360.value` is defined
+    for all data specifications whose content is given as IEC 61360.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+    return all(
+        not (
+            isinstance(
+                data_specification.data_specification_content,
+                Data_specification_IEC_61360,
+            )
+        )
+        or (data_specification.data_specification_content.value is not None)
+        for data_specification in embedded_data_specifications
+    )
+
+
+@verification
+@implementation_specific
+def data_specification_IEC_61360s_have_definition_at_least_in_english(
+    embedded_data_specifications: List["Embedded_data_specification"],
+) -> bool:
+    """
+    Check that the :attr:`~Data_specification_IEC_61360.definition` is defined
+    for all data specifications whose content is given as IEC 61360 at least in English.
+    """
+    # NOTE (mristin, 2022-04-7):
+    # This implementation will not be transpiled, but is given here as reference.
+
+    for data_specification in embedded_data_specifications:
+        if not isinstance(
+            data_specification.data_specification_content, Data_specification_IEC_61360
+        ):
+            continue
+
+        if data_specification.data_specification_content.definition is None:
+            return False
+
+        if not any(
+            is_BCP_47_for_english(lang_string.language)
+            for lang_string in (
+                data_specification.data_specification_content.definition
+            )
+        ):
+            return False
+
+    return True
+
 
 # fmt: off
 @reference_in_the_book(section=(5, 7, 8))
+@invariant(
+    lambda self:
+    not (
+            self.category is not None
+            and (self.category == "PROPERTY" or self.category == "VALUE")
+            and self.embedded_data_specifications is not None
+    ) or (
+        data_specification_IEC_61360s_for_property_or_value_have_appropriate_data_type(
+            self.embedded_data_specifications)
+    ),
+    "Constraint AASc-004: For a concept description with category PROPERTY or VALUE "
+    "using data specification IEC 61360, the data type of the data specification is "
+    "mandatory and shall be one of: DATE, STRING, STRING_TRANSLATABLE, "
+    "INTEGER_MEASURE, INTEGER_COUNT, INTEGER_CURRENCY, REAL_MEASURE, REAL_COUNT, "
+    "REAL_CURRENCY, BOOLEAN, RATIONAL, RATIONAL_MEASURE, TIME, TIMESTAMP."
+)
+@invariant(
+    lambda self:
+    not (
+            self.category is not None
+            and (self.category == "REFERENCE")
+            and self.embedded_data_specifications is not None
+    ) or (
+        data_specification_IEC_61360s_for_reference_have_appropriate_data_type(
+            self.embedded_data_specifications)
+    ),
+    "Constraint AASc-005: For a concept description with category REFERENCE "
+    "using data specification IEC 61360, the data type of the data specification is "
+    "mandatory and shall be one of: STRING, IRI, IRDI."
+)
+@invariant(
+    lambda self:
+    not (
+            self.category is not None
+            and (self.category == "DOCUMENT")
+            and self.embedded_data_specifications is not None
+    ) or (
+        data_specification_IEC_61360s_for_document_have_appropriate_data_type(
+            self.embedded_data_specifications
+        )
+    ),
+    "Constraint AASc-006: For a concept description with category DOCUMENT "
+    "using data specification IEC 61360, the data type of the data specification is "
+    "mandatory and shall be one of: FILE, BLOB, HTML."
+)
+@invariant(
+    lambda self:
+    not (
+            self.category is not None
+            and (self.category == "QUALIFIER_TYPE")
+            and self.embedded_data_specifications is not None
+    ) or (
+        data_specification_IEC_61360s_have_data_type(self.embedded_data_specifications)
+    ),
+    "Constraint AASc-007: For a concept description with category QUALIFIER_TYPE "
+    "using data specification IEC 61360, the data type of the data specification is "
+    "mandatory and shall be defined."
+)
+@invariant(
+    lambda self:
+    not (
+            self.category is not None
+            and self.category == "VALUE"
+            and self.embedded_data_specifications is not None
+    ) or (
+        data_specification_IEC_61360s_have_value(self.embedded_data_specifications)
+    ),
+    "Constraint AASc-008: For a concept description with category VALUE "
+    "using data specification IEC 61360, the value of the data specification "
+    "shall be set."
+)
+@invariant(
+    lambda self:
+    not (
+        self.category is not None
+        and self.category != "VALUE"
+        and self.embedded_data_specifications is not None
+    ) or (
+        data_specification_IEC_61360s_have_definition_at_least_in_english(
+            self.embedded_data_specifications
+        )
+    ),
+    "Constraint AASc-003: For all concept descriptions with a category except VALUE "
+    "using data specification IEC 61360, the definition of the data specification "
+    "is mandatory and shall be defined at least in English."
+)
 @invariant(
     lambda self:
     not (self.category is not None)
@@ -3882,6 +4143,44 @@ class Concept_description(Identifiable, Has_data_specification):
         ``APPLICATION_CLASS``, ``QUALIFIER``, ``VIEW``.
 
         Default: ``PROPERTY``.
+
+    :constraint AASc-004:
+
+        For a :class:`.Concept_description` with :attr:`~category` ``PROPERTY`` or
+        ``VALUE`` using data specification IEC61360,
+        the :attr:`~Data_specification_IEC_61360.data_type` is mandatory and shall be
+        one of: ``DATE``, ``STRING``, ``STRING_TRANSLATABLE``, ``INTEGER_MEASURE``,
+        ``INTEGER_COUNT``, ``INTEGER_CURRENCY``, ``REAL_MEASURE``, ``REAL_COUNT``,
+        ``REAL_CURRENCY``, ``BOOLEAN``, ``RATIONAL``, ``RATIONAL_MEASURE``,
+        ``TIME``, ``TIMESTAMP``.
+
+    :constraint AASc-005:
+        For a :class:`.Concept_description` with :attr:`~category` ``REFERENCE``
+        using data specification IEC61360,
+        the :attr:`~Data_specification_IEC_61360.data_type` is mandatory and shall be
+        one of: ``STRING``, ``IRI``, ``IRDI``.
+
+    :constraint AASc-006:
+        For a :class:`.Concept_description` with :attr:`~category` ``DOCUMENT``
+        using data specification IEC61360,
+        the :attr:`~Data_specification_IEC_61360.data_type` is mandatory and shall be
+        defined.
+
+    :constraint AASc-007:
+        For a :class:`.Concept_description` with :attr:`~category` ``QUALIFIER_TYPE``
+        using data specification IEC61360,
+        the :attr:`~Data_specification_IEC_61360.data_type` is mandatory and shall be
+
+    :constraint AASc-008:
+        For all :class:`.Concept_description`'s with a category except
+        :attr:`~category` ``VALUE`` using data specification IEC61360,
+        :attr:`~Data_specification_IEC_61360.definition` is mandatory and shall be
+        defined at least in English.
+
+    :constraint AASc-003:
+        For a :class:`.Concept_description` with :attr:`~category` ``VALUE``
+        using data specification IEC61360,
+        the :attr:`~Data_specification_IEC_61360.value` shall be set.
     """
 
     @implementation_specific
@@ -4558,7 +4857,7 @@ class Environment:
         self.concept_descriptions = concept_descriptions
 
 
-# region DataSpecifications
+# region Data specifications
 
 
 @abstract
@@ -4745,24 +5044,50 @@ class Data_type_IEC_61360(Enum):
     """
 
 
-@reference_in_the_book(
-    section=(6, 3, 4),
-    fragment="6.3.4 Category of Concept Descriptions",
+Data_type_IEC_61360_for_property_or_value: Set[Data_type_IEC_61360] = constant_set(
+    values=[
+        Data_type_IEC_61360.Date,
+        Data_type_IEC_61360.String,
+        Data_type_IEC_61360.String_translatable,
+        Data_type_IEC_61360.Integer_measure,
+        Data_type_IEC_61360.Integer_count,
+        Data_type_IEC_61360.Integer_currency,
+        Data_type_IEC_61360.Real_measure,
+        Data_type_IEC_61360.Real_count,
+        Data_type_IEC_61360.Real_currency,
+        Data_type_IEC_61360.Boolean,
+        Data_type_IEC_61360.Rational,
+        Data_type_IEC_61360.Rational_measure,
+        Data_type_IEC_61360.Time,
+        Data_type_IEC_61360.Timestamp,
+    ],
+    description=(
+        "IEC 61360 data types for concept descriptions categorized "
+        "with PROPERTY or VALUE."
+    ),
 )
-class Concept_descriptions_categories(Enum):
-    Application_class = "APPLICATION_CLASS"
-    Capability = "CAPABILITY"
-    Collections = "COLLECTIONS"
-    Documentation = "DOCUMENTATION"
-    Entity = "ENTITY"
-    Event = "EVENT"
-    Function = "FUNCTION"
-    Property = "PROPERTY"
-    Value = "VALUE"
-    Range = "RANGE"
-    Qualifier_type = "QUALIFIER_TYPE"
-    Referencing = "REFERENCING"
-    Relationship = "RELATIONSHIP"
+
+Data_type_IEC_61360_for_reference: Set[Data_type_IEC_61360] = constant_set(
+    values=[
+        Data_type_IEC_61360.String,
+        Data_type_IEC_61360.IRI,
+        Data_type_IEC_61360.IRDI,
+    ],
+    description=(
+        "IEC 61360 data types for concept descriptions categorized " "with REFERENCE."
+    ),
+)
+
+Data_type_IEC_61360_for_document: Set[Data_type_IEC_61360] = constant_set(
+    values=[
+        Data_type_IEC_61360.File,
+        Data_type_IEC_61360.Blob,
+        Data_type_IEC_61360.HTML,
+    ],
+    description=(
+        "IEC 61360 data types for concept descriptions categorized " "with DOCUMENT."
+    ),
+)
 
 
 @reference_in_the_book(
@@ -4831,7 +5156,37 @@ class Value_list(DBC):
         self.value_reference_pair_types = value_reference_pair_types
 
 
+IEC_61360_data_types_with_unit: Set[Data_type_IEC_61360] = constant_set(
+    values=[
+        Data_type_IEC_61360.Integer_measure,
+        Data_type_IEC_61360.Real_measure,
+        Data_type_IEC_61360.Rational_measure,
+        Data_type_IEC_61360.Integer_currency,
+        Data_type_IEC_61360.Real_currency,
+    ],
+    description="""\
+These data types imply that the unit is defined in the data specification.""",
+    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=9),
+)
+
+
+@verification
+def is_BCP_47_for_english(text: str) -> bool:
+    """Check that the :paramref:`text` corresponds to a BCP47 code for english."""
+    pattern = f"^(en|EN)(-.*)?$"
+
+    return match(pattern, text) is not None
+
+
 # fmt: off
+@invariant(
+    lambda self:
+    any(
+        is_BCP_47_for_english(lang_string.language)
+        for lang_string in self.preferred_name
+    ),
+    "Constraint AASc-002: preferred name shall be provided at least in English."
+)
 @invariant(
     lambda self:
     lang_strings_have_unique_languages(self.preferred_name),
@@ -4840,7 +5195,7 @@ class Value_list(DBC):
 @invariant(
     lambda self:
     len(self.preferred_name) > 0,
-    "Preferred name must be either null or have at least one item"
+    "Preferred name must have at least one item"
 )
 @invariant(
     lambda self:
@@ -4866,6 +5221,28 @@ class Value_list(DBC):
     or len(self.definition) > 0,
     "Definition must be either null or have at least one item"
 )
+@invariant(
+    lambda self:
+    not (self.data_type is None and self.data_type in IEC_61360_data_types_with_unit)
+    or (
+            self.unit is not None or self.unit_id is not None
+    ),
+    "Constraint AASc-009: If data type is a an integer, real or rational with "
+    "a measure or currency, unit or unit ID shall be defined."
+)
+@invariant(
+    lambda self:
+    (
+            self.value is not None
+            and self.value_list is None
+    ) or (
+            self.value is None
+            and self.value_list is not None
+            and len(self.value_list.value_reference_pair_types) > 0
+    ),
+    "Constraint AASc-010: If value is not empty then value list shall be empty and "
+    "vice versa."
+)
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
@@ -4877,14 +5254,18 @@ class Data_specification_IEC_61360(Data_specification_content):
     Content of data specification template for concept descriptions for properties,
     values and value lists conformant to IEC 61360.
 
-    :constraint AASd-010:
+    :constraint AASc-010:
         If :attr:`~value` is not empty then :attr:`~value_list` shall be empty
         and vice versa.
 
-    :constraint AASd-009:
-        If :attr:`~data_type` one of: ``INTEGER_MEASURE``, ``REAL_MEASURE``,
-        ``RATIONAL_MEASURE``, ``INTEGER_CURRENCY``, ``REAL_CURRENCY``, then
-        :attr:`~unit` or :attr:`~unit_id` shall be defined.
+    :constraint AASc-009:
+        If :attr:`~data_type` one of:
+        :attr:`~Data_type_IEC_61360.Integer_measure`,
+        :attr:`~Data_type_IEC_61360.Real_measure`,
+        :attr:`~Data_type_IEC_61360.Rational_measure`,
+        :attr:`~Data_type_IEC_61360.Integer_currency`,
+        :attr:`~Data_type_IEC_61360.Real_currency`, then :attr:`~unit` or
+        :attr:`~unit_id` shall be defined.
 
     .. note::
 
