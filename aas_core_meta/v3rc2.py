@@ -1226,6 +1226,11 @@ class Non_empty_string(str, DBC):
     lambda self: is_xs_date_time_stamp_utc(self),
     "The value must represent a valid xs:dateTimeStamp with the time zone fixed to UTC.",
 )
+@invariant(
+    lambda self: matches_xs_date_time_stamp_utc(self),
+    "The value must match the pattern of xs:dateTimeStamp with the time zone fixed "
+    "to UTC.",
+)
 class Date_time_stamp_UTC(str, DBC):
     """Represent an ``xs:dateTimeStamp`` with the time zone fixed to UTC."""
 
