@@ -1351,7 +1351,7 @@ class Id_short(str, DBC):
     lambda self:
     not (self.supplemental_semantic_ids is not None)
     or len(self.supplemental_semantic_ids) >= 1,
-    "Supplemental semantic IDs must be either null or have at least one item"
+    "Supplemental semantic IDs must be either not set or have at least one item"
 )
 # fmt: on
 @reference_in_the_book(section=(5, 7, 2, 6))
@@ -1479,7 +1479,7 @@ class Extension(Has_semantics):
     lambda self:
     not (self.extensions is not None)
     or len(self.extensions) >= 1,
-    "Extensions must be either null or have at least one item"
+    "Extensions must be either not set or have at least one item"
 )
 # fmt: on
 class Has_extensions(DBC):
@@ -1512,7 +1512,7 @@ class Has_extensions(DBC):
     lambda self:
     not (self.display_name is not None)
     or len(self.display_name) >= 1,
-    "Display name must be either null or have at least one item"
+    "Display name must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
@@ -1524,7 +1524,7 @@ class Has_extensions(DBC):
     lambda self:
     not (self.description is not None)
     or len(self.description) >= 1,
-    "Description must be either null or have at least one item"
+    "Description must be either not set or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 2, 2))
 @serialization(with_model_type=True)
@@ -1734,7 +1734,7 @@ class Has_kind(DBC):
     lambda self:
     not (self.embedded_data_specifications is not None)
     or len(self.embedded_data_specifications) >= 1,
-    "Embedded data specifications must be either null or have at least one item"
+    "Embedded data specifications must be either not set or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 2, 9))
 # fmt: on
@@ -1816,7 +1816,7 @@ class Administrative_information(Has_data_specification):
     lambda self:
     not (self.qualifiers is not None)
     or len(self.qualifiers) >= 1,
-    "Qualifiers must be either null or have at least one item"
+    "Qualifiers must be either not set or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 2, 7))
 @serialization(with_model_type=True)
@@ -1994,7 +1994,7 @@ class Qualifier(Has_semantics):
     lambda self:
     not (self.submodels is not None)
     or len(self.submodels) >= 1,
-    "Submodels must be either null or have at least one item"
+    "Submodels must be either not set or have at least one item"
 )
 # fmt: on
 class Asset_administration_shell(Identifiable, Has_data_specification):
@@ -2060,7 +2060,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     lambda self:
     not (self.specific_asset_ids is not None)
     or len(self.specific_asset_ids) >= 1,
-    "Specific asset IDs must be either null or have at least one item"
+    "Specific asset IDs must be either not set or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 4), index=0)
 # fmt: on
@@ -2270,7 +2270,7 @@ class Specific_asset_id(Has_semantics):
     lambda self:
     not (self.submodel_elements is not None)
     or len(self.submodel_elements) >= 1,
-    "Submodel elements must be either null or have at least one item"
+    "Submodel elements must be either not set or have at least one item"
 )
 # fmt: on
 class Submodel(
@@ -2893,7 +2893,7 @@ class Property(Data_element):
     lambda self:
     not (self.value is not None)
     or len(self.value) >= 1,
-    "Value must be either null or have at least one item"
+    "Value must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
@@ -3222,7 +3222,7 @@ class File(Data_element):
     lambda self:
     not (self.annotations is not None)
     or len(self.annotations) >= 1,
-    "Annotations must be either null or have at least one item"
+    "Annotations must be either not set or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 7, 1))
 # fmt: on
@@ -3326,7 +3326,7 @@ class Entity_type(Enum):
     lambda self:
     not (self.statements is not None)
     or len(self.statements) >= 1,
-    "Statements must be either null or have at least one item"
+    "Statements must be either not set or have at least one item"
 )
 # fmt: on
 class Entity(Submodel_element):
@@ -3727,19 +3727,19 @@ class Basic_event_element(Event_element):
     lambda self:
     not (self.inoutput_variables is not None)
     or len(self.inoutput_variables) >= 1,
-    "Inoutput variables must be either null or have at least one item"
+    "Inoutput variables must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
     not (self.output_variables is not None)
     or len(self.output_variables) >= 1,
-    "Output variables must be either null or have at least one item"
+    "Output variables must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
     not (self.input_variables is not None)
     or len(self.input_variables) >= 1,
-    "Input variables must be either null or have at least one item"
+    "Input variables must be either not set or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 7, 10))
 # fmt: on
@@ -4159,7 +4159,7 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
     lambda self:
     not (self.is_case_of is not None)
     or len(self.is_case_of) >= 1,
-    "Is-case-of must be either null or have at least one item"
+    "Is-case-of must be either not set or have at least one item"
 )
 # fmt: on
 class Concept_description(Identifiable, Has_data_specification):
@@ -4842,19 +4842,19 @@ class Lang_string(DBC):
     lambda self:
     not (self.asset_administration_shells is not None)
     or len(self.asset_administration_shells) >= 1,
-    "Asset administration shells must be either null or have at least one item"
+    "Asset administration shells must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
     not (self.submodels is not None)
     or len(self.submodels) >= 1,
-    "Submodels must be either null or have at least one item"
+    "Submodels must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
     not (self.concept_descriptions is not None)
     or len(self.concept_descriptions) >= 1,
-    "Concept descriptions must be either null or have at least one item"
+    "Concept descriptions must be either not set or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 9))
 # fmt: on
@@ -5251,7 +5251,7 @@ def is_BCP_47_for_english(text: str) -> bool:
     lambda self:
     not (self.short_name is not None)
     or len(self.short_name) >= 1,
-    "Short name must be either null or have at least one item"
+    "Short name must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
@@ -5263,7 +5263,7 @@ def is_BCP_47_for_english(text: str) -> bool:
     lambda self:
     not (self.definition is not None)
     or len(self.definition) >= 1,
-    "Definition must be either null or have at least one item"
+    "Definition must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
