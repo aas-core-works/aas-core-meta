@@ -1203,14 +1203,29 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 
 # endregion
 
-
-@invariant(lambda self: len(self) >= 1)
+# fmt: off
+@invariant(
+    lambda self: len(self) >= 1,
+    "Constraint AASd-100: An attribute with data type ``string`` is not allowed "
+    "to be empty."
+)
+# fmt: on
 class Non_empty_string(str, DBC):
-    """Represent a string with at least one character."""
+    """
+    Represent a string with at least one character.
+
+    This allows us to model the following constraint.
+
+    :constraint AASd-100:
+
+        An attribute with data type ``string`` is not allowed to be empty.
+    """
 
 
-@invariant(lambda self: is_xs_date_time_stamp_utc(self))
-@invariant(lambda self: matches_xs_date_time_stamp_utc(self))
+@invariant(
+    lambda self: is_xs_date_time_stamp_utc(self),
+    "The value must represent a valid xs:dateTimeStamp with the time zone fixed to UTC.",
+)
 class Date_time_stamp_UTC(str, DBC):
     """Represent an ``xs:dateTimeStamp`` with the time zone fixed to UTC."""
 
@@ -1228,7 +1243,10 @@ class Identifier(Non_empty_string, DBC):
 
 
 # noinspection SpellCheckingInspection
-@invariant(lambda self: matches_BCP_47(self))
+@invariant(
+    lambda self: matches_BCP_47(self),
+    "The value must represent a value language tag conformant to BCP 47.",
+)
 class BCP_47_language_tag(str, DBC):
     """
     Represent a language tag conformant to BCP 47.
@@ -1238,7 +1256,10 @@ class BCP_47_language_tag(str, DBC):
 
 
 @reference_in_the_book(section=(5, 7, 12, 2))
-@invariant(lambda self: matches_MIME_type(self))
+@invariant(
+    lambda self: matches_MIME_type(self),
+    "The value must represent a valid content MIME type according to RFC 2046.",
+)
 class Content_type(Non_empty_string, DBC):
     """
     string
@@ -1258,7 +1279,10 @@ class Content_type(Non_empty_string, DBC):
     """
 
 
-@invariant(lambda self: matches_RFC_8089_path(self))
+@invariant(
+    lambda self: matches_RFC_8089_path(self),
+    "The value must represent a valid file URI scheme according to RFC 8089.",
+)
 @reference_in_the_book(section=(5, 7, 12, 2))
 class Path_type(Non_empty_string, DBC):
     """
@@ -1326,7 +1350,7 @@ class Id_short(str, DBC):
 @invariant(
     lambda self:
     not (self.supplemental_semantic_ids is not None)
-    or len(self.supplemental_semantic_ids) > 0,
+    or len(self.supplemental_semantic_ids) >= 1,
     "Supplemental semantic IDs must be either null or have at least one item"
 )
 # fmt: on
@@ -1377,7 +1401,8 @@ class Has_semantics(DBC):
     not (self.value is not None)
     or (
         value_consistent_with_xsd_type(self.value, self.value_type_or_default())
-    )
+    ),
+    "The value must match the value type."
 )
 # fmt: on
 @reference_in_the_book(section=(5, 7, 2, 1), index=1)
@@ -1453,7 +1478,7 @@ class Extension(Has_semantics):
 @invariant(
     lambda self:
     not (self.extensions is not None)
-    or len(self.extensions) > 0,
+    or len(self.extensions) >= 1,
     "Extensions must be either null or have at least one item"
 )
 # fmt: on
@@ -1708,7 +1733,7 @@ class Has_kind(DBC):
 @invariant(
     lambda self:
     not (self.embedded_data_specifications is not None)
-    or len(self.embedded_data_specifications) > 0,
+    or len(self.embedded_data_specifications) >= 1,
     "Embedded data specifications must be either null or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 2, 9))
@@ -1790,7 +1815,7 @@ class Administrative_information(Has_data_specification):
 @invariant(
     lambda self:
     not (self.qualifiers is not None)
-    or len(self.qualifiers) > 0,
+    or len(self.qualifiers) >= 1,
     "Qualifiers must be either null or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 2, 7))
@@ -1951,7 +1976,8 @@ class Qualifier(Has_semantics):
             is_model_reference_to(reference, Key_types.Submodel)
             for reference in self.submodels
         )
-    )
+    ),
+    "All submodels must be model references to a submodel."
 )
 @invariant(
     lambda self:
@@ -1961,12 +1987,13 @@ class Qualifier(Has_semantics):
             self.derived_from,
             Key_types.Asset_administration_shell
         )
-    )
+    ),
+    "Derived-from must be a model reference to an asset administration shell."
 )
 @invariant(
     lambda self:
     not (self.submodels is not None)
-    or len(self.submodels) > 0,
+    or len(self.submodels) >= 1,
     "Submodels must be either null or have at least one item"
 )
 # fmt: on
@@ -2032,7 +2059,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 @invariant(
     lambda self:
     not (self.specific_asset_ids is not None)
-    or len(self.specific_asset_ids) > 0,
+    or len(self.specific_asset_ids) >= 1,
     "Specific asset IDs must be either null or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 4), index=0)
@@ -2242,7 +2269,7 @@ class Specific_asset_id(Has_semantics):
 @invariant(
     lambda self:
     not (self.submodel_elements is not None)
-    or len(self.submodel_elements) > 0,
+    or len(self.submodel_elements) >= 1,
     "Submodel elements must be either null or have at least one item"
 )
 # fmt: on
@@ -2647,7 +2674,8 @@ class Submodel_element_list(Submodel_element):
 @invariant(
     lambda self:
     not (self.value is not None)
-    or id_shorts_are_unique(self.value)
+    or id_shorts_are_unique(self.value),
+    "ID-shorts of the value must be unique."
 )
 @invariant(
     lambda self:
@@ -2787,7 +2815,8 @@ class Data_element(Submodel_element):
 @invariant(
     lambda self:
     not (self.value is not None)
-    or value_consistent_with_xsd_type(self.value, self.value_type)
+    or value_consistent_with_xsd_type(self.value, self.value_type),
+    "Value must be consistent with the value type."
 )
 # fmt: on
 class Property(Data_element):
@@ -2863,7 +2892,7 @@ class Property(Data_element):
 @invariant(
     lambda self:
     not (self.value is not None)
-    or len(self.value) > 0,
+    or len(self.value) >= 1,
     "Value must be either null or have at least one item"
 )
 @invariant(
@@ -2940,12 +2969,14 @@ class Multi_language_property(Data_element):
 @invariant(
     lambda self:
     not (self.min is not None)
-    or value_consistent_with_xsd_type(self.min, self.value_type)
+    or value_consistent_with_xsd_type(self.min, self.value_type),
+    "Min must be consistent with the value type."
 )
 @invariant(
     lambda self:
     not (self.max is not None)
-    or value_consistent_with_xsd_type(self.max, self.value_type)
+    or value_consistent_with_xsd_type(self.max, self.value_type),
+    "Max must be consistent with the value type."
 )
 # fmt: on
 class Range(Data_element):
@@ -3190,7 +3221,7 @@ class File(Data_element):
 @invariant(
     lambda self:
     not (self.annotations is not None)
-    or len(self.annotations) > 0,
+    or len(self.annotations) >= 1,
     "Annotations must be either null or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 7, 1))
@@ -3294,7 +3325,7 @@ class Entity_type(Enum):
 @invariant(
     lambda self:
     not (self.statements is not None)
-    or len(self.statements) > 0,
+    or len(self.statements) >= 1,
     "Statements must be either null or have at least one item"
 )
 # fmt: on
@@ -3413,11 +3444,13 @@ class State_of_event(Enum):
 # fmt: off
 @invariant(
     lambda self:
-    is_model_reference_to_referable(self.observable_reference)
+    is_model_reference_to_referable(self.observable_reference),
+    "Observable reference must be a model reference to a referable."
 )
 @invariant(
     lambda self:
-    is_model_reference_to_referable(self.source)
+    is_model_reference_to_referable(self.source),
+    "Source must be a model reference to a referable."
 )
 @reference_in_the_book(section=(5, 7, 7, 2), index=3)
 # fmt: on
@@ -3548,11 +3581,13 @@ class Event_element(Submodel_element):
 @invariant(
     lambda self:
     not (self.message_broker is not None)
-    or is_model_reference_to_referable(self.message_broker)
+    or is_model_reference_to_referable(self.message_broker),
+    "Message broker must be a model reference to a referable."
 )
 @invariant(
     lambda self:
-    is_model_reference_to_referable(self.observed)
+    is_model_reference_to_referable(self.observed),
+    "Observed must be a model reference to a referable."
 )
 @invariant(
     lambda self:
@@ -3691,19 +3726,19 @@ class Basic_event_element(Event_element):
 @invariant(
     lambda self:
     not (self.inoutput_variables is not None)
-    or len(self.inoutput_variables) > 0,
+    or len(self.inoutput_variables) >= 1,
     "Inoutput variables must be either null or have at least one item"
 )
 @invariant(
     lambda self:
     not (self.output_variables is not None)
-    or len(self.output_variables) > 0,
+    or len(self.output_variables) >= 1,
     "Output variables must be either null or have at least one item"
 )
 @invariant(
     lambda self:
     not (self.input_variables is not None)
-    or len(self.input_variables) > 0,
+    or len(self.input_variables) >= 1,
     "Input variables must be either null or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 7, 10))
@@ -4123,7 +4158,7 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
 @invariant(
     lambda self:
     not (self.is_case_of is not None)
-    or len(self.is_case_of) > 0,
+    or len(self.is_case_of) >= 1,
     "Is-case-of must be either null or have at least one item"
 )
 # fmt: on
@@ -4320,7 +4355,7 @@ class Reference_types(Enum):
     lambda self:
     not (
         self.type == Reference_types.Global_reference
-        and len(self.keys) > 0
+        and len(self.keys) >= 1
     )
     or (
         self.keys[-1].type in Generic_globally_identifiables
@@ -4333,7 +4368,7 @@ class Reference_types(Enum):
     lambda self:
     not (
         self.type == Reference_types.Model_reference
-        and len(self.keys) > 0
+        and len(self.keys) >= 1
     )
     or self.keys[0].type in AAS_identifiables,
     "Constraint AASd-123: For model references the type of the first key shall be one "
@@ -4343,7 +4378,7 @@ class Reference_types(Enum):
     lambda self:
     not (
         self.type == Reference_types.Global_reference
-        and len(self.keys) > 0
+        and len(self.keys) >= 1
     )
     or self.keys[0].type in Generic_globally_identifiables,
     "Constraint AASd-122: For global references the type of the first key shall be one "
@@ -4351,12 +4386,15 @@ class Reference_types(Enum):
 )
 @invariant(
     lambda self:
-    not (len(self.keys) > 0)
+    not (len(self.keys) >= 1)
     or self.keys[0].type in Globally_identifiables,
     "Constraint AASd-121: For References the type of the first key shall be one of "
     "Globally identifiables."
 )
-@invariant(lambda self: len(self.keys) >= 1)
+@invariant(
+    lambda self: len(self.keys) >= 1,
+    "Keys must containt at least one item."
+)
 @reference_in_the_book(section=(5, 7, 10, 2))
 # fmt: on
 class Reference(DBC):
@@ -4803,19 +4841,19 @@ class Lang_string(DBC):
 @invariant(
     lambda self:
     not (self.asset_administration_shells is not None)
-    or len(self.asset_administration_shells) > 0,
+    or len(self.asset_administration_shells) >= 1,
     "Asset administration shells must be either null or have at least one item"
 )
 @invariant(
     lambda self:
     not (self.submodels is not None)
-    or len(self.submodels) > 0,
+    or len(self.submodels) >= 1,
     "Submodels must be either null or have at least one item"
 )
 @invariant(
     lambda self:
     not (self.concept_descriptions is not None)
-    or len(self.concept_descriptions) > 0,
+    or len(self.concept_descriptions) >= 1,
     "Concept descriptions must be either null or have at least one item"
 )
 @reference_in_the_book(section=(5, 7, 9))
@@ -5134,12 +5172,18 @@ class Value_reference_pair(DBC):
         self.value_id = value_id
 
 
-@invariant(lambda self: len(self.value_reference_pair_types) >= 1)
+# fmt: off
+@invariant(
+    lambda self:
+    len(self.value_reference_pair_types) >= 1,
+    "Value reference pair types must containt at least one item."
+)
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=2,
     fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
+# fmt: on
 class Value_list(DBC):
     """
     A set of value reference pairs.
@@ -5194,7 +5238,7 @@ def is_BCP_47_for_english(text: str) -> bool:
 )
 @invariant(
     lambda self:
-    len(self.preferred_name) > 0,
+    len(self.preferred_name) >= 1,
     "Preferred name must have at least one item"
 )
 @invariant(
@@ -5206,7 +5250,7 @@ def is_BCP_47_for_english(text: str) -> bool:
 @invariant(
     lambda self:
     not (self.short_name is not None)
-    or len(self.short_name) > 0,
+    or len(self.short_name) >= 1,
     "Short name must be either null or have at least one item"
 )
 @invariant(
@@ -5218,7 +5262,7 @@ def is_BCP_47_for_english(text: str) -> bool:
 @invariant(
     lambda self:
     not (self.definition is not None)
-    or len(self.definition) > 0,
+    or len(self.definition) >= 1,
     "Definition must be either null or have at least one item"
 )
 @invariant(
@@ -5238,7 +5282,7 @@ def is_BCP_47_for_english(text: str) -> bool:
     ) or (
             self.value is None
             and self.value_list is not None
-            and len(self.value_list.value_reference_pair_types) > 0
+            and len(self.value_list.value_reference_pair_types) >= 1
     ),
     "Constraint AASc-010: If value is not empty then value list shall be empty and "
     "vice versa."
@@ -5401,7 +5445,7 @@ class Data_specification_IEC_61360(Data_specification_content):
 )
 @invariant(
     lambda self:
-    len(self.definition) > 0,
+    len(self.definition) >= 1,
     "Definition must have at least one item"
 )
 @reference_in_the_book(
