@@ -2552,6 +2552,12 @@ class AAS_submodel_elements(Enum):
     "Constraint AASd-107: If a first level child element has a semantic ID "
     "it shall be identical to semantic ID list element."
 )
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or len(self.value) >= 1,
+    "Value must be either not set or have at least one item"
+)
 # fmt: on
 class Submodel_element_list(Submodel_element):
     """
@@ -2690,6 +2696,12 @@ class Submodel_element_list(Submodel_element):
         for element in self.value
     ),
     "ID-shorts need to be defined for all the elements."
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or len(self.value) >= 1,
+    "Value must be either not set or have at least one item"
 )
 # fmt: on
 class Submodel_element_collection(Submodel_element):

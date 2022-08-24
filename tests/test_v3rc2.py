@@ -1439,18 +1439,6 @@ not (self.qualifiers is not None)
             constraints_by_prop = constraints_by_class.get(our_type, None)
 
             for prop in our_type.properties:
-                # NOTE (mristin, 2022-08-19):
-                # The following properties are exception to the rule as it is
-                # the end user who defines their semantics and not us.
-
-                if (
-                    our_type.name == "Submodel_element_list" and prop.name == "value"
-                ) or (
-                    our_type.name == "Submodel_element_collection"
-                    and prop.name == "value"
-                ):
-                    continue
-
                 if isinstance(
                     intermediate.beneath_optional(prop.type_annotation),
                     intermediate.ListTypeAnnotation,
