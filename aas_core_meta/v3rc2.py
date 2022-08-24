@@ -5192,8 +5192,8 @@ class Value_reference_pair(DBC):
 # fmt: off
 @invariant(
     lambda self:
-    len(self.value_reference_pair_types) >= 1,
-    "Value reference pair types must containt at least one item."
+    len(self.value_reference_pairs) >= 1,
+    "Value reference pair types must contain at least one item."
 )
 @reference_in_the_book(
     section=(6, 3, 3, 1),
@@ -5206,15 +5206,13 @@ class Value_list(DBC):
     A set of value reference pairs.
     """
 
-    value_reference_pair_types: List["Value_reference_pair"]
+    value_reference_pairs: List["Value_reference_pair"]
     """
     A pair of a value together with its global unique id.
     """
 
-    def __init__(
-        self, value_reference_pair_types: List["Value_reference_pair"]
-    ) -> None:
-        self.value_reference_pair_types = value_reference_pair_types
+    def __init__(self, value_reference_pairs: List["Value_reference_pair"]) -> None:
+        self.value_reference_pairs = value_reference_pairs
 
 
 IEC_61360_data_types_with_unit: Set[Data_type_IEC_61360] = constant_set(
@@ -5299,7 +5297,7 @@ def is_BCP_47_for_english(text: str) -> bool:
     ) or (
             self.value is None
             and self.value_list is not None
-            and len(self.value_list.value_reference_pair_types) >= 1
+            and len(self.value_list.value_reference_pairs) >= 1
     ),
     "Constraint AASc-010: If value is not empty then value list shall be empty and "
     "vice versa."
