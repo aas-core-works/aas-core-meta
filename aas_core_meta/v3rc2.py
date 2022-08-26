@@ -2568,18 +2568,18 @@ class Submodel_element_list(Submodel_element):
     :constraint AASd-107:
 
         If a first level child element in a :class:`.Submodel_element_list` has
-        a :attr:`~Submodel_element.semantic_id` it
+        a :attr:`~Has_semantics.semantic_id` it
         shall be identical to :attr:`~Submodel_element_list.semantic_id_list_element`.
 
     :constraint AASd-114:
 
         If two first level child elements in a :class:`.Submodel_element_list` have
-        a :attr:`~Submodel_element.semantic_id` then they shall be identical.
+        a :attr:`~Has_semantics.semantic_id` then they shall be identical.
 
     :constraint AASd-115:
 
         If a first level child element in a :class:`.Submodel_element_list` does not
-        specify a :attr:`~Submodel_element.semantic_id` then the value is assumed to be
+        specify a :attr:`~Has_semantics.semantic_id` then the value is assumed to be
         identical to :attr:`~Submodel_element_list.semantic_id_list_element`.
 
     :constraint AASd-108:
@@ -2782,8 +2782,8 @@ class Data_element(Submodel_element):
 
     :constraint AASd-090:
 
-        For data elements :attr:`~category` (inherited by :class:`.Referable`) shall be
-        one of the following values: ``CONSTANT``, ``PARAMETER`` or ``VARIABLE``.
+        For data elements :attr:`~category` shall be one of the following
+        values: ``CONSTANT``, ``PARAMETER`` or ``VARIABLE``.
 
         Default: ``VARIABLE``
     """
