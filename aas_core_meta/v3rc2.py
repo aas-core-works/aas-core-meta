@@ -3430,12 +3430,12 @@ class Direction(Enum):
     Direction
     """
 
-    Input = "INPUT"
+    Input = "input"
     """
     Input direction.
     """
 
-    Output = "OUTPUT"
+    Output = "output"
     """
     Output direction
     """
@@ -3447,12 +3447,12 @@ class State_of_event(Enum):
     State of an event
     """
 
-    On = "ON"
+    On = "on"
     """
     Event is on
     """
 
-    Off = "OFF"
+    Off = "off"
     """
     Event is off.
     """
