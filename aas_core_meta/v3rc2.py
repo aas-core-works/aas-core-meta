@@ -4829,7 +4829,7 @@ class Data_type_def_XSD(Enum):
     Int = "xs:int"
     Short = "xs:short"
     Byte = "xs:byte"
-    Non_negative_integer = "xs:NonNegativeInteger"
+    Non_negative_integer = "xs:nonNegativeInteger"
     Positive_integer = "xs:positiveInteger"
     Unsigned_long = "xs:unsignedLong"
     Unsigned_int = "xs:unsignedInt"
