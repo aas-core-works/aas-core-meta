@@ -17,7 +17,8 @@ AAS registry or AAS server:
     :attr:`Referable.id_short` of :class:`.Referable`'s shall be matched case-sensitive.
 
 We could not implement the following constraints since they depend on registry and
-de-referencing, so we can not formalize them with formalizing such external dependncies:
+de-referencing, so we can not formalize them with formalizing such external
+dependencies:
 
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
@@ -27,7 +28,7 @@ such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
 
-The constraint :constraintref:`AASd-116` is ill-defined. The type of the
+:constraintref:`AASd-116` is ill-defined. The type of the
 :attr:`~Specific_asset_id.value` is a string, but the type of
 :attr:`~Asset_information.global_asset_id` is a :class:`.Reference`. The comparison
 between a string and a reference is not defined, so we can not implement
@@ -44,12 +45,13 @@ the following divergences:
   to write redundant invariants all over the meta-model because ``DataTypeDef`` and
   ``DataTypeDefRDF`` are actually never used in any type definition.
 
-* The enumeration ``AasSubmodelElements`` is used in two different contexts. One context
-  is the definition of key types in a reference. Another context is the definition
-  of element types in a :class:`.Submodel_element_list`. It is very counter-intuitive
-  to see the type of :attr:`~Submodel_element_list.type_value_list_element` as
+* The enumeration :class:`.AAS_submodel_elements` is used in two different contexts.
+  One context is the definition of key types in a reference. Another context is
+  the definition of element types in a :class:`.Submodel_element_list`. It is very
+  counter-intuitive to see the type of
+  :attr:`~Submodel_element_list.type_value_list_element` as
   :class:`.Key_types` even though an invariant might specify that it is an element of
-  ``AasSubmodelElements``.
+  :class:`.AAS_submodel_elements`.
 
   To avoid confusion, we introduce a set of :class:`.Key_types`,
   :const:`.AAS_submodel_elements_as_keys` to represent the first context (key type
@@ -2757,7 +2759,7 @@ Valid_categories_for_data_element: Set[str] = constant_set(
         "VARIABLE",
     ],
     description="""\
-Categories for :class:.Data_element` as defined in :constraintref:`AASd-090`""",
+Categories for :class:`.Data_element` as defined in :constraintref:`AASd-090`""",
 )
 
 
@@ -3896,7 +3898,7 @@ Valid_categories_for_concept_description: Set[str] = constant_set(
         "VIEW",
     ],
     description="""\
-Categories for :class:.Concept_description` as defined in :constraintref:`AASd-051`""",
+Categories for :class:`.Concept_description` as defined in :constraintref:`AASd-051`""",
 )
 
 # NOTE (mristin, 2022-08-19):
@@ -4410,7 +4412,7 @@ class Reference_types(Enum):
 )
 @invariant(
     lambda self: len(self.keys) >= 1,
-    "Keys must containt at least one item."
+    "Keys must contain at least one item."
 )
 @reference_in_the_book(section=(5, 7, 10, 2))
 # fmt: on
