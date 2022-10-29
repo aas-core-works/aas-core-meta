@@ -42,7 +42,7 @@ setup(
             "black==22.3.0",
             "mypy==0.910",
             "asttokens>=2.0.8,<3",
-            "aas-core-codegen@git+https://github.com/aas-core-works/aas-core-codegen@b8e378f#egg=aas-core-codegen",
+            "aas-core-codegen@git+https://github.com/aas-core-works/aas-core-codegen@46ddb38f#egg=aas-core-codegen",
             "astpretty==3.0.0"
         ],
     },
