@@ -557,7 +557,7 @@ def matches_xs_double(text: str) -> bool:
     # NOTE (mristin, 2022-04-6):
     # See: https://www.w3.org/TR/xmlschema11-2/#nt-doubleRep
     double_rep = (
-        r"(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?|(\+|-)?INF|NaN"
+        r"((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?|(\+|-)?INF|NaN)"
     )
 
     pattern = f"^{double_rep}$"
@@ -613,7 +613,7 @@ def matches_xs_float(text: str) -> bool:
     :returns: True if the :paramref:`text` conforms to the pattern
     """
     float_rep = (
-        r"(\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?" r"|(\+|-)?INF|NaN"
+        r"((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?" r"|(\+|-)?INF|NaN)"
     )
 
     pattern = f"^{float_rep}$"
