@@ -312,7 +312,9 @@ class Test_matches_xs_double(unittest.TestCase):
         assert not v3rc2.matches_xs_double("12.34e-5.6")
 
     def test_edge_cases(self) -> None:
-        assert v3rc2.matches_xs_double("+INF")
+        # NOTE (mristin, 2022-10-30):
+        # See: https://www.oreilly.com/library/view/xml-schema/0596002521/re67.html
+        assert not v3rc2.matches_xs_double("+INF")
         assert v3rc2.matches_xs_double("-INF")
         assert v3rc2.matches_xs_double("INF")
         assert v3rc2.matches_xs_double("NaN")
@@ -394,7 +396,9 @@ class Test_matches_xs_float(unittest.TestCase):
         assert not v3rc2.matches_xs_float("12.34e-5.6")
 
     def test_edge_cases(self) -> None:
-        assert v3rc2.matches_xs_float("+INF")
+        # NOTE (mristin, 2022-10-30):
+        # See: https://www.oreilly.com/library/view/xml-schema/0596002521/re67.html
+        assert not v3rc2.matches_xs_float("+INF")
         assert v3rc2.matches_xs_float("-INF")
         assert v3rc2.matches_xs_float("INF")
         assert v3rc2.matches_xs_float("NaN")
