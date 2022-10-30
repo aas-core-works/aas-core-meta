@@ -297,12 +297,19 @@ class Test_matches_xs_double(unittest.TestCase):
     def test_double_with_preceding_zeros(self) -> None:
         assert v3rc2.matches_xs_double("0001234.01234")
 
-    def test_double_scientific_notation(self) -> None:
-        assert v3rc2.matches_xs_double("-12.34e5.6")
-        assert v3rc2.matches_xs_double("+12.34e5.6")
-        assert v3rc2.matches_xs_double("12.34e5.6")
-        assert v3rc2.matches_xs_double("12.34e+5.6")
-        assert v3rc2.matches_xs_double("12.34e-5.6")
+    def test_exponent_integer(self) -> None:
+        assert v3rc2.matches_xs_double("-12.34e5")
+        assert v3rc2.matches_xs_double("+12.34e5")
+        assert v3rc2.matches_xs_double("12.34e5")
+        assert v3rc2.matches_xs_double("12.34e+5")
+        assert v3rc2.matches_xs_double("12.34e-5")
+
+    def test_exponent_float(self) -> None:
+        assert not v3rc2.matches_xs_double("-12.34e5.6")
+        assert not v3rc2.matches_xs_double("+12.34e5.6")
+        assert not v3rc2.matches_xs_double("12.34e5.6")
+        assert not v3rc2.matches_xs_double("12.34e+5.6")
+        assert not v3rc2.matches_xs_double("12.34e-5.6")
 
     def test_edge_cases(self) -> None:
         assert v3rc2.matches_xs_double("+INF")
@@ -372,12 +379,19 @@ class Test_matches_xs_float(unittest.TestCase):
     def test_float_with_preceding_zeros(self) -> None:
         assert v3rc2.matches_xs_float("0001234.01234")
 
-    def test_float_scientific_notation(self) -> None:
-        assert v3rc2.matches_xs_float("-12.34e5.6")
-        assert v3rc2.matches_xs_float("+12.34e5.6")
-        assert v3rc2.matches_xs_float("12.34e5.6")
-        assert v3rc2.matches_xs_float("12.34e+5.6")
-        assert v3rc2.matches_xs_float("12.34e-5.6")
+    def test_exponent_integer(self) -> None:
+        assert v3rc2.matches_xs_float("-12.34e5")
+        assert v3rc2.matches_xs_float("+12.34e5")
+        assert v3rc2.matches_xs_float("12.34e5")
+        assert v3rc2.matches_xs_float("12.34e+5")
+        assert v3rc2.matches_xs_float("12.34e-5")
+
+    def test_exponent_float(self) -> None:
+        assert not v3rc2.matches_xs_float("-12.34e5.6")
+        assert not v3rc2.matches_xs_float("+12.34e5.6")
+        assert not v3rc2.matches_xs_float("12.34e5.6")
+        assert not v3rc2.matches_xs_float("12.34e+5.6")
+        assert not v3rc2.matches_xs_float("12.34e-5.6")
 
     def test_edge_cases(self) -> None:
         assert v3rc2.matches_xs_float("+INF")
