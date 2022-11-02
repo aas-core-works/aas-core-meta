@@ -16,31 +16,31 @@ from aas_core_meta import v3rc2
 
 class Test_matches_xs_date_time_stamp_utc(unittest.TestCase):
     def test_empty(self) -> None:
-        assert not v3rc2.matches_xs_date_time_stamp_utc("")
+        assert not v3rc2.matches_xs_date_time_stamp_UTC("")
 
     def test_date(self) -> None:
-        assert not v3rc2.matches_xs_date_time_stamp_utc("2022-04-01")
+        assert not v3rc2.matches_xs_date_time_stamp_UTC("2022-04-01")
 
     def test_date_with_time_zone(self) -> None:
-        assert not v3rc2.matches_xs_date_time_stamp_utc("2022-04-01Z")
+        assert not v3rc2.matches_xs_date_time_stamp_UTC("2022-04-01Z")
 
     def test_date_time_without_zone(self) -> None:
-        assert not v3rc2.matches_xs_date_time_stamp_utc("2022-04-01T01:02:03")
+        assert not v3rc2.matches_xs_date_time_stamp_UTC("2022-04-01T01:02:03")
 
     def test_date_time_with_offset(self) -> None:
-        assert not v3rc2.matches_xs_date_time_stamp_utc("2022-04-01T01:02:03+02:00")
+        assert not v3rc2.matches_xs_date_time_stamp_UTC("2022-04-01T01:02:03+02:00")
 
     def test_date_time_with_UTC(self) -> None:
-        assert v3rc2.matches_xs_date_time_stamp_utc("2022-04-01T01:02:03Z")
+        assert v3rc2.matches_xs_date_time_stamp_UTC("2022-04-01T01:02:03Z")
 
     def test_date_time_without_seconds(self) -> None:
-        assert not v3rc2.matches_xs_date_time_stamp_utc("2022-04-01T01:02Z")
+        assert not v3rc2.matches_xs_date_time_stamp_UTC("2022-04-01T01:02Z")
 
     def test_date_time_without_minutes(self) -> None:
-        assert not v3rc2.matches_xs_date_time_stamp_utc("2022-04-01T01Z")
+        assert not v3rc2.matches_xs_date_time_stamp_UTC("2022-04-01T01Z")
 
     def test_date_time_with_UTC_and_suffix(self) -> None:
-        assert not v3rc2.matches_xs_date_time_stamp_utc(
+        assert not v3rc2.matches_xs_date_time_stamp_UTC(
             "2022-04-01T01:02:03Z-unexpected-suffix"
         )
 
@@ -921,8 +921,18 @@ class Test_assertions(unittest.TestCase):
     # but rather expect "Id" or "id", short for "identifier".
     #
     # See: https://english.stackexchange.com/questions/101248/how-should-the-abbreviation-for-identifier-be-capitalized
+    #
+    # Unfortunately, we had a bug in aas-core-codegen e2a7a806 (2022-10-30) and
+    # prior versions where we generated the names for JSON and RDF schemas based
+    # on a hard-wired list of abbreviations in *aas-core-codegen* instead of relying on
+    # the naming in aas-core-meta. This list has not been updated before publishing
+    # the schemas, so we have to stick with the unexpected casing in the names.
+    # To maintain the compatibility with the schemas, we allow for capitalization of
+    # certain where uppercase would be expected. These cases were "AAS" and "XSD".
+    #
+    # The code in aas-core-codegen has been now fixed (2022-11-02) and the hard-wired
+    # list of abbreviations in aas-core-codegen has been removed.
     ABBREVIATIONS = {
-        "AAS",
         "BCP",
         "DIN",
         "ECE",
@@ -930,12 +940,13 @@ class Test_assertions(unittest.TestCase):
         "IEC",
         "IRDI",
         "IRI",
+        "MIME",
         "NIST",
-        "RDF",
+        "RFC",
         "SI",
         "URI",
+        "URL",
         "UTC",
-        "XSD",
     }
 
     @staticmethod
@@ -944,7 +955,7 @@ class Test_assertions(unittest.TestCase):
 
         parts = name.split("_")  # type: List[str]
 
-        if parts[0] not in Test_assertions.ABBREVIATIONS:
+        if parts[0].upper() not in Test_assertions.ABBREVIATIONS:
             if parts[0] != parts[0].capitalize():
                 errors.append(
                     f"Expected first part of a class name "
@@ -953,7 +964,7 @@ class Test_assertions(unittest.TestCase):
                 )
 
         for part in parts:
-            if part in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
                 errors.append(
                     f"Expected a part of a class name "
                     f"to be uppercase ({part.upper()!r})"
@@ -962,7 +973,7 @@ class Test_assertions(unittest.TestCase):
                 )
 
         for part in parts[1:]:
-            if part not in Test_assertions.ABBREVIATIONS:
+            if part.upper() not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a non-first part of a class name "
@@ -980,7 +991,7 @@ class Test_assertions(unittest.TestCase):
 
         parts = name.split("_")  # type: List[str]
 
-        if parts[0] not in Test_assertions.ABBREVIATIONS:
+        if parts[0].upper() not in Test_assertions.ABBREVIATIONS:
             if parts[0] != parts[0].capitalize():
                 errors.append(
                     f"Expected first part of an enumeration literal name "
@@ -989,7 +1000,7 @@ class Test_assertions(unittest.TestCase):
                 )
 
         for part in parts:
-            if part in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
                 errors.append(
                     f"Expected a part of a enumeration literal name to be uppercase "
                     f"since it denotes an abbreviation, "
@@ -997,7 +1008,7 @@ class Test_assertions(unittest.TestCase):
                 )
 
         for part in parts[1:]:
-            if part not in Test_assertions.ABBREVIATIONS:
+            if part.upper() not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a non-first part of an enumeration literal name "
@@ -1016,7 +1027,7 @@ class Test_assertions(unittest.TestCase):
         parts = name.split("_")  # type: List[str]
 
         for part in parts:
-            if part in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
                 errors.append(
                     f"Expected a part of a property name to be uppercase "
                     f"since it denotes an abbreviation, "
@@ -1024,7 +1035,7 @@ class Test_assertions(unittest.TestCase):
                 )
 
         for part in parts:
-            if part not in Test_assertions.ABBREVIATIONS:
+            if part.upper() not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a part of a property name "
@@ -1043,7 +1054,7 @@ class Test_assertions(unittest.TestCase):
         parts = name.split("_")  # type: List[str]
 
         for part in parts:
-            if part in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
                 errors.append(
                     f"Expected a part of a method name to be uppercase "
                     f"since it denotes an abbreviation, "
@@ -1051,7 +1062,7 @@ class Test_assertions(unittest.TestCase):
                 )
 
         for part in parts:
-            if part not in Test_assertions.ABBREVIATIONS:
+            if part.upper() not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a part of a method name "
@@ -1059,6 +1070,33 @@ class Test_assertions(unittest.TestCase):
                         f"since it was not registered as an abbreviation, "
                         f"but it was not ({part!r}) "
                         f"for the method {name!r}"
+                    )
+
+        return errors
+
+    @staticmethod
+    def check_function_name(name: aas_core_codegen.common.Identifier) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        for part in parts:
+            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
+                errors.append(
+                    f"Expected a part of a function name to be uppercase "
+                    f"since it denotes an abbreviation, "
+                    f"but it was not ({part!r}) for the function {name!r}"
+                )
+
+        for part in parts:
+            if part.upper() not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a part of a function name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for the function {name!r}"
                     )
 
         return errors
@@ -1187,10 +1225,13 @@ class Test_assertions(unittest.TestCase):
             else:
                 aas_core_codegen.common.assert_never(our_type)
 
+        for func in symbol_table.verification_functions:
+            errors.extend(Test_assertions.check_function_name(func.name))
+
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
 
-    def test_AAS_identifiables_correspond_to_classes(self) -> None:
+    def test_Aas_identifiables_correspond_to_classes(self) -> None:
         errors = []  # type: List[str]
 
         symbol_table = Test_assertions._symbol_table()
@@ -1212,7 +1253,7 @@ class Test_assertions(unittest.TestCase):
                 class_name_set.add(our_type.name)
 
         aas_identifiables_set = symbol_table.constants_by_name.get(
-            aas_core_codegen.common.Identifier("AAS_identifiables"), None
+            aas_core_codegen.common.Identifier("Aas_identifiables"), None
         )
 
         assert isinstance(
@@ -1263,7 +1304,7 @@ Observed literals: {sorted(literal_set)!r}"""
                 class_name_set.add(our_type.name)
 
         aas_referable_non_identifiables_set = symbol_table.constants_by_name.get(
-            aas_core_codegen.common.Identifier("AAS_referable_non_identifiables"), None
+            aas_core_codegen.common.Identifier("Aas_referable_non_identifiables"), None
         )
 
         assert isinstance(
@@ -1287,7 +1328,7 @@ Observed literals: {sorted(literal_set)!r}"""
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
 
-    def test_AAS_submodel_elements_as_keys_corresponds_to_classes(self) -> None:
+    def test_Aas_submodel_elements_as_keys_corresponds_to_classes(self) -> None:
         errors = []  # type: List[str]
 
         symbol_table = Test_assertions._symbol_table()
@@ -1308,7 +1349,7 @@ Observed literals: {sorted(literal_set)!r}"""
                 class_name_set.add(our_type.name)
 
         aas_submodel_elements_as_keys_set = symbol_table.constants_by_name.get(
-            aas_core_codegen.common.Identifier("AAS_submodel_elements_as_keys"), None
+            aas_core_codegen.common.Identifier("Aas_submodel_elements_as_keys"), None
         )
 
         assert isinstance(
@@ -1332,7 +1373,7 @@ Observed literals: {sorted(literal_set)!r}"""
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
 
-    def test_AAS_submodel_elements_corresponds_to_classes(self) -> None:
+    def test_Aas_submodel_elements_corresponds_to_classes(self) -> None:
         errors = []  # type: List[str]
 
         symbol_table = Test_assertions._symbol_table()
@@ -1353,7 +1394,7 @@ Observed literals: {sorted(literal_set)!r}"""
                 class_name_set.add(our_type.name)
 
         aas_submodel_elements_enum = symbol_table.must_find_enumeration(
-            aas_core_codegen.common.Identifier("AAS_submodel_elements")
+            aas_core_codegen.common.Identifier("Aas_submodel_elements")
         )
 
         literal_set = {literal.name for literal in aas_submodel_elements_enum.literals}

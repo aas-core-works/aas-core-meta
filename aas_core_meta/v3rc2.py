@@ -41,21 +41,21 @@ between the properties and the sets is defined through invariants. This causes
 the following divergences:
 
 * We decided therefore to remove the enumerations ``DataTypeDef`` and ``DataTypeDefRDF``
-  and keep only :class:`Data_type_def_XSD` as enumeration. Otherwise, we would have
+  and keep only :class:`Data_type_def_xsd` as enumeration. Otherwise, we would have
   to write redundant invariants all over the meta-model because ``DataTypeDef`` and
   ``DataTypeDefRDF`` are actually never used in any type definition.
 
-* The enumeration :class:`AAS_submodel_elements` is used in two different contexts.
+* The enumeration :class:`Aas_submodel_elements` is used in two different contexts.
   One context is the definition of key types in a reference. Another context is
   the definition of element types in a :class:`Submodel_element_list`. It is very
   counter-intuitive to see the type of
   :attr:`Submodel_element_list.type_value_list_element` as
   :class:`Key_types` even though an invariant might specify that it is an element of
-  :class:`AAS_submodel_elements`.
+  :class:`Aas_submodel_elements`.
 
   To avoid confusion, we introduce a set of :class:`Key_types`,
-  :const:`AAS_submodel_elements_as_keys` to represent the first context (key type
-  in a reference). The enumeration :class:`AAS_submodel_elements` is kept as designator
+  :const:`Aas_submodel_elements_as_keys` to represent the first context (key type
+  in a reference). The enumeration :class:`Aas_submodel_elements` is kept as designator
   for :attr:`Submodel_element_list.type_value_list_element`.
 
 Concerning the data specifications, we embed them within
@@ -108,7 +108,7 @@ def matches_id_short(text: str) -> bool:
 
 
 @verification
-def matches_xs_date_time_stamp_utc(text: str) -> bool:
+def matches_xs_date_time_stamp_UTC(text: str) -> bool:
     """
     Check that :paramref:`text` conforms to the pattern of an ``xs:dateTimeStamp``.
 
@@ -144,7 +144,7 @@ def matches_xs_date_time_stamp_utc(text: str) -> bool:
 # noinspection PyUnusedLocal
 @verification
 @implementation_specific
-def is_xs_date_time_stamp_utc(text: str) -> bool:
+def is_xs_date_time_stamp_UTC(text: str) -> bool:
     """
     Check that :paramref:`text` is a ``xs:dateTimeStamp`` with time zone set to UTC.
 
@@ -1042,7 +1042,7 @@ def matches_xs_string(text: str) -> bool:
 # noinspection PyUnusedLocal
 @verification
 @implementation_specific
-def value_consistent_with_xsd_type(value: str, value_type: "Data_type_def_XSD") -> bool:
+def value_consistent_with_xsd_type(value: str, value_type: "Data_type_def_xsd") -> bool:
     """
     Check that the :paramref:`value` conforms to its :paramref:`value_type`.
 
@@ -1092,12 +1092,12 @@ def is_model_reference_to(reference: "Reference", expected_type: "Key_types") ->
 
 @verification
 def is_model_reference_to_referable(reference: "Reference") -> bool:
-    """Check that the target of the reference matches a :const:`AAS_referables`."""
+    """Check that the target of the reference matches a :const:`Aas_referables`."""
     # fmt: off
     return (
         reference.type == Reference_types.Model_reference
         and len(reference.keys) != 0
-        and reference.keys[-1].type in AAS_referables
+        and reference.keys[-1].type in Aas_referables
     )
     # fmt: on
 
@@ -1160,7 +1160,7 @@ def submodel_elements_have_identical_semantic_ids(
 @verification
 @implementation_specific
 def submodel_element_is_of_type(
-    element: "Submodel_element", element_type: "AAS_submodel_elements"
+    element: "Submodel_element", element_type: "Aas_submodel_elements"
 ) -> bool:
     """
     Check that the run-time type of the :paramref:`element` coincides with
@@ -1172,7 +1172,7 @@ def submodel_element_is_of_type(
 @verification
 @implementation_specific
 def properties_or_ranges_have_value_type(
-    elements: List["Submodel_element"], value_type: "Data_type_def_XSD"
+    elements: List["Submodel_element"], value_type: "Data_type_def_xsd"
 ) -> bool:
     """Check that all the :paramref:`elements` have the :paramref:`value_type`."""
     # NOTE (mristin, 2022-04-7):
@@ -1223,11 +1223,11 @@ class Non_empty_string(str, DBC):
 
 
 @invariant(
-    lambda self: is_xs_date_time_stamp_utc(self),
+    lambda self: is_xs_date_time_stamp_UTC(self),
     "The value must represent a valid xs:dateTimeStamp with the time zone fixed to UTC.",
 )
 @invariant(
-    lambda self: matches_xs_date_time_stamp_utc(self),
+    lambda self: matches_xs_date_time_stamp_UTC(self),
     "The value must match the pattern of xs:dateTimeStamp with the time zone fixed "
     "to UTC.",
 )
@@ -1311,7 +1311,7 @@ class Qualifier_type(Non_empty_string, DBC):
 
 class Value_data_type(str, DBC):
     """
-    any xsd atomic type as specified via :class:`Data_type_def_XSD`
+    any xsd atomic type as specified via :class:`Data_type_def_xsd`
     """
 
 
@@ -1425,19 +1425,19 @@ class Extension(Has_semantics):
         The name of an extension within :class:`Has_extensions` needs to be unique.
     """
 
-    value_type: Optional["Data_type_def_XSD"]
+    value_type: Optional["Data_type_def_xsd"]
     """
     Type of the value of the extension.
 
-    Default: :attr:`Data_type_def_XSD.String`
+    Default: :attr:`Data_type_def_xsd.String`
     """
 
     @implementation_specific
-    def value_type_or_default(self) -> "Data_type_def_XSD":
+    def value_type_or_default(self) -> "Data_type_def_xsd":
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
         return (
-            self.value_type if self.value_type is not None else Data_type_def_XSD.String
+            self.value_type if self.value_type is not None else Data_type_def_xsd.String
         )
 
     value: Optional["Value_data_type"]
@@ -1455,7 +1455,7 @@ class Extension(Has_semantics):
             name: Non_empty_string,
             semantic_id: Optional["Reference"] = None,
             supplemental_semantic_ids: Optional[List["Reference"]] = None,
-            value_type: Optional["Data_type_def_XSD"] = None,
+            value_type: Optional["Data_type_def_xsd"] = None,
             value: Optional["Value_data_type"] = None,
             refers_to: Optional["Reference"] = None,
     ) -> None:
@@ -1929,7 +1929,7 @@ class Qualifier(Has_semantics):
     the element.
     """
 
-    value_type: "Data_type_def_XSD"
+    value_type: "Data_type_def_xsd"
     """
     Data type of the qualifier value.
     """
@@ -1951,7 +1951,7 @@ class Qualifier(Has_semantics):
     def __init__(
         self,
         type: "Qualifier_type",
-        value_type: "Data_type_def_XSD",
+        value_type: "Data_type_def_xsd",
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         kind: Optional["Qualifier_kind"] = None,
@@ -2465,7 +2465,7 @@ class Relationship_element(Submodel_element):
         self.second = second
 
 
-class AAS_submodel_elements(Enum):
+class Aas_submodel_elements(Enum):
     """Enumeration of all possible elements of a :class:`Submodel_element_list`."""
 
     Annotated_relationship_element = "AnnotatedRelationshipElement"
@@ -2504,8 +2504,8 @@ class AAS_submodel_elements(Enum):
     not (
             self.value is not None
             and (
-                    self.type_value_list_element == AAS_submodel_elements.Property
-                    or self.type_value_list_element == AAS_submodel_elements.Range
+                    self.type_value_list_element == Aas_submodel_elements.Property
+                    or self.type_value_list_element == Aas_submodel_elements.Range
             )
     ) or (
         self.value_type_list_element is not None
@@ -2590,8 +2590,8 @@ class Submodel_element_list(Submodel_element):
     :constraint AASd-109:
 
         If :attr:`type_value_list_element` is equal to
-        :attr:`AAS_submodel_elements.Property` or
-        :attr:`AAS_submodel_elements.Range`
+        :attr:`Aas_submodel_elements.Property` or
+        :attr:`Aas_submodel_elements.Range`
         :attr:`value_type_list_element` shall be set and all first
         level child elements in the :class:`Submodel_element_list` shall have
         the value type as specified in :attr:`value_type_list_element`.
@@ -2627,19 +2627,19 @@ class Submodel_element_list(Submodel_element):
         It is recommended to use a global reference.
     """
 
-    type_value_list_element: "AAS_submodel_elements"
+    type_value_list_element: "Aas_submodel_elements"
     """
     The submodel element type of the submodel elements contained in the list.
     """
 
-    value_type_list_element: Optional["Data_type_def_XSD"]
+    value_type_list_element: Optional["Data_type_def_xsd"]
     """
     The value type of the submodel element contained in the list.
     """
 
     def __init__(
         self,
-        type_value_list_element: "AAS_submodel_elements",
+        type_value_list_element: "Aas_submodel_elements",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
@@ -2656,7 +2656,7 @@ class Submodel_element_list(Submodel_element):
         order_relevant: Optional["bool"] = None,
         value: Optional[List["Submodel_element"]] = None,
         semantic_id_list_element: Optional["Reference"] = None,
-        value_type_list_element: Optional["Data_type_def_XSD"] = None,
+        value_type_list_element: Optional["Data_type_def_xsd"] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2847,7 +2847,7 @@ class Property(Data_element):
         the value of the referenced coded value in :attr:`value_id`.
     """
 
-    value_type: "Data_type_def_XSD"
+    value_type: "Data_type_def_xsd"
     """
     Data type of the value
     """
@@ -2868,7 +2868,7 @@ class Property(Data_element):
 
     def __init__(
         self,
-        value_type: "Data_type_def_XSD",
+        value_type: "Data_type_def_xsd",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
@@ -3001,7 +3001,7 @@ class Range(Data_element):
     A range data element is a data element that defines a range with min and max.
     """
 
-    value_type: "Data_type_def_XSD"
+    value_type: "Data_type_def_xsd"
     """
     Data type of the min und max
     """
@@ -3022,7 +3022,7 @@ class Range(Data_element):
 
     def __init__(
         self,
-        value_type: "Data_type_def_XSD",
+        value_type: "Data_type_def_xsd",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Non_empty_string] = None,
         id_short: Optional[Id_short] = None,
@@ -4387,7 +4387,7 @@ class Reference_types(Enum):
         self.type == Reference_types.Model_reference
         and len(self.keys) >= 1
     )
-    or self.keys[0].type in AAS_identifiables,
+    or self.keys[0].type in Aas_identifiables,
     "Constraint AASd-123: For model references the type of the first key shall be one "
     "of AAS identifiables"
 )
@@ -4444,7 +4444,7 @@ class Reference(DBC):
         For model references, i.e. :class:`Reference`'s with
         :attr:`Reference.type` = :attr:`Reference_types.Model_reference`, the type
         of the first key of :attr:`Reference.keys` shall be one of
-        :const:`AAS_identifiables`.
+        :const:`Aas_identifiables`.
 
     :constraint AASd-124:
 
@@ -4480,7 +4480,7 @@ class Reference(DBC):
         than one key in :attr:`Reference.keys` a key with :attr:`Key.type`
         :attr:`Key_types.Fragment_reference` shall be preceded by a key with
         :attr:`Key.type` :attr:`Key_types.File` or :attr:`Key_types.Blob`. All other
-        AAS fragments, i.e. type values out of :const:`AAS_submodel_elements_as_keys`,
+        AAS fragments, i.e. type values out of :const:`Aas_submodel_elements_as_keys`,
         do not support fragments.
 
         .. note::
@@ -4666,7 +4666,7 @@ Generic_globally_identifiables: Set[Key_types] = constant_set(
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=8),
 )
 
-AAS_identifiables: Set[Key_types] = constant_set(
+Aas_identifiables: Set[Key_types] = constant_set(
     values=[
         Key_types.Asset_administration_shell,
         Key_types.Concept_description,
@@ -4677,7 +4677,7 @@ AAS_identifiables: Set[Key_types] = constant_set(
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=7),
 )
 
-AAS_submodel_elements_as_keys: Set[Key_types] = constant_set(
+Aas_submodel_elements_as_keys: Set[Key_types] = constant_set(
     values=[
         Key_types.Annotated_relationship_element,
         Key_types.Basic_event_element,
@@ -4702,7 +4702,7 @@ Enumeration of all referable elements within an asset administration shell.""",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=6),
 )
 
-AAS_referable_non_identifiables: Set[Key_types] = constant_set(
+Aas_referable_non_identifiables: Set[Key_types] = constant_set(
     values=[
         Key_types.Annotated_relationship_element,
         Key_types.Basic_event_element,
@@ -4724,10 +4724,10 @@ AAS_referable_non_identifiables: Set[Key_types] = constant_set(
     ],
     description="Enumeration of different fragment key value types within a key.",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=4),
-    superset_of=[AAS_submodel_elements_as_keys],
+    superset_of=[Aas_submodel_elements_as_keys],
 )
 
-AAS_referables: Set[Key_types] = constant_set(
+Aas_referables: Set[Key_types] = constant_set(
     values=[
         Key_types.Asset_administration_shell,
         Key_types.Concept_description,
@@ -4754,7 +4754,7 @@ AAS_referables: Set[Key_types] = constant_set(
     ],
     description="Enumeration of referables.",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=5),
-    superset_of=[AAS_referable_non_identifiables, AAS_identifiables],
+    superset_of=[Aas_referable_non_identifiables, Aas_identifiables],
 )
 
 Globally_identifiables: Set[Key_types] = constant_set(
@@ -4768,7 +4768,7 @@ Globally_identifiables: Set[Key_types] = constant_set(
     description="""\
 Enumeration of all referable elements within an asset administration shell""",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=3),
-    superset_of=[AAS_identifiables, Generic_globally_identifiables],
+    superset_of=[Aas_identifiables, Generic_globally_identifiables],
 )
 
 Fragment_keys: Set[Key_types] = constant_set(
@@ -4794,12 +4794,12 @@ Fragment_keys: Set[Key_types] = constant_set(
     ],
     description="Enumeration of different key value types within a key.",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=2),
-    superset_of=[AAS_referable_non_identifiables, Generic_fragment_keys],
+    superset_of=[Aas_referable_non_identifiables, Generic_fragment_keys],
 )
 
 
 @reference_in_the_book(section=(5, 7, 11, 3))
-class Data_type_def_XSD(Enum):
+class Data_type_def_xsd(Enum):
     """
     Enumeration listing all xsd anySimpleTypes
     """
