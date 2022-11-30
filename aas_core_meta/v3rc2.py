@@ -1694,15 +1694,15 @@ class Modeling_kind(Enum):
 
     .. note::
 
-        It becomes an individual entity of a  template,  for example a
+        It becomes an individual entity of a template, for example a
         device model, by defining specific property values.
 
     .. note::
 
-        In an object oriented view,  an instance denotes an object of a
+        In an object oriented view, an instance denotes an object of a
         template (class).
 
-    [SOURCE: IEC 62890:2016, 3.1.16 65/617/CDV]  modified
+    [SOURCE: IEC 62890:2016, 3.1.16 65/617/CDV] modified
     """
 
 
@@ -3017,7 +3017,7 @@ class Range(Data_element):
     """
     The maximum value of the range.
 
-    If the max value is missing,  then the value is assumed to be positive infinite.
+    If the max value is missing, then the value is assumed to be positive infinite.
     """
 
     def __init__(
@@ -4459,7 +4459,7 @@ class Reference(DBC):
         For model references, i.e. :class:`Reference`'s with
         :attr:`Reference.type` = :attr:`Reference_types.Model_reference`, with more
         than one key in :attr:`Reference.keys` the type of the keys following the first
-        key of  :attr:`Reference.keys` shall be one of :const:`Fragment_keys`.
+        key of :attr:`Reference.keys` shall be one of :const:`Fragment_keys`.
 
         .. note::
 
