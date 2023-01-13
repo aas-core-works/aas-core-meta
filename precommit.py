@@ -116,7 +116,8 @@ def main() -> int:
             "precommit.py",
             "setup.py",
             "check_init_and_setup_coincide.py",
-            "tests"
+            "tests",
+            "htmlgen"
         ]
         # fmt: on
 
@@ -184,11 +185,11 @@ def main() -> int:
 
     if Step.MYPY in selects and Step.MYPY not in skips:
         print("Mypy'ing...")
-        mypy_targets = ["aas_core_meta"]
+        mypy_targets = ["aas_core_meta", "htmlgen"]
 
         exit_code = call_and_report(
             verb="mypy",
-            cmd=["mypy", "--strict"] + mypy_targets,
+            cmd=["mypy", "--strict", "--config-file", "mypy.ini"] + mypy_targets,
             cwd=repo_root,
         )
         if exit_code != 0:
