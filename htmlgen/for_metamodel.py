@@ -31,11 +31,7 @@ from aas_core_codegen.common import (
 from icontract import require, ensure
 
 import htmlgen.description
-
-I = "  "
-II = I * 2
-III = I * 3
-IIII = I * 4
+from htmlgen.common import I, II, III
 
 
 def _over_descriptions_and_page_paths(
@@ -338,7 +334,7 @@ def _generate_page(
 {I}<meta charset="UTF-8">
 {I}<meta name="viewport" content="width=device-width, initial-scale=1">
 {I}<title>{html.escape(title)}</title>
-{I}<link rel="stylesheet" href="base.css">
+{I}<link rel="stylesheet" href="../base.css">
 {I}<link
 {II}href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
 {II}rel="stylesheet"
@@ -360,7 +356,7 @@ def _generate_page(
 <footer class="text-center p-1 text-lg-start bg-light text-muted" id="footer">
 {I}Automatically generated with htmlgen as part of <a href="https://github.com/aas-core-works/aas-core-meta">aas-core-works/aas-core-meta</a>.
 </footer>
-<script src="atTheEndOfBody.js"></script>
+<script src="../atTheEndOfBody.js"></script>
 </body>
 </html>
 """
@@ -1398,100 +1394,6 @@ def _generate_home_page(
     )
 
 
-# fmt: off
-@ensure(
-    lambda result:
-    not result.startswith('\n')
-    and not result.startswith(' ')
-    and not result.startswith('\t'),
-    "No prefix whitespace"
-)
-@ensure(
-    lambda result:
-    result.endswith('\n'),
-    "Trailing new line is mandatory"
-)
-# fmt: on
-def _generate_css() -> str:
-    """Generate the CSS for the whole docs."""
-    pygments_style_def = pygments.formatters.HtmlFormatter().get_style_defs(
-        ".highlight"
-    )
-
-    return f"""\
-a.aas-anchor-link {{
-{I}color: blue;
-{I}color: rgba(0, 0, 0, 0.2);
-{I}font-size: xx-small;
-{I}vertical-align: super;
-{I}text-decoration: none;
-}}
-
-div#menu {{
-{I}min-height: 95vh;
-{I}height: 95vh;
-}}
-
-div#content {{
-{I}min-height: 95vh;
-{I}height: 95vh;
-}}
-
-footer#footer {{
-{I}min-height: 5vh;
-{I}height: 5vh;
-}}
-
-.aas-type-annotation {{
-{I}font-family: monospace;
-}}
-
-dd {{
-{I}padding-left: 2em;
-}}
-
-.highlight pre {{
-{I}white-space: pre;
-{I}border-radius: inherit;
-{I}display: inherit;
-{I}background-color: inherit;
-{I}border: inherit;
-{I}color: inherit;
-{I}padding: 0.5em;
-}}
-{pygments_style_def}
-"""
-
-
-# fmt: off
-@ensure(
-    lambda result:
-    not result.startswith('\n')
-    and not result.startswith(' ')
-    and not result.startswith('\t'),
-    "No prefix whitespace"
-)
-@ensure(
-    lambda result:
-    result.endswith('\n'),
-    "Trailing new line is mandatory"
-)
-# fmt: on
-def _generate_js() -> str:
-    """Generate the JavaScript for the whole docs."""
-    return f"""\
-console.log("oi!");
-var activeElement = document.querySelector("#menu .active");
-if (activeElement) {{
-{I}var rect = activeElement.getBoundingClientRect();
-{I}var menu = document.getElementById("menu");
-{I}var fontSize = parseFloat(getComputedStyle(menu).fontSize);
-{I}// Go two lines up so that the reader immediately sees that there are more options.
-{I}menu.scrollTop = rect.top - 2 * fontSize;
-}}
-"""
-
-
 @require(lambda target_dir: target_dir.exists() and target_dir.is_dir())
 def generate(
     symbol_table: intermediate.SymbolTable,
@@ -1499,9 +1401,6 @@ def generate(
     target_dir: pathlib.Path,
 ) -> List[Error]:
     """Generate the pages and save them to the target directory."""
-    (target_dir / "base.css").write_text(_generate_css(), encoding="utf-8")
-    (target_dir / "atTheEndOfBody.js").write_text(_generate_js(), encoding="utf-8")
-
     constraint_href_map = _collect_constraint_href_map(symbol_table)
 
     errors = []  # type: List[Error]
