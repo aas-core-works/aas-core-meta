@@ -1,9 +1,11 @@
-name: Generate-doc-workflow
+name: Test-generate-doc-workflow
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master, main ]
+    tags: [ "**" ]
+  pull_request:
+    branches: [ "**" ]
 
 jobs:
   Generate-doc:
@@ -24,9 +26,3 @@ jobs:
       - name: Generate HTML
         run: |
           python3 htmlgen/main.py --html_dir html
-
-      - name: Deploy to gh-pages 🚀
-        uses: peaceiris/actions-gh-pages@v3
-        with:
-          github_token: ${{ secrets.GITHUB_TOKEN }}
-          publish_dir: html
