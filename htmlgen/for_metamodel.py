@@ -1,5 +1,6 @@
 """Generate HTML for a given meta-model."""
 import ast
+import collections
 import html
 import itertools
 import pathlib
@@ -411,6 +412,16 @@ def _generate_page_for_enumeration(
         symbol_table: intermediate.SymbolTable,
         constraint_href_map: Mapping[str, str]
 ) -> Tuple[Optional[str], Optional[Error]]:
+    blocks = [
+        Stripped(
+            f"""\
+<h1>
+{I}{enumeration.name}
+{I}<a class="aas-anchor-link" href="">🔗</a>
+</h1>"""
+        )
+    ]  # type: List[Stripped]
+
     description = Stripped("")  # type: Optional[Stripped]
 
     if enumeration.description is not None:
@@ -427,6 +438,14 @@ def _generate_page_for_enumeration(
             )
 
         assert description is not None
+        blocks.append(
+            Stripped(
+                f"""\
+<div class="aas-description">
+{I}{indent_but_first_line(description, I)}
+</div>"""
+            )
+        )
 
     literal_elements = []  # type: List[str]
     for literal in enumeration.literals:
@@ -466,23 +485,25 @@ def _generate_page_for_enumeration(
 
     literal_elements_joined = "\n".join(literal_elements)
 
-    assert description is not None
-
-    content = Stripped(
-        f"""\
-<h1>
-{I}{html.escape(enumeration.name)}
-{I}<a class="aas-anchor-link" href="">🔗</a>
-</h1>
-<div class="aas-description">
-{I}{indent_but_first_line(description, I)}
-</div>
+    blocks.append(
+        Stripped(
+            f"""\
+<h2>Literals</h2>
 <div>
 {I}<dl>
 {I}{indent_but_first_line(literal_elements_joined, I)}
 {I}</dl>
 </div>"""
+        )
     )
+
+    usage_block = _generate_usages_block(
+        our_type=enumeration, symbol_table=symbol_table
+    )
+    if usage_block is not None:
+        blocks.append(usage_block)
+
+    content = Stripped("\n".join(blocks))
 
     nav = _generate_nav(
         symbol_table=symbol_table,
@@ -756,6 +777,12 @@ Stripped(
 
         blocks.append(ul_invariants)
 
+    usage_block = _generate_usages_block(
+        our_type=constrained_primitive, symbol_table=symbol_table
+    )
+    if usage_block is not None:
+        blocks.append(usage_block)
+
     content = Stripped("\n".join(blocks))
 
     nav = _generate_nav(
@@ -864,6 +891,85 @@ def _type_annotation_as_span(
     """Render the type annotation as a ``<span>``."""
     content = _render_type_annotation_recursively(type_annotation)
     return Stripped(f'<span class="aas-type-annotation">{content}</span>')
+
+
+def _our_type_appears_in_type_annotation(
+        our_type: intermediate.OurType,
+        type_annotation: intermediate.TypeAnnotationUnion
+)->bool:
+    """Check if the ``cls`` appears in the type annotation."""
+    if isinstance(type_annotation, intermediate.PrimitiveTypeAnnotation):
+        return False
+    elif isinstance(type_annotation, intermediate.OurTypeAnnotation):
+        return our_type is type_annotation.our_type
+    elif isinstance(type_annotation, intermediate.ListTypeAnnotation):
+        return _our_type_appears_in_type_annotation(our_type, type_annotation.items)
+    elif isinstance(type_annotation, intermediate.OptionalTypeAnnotation):
+        return _our_type_appears_in_type_annotation(our_type, type_annotation.value)
+    else:
+        assert_never(type_annotation)
+
+
+def _generate_usages_block(
+        our_type: intermediate.OurType,
+        symbol_table: intermediate.SymbolTable
+) -> Optional[Stripped]:
+    """Generate the block where we infer the usages of our type."""
+    usages = collections.OrderedDict(
+    )  # type: MutableMapping[intermediate.ClassUnion, List[intermediate.Property]]
+
+    for other_type in symbol_table.our_types:
+        if not isinstance(
+                other_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+        ):
+            continue
+
+        if our_type is other_type:
+            continue
+
+        for prop in other_type.properties:
+            if _our_type_appears_in_type_annotation(our_type, prop.type_annotation):
+                if other_type not in usages:
+                    usages[other_type] = [prop]
+                else:
+                    usages[other_type].append(prop)
+
+    if len(usages) == 0:
+        return None
+
+    tr_usages = []  # type: List[str]
+    for other_type, props in usages.items():
+        a_props = [
+            (
+                f'<a href="{other_type.name}.html#property-{prop.name}">'
+                f'{other_type.name}.{prop.name}</a>'
+            )
+            for prop in props
+        ]
+        a_props_joined = ",\n".join(a_props)
+        tr_usages.append(
+            f"""\
+<tr>
+{I}<td>
+{II}<a href="{other_type.name}.html">{other_type.name}</a>
+{I}</td>
+{I}<td>
+{II}{indent_but_first_line(a_props_joined, II)}
+{I}</td>
+</tr>"""
+        )
+
+    tr_usages_joined = "\n".join(tr_usages)
+    table_usages = f"""\
+<table class="table">
+{I}{indent_but_first_line(tr_usages_joined, I)}
+</table>"""
+
+    return Stripped(
+            f"""\
+<h2>Usages</h2>
+{table_usages}"""
+        )
 
 
 # fmt: off
@@ -1017,6 +1123,10 @@ def _generate_page_for_class(
         )
 
         blocks.append(ul_invariants)
+
+    usage_block = _generate_usages_block(our_type=cls, symbol_table=symbol_table)
+    if usage_block is not None:
+        blocks.append(usage_block)
 
     content = Stripped("\n".join(blocks))
 
