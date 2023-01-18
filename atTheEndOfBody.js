@@ -1,4 +1,3 @@
-console.log("oi!");
 var activeElement = document.querySelector("#menu .active");
 if (activeElement) {
   var rect = activeElement.getBoundingClientRect();
