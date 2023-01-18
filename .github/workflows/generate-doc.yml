@@ -2,8 +2,7 @@ name: Generate-doc-workflow
 
 on:
   push:
-    branches:
-      - master
+    branches: [ master, main ]
 
 jobs:
   Generate-doc:
