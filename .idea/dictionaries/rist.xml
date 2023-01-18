@@ -10,6 +10,7 @@
       <w>codegen</w>
       <w>comanagedentity</w>
       <w>constraintref</w>
+      <w>dedented</w>
       <w>docx</w>
       <w>ebook</w>
       <w>eclass</w>
@@ -44,6 +45,7 @@
       <w>selfmanagedentity</w>
       <w>stackoverflow</w>
       <w>tchar</w>
+      <w>transpilable</w>
       <w>unformatted</w>
       <w>versioning</w>
       <w>yyyy</w>
