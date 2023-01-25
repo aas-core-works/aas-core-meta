@@ -26,6 +26,8 @@ Contributors
 * Marcin Sadurski
 * Manuel Sauer
 * Sebastian Bader
+* Igor Garmaev
+* Sebastian Heppner
 
 Contributing
 ============
