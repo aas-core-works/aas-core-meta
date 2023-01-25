@@ -82,11 +82,8 @@ from aas_core_meta.marker import (
     constant_set,
 )
 
-__book_url__ = (
-    "https://www.plattform-i40.de/IP/Redaktion/DE/Downloads/Publikation/"
-    "Details_of_the_Asset_Administration_Shell_Part1_V3.pdf?__blob=publicationFile&v=10"
-)
-__book_version__ = "V3.0RC02"
+__book_url__ = "https://to-be-published"
+__book_version__ = "V3.0"
 
 __xml_namespace__ = "https://admin-shell.io/aas/3/0"
 
