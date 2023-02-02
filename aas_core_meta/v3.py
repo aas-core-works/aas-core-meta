@@ -4863,8 +4863,8 @@ class Data_type_def_XSD(Enum):
     Negative_integer = "xs:negativeInteger"
 
 
+@abstract
 @reference_in_the_book(section=(5, 7, 12, 1))
-@serialization(with_model_type=True)
 class Lang_string(DBC):
     """Strings with language tags"""
 
@@ -4885,7 +4885,6 @@ class Lang_string(DBC):
     lambda self: len(self.text) <= 128,
     "String shall have a maximum length of 128 characters.",
 )
-@serialization(with_model_type=True)
 class Lang_string_name_type(Lang_string, DBC):
     """String with length 128 maximum and minimum 1 characters and with language tags"""
 
@@ -4899,7 +4898,6 @@ class Lang_string_name_type(Lang_string, DBC):
     lambda self: len(self.text) <= 1023,
     "String shall have a maximum length of 1023 characters.",
 )
-@serialization(with_model_type=True)
 class Lang_string_text_type(Lang_string, DBC):
     """
     String with length 1023 maximum and minimum 1 characters and with language tags
@@ -5402,7 +5400,7 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     """
 
-    preferred_name: List["Lang_string"]
+    preferred_name: List["Lang_string_text_type"]
     """
     Preferred name
 
@@ -5410,7 +5408,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         :attr:`preferred_name` shall be provided at least in English.
     """
 
-    short_name: Optional[List["Lang_string"]]
+    short_name: Optional[List["Lang_string_text_type"]]
     """
     Short name
     """
@@ -5455,7 +5453,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Data Type
     """
 
-    definition: Optional[List["Lang_string"]]
+    definition: Optional[List["Lang_string_text_type"]]
     """
     Definition in different languages
     """
@@ -5482,14 +5480,14 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     def __init__(
         self,
-        preferred_name: List["Lang_string"],
-        short_name: Optional[List["Lang_string"]] = None,
+        preferred_name: List["Lang_string_text_type"],
+        short_name: Optional[List["Lang_string_text_type"]] = None,
         unit: Optional[Non_empty_XML_serializable_string] = None,
         unit_id: Optional["Reference"] = None,
         source_of_definition: Optional[Non_empty_XML_serializable_string] = None,
         symbol: Optional[Non_empty_XML_serializable_string] = None,
         data_type: Optional["Data_type_IEC_61360"] = None,
-        definition: Optional[List["Lang_string"]] = None,
+        definition: Optional[List["Lang_string_text_type"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
         value: Optional[str] = None,
@@ -5537,7 +5535,7 @@ class Data_specification_physical_unit(Data_specification_content):
     Symbol for the physical unit
     """
 
-    definition: List["Lang_string"]
+    definition: List["Lang_string_text_type"]
     """
     Definition in different languages
     """
@@ -5596,7 +5594,7 @@ class Data_specification_physical_unit(Data_specification_content):
         self,
         unit_name: Non_empty_XML_serializable_string,
         unit_symbol: Non_empty_XML_serializable_string,
-        definition: List["Lang_string"],
+        definition: List["Lang_string_text_type"],
         SI_notation: Optional[Non_empty_XML_serializable_string] = None,
         SI_name: Optional[Non_empty_XML_serializable_string] = None,
         DIN_notation: Optional[Non_empty_XML_serializable_string] = None,
