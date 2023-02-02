@@ -1438,6 +1438,12 @@ class Has_semantics(DBC):
     ),
     "The value must match the value type."
 )
+@invariant(
+    lambda self:
+    not (self.refers_to is not None)
+    or len(self.refers_to) >= 1,
+    "Refers-to must be either not set or have at least one item"
+)
 # fmt: on
 @reference_in_the_book(section=(5, 7, 2, 1), index=1)
 class Extension(Has_semantics):
@@ -1475,7 +1481,7 @@ class Extension(Has_semantics):
     Value of the extension
     """
 
-    refers_to: Optional["Reference"]
+    refers_to: Optional[List["Reference"]]
     """
     Reference to an element the extension refers to.
     """
@@ -1487,7 +1493,7 @@ class Extension(Has_semantics):
             supplemental_semantic_ids: Optional[List["Reference"]] = None,
             value_type: Optional["Data_type_def_XSD"] = None,
             value: Optional["Value_data_type"] = None,
-            refers_to: Optional["Reference"] = None,
+            refers_to: Optional[List["Reference"]] = None,
     ) -> None:
         Has_semantics.__init__(
             self,
