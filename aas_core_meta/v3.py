@@ -2148,8 +2148,9 @@ class Asset_information(DBC):
 
     asset_kind: "Asset_kind"
     """
-    Denotes whether the Asset is of kind :attr:`Asset_kind.Type` or
-    :attr:`Asset_kind.Instance`.
+    Denotes whether the Asset is of kind :attr:`Asset_kind.Type`,
+    :attr:`Asset_kind.Instance`, or whether this kind of classification is 
+    not applicable.
     """
 
     global_asset_id: Optional["Identifier"]
@@ -2241,7 +2242,8 @@ class Resource(DBC):
 @reference_in_the_book(section=(5, 7, 4), index=2)
 class Asset_kind(Enum):
     """
-    Enumeration for denoting whether an asset is a type asset or an instance asset.
+    Enumeration for denoting whether an asset is a type asset, an instance asset,
+    or whether this kind of classification is not applicable.
     """
 
     Type = "Type"
