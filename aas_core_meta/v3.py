@@ -4590,29 +4590,13 @@ class Key(DBC):
 class Key_types(Enum):
     """Enumeration of different key value types within a key."""
 
-    Fragment_reference = "FragmentReference"
-    """
-    Bookmark or a similar local identifier of a subordinate part of
-    a primary resource
-    """
-
-    External_reference = "ExternalReference"
-
     Annotated_relationship_element = "AnnotatedRelationshipElement"
     Asset_administration_shell = "AssetAdministrationShell"
     Basic_event_element = "BasicEventElement"
     Blob = "Blob"
     Capability = "Capability"
     Concept_description = "ConceptDescription"
-    Identifiable = "Identifiable"
-    """
-    Identifiable.
 
-    .. note::
-
-        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference
-        may be an Asset Administration Shell, a Submodel or a Concept Description.
-    """
     Data_element = "DataElement"
     """
     Data element.
@@ -4633,7 +4617,25 @@ class Key_types(Enum):
         :class:`Event_element` is abstract.
     """
 
+    External_reference = "ExternalReference"
+
     File = "File"
+
+    Fragment_reference = "FragmentReference"
+    """
+    Bookmark or a similar local identifier of a subordinate part of
+    a primary resource
+    """
+
+    Identifiable = "Identifiable"
+    """
+    Identifiable.
+
+    .. note::
+
+        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference
+        may be an Asset Administration Shell, a Submodel or a Concept Description.
+    """
 
     Multi_language_property = "MultiLanguageProperty"
     """Property with a value that can be provided in multiple languages"""
@@ -4642,11 +4644,13 @@ class Key_types(Enum):
     Property = "Property"
     Range = "Range"
     """Range with min and max"""
+    Referable = "Referable"
+
     Reference_element = "ReferenceElement"
     """
     Reference
     """
-    Referable = "Referable"
+
     Relationship_element = "RelationshipElement"
     """
     Relationship
@@ -4661,14 +4665,14 @@ class Key_types(Enum):
         Submodel Element is abstract, *i.e.* if a key uses :attr:`Submodel_element`
         the reference may be a :class:`Property`, an :class:`Operation` etc.
     """
+    Submodel_element_collection = "SubmodelElementCollection"
+    """
+    Struct of Submodel Elements
+    """
 
     Submodel_element_list = "SubmodelElementList"
     """
     List of Submodel Elements
-    """
-    Submodel_element_collection = "SubmodelElementCollection"
-    """
-    Struct of Submodel Elements
     """
 
 
