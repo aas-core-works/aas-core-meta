@@ -266,7 +266,7 @@ def matches_BCP_47(text: str) -> bool:
 
 @verification
 @implementation_specific
-def lang_strings_have_unique_languages(lang_strings: List["Lang_string"]) -> bool:
+def lang_strings_have_unique_languages(lang_strings: List["Abstract_lang_string"]) -> bool:
     """
     Check that the :paramref:`lang_strings` do not have overlapping
     :attr:`Lang_string.language`'s
@@ -4867,7 +4867,7 @@ class Data_type_def_XSD(Enum):
 
 @abstract
 @reference_in_the_book(section=(5, 7, 12, 1))
-class Lang_string(DBC):
+class Abstract_lang_string(DBC):
     """Strings with language tags"""
 
     language: BCP_47_language_tag
@@ -4887,20 +4887,20 @@ class Lang_string(DBC):
     lambda self: len(self.text) <= 128,
     "String shall have a maximum length of 128 characters.",
 )
-class Lang_string_name_type(Lang_string, DBC):
+class Lang_string_name_type(Abstract_lang_string, DBC):
     """String with length 128 maximum and minimum 1 characters and with language tags"""
 
     def __init__(
         self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
-        Lang_string.__init__(self, language=language, text=text)
+        Abstract_lang_string.__init__(self, language=language, text=text)
 
 
 @invariant(
     lambda self: len(self.text) <= 1023,
     "String shall have a maximum length of 1023 characters.",
 )
-class Lang_string_text_type(Lang_string, DBC):
+class Lang_string_text_type(Abstract_lang_string, DBC):
     """
     String with length 1023 maximum and minimum 1 characters and with language tags
     """
@@ -4908,7 +4908,7 @@ class Lang_string_text_type(Lang_string, DBC):
     def __init__(
         self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
-        Lang_string.__init__(self, language=language, text=text)
+        Abstract_lang_string.__init__(self, language=language, text=text)
 
 
 # fmt: off
