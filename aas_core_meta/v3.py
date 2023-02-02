@@ -3355,7 +3355,7 @@ class Entity_type(Enum):
     Self-Managed Entities have their own AAS but can be part of the bill of material of
     a composite self-managed entity.
 
-    The asset of an I4.0 Component is a self-managed entity per definition."
+    The asset of an I4.0 Component is a self-managed entity per definition.
     """
 
 
