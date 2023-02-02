@@ -1445,7 +1445,7 @@ class Extension(Has_semantics):
     Single extension of an element.
     """
 
-    name: Non_empty_XML_serializable_string
+    name: "Name_type"
     """
     Name of the extension.
 
