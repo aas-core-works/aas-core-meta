@@ -4278,7 +4278,7 @@ class Concept_description(Identifiable, Has_data_specification):
 
     .. note::
 
-       Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360"
+       Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360
     """
 
     def __init__(
