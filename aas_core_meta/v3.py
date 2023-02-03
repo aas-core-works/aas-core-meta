@@ -5303,11 +5303,66 @@ Data_type_IEC_61360_for_document: Set[Data_type_IEC_61360] = constant_set(
     fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
 # NOTE (g1zzm0, 2022-07-21): There is no table for this class in the book at the moment.
-class Level_type(Enum):
-    Min = "Min"
-    Max = "Max"
-    Nom = "Nom"
-    Typ = "Typ"
+class Level_type(DBC):
+    """
+    Value represented by up to four variants of a numeric value in a specific role:
+    MIN, NOM, TYP and MAX. True means that the value is available,
+    false means the value is not available.Value represented by up to four variants
+    of a numeric value in a specific role: MIN, NOM, TYP and MAX.
+    True means that the value is available, false means the value is not available.
+
+    EXAMPLE from [IEC61360-1]: In the case of having a property which is
+    of the LEVEL_TYPE min/max − expressing a range − only those two values
+    need to be provided.
+
+    .. note::
+
+        This is how AAS deals with the following combinations of level types:
+        1.	Either all attributes are false. In this case the concept is mapped
+            to a :class:`Property` and level type is ignored.
+        2.	At most one of the attributes is set to true. In this case
+            the concept is mapped to a :class:`Property`.
+        3.	Min and max are set to true. In this case the concept is mapped
+            to a :class:`Range`.
+        4.	More than one attribute is set to true but not min and max only
+            (see second case). In this case the concept is mapped
+            to a :class:`SubmodelElementCollection` with the corresponding
+            number of Properties.
+            Example: If attribute :attr:`min` and :attr:`nom` are set to true
+            then the concept is mapped to a :class:`SubmodelElementCollection`
+            with two Properties within: min and nom.
+            The data type of both Properties is the same.
+
+    .. note::
+        In the cases 2. and 4. the :attr:`Property.semantic_id` of the Property
+        or Properties within the :class:`SubmodelElementCollection` needs to include
+        information about the level type. Otherwise, the semantics is not described
+        in a unique way. Please refer to the specification.
+    """
+
+    min: "bool"
+    """Minimum of the value available"""
+
+    max: "bool"
+    """Nominal value available"""
+
+    nom: "bool"
+    """Value as typically present available"""
+
+    typ: "bool"
+    """Maximum of the value available"""
+
+    def __init__(
+        self,
+        min: "bool",
+        max: "bool",
+        nom: "bool",
+        typ: "bool",
+    ) -> None:
+        self.min = min
+        self.max = max
+        self.nom = nom
+        self.typ = typ
 
 
 @reference_in_the_book(
