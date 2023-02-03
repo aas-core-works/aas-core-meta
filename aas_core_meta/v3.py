@@ -1684,32 +1684,19 @@ class Identifiable(Referable):
 
 
 @reference_in_the_book(section=(5, 7, 2, 4), index=1)
-class Modeling_kind(Enum):
+class Modelling_kind(Enum):
     """Enumeration for denoting whether an element is a template or an instance."""
 
     Template = "Template"
     """
-    Software element which specifies the common attributes shared by all instances of
-    the template.
-
-    [SOURCE: IEC TR 62390:2005-01, 3.1.25] modified
+    Specification of the common features of a structured element in sufficient detail 
+    that such a instance can be instantiated using it 
     """
 
     Instance = "Instance"
     """
-    Concrete, clearly identifiable component of a certain template.
-
-    .. note::
-
-        It becomes an individual entity of a template, for example a
-        device model, by defining specific property values.
-
-    .. note::
-
-        In an object oriented view, an instance denotes an object of a
-        template (class).
-
-    [SOURCE: IEC 62890:2016, 3.1.16 65/617/CDV] modified
+    Concrete, clearly identifiable element instance. Its creation and validation 
+    may be guided by a corresponding element template.
     """
 
 
@@ -1723,20 +1710,20 @@ class Has_kind(DBC):
     Default for an element is that it is representing an instance.
     """
 
-    kind: Optional["Modeling_kind"]
+    kind: Optional["Modelling_kind"]
     """
     Kind of the element: either type or instance.
 
-    Default: :attr:`Modeling_kind.Instance`
+    Default: :attr:`Modelling_kind.Instance`
     """
 
     @implementation_specific
-    def kind_or_default(self) -> "Modeling_kind":
+    def kind_or_default(self) -> "Modelling_kind":
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
-        return self.kind if self.kind is not None else Modeling_kind.Instance
+        return self.kind if self.kind is not None else Modelling_kind.Instance
 
-    def __init__(self, kind: Optional["Modeling_kind"] = None) -> None:
+    def __init__(self, kind: Optional["Modelling_kind"] = None) -> None:
         self.kind = kind
 
 
@@ -1884,7 +1871,7 @@ class Qualifiable(DBC):
         If any :attr:`Qualifier.kind` value of :attr:`Qualifiable.qualifiers` is
         equal to :attr:`Qualifier_kind.Template_qualifier` and the qualified element
         inherits from :class:`Has_kind` then the qualified element shall be of
-        kind Template (:attr:`Has_kind.kind` = :attr:`Modeling_kind.Template`).
+        kind Template (:attr:`Has_kind.kind` = :attr:`Modelling_kind.Template`).
     """
 
     qualifiers: Optional[List["Qualifier"]]
@@ -1917,7 +1904,7 @@ class Qualifier_kind(Enum):
     qualifies the value of the element and can change during run-time.
 
     Value qualifiers are only applicable to elements with kind
-    :attr:`Modeling_kind.Instance`.
+    :attr:`Modelling_kind.Instance`.
     """
 
     Concept_qualifier = "ConceptQualifier"
@@ -1931,7 +1918,7 @@ class Qualifier_kind(Enum):
     qualifies the elements within a specific submodel on concept level.
 
     Template qualifiers are only applicable to elements with kind
-    :attr:`Modeling_kind.Template`.
+    :attr:`Modelling_kind.Template`.
     """
 
 
@@ -2326,7 +2313,7 @@ class Specific_asset_id(Has_semantics):
             qualifier.kind == Qualifier_kind.Template_qualifier
             for qualifier in self.qualifiers
         ) or (
-            self.kind_or_default() == Modeling_kind.Template
+            self.kind_or_default() == Modelling_kind.Template
         )
     ),
     "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
@@ -2336,7 +2323,7 @@ class Specific_asset_id(Has_semantics):
 @invariant(
     lambda self:
     not (self.submodel_elements is not None)
-    or not (self.kind == Modeling_kind.Template)
+    or not (self.kind == Modelling_kind.Template)
     or (
         not any(
             qualifier.kind == Qualifier_kind.Template_qualifier
@@ -2396,7 +2383,7 @@ class Submodel(
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
-        kind: Optional["Modeling_kind"] = None,
+        kind: Optional["Modelling_kind"] = None,
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         qualifiers: Optional[List["Qualifier"]] = None,
@@ -2443,7 +2430,7 @@ class Submodel(
             qualifier.kind == Qualifier_kind.Template_qualifier
             for qualifier in self.qualifiers
         ) or (
-            self.kind_or_default() == Modeling_kind.Template
+            self.kind_or_default() == Modelling_kind.Template
         )
     ),
     "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
