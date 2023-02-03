@@ -2265,8 +2265,8 @@ class Asset_kind(Enum):
 
 @reference_in_the_book(section=(5, 7, 4), index=3)
 @invariant(
-    lambda self: not (self.specific_asset_id is not None)
-    or (self.specific_asset_id.type == Reference_types.External_reference),
+    lambda self: not (self.specific_asset_ids is not None)
+    or (self.specific_asset_ids.type == Reference_types.External_reference),
     "Constraint AASd-133: SpecificAssetId/externalSubjectId shall be "
     "a global reference, i.e. Reference/type = GlobalReference.",
 )
@@ -3369,20 +3369,26 @@ class Entity_type(Enum):
 @reference_in_the_book(section=(5, 7, 7, 6))
 @invariant(
     lambda self:
+    not (self.specific_asset_ids is not None)
+    or len(self.specific_asset_ids) >= 1,
+    "Specific asset IDs must be either not set or have at least one item"
+)
+@invariant(
+    lambda self:
     (
         self.entity_type == Entity_type.Self_managed_entity
         and (
             (
-                self.global_asset_id is not None
-                and self.specific_asset_id is None
+                    self.global_asset_id is not None
+                    and self.specific_asset_ids is None
             ) or (
-                self.global_asset_id is None
-                and self.specific_asset_id is not None
+                    self.global_asset_id is None
+                    and len(self.specific_asset_ids) >= 1
             )
         )
     ) or (
-        self.global_asset_id is None
-        and self.specific_asset_id is None
+            self.global_asset_id is None
+            and self.specific_asset_ids is None
     ),
     "Constraint AASd-014: Either the attribute global asset ID or "
     "specific asset ID must be set if entity type is set to 'SelfManagedEntity'. "
@@ -3401,7 +3407,7 @@ class Entity(Submodel_element):
 
     :constraint AASd-014:
 
-        Either the attribute :attr:`global_asset_id` or :attr:`specific_asset_id`
+        Either the attribute :attr:`global_asset_id` or :attr:`specific_asset_ids`
         of an :class:`Entity` must be set if :attr:`entity_type` is set to
         :attr:`Entity_type.Self_managed_entity`. They are not existing otherwise.
     """
@@ -3426,7 +3432,7 @@ class Entity(Submodel_element):
         This is a global reference.
     """
 
-    specific_asset_id: Optional["Specific_asset_id"]
+    specific_asset_ids: Optional["Specific_asset_id"]
     """
     Reference to a specific asset ID representing a supplementary identifier
     of the asset represented by the Asset Administration Shell.
@@ -3448,7 +3454,7 @@ class Entity(Submodel_element):
         ] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_id: Optional["Identifier"] = None,
-        specific_asset_id: Optional["Specific_asset_id"] = None,
+        specific_asset_ids: Optional["Specific_asset_id"] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3466,7 +3472,86 @@ class Entity(Submodel_element):
         self.statements = statements
         self.entity_type = entity_type
         self.global_asset_id = global_asset_id
-        self.specific_asset_id = specific_asset_id
+        self.specific_asset_ids = specific_asset_ids
+# fmt: off
+
+
+@invariant(
+    lambda self:
+    not (self.annotations is not None)
+    or len(self.annotations) >= 1,
+    "Annotations must be either not set or have at least one item"
+)
+@reference_in_the_book(section=(5, 7, 7, 1))
+# fmt: on
+class Annotated_relationship_element(Relationship_element):
+    """
+    An annotated relationship element is a relationship element that can be annotated
+    with additional data elements.
+    """
+
+    annotations: Optional[List[Data_element]]
+    """
+    A data element that represents an annotation that holds for the relationship
+    between the two elements
+    """
+
+    def __init__(
+        self,
+        first: "Reference",
+        second: "Reference",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        id_short: Optional[Id_short] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_id: Optional["Reference"] = None,
+        supplemental_semantic_ids: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        annotations: Optional[List[Data_element]] = None,
+    ) -> None:
+        Relationship_element.__init__(
+            self,
+            first=first,
+            second=second,
+            extensions=extensions,
+            category=category,
+            id_short=id_short,
+            display_name=display_name,
+            description=description,
+            semantic_id=semantic_id,
+            supplemental_semantic_ids=supplemental_semantic_ids,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.annotations = annotations
+
+
+@reference_in_the_book(section=(5, 7, 7, 6), index=1)
+class Entity_type(Enum):
+    """
+    Enumeration for denoting whether an entity is a self-managed entity or a co-managed
+    entity.
+    """
+
+    Co_managed_entity = "CoManagedEntity"
+    """
+    For co-managed entities there is no separate AAS. Co-managed entities need to be
+    part of a self-managed entity.
+    """
+
+    Self_managed_entity = "SelfManagedEntity"
+    """
+    Self-Managed Entities have their own AAS but can be part of the bill of material of
+    a composite self-managed entity.
+
+    The asset of an I4.0 Component is a self-managed entity per definition.
+    """
+# fmt: off
 
 
 @reference_in_the_book(section=(5, 7, 7, 2), index=1)
