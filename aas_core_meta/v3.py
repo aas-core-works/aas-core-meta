@@ -3452,62 +3452,6 @@ class Entity(Submodel_element):
         self.entity_type = entity_type
         self.global_asset_id = global_asset_id
         self.specific_asset_ids = specific_asset_ids
-# fmt: off
-
-
-@invariant(
-    lambda self:
-    not (self.annotations is not None)
-    or len(self.annotations) >= 1,
-    "Annotations must be either not set or have at least one item"
-)
-@reference_in_the_book(section=(5, 7, 7, 1))
-# fmt: on
-class Annotated_relationship_element(Relationship_element):
-    """
-    An annotated relationship element is a relationship element that can be annotated
-    with additional data elements.
-    """
-
-    annotations: Optional[List[Data_element]]
-    """
-    A data element that represents an annotation that holds for the relationship
-    between the two elements
-    """
-
-    def __init__(
-        self,
-        first: "Reference",
-        second: "Reference",
-        extensions: Optional[List["Extension"]] = None,
-        category: Optional[Name_type] = None,
-        id_short: Optional[Id_short] = None,
-        display_name: Optional[List["Lang_string_name_type"]] = None,
-        description: Optional[List["Lang_string_text_type"]] = None,
-        semantic_id: Optional["Reference"] = None,
-        supplemental_semantic_ids: Optional[List["Reference"]] = None,
-        qualifiers: Optional[List[Qualifier]] = None,
-        embedded_data_specifications: Optional[
-            List["Embedded_data_specification"]
-        ] = None,
-        annotations: Optional[List[Data_element]] = None,
-    ) -> None:
-        Relationship_element.__init__(
-            self,
-            first=first,
-            second=second,
-            extensions=extensions,
-            category=category,
-            id_short=id_short,
-            display_name=display_name,
-            description=description,
-            semantic_id=semantic_id,
-            supplemental_semantic_ids=supplemental_semantic_ids,
-            qualifiers=qualifiers,
-            embedded_data_specifications=embedded_data_specifications,
-        )
-
-        self.annotations = annotations
 
 
 @reference_in_the_book(section=(5, 7, 7, 6), index=1)
