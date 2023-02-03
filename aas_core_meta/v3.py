@@ -3561,7 +3561,7 @@ class Event_payload(DBC):
 
     .. note::
 
-        This is a global reference.
+        This is an external reference.
     """
 
     time_stamp: "Date_time_UTC"
@@ -4599,8 +4599,6 @@ class Key_types(Enum):
         :class:`Event_element` is abstract.
     """
 
-    External_reference = "ExternalReference"
-
     File = "File"
 
     Fragment_reference = "FragmentReference"
@@ -4608,6 +4606,8 @@ class Key_types(Enum):
     Bookmark or a similar local identifier of a subordinate part of
     a primary resource
     """
+
+    Global_reference = "GlobalReference"
 
     Identifiable = "Identifiable"
     """
@@ -4675,7 +4675,7 @@ assert Key_types.Fragment_reference in Generic_fragment_keys, (
 
 Generic_globally_identifiables: Set[Key_types] = constant_set(
     values=[
-        Key_types.External_reference,
+        Key_types.Global_reference,
     ],
     description="Enumeration of different key value types within a key.",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=8),
@@ -4774,7 +4774,7 @@ AAS_referables: Set[Key_types] = constant_set(
 
 Globally_identifiables: Set[Key_types] = constant_set(
     values=[
-        Key_types.External_reference,
+        Key_types.Global_reference,
         Key_types.Asset_administration_shell,
         Key_types.Concept_description,
         Key_types.Identifiable,
