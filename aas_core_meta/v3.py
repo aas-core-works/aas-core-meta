@@ -5220,25 +5220,25 @@ class Level_type(DBC):
 
         This is how AAS deals with the following combinations of level types:
 
-        1.	Either all attributes are false. In this case the concept is mapped
-            to a :class:`Property` and level type is ignored.
-        2.	At most one of the attributes is set to true. In this case
-            the concept is mapped to a :class:`Property`.
-        3.	Min and max are set to true. In this case the concept is mapped
-            to a :class:`Range`.
-        4.	More than one attribute is set to true but not min and max only
-            (see second case). In this case the concept is mapped
-            to a :class:`SubmodelElementCollection` with the corresponding
-            number of Properties.
-            Example: If attribute :attr:`min` and :attr:`nom` are set to true
-            then the concept is mapped to a :class:`SubmodelElementCollection`
-            with two Properties within: min and nom.
-            The data type of both Properties is the same.
+        - Either all attributes are false. In this case the concept is mapped
+          to a :class:`Property` and level type is ignored.
+        - At most one of the attributes is set to true. In this case
+          the concept is mapped to a :class:`Property`.
+        - Min and max are set to true. In this case the concept is mapped
+          to a :class:`Range`.
+        - More than one attribute is set to true but not min and max only
+          (see second case). In this case the concept is mapped
+          to a :class:`Submodel_element_collection` with the corresponding
+          number of Properties.
+          Example: If attribute :attr:`min` and :attr:`nom` are set to true
+          then the concept is mapped to a :class:`Submodel_element_collection`
+          with two Properties within: min and nom.
+          The data type of both Properties is the same.
 
     .. note::
 
         In the cases 2. and 4. the :attr:`Property.semantic_id` of the Property
-        or Properties within the :class:`SubmodelElementCollection` needs to include
+        or Properties within the :class:`Submodel_element_collection` needs to include
         information about the level type. Otherwise, the semantics is not described
         in a unique way. Please refer to the specification.
 
