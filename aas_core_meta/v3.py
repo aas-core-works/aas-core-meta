@@ -1285,7 +1285,7 @@ class BCP_47_language_tag(str, DBC):
     """
     Represent a language tag conformant to BCP 47.
 
-    See: https://en.wikipedia.org/wiki/IETF_language_tag
+    See: https://tools.ietf.org/rfc/bcp/bcp47.txt
     """
 
 
