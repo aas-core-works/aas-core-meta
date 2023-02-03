@@ -2700,13 +2700,6 @@ class Submodel_element_list(Submodel_element):
         # This implementation will not be transpiled, but is given here as reference.
         return self.order_relevant if self.order_relevant is not None else True
 
-    value: Optional[List["Submodel_element"]]
-    """
-    Submodel element contained in the list.
-
-    The list is ordered.
-    """
-
     semantic_id_list_element: Optional["Reference"]
     """
     Semantic ID the submodel elements contained in the list match to.
@@ -2726,6 +2719,13 @@ class Submodel_element_list(Submodel_element):
     The value type of the submodel element contained in the list.
     """
 
+    value: Optional[List["Submodel_element"]]
+    """
+    Submodel element contained in the list.
+
+    The list is ordered.
+    """
+
     def __init__(
         self,
         type_value_list_element: "AAS_submodel_elements",
@@ -2741,9 +2741,9 @@ class Submodel_element_list(Submodel_element):
             List["Embedded_data_specification"]
         ] = None,
         order_relevant: Optional["bool"] = None,
-        value: Optional[List["Submodel_element"]] = None,
         semantic_id_list_element: Optional["Reference"] = None,
         value_type_list_element: Optional["Data_type_def_XSD"] = None,
+        value: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2760,9 +2760,9 @@ class Submodel_element_list(Submodel_element):
 
         self.type_value_list_element = type_value_list_element
         self.order_relevant = order_relevant
-        self.value = value
         self.semantic_id_list_element = semantic_id_list_element
         self.value_type_list_element = value_type_list_element
+        self.value = value
 
 
 # fmt: off
