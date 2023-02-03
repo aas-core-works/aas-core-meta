@@ -1480,7 +1480,7 @@ class Extension(Has_semantics):
 
     def __init__(
             self,
-            name: Non_empty_XML_serializable_string,
+            name: "Name_type",
             semantic_id: Optional["Reference"] = None,
             supplemental_semantic_ids: Optional[List["Reference"]] = None,
             value_type: Optional["Data_type_def_XSD"] = None,
@@ -3411,7 +3411,7 @@ class Entity(Submodel_element):
         This is a global reference.
     """
 
-    specific_asset_ids: Optional["Specific_asset_id"]
+    specific_asset_ids: Optional[List["Specific_asset_id"]]
     """
     Reference to a specific asset ID representing a supplementary identifier
     of the asset represented by the Asset Administration Shell.
@@ -3433,7 +3433,7 @@ class Entity(Submodel_element):
         ] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_id: Optional["Identifier"] = None,
-        specific_asset_ids: Optional["Specific_asset_id"] = None,
+        specific_asset_ids: Optional[List["Specific_asset_id"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
