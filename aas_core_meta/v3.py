@@ -66,7 +66,6 @@ Since the data specifications are now embedded, the following constraints became
 * ``AASd-050``
 * ``AASd-050b``
 """
-
 from enum import Enum
 from re import match
 from typing import List, Optional, Set
@@ -98,6 +97,48 @@ def matches_id_short(text: str) -> bool:
     """
     pattern = f"^[a-zA-Z][a-zA-Z0-9_]*$"
 
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_xs_any_simple_type(text: str) -> bool:
+    """
+    Check that :paramref:`text` is one of xs:AnySimpleType, equivalent to
+    :class:`Data_type_def_XSD`
+
+    (2023-02-03 s-heppner): We understand that his isn't pretty, but necessary to check
+    enum values of :class:`Data_type_def_XSD`
+    """
+    pattern = f"(xs:anyURI)|" \
+              f"(xs:base64Binary)|" \
+              f"(xs:boolean)|" \
+              f"(xs:byte)|" \
+              f"(xs:date)|" \
+              f"(xs:dateTime)|" \
+              f"(xs:decimal)|" \
+              f"(xs:double)|" \
+              f"(xs:duration)|" \
+              f"(xs:float)|" \
+              f"(xs:gDay)|" \
+              f"(xs:gMonth)|" \
+              f"(xs:gMonthDay)|" \
+              f"(xs:gYear)|" \
+              f"(xs:gYearMonth)|" \
+              f"(xs:hexBinary)|" \
+              f"(xs:int)|" \
+              f"(xs:integer)|" \
+              f"(xs:long)|" \
+              f"(xs:negativeInteger)|" \
+              f"(xs:nonNegativeInteger)|" \
+              f"(xs:nonPositiveInteger)|" \
+              f"(xs:positiveInteger)|" \
+              f"(xs:short)|" \
+              f"(xs:string)|" \
+              f"(xs:time)|" \
+              f"(xs:unsignedByte)|" \
+              f"(xs:unsignedInt)|" \
+              f"(xs:unsignedLong)|" \
+              f"(xs:unsignedShort)"
     return match(pattern, text) is not None
 
 
@@ -1334,9 +1375,13 @@ class Qualifier_type(Name_type, DBC):
     """
 
 
+@invariant(
+    lambda self: matches_xs_any_simple_type(self),
+    "Verify that :class:`Value_data_type` matches one of :class:`Data_type_def_XSD`"
+)
 class Value_data_type(str, DBC):
     """
-    any XSD atomic type as specified via :class:`Data_type_def_XSD`
+    any XSD simple type as specified via :class:`Data_type_def_XSD`
     """
 
 
