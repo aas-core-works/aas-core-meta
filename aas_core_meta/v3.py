@@ -266,10 +266,12 @@ def matches_BCP_47(text: str) -> bool:
 
 @verification
 @implementation_specific
-def lang_strings_have_unique_languages(lang_strings: List["Abstract_lang_string"]) -> bool:
+def lang_strings_have_unique_languages(
+        lang_strings: List["Abstract_lang_string"]
+) -> bool:
     """
     Check that the :paramref:`lang_strings` do not have overlapping
-    :attr:`Lang_string.language`'s
+    :attr:`Abstract_lang_string.language`'s
     """
     # NOTE (mristin, 2022-04-7):
     # This implementation will not be transpiled, but is given here as reference.
@@ -5295,6 +5297,7 @@ class Level_type(DBC):
     .. note::
 
         This is how AAS deals with the following combinations of level types:
+
         1.	Either all attributes are false. In this case the concept is mapped
             to a :class:`Property` and level type is ignored.
         2.	At most one of the attributes is set to true. In this case
@@ -5311,10 +5314,12 @@ class Level_type(DBC):
             The data type of both Properties is the same.
 
     .. note::
+
         In the cases 2. and 4. the :attr:`Property.semantic_id` of the Property
         or Properties within the :class:`SubmodelElementCollection` needs to include
         information about the level type. Otherwise, the semantics is not described
         in a unique way. Please refer to the specification.
+
     """
 
     min: "bool"
