@@ -5243,7 +5243,7 @@ class Level_type(DBC):
     """
     Value represented by up to four variants of a numeric value in a specific role:
     MIN, NOM, TYP and MAX. True means that the value is available,
-    false means the value is not available.Value represented by up to four variants
+    false means the value is not available. Value represented by up to four variants
     of a numeric value in a specific role: MIN, NOM, TYP and MAX.
     True means that the value is available, false means the value is not available.
 
@@ -5280,28 +5280,28 @@ class Level_type(DBC):
     """
 
     min: "bool"
-    """Minimum of the value available"""
-
-    max: "bool"
-    """Nominal value available"""
+    """Minimum of the value"""
 
     nom: "bool"
-    """Value as typically present available"""
+    """Nominal value (value as designated)"""
 
     typ: "bool"
-    """Maximum of the value available"""
+    """Value as typically present"""
+
+    max: "bool"
+    """Maximum of the value"""
 
     def __init__(
         self,
         min: "bool",
-        max: "bool",
         nom: "bool",
         typ: "bool",
+        max: "bool",
     ) -> None:
         self.min = min
-        self.max = max
         self.nom = nom
         self.typ = typ
+        self.max = max
 
 
 @reference_in_the_book(
@@ -5373,6 +5373,56 @@ IEC_61360_data_types_with_unit: Set[Data_type_IEC_61360] = constant_set(
 These data types imply that the unit is defined in the data specification.""",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=9),
 )
+
+
+@invariant(
+    lambda self: len(self.text) <= 255,
+    "String shall have a maximum length of 1023 characters.",
+)
+class Lang_string_preferred_name_type_iec_61360(Abstract_lang_string, DBC):
+    """
+    String with length 255 maximum and minimum 1 characters and with language tags
+
+    .. note::
+
+        It is advised to keep the length of the name limited to 35 characters.
+
+    """
+
+    def __init__(
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+    ) -> None:
+        Abstract_lang_string.__init__(self, language=language, text=text)
+
+
+@invariant(
+    lambda self: len(self.text) <= 18,
+    "String shall have a maximum length of 1023 characters.",
+)
+class Lang_string_short_name_type_iec_61360(Abstract_lang_string, DBC):
+    """
+    String with length 18 maximum and minimum 1 characters and with language tags
+    """
+
+    def __init__(
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+    ) -> None:
+        Abstract_lang_string.__init__(self, language=language, text=text)
+
+
+@invariant(
+    lambda self: len(self.text) <= 1023,
+    "String shall have a maximum length of 1023 characters.",
+)
+class Lang_string_definition_type_iec_61360(Abstract_lang_string, DBC):
+    """
+    String with length 1023 maximum and minimum 1 characters and with language tags
+    """
+
+    def __init__(
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+    ) -> None:
+        Abstract_lang_string.__init__(self, language=language, text=text)
 
 
 @verification
@@ -5463,6 +5513,19 @@ class Data_specification_IEC_61360(Data_specification_content):
         If :attr:`value` is not empty then :attr:`value_list` shall be empty
         and vice versa.
 
+    .. note::
+
+        It is also possible that both :attr:`value` and :attr:`value_list` are empty.
+        This is the case for concept descriptions that define the semantics of a
+        property but do not have an enumeration (:attr:`value_list`) as data type.
+
+    .. note::
+
+        Although it is possible to define a concept description for a value list,
+        it is not possible to reuse this value list.
+        It is only possible to directly add a value list as data type
+        to a specific semantic definition of a property.
+
     :constraint AASc-009:
         If :attr:`data_type` one of:
         :attr:`Data_type_IEC_61360.Integer_measure`,
@@ -5491,15 +5554,19 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     """
 
-    preferred_name: List["Lang_string_text_type"]
+    preferred_name: List["Lang_string_preferred_name_type_iec_61360"]
     """
     Preferred name
+    
+    .. note::
+
+        It is advised to keep the length of the name limited to 35 characters.
 
     :constraint AASc-002:
         :attr:`preferred_name` shall be provided at least in English.
     """
 
-    short_name: Optional[List["Lang_string_text_type"]]
+    short_name: Optional[List["Lang_string_short_name_type_iec_61360"]]
     """
     Short name
     """
@@ -5544,7 +5611,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Data Type
     """
 
-    definition: Optional[List["Lang_string_text_type"]]
+    definition: Optional[List["Lang_string_definition_type_iec_61360"]]
     """
     Definition in different languages
     """
@@ -5552,6 +5619,11 @@ class Data_specification_IEC_61360(Data_specification_content):
     value_format: Optional[Non_empty_XML_serializable_string]
     """
     Value Format
+    
+    .. note::
+    
+        The value format is based on ISO 13584-42 and IEC 61360-2.
+        
     """
 
     value_list: Optional["Value_list"]
@@ -5559,7 +5631,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     List of allowed values
     """
 
-    value: Optional[str]
+    value: Optional["Lang_string_short_name_type_iec_61360"]
     """
     Value
     """
@@ -5571,17 +5643,17 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     def __init__(
         self,
-        preferred_name: List["Lang_string_text_type"],
-        short_name: Optional[List["Lang_string_text_type"]] = None,
+        preferred_name: List["Lang_string_preferred_name_type_iec_61360"],
+        short_name: Optional[List["Lang_string_short_name_type_iec_61360"]] = None,
         unit: Optional[Non_empty_XML_serializable_string] = None,
         unit_id: Optional["Reference"] = None,
         source_of_definition: Optional[Non_empty_XML_serializable_string] = None,
         symbol: Optional[Non_empty_XML_serializable_string] = None,
         data_type: Optional["Data_type_IEC_61360"] = None,
-        definition: Optional[List["Lang_string_text_type"]] = None,
+        definition: Optional[List["Lang_string_definition_type_iec_61360"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
-        value: Optional[str] = None,
+        value: Optional["Lang_string_short_name_type_iec_61360"] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
