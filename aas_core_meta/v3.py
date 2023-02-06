@@ -24,11 +24,10 @@ such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
 
-:constraintref:`AASd-116` is ill-defined. The type of the
-:attr:`Specific_asset_id.value` is a string, but the type of
-:attr:`Asset_information.global_asset_id` is a :class:`Reference`. The comparison
-between a string and a reference is not defined, so we can not implement
-this constraint.
+:constraintref:`AASd-119` cannot be validated fully due to limitations of constraint
+definition in aas-core-meta. We are unable to check children of #
+:class:`Submodel_element` s recursively, therefore, in the current implementation,
+only top-level :class:`Submodel_element` s of a :class:`Submodel` are evaluated.
 
 Furthermore, we diverge from the book in the following points regarding
 the enumerations. We have to implement subsets of enumerations as sets as common
@@ -60,11 +59,6 @@ The working group decided to change the rules for serialization *after* the book
 published. The data specifications are critical in applications, but there is no
 possibility to access them through a data channel as they are not part of
 an environment.
-
-Since the data specifications are now embedded, the following constraints became futile:
-
-* ``AASd-050``
-* ``AASd-050b``
 """
 from enum import Enum
 from re import match
@@ -2154,6 +2148,24 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     or len(self.specific_asset_ids) >= 1,
     "Constraint AASd-131: For AssetInformation either "
     "the globalAssetId shall be defined or at least one specificAssetId."
+)
+@invariant(
+    lambda self:
+    not (self.specific_asset_ids is not None)
+    or (
+        all(
+            (
+                specific_asset_id.name != "globalAssetId"
+            ) or (
+             specific_asset_id.name == "globalAssetId" and
+             specific_asset_id.value == self.global_asset_id
+            )
+            for specific_asset_id in self.specific_asset_ids
+        )
+    ),
+    "AASd-116: ``globalAssetId`` (case-insensitive) is a reserved key. "
+    "If used as value for ``Specific_asset_id.name`` then ``Specific_asset_id.value`` "
+    "shall be identical to ``global_asset_id``."
 )
 @reference_in_the_book(section=(5, 7, 4), index=0)
 # fmt: on
