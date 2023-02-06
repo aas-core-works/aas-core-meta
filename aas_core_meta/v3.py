@@ -5341,18 +5341,32 @@ class Level_type(DBC):
         self.max = max
 
 
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or lang_strings_have_unique_languages(self.value),
+    "Value specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or len(self.value) >= 1,
+    "Value must be either not set or have at least one item"
+)
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=3,
     fragment="4.8.2 Predefined Templates for Property and Value Descriptions",
 )
+# fmt: on
 class Value_reference_pair(DBC):
     """
     A value reference pair within a value list. Each value has a global unique id
     defining its semantic.
     """
 
-    value: str
+    value: List["Lang_string_short_name_type_iec_61360"]
     """
     The value of the referenced concept definition of the value in valueId.
     """
@@ -5367,7 +5381,9 @@ class Value_reference_pair(DBC):
 
     """
 
-    def __init__(self, value: str, value_id: "Reference") -> None:
+    def __init__(self,
+                 value: List["Lang_string_short_name_type_iec_61360"],
+                 value_id: "Reference") -> None:
         self.value = value
         self.value_id = value_id
 
@@ -5515,6 +5531,18 @@ def is_BCP_47_for_english(text: str) -> bool:
 )
 @invariant(
     lambda self:
+    not (self.value is not None)
+    or lang_strings_have_unique_languages(self.value),
+    "Value specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or len(self.value) >= 1,
+    "Value must be either not set or have at least one item"
+)
+@invariant(
+    lambda self:
     not (self.data_type is None and self.data_type in IEC_61360_data_types_with_unit)
     or (
             self.unit is not None or self.unit_id is not None
@@ -5560,8 +5588,8 @@ class Data_specification_IEC_61360(Data_specification_content):
 
         Although it is possible to define a :class:`Concept_description` for a
         :attr:´value_list`,
-        it is not possible to reuse this :class:`value_list`.
-        It is only possible to directly add a :class:`value_list` as data type
+        it is not possible to reuse this :attr:`value_list`.
+        It is only possible to directly add a :attr:`value_list` as data type
         to a specific semantic definition of a property.
 
     :constraint AASc-3a-009:
@@ -5623,15 +5651,8 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     .. note::
 
-        It is recommended to use a global reference.
-
-    .. note::
-
-        Although the :attr:`unit_id` is a global reference there might exist a
-        :class:`Concept_description`
-        with data specification :class:`Data_specification_physical_unit` with
-        the same ID.
-
+        It is recommended to use an external reference ID.
+    
     """
 
     source_of_definition: Optional[Non_empty_XML_serializable_string]
