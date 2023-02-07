@@ -851,7 +851,11 @@ class Test_assertions(unittest.TestCase):
     #
     # See: https://english.stackexchange.com/questions/101248/how-should-the-abbreviation-for-identifier-be-capitalized
     ABBREVIATIONS = {
-        "AAS",
+        # NOTE (s-heppner, 2023-02-07):
+        # After careful consideration with the IDTA we decided to exclude AAS and XSD
+        # again from the abbreviations, since this representation should follow the
+        # specification
+        # "AAS",
         "BCP",
         "DIN",
         "ECE",
@@ -867,7 +871,7 @@ class Test_assertions(unittest.TestCase):
         "URL",
         "UTC",
         "XML",
-        "XSD",
+        # "XSD",
     }
 
     @staticmethod
@@ -1025,7 +1029,7 @@ class Test_assertions(unittest.TestCase):
     @staticmethod
     def needs_plural(type_annotation: intermediate.TypeAnnotationUnion) -> bool:
         lang_string_cls = _META_MODEL.symbol_table.must_find_class(
-            aas_core_codegen.common.Identifier("Lang_string")
+            aas_core_codegen.common.Identifier("Abstract_lang_string")
         )
 
         type_anno = intermediate.beneath_optional(type_annotation)
@@ -1042,12 +1046,24 @@ class Test_assertions(unittest.TestCase):
             "Concept_description.is_case_of",
             "Submodel_element_collection.value",
             "Submodel_element_list.value",
+            "Extension.refers_to"
+        }
+
+        # NOTE (s-heppner, 2023-02-07)
+        # As we decided (see ABBREVIATIONS definition above) to exclude AAS and XSD
+        # from the abbreviation list, since they are treated separately in the spec,
+        # we need to exclude the occurrences now from the name checking.
+        hard_wired_abbreviation_exceptions = {
+            "Data_type_def_Xsd",
+            "Aas_submodel_elements"
         }
 
         symbol_table = _META_MODEL.symbol_table
 
         for our_type in symbol_table.our_types:
-            errors.extend(Test_assertions.check_class_name(name=our_type.name))
+            # First, we check the class names
+            if our_type.name not in hard_wired_abbreviation_exceptions:
+                errors.extend(Test_assertions.check_class_name(name=our_type.name))
 
             # We descend and check literals, properties *etc.*
 

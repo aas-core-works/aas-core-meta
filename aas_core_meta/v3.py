@@ -1023,7 +1023,7 @@ def matches_xs_string(text: str) -> bool:
 # noinspection PyUnusedLocal
 @verification
 @implementation_specific
-def value_consistent_with_XSD_type(value: str, value_type: "Data_type_def_Xsd") -> bool:
+def value_consistent_with_xsd_type(value: str, value_type: "Data_type_def_Xsd") -> bool:
     """
     Check that the :paramref:`value` conforms to its :paramref:`value_type`.
 
@@ -1465,7 +1465,7 @@ class Has_semantics(DBC):
     lambda self:
     not (self.value is not None)
     or (
-        value_consistent_with_XSD_type(self.value, self.value_type_or_default())
+        value_consistent_with_xsd_type(self.value, self.value_type_or_default())
     ),
     "The value must match the value type."
 )
@@ -1962,7 +1962,7 @@ class Qualifier_kind(Enum):
 # fmt: off
 @invariant(
     lambda self: not (self.value is not None)
-    or value_consistent_with_XSD_type(self.value, self.value_type),
+                 or value_consistent_with_xsd_type(self.value, self.value_type),
     "Constraint AASd-020: The value shall be consistent to the data type as defined "
     "in value type.",
 )
@@ -2476,6 +2476,7 @@ class Submodel(
 
 
 # fmt: off
+@abstract
 @reference_in_the_book(section=(5, 7, 6))
 # fmt: on
 class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specification):
@@ -2935,7 +2936,7 @@ class Data_element(Submodel_element):
 @invariant(
     lambda self:
     not (self.value is not None)
-    or value_consistent_with_XSD_type(self.value, self.value_type),
+    or value_consistent_with_xsd_type(self.value, self.value_type),
     "Value must be consistent with the value type."
 )
 # fmt: on
@@ -3081,13 +3082,13 @@ class Multi_language_property(Data_element):
 @invariant(
     lambda self:
     not (self.min is not None)
-    or value_consistent_with_XSD_type(self.min, self.value_type),
+    or value_consistent_with_xsd_type(self.min, self.value_type),
     "Min must be consistent with the value type."
 )
 @invariant(
     lambda self:
     not (self.max is not None)
-    or value_consistent_with_XSD_type(self.max, self.value_type),
+    or value_consistent_with_xsd_type(self.max, self.value_type),
     "Max must be consistent with the value type."
 )
 # fmt: on
@@ -5378,7 +5379,7 @@ class Value_reference_pair(DBC):
     defining its semantic.
     """
 
-    value: List["Lang_string_short_name_type_iec_61360"]
+    value: List["Lang_string_short_name_type_IEC_61360"]
     """
     The value of the referenced concept definition of the value in valueId.
     """
@@ -5394,7 +5395,7 @@ class Value_reference_pair(DBC):
     """
 
     def __init__(self,
-                 value: List["Lang_string_short_name_type_iec_61360"],
+                 value: List["Lang_string_short_name_type_IEC_61360"],
                  value_id: "Reference") -> None:
         self.value = value
         self.value_id = value_id
@@ -5444,7 +5445,7 @@ These data types imply that the unit is defined in the data specification.""",
     lambda self: len(self.text) <= 255,
     "String shall have a maximum length of 1023 characters.",
 )
-class Lang_string_preferred_name_type_iec_61360(Abstract_lang_string, DBC):
+class Lang_string_preferred_name_type_IEC_61360(Abstract_lang_string, DBC):
     """
     String with length 255 maximum and minimum 1 characters and with language tags
 
@@ -5464,7 +5465,7 @@ class Lang_string_preferred_name_type_iec_61360(Abstract_lang_string, DBC):
     lambda self: len(self.text) <= 18,
     "String shall have a maximum length of 1023 characters.",
 )
-class Lang_string_short_name_type_iec_61360(Abstract_lang_string, DBC):
+class Lang_string_short_name_type_IEC_61360(Abstract_lang_string, DBC):
     """
     String with length 18 maximum and minimum 1 characters and with language tags
     """
@@ -5479,7 +5480,7 @@ class Lang_string_short_name_type_iec_61360(Abstract_lang_string, DBC):
     lambda self: len(self.text) <= 1023,
     "String shall have a maximum length of 1023 characters.",
 )
-class Lang_string_definition_type_iec_61360(Abstract_lang_string, DBC):
+class Lang_string_definition_type_IEC_61360(Abstract_lang_string, DBC):
     """
     String with length 1023 maximum and minimum 1 characters and with language tags
     """
@@ -5632,7 +5633,7 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     """
 
-    preferred_name: List["Lang_string_preferred_name_type_iec_61360"]
+    preferred_name: List["Lang_string_preferred_name_type_IEC_61360"]
     """
     Preferred name
     
@@ -5644,7 +5645,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         :attr:`preferred_name` shall be provided at least in English.
     """
 
-    short_name: Optional[List["Lang_string_short_name_type_iec_61360"]]
+    short_name: Optional[List["Lang_string_short_name_type_IEC_61360"]]
     """
     Short name
     """
@@ -5682,7 +5683,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Data Type
     """
 
-    definition: Optional[List["Lang_string_definition_type_iec_61360"]]
+    definition: Optional[List["Lang_string_definition_type_IEC_61360"]]
     """
     Definition in different languages
     """
@@ -5702,7 +5703,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     List of allowed values
     """
 
-    value: Optional["Lang_string_short_name_type_iec_61360"]
+    value: Optional["Lang_string_short_name_type_IEC_61360"]
     """
     Value
     """
@@ -5714,17 +5715,17 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     def __init__(
         self,
-        preferred_name: List["Lang_string_preferred_name_type_iec_61360"],
-        short_name: Optional[List["Lang_string_short_name_type_iec_61360"]] = None,
+        preferred_name: List["Lang_string_preferred_name_type_IEC_61360"],
+        short_name: Optional[List["Lang_string_short_name_type_IEC_61360"]] = None,
         unit: Optional[Non_empty_XML_serializable_string] = None,
         unit_id: Optional["Reference"] = None,
         source_of_definition: Optional[Non_empty_XML_serializable_string] = None,
         symbol: Optional[Non_empty_XML_serializable_string] = None,
         data_type: Optional["Data_type_IEC_61360"] = None,
-        definition: Optional[List["Lang_string_definition_type_iec_61360"]] = None,
+        definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
-        value: Optional["Lang_string_short_name_type_iec_61360"] = None,
+        value: Optional["Lang_string_short_name_type_IEC_61360"] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
