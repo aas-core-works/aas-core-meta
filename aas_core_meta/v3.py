@@ -5636,7 +5636,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     preferred_name: List["Lang_string_preferred_name_type_IEC_61360"]
     """
     Preferred name
-    
+
     .. note::
 
         It is advised to keep the length of the name limited to 35 characters.
