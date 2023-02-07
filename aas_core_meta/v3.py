@@ -5665,7 +5665,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     .. note::
 
         It is recommended to use an external reference ID.
-    
+
     """
 
     source_of_definition: Optional[Non_empty_XML_serializable_string]
@@ -5691,11 +5691,11 @@ class Data_specification_IEC_61360(Data_specification_content):
     value_format: Optional[Non_empty_XML_serializable_string]
     """
     Value Format
-    
+
     .. note::
-    
+
         The value format is based on ISO 13584-42 and IEC 61360-2.
-        
+
     """
 
     value_list: Optional["Value_list"]
