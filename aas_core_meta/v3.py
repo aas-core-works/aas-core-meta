@@ -103,36 +103,38 @@ def matches_xs_any_simple_type(text: str) -> bool:
     (2023-02-03 s-heppner): We understand that his isn't pretty, but necessary to check
     enum values of :class:`Data_type_def_Xsd`
     """
-    pattern = f"(xs:anyURI)|" \
-              f"(xs:base64Binary)|" \
-              f"(xs:boolean)|" \
-              f"(xs:byte)|" \
-              f"(xs:date)|" \
-              f"(xs:dateTime)|" \
-              f"(xs:decimal)|" \
-              f"(xs:double)|" \
-              f"(xs:duration)|" \
-              f"(xs:float)|" \
-              f"(xs:gDay)|" \
-              f"(xs:gMonth)|" \
-              f"(xs:gMonthDay)|" \
-              f"(xs:gYear)|" \
-              f"(xs:gYearMonth)|" \
-              f"(xs:hexBinary)|" \
-              f"(xs:int)|" \
-              f"(xs:integer)|" \
-              f"(xs:long)|" \
-              f"(xs:negativeInteger)|" \
-              f"(xs:nonNegativeInteger)|" \
-              f"(xs:nonPositiveInteger)|" \
-              f"(xs:positiveInteger)|" \
-              f"(xs:short)|" \
-              f"(xs:string)|" \
-              f"(xs:time)|" \
-              f"(xs:unsignedByte)|" \
-              f"(xs:unsignedInt)|" \
-              f"(xs:unsignedLong)|" \
-              f"(xs:unsignedShort)"
+    pattern = (
+        f"(xs:anyURI)|"
+        f"(xs:base64Binary)|"
+        f"(xs:boolean)|"
+        f"(xs:byte)|"
+        f"(xs:date)|"
+        f"(xs:dateTime)|"
+        f"(xs:decimal)|"
+        f"(xs:double)|"
+        f"(xs:duration)|"
+        f"(xs:float)|"
+        f"(xs:gDay)|"
+        f"(xs:gMonth)|"
+        f"(xs:gMonthDay)|"
+        f"(xs:gYear)|"
+        f"(xs:gYearMonth)|"
+        f"(xs:hexBinary)|"
+        f"(xs:int)|"
+        f"(xs:integer)|"
+        f"(xs:long)|"
+        f"(xs:negativeInteger)|"
+        f"(xs:nonNegativeInteger)|"
+        f"(xs:nonPositiveInteger)|"
+        f"(xs:positiveInteger)|"
+        f"(xs:short)|"
+        f"(xs:string)|"
+        f"(xs:time)|"
+        f"(xs:unsignedByte)|"
+        f"(xs:unsignedInt)|"
+        f"(xs:unsignedLong)|"
+        f"(xs:unsignedShort)"
+    )
     return match(pattern, text) is not None
 
 
@@ -302,7 +304,7 @@ def matches_BCP_47(text: str) -> bool:
 @verification
 @implementation_specific
 def lang_strings_have_unique_languages(
-        lang_strings: List["Abstract_lang_string"]
+    lang_strings: List["Abstract_lang_string"],
 ) -> bool:
     """
     Check that the :paramref:`lang_strings` do not have overlapping
@@ -1207,6 +1209,7 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 
 # endregion
 
+
 # fmt: off
 @invariant(
     lambda self: len(self) >= 1,
@@ -1371,7 +1374,7 @@ class Qualifier_type(Name_type, DBC):
 
 @invariant(
     lambda self: matches_xs_any_simple_type(self),
-    "Verify that :class:`Value_data_type` matches one of :class:`Data_type_def_Xsd`"
+    "Verify that :class:`Value_data_type` matches one of :class:`Data_type_def_Xsd`",
 )
 class Value_data_type(str, DBC):
     """
@@ -3500,6 +3503,8 @@ class Entity_type(Enum):
 
     The asset of an I4.0 Component is a self-managed entity per definition.
     """
+
+
 # fmt: off
 
 
@@ -3998,6 +4003,7 @@ class Capability(Submodel_element):
 # Therefore, we decided to encapsulate the logic in these few functions and estimate
 # the maintenance effort to dwarf the effort needed to get this right in
 # aas-core-codegen.
+
 
 @verification
 @implementation_specific
@@ -5394,9 +5400,11 @@ class Value_reference_pair(DBC):
 
     """
 
-    def __init__(self,
-                 value: List["Lang_string_short_name_type_IEC_61360"],
-                 value_id: "Reference") -> None:
+    def __init__(
+        self,
+        value: List["Lang_string_short_name_type_IEC_61360"],
+        value_id: "Reference",
+    ) -> None:
         self.value = value
         self.value_id = value_id
 

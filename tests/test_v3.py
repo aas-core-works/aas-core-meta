@@ -1046,7 +1046,7 @@ class Test_assertions(unittest.TestCase):
             "Concept_description.is_case_of",
             "Submodel_element_collection.value",
             "Submodel_element_list.value",
-            "Extension.refers_to"
+            "Extension.refers_to",
         }
 
         # NOTE (s-heppner, 2023-02-07)
@@ -1055,7 +1055,7 @@ class Test_assertions(unittest.TestCase):
         # we need to exclude the occurrences now from the name checking.
         hard_wired_abbreviation_exceptions = {
             "Data_type_def_Xsd",
-            "Aas_submodel_elements"
+            "Aas_submodel_elements",
         }
 
         symbol_table = _META_MODEL.symbol_table
@@ -1418,7 +1418,9 @@ not (self.qualifiers is not None)
                 if (
                     isinstance(type_anno, intermediate.ListTypeAnnotation)
                     and isinstance(type_anno.items, intermediate.OurTypeAnnotation)
-                    and type_anno.items.our_type.is_subclass_of(abstract_lang_string_cls)
+                    and type_anno.items.our_type.is_subclass_of(
+                        abstract_lang_string_cls
+                    )
                 ):
                     if prop.name not in lang_string_set_props_with_uniqueness_invariant:
                         errors.append(
