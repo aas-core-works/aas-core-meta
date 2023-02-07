@@ -1218,7 +1218,7 @@ Observed literals: {sorted(literal_set)!r}"""
         )
 
         aas_submodel_elements_enum = symbol_table.must_find_enumeration(
-            aas_core_codegen.common.Identifier("AAS_submodel_elements")
+            aas_core_codegen.common.Identifier("Aas_submodel_elements")
         )
 
         tests.common.assert_subclasses_correspond_to_enumeration_literals(
