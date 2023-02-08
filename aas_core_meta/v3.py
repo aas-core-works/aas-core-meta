@@ -36,21 +36,21 @@ between the properties and the sets is defined through invariants. This causes
 the following divergences:
 
 * We decided therefore to remove the enumerations ``DataTypeDef`` and ``DataTypeDefRDF``
-  and keep only :class:`Data_type_def_Xsd` as enumeration. Otherwise, we would have
+  and keep only :class:`Data_type_def_XSD` as enumeration. Otherwise, we would have
   to write redundant invariants all over the meta-model because ``DataTypeDef`` and
   ``DataTypeDefRDF`` are actually never used in any type definition.
 
-* The enumeration :class:`Aas_submodel_elements` is used in two different contexts.
+* The enumeration :class:`AAS_submodel_elements` is used in two different contexts.
   One context is the definition of key types in a reference. Another context is
   the definition of element types in a :class:`Submodel_element_list`. It is very
   counter-intuitive to see the type of
   :attr:`Submodel_element_list.type_value_list_element` as
   :class:`Key_types` even though an invariant might specify that it is an element of
-  :class:`Aas_submodel_elements`.
+  :class:`AAS_submodel_elements`.
 
   To avoid confusion, we introduce a set of :class:`Key_types`,
   :const:`AAS_submodel_elements_as_keys` to represent the first context (key type
-  in a reference). The enumeration :class:`Aas_submodel_elements` is kept as designator
+  in a reference). The enumeration :class:`AAS_submodel_elements` is kept as designator
   for :attr:`Submodel_element_list.type_value_list_element`.
 
 Concerning the data specifications, we embed them within
@@ -98,10 +98,10 @@ def matches_id_short(text: str) -> bool:
 def matches_xs_any_simple_type(text: str) -> bool:
     """
     Check that :paramref:`text` is one of xs:AnySimpleType, equivalent to
-    :class:`Data_type_def_Xsd`
+    :class:`Data_type_def_XSD`
 
     (2023-02-03 s-heppner): We understand that his isn't pretty, but necessary to check
-    enum values of :class:`Data_type_def_Xsd`
+    enum values of :class:`Data_type_def_XSD`
     """
     pattern = (
         f"(xs:anyURI)|"
@@ -1025,7 +1025,7 @@ def matches_xs_string(text: str) -> bool:
 # noinspection PyUnusedLocal
 @verification
 @implementation_specific
-def value_consistent_with_xsd_type(value: str, value_type: "Data_type_def_Xsd") -> bool:
+def value_consistent_with_XSD_type(value: str, value_type: "Data_type_def_XSD") -> bool:
     """
     Check that the :paramref:`value` conforms to its :paramref:`value_type`.
 
@@ -1166,7 +1166,7 @@ def submodel_elements_have_identical_semantic_ids(
 @verification
 @implementation_specific
 def submodel_element_is_of_type(
-    element: "Submodel_element", element_type: "Aas_submodel_elements"
+    element: "Submodel_element", element_type: "AAS_submodel_elements"
 ) -> bool:
     """
     Check that the run-time type of the :paramref:`element` coincides with
@@ -1178,7 +1178,7 @@ def submodel_element_is_of_type(
 @verification
 @implementation_specific
 def properties_or_ranges_have_value_type(
-    elements: List["Submodel_element"], value_type: "Data_type_def_Xsd"
+    elements: List["Submodel_element"], value_type: "Data_type_def_XSD"
 ) -> bool:
     """Check that all the :paramref:`elements` have the :paramref:`value_type`."""
     # NOTE (mristin, 2022-04-7):
@@ -1374,7 +1374,7 @@ class Qualifier_type(Name_type, DBC):
 
 class Value_data_type(str, DBC):
     """
-    any XSD simple type as specified via :class:`Data_type_def_Xsd`
+    any XSD simple type as specified via :class:`Data_type_def_XSD`
     """
 
 
@@ -1464,7 +1464,7 @@ class Has_semantics(DBC):
     lambda self:
     not (self.value is not None)
     or (
-        value_consistent_with_xsd_type(self.value, self.value_type_or_default())
+        value_consistent_with_XSD_type(self.value, self.value_type_or_default())
     ),
     "The value must match the value type."
 )
@@ -1491,19 +1491,19 @@ class Extension(Has_semantics):
         to be unique.
     """
 
-    value_type: Optional["Data_type_def_Xsd"]
+    value_type: Optional["Data_type_def_XSD"]
     """
     Type of the value of the extension.
 
-    Default: :attr:`Data_type_def_Xsd.String`
+    Default: :attr:`Data_type_def_XSD.String`
     """
 
     @implementation_specific
-    def value_type_or_default(self) -> "Data_type_def_Xsd":
+    def value_type_or_default(self) -> "Data_type_def_XSD":
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
         return (
-            self.value_type if self.value_type is not None else Data_type_def_Xsd.String
+            self.value_type if self.value_type is not None else Data_type_def_XSD.String
         )
 
     value: Optional["Value_data_type"]
@@ -1521,7 +1521,7 @@ class Extension(Has_semantics):
             name: "Name_type",
             semantic_id: Optional["Reference"] = None,
             supplemental_semantic_ids: Optional[List["Reference"]] = None,
-            value_type: Optional["Data_type_def_Xsd"] = None,
+            value_type: Optional["Data_type_def_XSD"] = None,
             value: Optional["Value_data_type"] = None,
             refers_to: Optional[List["Reference"]] = None,
     ) -> None:
@@ -1719,13 +1719,13 @@ class Modelling_kind(Enum):
 
     Template = "Template"
     """
-    Specification of the common features of a structured element in sufficient detail 
-    that such a instance can be instantiated using it 
+    Specification of the common features of a structured element in sufficient detail
+    that such a instance can be instantiated using it
     """
 
     Instance = "Instance"
     """
-    Concrete, clearly identifiable element instance. Its creation and validation 
+    Concrete, clearly identifiable element instance. Its creation and validation
     may be guided by a corresponding element template.
     """
 
@@ -1961,7 +1961,7 @@ class Qualifier_kind(Enum):
 # fmt: off
 @invariant(
     lambda self: not (self.value is not None)
-                 or value_consistent_with_xsd_type(self.value, self.value_type),
+                 or value_consistent_with_XSD_type(self.value, self.value_type),
     "Constraint AASd-020: The value shall be consistent to the data type as defined "
     "in value type.",
 )
@@ -2005,7 +2005,7 @@ class Qualifier(Has_semantics):
     the element.
     """
 
-    value_type: "Data_type_def_Xsd"
+    value_type: "Data_type_def_XSD"
     """
     Data type of the qualifier value.
     """
@@ -2027,7 +2027,7 @@ class Qualifier(Has_semantics):
     def __init__(
         self,
         type: "Qualifier_type",
-        value_type: "Data_type_def_Xsd",
+        value_type: "Data_type_def_XSD",
         semantic_id: Optional["Reference"] = None,
         supplemental_semantic_ids: Optional[List["Reference"]] = None,
         kind: Optional["Qualifier_kind"] = None,
@@ -2196,7 +2196,7 @@ class Asset_information(DBC):
     asset_kind: "Asset_kind"
     """
     Denotes whether the Asset is of kind :attr:`Asset_kind.Type`,
-    :attr:`Asset_kind.Instance`, or whether this kind of classification is 
+    :attr:`Asset_kind.Instance`, or whether this kind of classification is
     not applicable.
     """
 
@@ -2306,8 +2306,7 @@ class Asset_kind(Enum):
 
 @reference_in_the_book(section=(5, 7, 4), index=3)
 @invariant(
-    lambda self:
-    not (self.specific_asset_ids is not None)
+    lambda self: not (self.specific_asset_ids is not None)
     or (self.specific_asset_ids.type == Reference_types.External_reference),
     "Constraint AASd-133: SpecificAssetId/externalSubjectId shall be "
     "a global reference, i.e. Reference/type = GlobalReference.",
@@ -2586,7 +2585,7 @@ class Relationship_element(Submodel_element):
         self.second = second
 
 
-class Aas_submodel_elements(Enum):
+class AAS_submodel_elements(Enum):
     """Enumeration of all possible elements of a :class:`Submodel_element_list`."""
 
     Annotated_relationship_element = "AnnotatedRelationshipElement"
@@ -2625,8 +2624,8 @@ class Aas_submodel_elements(Enum):
     not (
             self.value is not None
             and (
-                    self.type_value_list_element == Aas_submodel_elements.Property
-                    or self.type_value_list_element == Aas_submodel_elements.Range
+                    self.type_value_list_element == AAS_submodel_elements.Property
+                    or self.type_value_list_element == AAS_submodel_elements.Range
             )
     ) or (
         self.value_type_list_element is not None
@@ -2711,8 +2710,8 @@ class Submodel_element_list(Submodel_element):
     :constraint AASd-109:
 
         If :attr:`type_value_list_element` is equal to
-        :attr:`Aas_submodel_elements.Property` or
-        :attr:`Aas_submodel_elements.Range`
+        :attr:`AAS_submodel_elements.Property` or
+        :attr:`AAS_submodel_elements.Range`
         :attr:`value_type_list_element` shall be set and all first
         level child elements in the :class:`Submodel_element_list` shall have
         the value type as specified in :attr:`value_type_list_element`.
@@ -2741,12 +2740,12 @@ class Submodel_element_list(Submodel_element):
         It is recommended to use a global reference.
     """
 
-    type_value_list_element: "Aas_submodel_elements"
+    type_value_list_element: "AAS_submodel_elements"
     """
     The submodel element type of the submodel elements contained in the list.
     """
 
-    value_type_list_element: Optional["Data_type_def_Xsd"]
+    value_type_list_element: Optional["Data_type_def_XSD"]
     """
     The value type of the submodel element contained in the list.
     """
@@ -2760,7 +2759,7 @@ class Submodel_element_list(Submodel_element):
 
     def __init__(
         self,
-        type_value_list_element: "Aas_submodel_elements",
+        type_value_list_element: "AAS_submodel_elements",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         id_short: Optional[Id_short] = None,
@@ -2774,7 +2773,7 @@ class Submodel_element_list(Submodel_element):
         ] = None,
         order_relevant: Optional["bool"] = None,
         semantic_id_list_element: Optional["Reference"] = None,
-        value_type_list_element: Optional["Data_type_def_Xsd"] = None,
+        value_type_list_element: Optional["Data_type_def_XSD"] = None,
         value: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Submodel_element.__init__(
@@ -2941,7 +2940,7 @@ class Data_element(Submodel_element):
 @invariant(
     lambda self:
     not (self.value is not None)
-    or value_consistent_with_xsd_type(self.value, self.value_type),
+    or value_consistent_with_XSD_type(self.value, self.value_type),
     "Value must be consistent with the value type."
 )
 # fmt: on
@@ -2956,7 +2955,7 @@ class Property(Data_element):
         the value of the referenced coded value in :attr:`value_id`.
     """
 
-    value_type: "Data_type_def_Xsd"
+    value_type: "Data_type_def_XSD"
     """
     Data type of the value
     """
@@ -2977,7 +2976,7 @@ class Property(Data_element):
 
     def __init__(
         self,
-        value_type: "Data_type_def_Xsd",
+        value_type: "Data_type_def_XSD",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         id_short: Optional[Id_short] = None,
@@ -3087,13 +3086,13 @@ class Multi_language_property(Data_element):
 @invariant(
     lambda self:
     not (self.min is not None)
-    or value_consistent_with_xsd_type(self.min, self.value_type),
+    or value_consistent_with_XSD_type(self.min, self.value_type),
     "Min must be consistent with the value type."
 )
 @invariant(
     lambda self:
     not (self.max is not None)
-    or value_consistent_with_xsd_type(self.max, self.value_type),
+    or value_consistent_with_XSD_type(self.max, self.value_type),
     "Max must be consistent with the value type."
 )
 # fmt: on
@@ -3102,7 +3101,7 @@ class Range(Data_element):
     A range data element is a data element that defines a range with min and max.
     """
 
-    value_type: "Data_type_def_Xsd"
+    value_type: "Data_type_def_XSD"
     """
     Data type of the min und max
     """
@@ -3123,7 +3122,7 @@ class Range(Data_element):
 
     def __init__(
         self,
-        value_type: "Data_type_def_Xsd",
+        value_type: "Data_type_def_XSD",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         id_short: Optional[Id_short] = None,
@@ -4908,7 +4907,7 @@ Fragment_keys: Set[Key_types] = constant_set(
 
 
 @reference_in_the_book(section=(5, 7, 11, 3))
-class Data_type_def_Xsd(Enum):
+class Data_type_def_XSD(Enum):
     """
     Enumeration listing all XSD anySimpleTypes
     """

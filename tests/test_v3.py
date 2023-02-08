@@ -851,11 +851,7 @@ class Test_assertions(unittest.TestCase):
     #
     # See: https://english.stackexchange.com/questions/101248/how-should-the-abbreviation-for-identifier-be-capitalized
     ABBREVIATIONS = {
-        # NOTE (s-heppner, 2023-02-07):
-        # After careful consideration with the IDTA we decided to exclude AAS and XSD
-        # again from the abbreviations, since this representation should follow the
-        # specification
-        # "AAS",
+        "AAS",
         "BCP",
         "DIN",
         "ECE",
@@ -871,7 +867,7 @@ class Test_assertions(unittest.TestCase):
         "URL",
         "UTC",
         "XML",
-        # "XSD",
+        "XSD",
     }
 
     @staticmethod
@@ -1049,14 +1045,7 @@ class Test_assertions(unittest.TestCase):
             "Extension.refers_to",
         }
 
-        # NOTE (s-heppner, 2023-02-07)
-        # As we decided (see ABBREVIATIONS definition above) to exclude AAS and XSD
-        # from the abbreviation list, since they are treated separately in the spec,
-        # we need to exclude the occurrences now from the name checking.
-        hard_wired_abbreviation_exceptions = {
-            "Data_type_def_Xsd",
-            "Aas_submodel_elements",
-        }
+        hard_wired_abbreviation_exceptions = {}
 
         symbol_table = _META_MODEL.symbol_table
 
@@ -1234,7 +1223,7 @@ Observed literals: {sorted(literal_set)!r}"""
         )
 
         aas_submodel_elements_enum = symbol_table.must_find_enumeration(
-            aas_core_codegen.common.Identifier("Aas_submodel_elements")
+            aas_core_codegen.common.Identifier("AAS_submodel_elements")
         )
 
         tests.common.assert_subclasses_correspond_to_enumeration_literals(
