@@ -3566,7 +3566,7 @@ class Event_payload(DBC):
 
     .. note::
 
-        This is a global reference.
+        This is an external reference.
     """
 
     time_stamp: "Date_time_UTC"
@@ -5470,7 +5470,7 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     .. note::
 
-        It is recommended to use a global reference.
+        It is recommended to use an external reference ID.
 
     .. note::
 
