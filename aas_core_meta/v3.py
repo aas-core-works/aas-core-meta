@@ -60,11 +60,6 @@ The working group decided to change the rules for serialization *after* the book
 published. The data specifications are critical in applications, but there is no
 possibility to access them through a data channel as they are not part of
 an environment.
-
-Since the data specifications are now embedded, the following constraints became futile:
-
-* ``AASd-050``
-* ``AASd-050b``
 """
 
 from enum import Enum
