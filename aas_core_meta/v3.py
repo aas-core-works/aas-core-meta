@@ -3322,20 +3322,26 @@ class Annotated_relationship_element(Relationship_element):
 @reference_in_the_book(section=(5, 7, 7, 6))
 @invariant(
     lambda self:
+    not (self.specific_asset_ids is not None)
+    or len(self.specific_asset_ids) >= 1,
+    "Specific asset IDs must be either not set or have at least one item"
+)
+@invariant(
+    lambda self:
     (
         self.entity_type == Entity_type.Self_managed_entity
         and (
             (
-                self.global_asset_id is not None
-                and self.specific_asset_id is None
+                    self.global_asset_id is not None
+                    and self.specific_asset_ids is None
             ) or (
-                self.global_asset_id is None
-                and self.specific_asset_id is not None
+                    self.global_asset_id is None
+                    and len(self.specific_asset_ids) >= 1
             )
         )
     ) or (
-        self.global_asset_id is None
-        and self.specific_asset_id is None
+            self.global_asset_id is None
+            and self.specific_asset_ids is None
     ),
     "Constraint AASd-014: Either the attribute global asset ID or "
     "specific asset ID must be set if entity type is set to 'SelfManagedEntity'. "
@@ -3354,7 +3360,7 @@ class Entity(Submodel_element):
 
     :constraint AASd-014:
 
-        Either the attribute :attr:`global_asset_id` or :attr:`specific_asset_id`
+        Either the attribute :attr:`global_asset_id` or :attr:`specific_asset_ids`
         of an :class:`Entity` must be set if :attr:`entity_type` is set to
         :attr:`Entity_type.Self_managed_entity`. They are not existing otherwise.
     """
@@ -3379,7 +3385,7 @@ class Entity(Submodel_element):
         This is a global reference.
     """
 
-    specific_asset_id: Optional["Specific_asset_id"]
+    specific_asset_ids: Optional[List["Specific_asset_id"]]
     """
     Reference to a specific asset ID representing a supplementary identifier
     of the asset represented by the Asset Administration Shell.
@@ -3401,7 +3407,7 @@ class Entity(Submodel_element):
         ] = None,
         statements: Optional[List["Submodel_element"]] = None,
         global_asset_id: Optional["Identifier"] = None,
-        specific_asset_id: Optional["Specific_asset_id"] = None,
+        specific_asset_ids: Optional[List["Specific_asset_id"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3419,7 +3425,7 @@ class Entity(Submodel_element):
         self.statements = statements
         self.entity_type = entity_type
         self.global_asset_id = global_asset_id
-        self.specific_asset_id = specific_asset_id
+        self.specific_asset_ids = specific_asset_ids
 
 
 @reference_in_the_book(section=(5, 7, 7, 6), index=1)
