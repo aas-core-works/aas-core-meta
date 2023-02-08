@@ -1372,10 +1372,6 @@ class Qualifier_type(Name_type, DBC):
     """
 
 
-@invariant(
-    lambda self: matches_xs_any_simple_type(self),
-    "Verify that :class:`Value_data_type` matches one of :class:`Data_type_def_Xsd`",
-)
 class Value_data_type(str, DBC):
     """
     any XSD simple type as specified via :class:`Data_type_def_Xsd`
@@ -2310,7 +2306,8 @@ class Asset_kind(Enum):
 
 @reference_in_the_book(section=(5, 7, 4), index=3)
 @invariant(
-    lambda self: not (self.specific_asset_ids is not None)
+    lambda self:
+    not (self.specific_asset_ids is not None)
     or (self.specific_asset_ids.type == Reference_types.External_reference),
     "Constraint AASd-133: SpecificAssetId/externalSubjectId shall be "
     "a global reference, i.e. Reference/type = GlobalReference.",
@@ -2381,11 +2378,14 @@ class Specific_asset_id(Has_semantics):
 @invariant(
     lambda self:
     not (self.submodel_elements is not None)
-    or not (self.kind == Modelling_kind.Template)
     or (
-        not any(
-            qualifier.kind == Qualifier_kind.Template_qualifier
-            for qualifier in self.submodel_elements.qualifiers
+        not (self.kind == Modelling_kind.Template)
+        or (
+            not any(
+                qualifier.kind == Qualifier_kind.Template_qualifier
+                for submodel_element in self.submodel_elements
+                for qualifier in submodel_element.qualifiers
+            )
         )
     ),
     "Constraint AASd-129: If any qualifier kind value of a Submodel element qualifier "
