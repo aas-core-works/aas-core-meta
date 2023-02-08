@@ -59,11 +59,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item active" href="Level_type.html">
-            Level_type
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="Modelling_kind.html">
             Modelling_kind
           </a>
@@ -327,6 +322,11 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item active" href="Level_type.html">
+            Level_type
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="Multi_language_property.html">
             Multi_language_property
           </a>
@@ -474,48 +474,28 @@
         </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
-          <a class="nav-item" href="Concept_description.html#constraint-AASc-003">
-            AASc-003
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="Concept_description.html#constraint-AASc-004">
-            AASc-004
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="Concept_description.html#constraint-AASc-005">
-            AASc-005
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="Concept_description.html#constraint-AASc-006">
-            AASc-006
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="Concept_description.html#constraint-AASc-007">
-            AASc-007
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="Concept_description.html#constraint-AASc-008">
-            AASc-008
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-009">
-            AASc-009
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-010">
-            AASc-010
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-002">
             AASc-3a-002
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-003">
+            AASc-3a-003
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-008">
+            AASc-3a-008
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-009">
+            AASc-3a-009
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Data_specification_content.html#constraint-AASc-3a-050">
+            AASc-3a-050
           </a>
         </li>
         <li class="nav-item">
@@ -973,50 +953,116 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        Level_type
-        <a class="aas-anchor-link" href="">🔗</a>
+        Level_type<a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <h2>Literals</h2>
-      <div>
-        <dl>
-        <dt>
-          <a name="literal-Min" />
-          Min
-          <a class="aas-anchor-link" href="#literal-Min">🔗</a>
-           = <code>&#x27;Min&#x27;</code>
-        </dt>
-        <dd>
-          
-        </dd>
-        <dt>
-          <a name="literal-Max" />
-          Max
-          <a class="aas-anchor-link" href="#literal-Max">🔗</a>
-           = <code>&#x27;Max&#x27;</code>
-        </dt>
-        <dd>
-          
-        </dd>
-        <dt>
-          <a name="literal-Nom" />
-          Nom
-          <a class="aas-anchor-link" href="#literal-Nom">🔗</a>
-           = <code>&#x27;Nom&#x27;</code>
-        </dt>
-        <dd>
-          
-        </dd>
-        <dt>
-          <a name="literal-Typ" />
-          Typ
-          <a class="aas-anchor-link" href="#literal-Typ">🔗</a>
-           = <code>&#x27;Typ&#x27;</code>
-        </dt>
-        <dd>
-          
-        </dd>
-        </dl>
+      <div class="aas-description">
+        <div class="summary">
+          Value represented by up to four variants of a numeric value in a specific role:
+          <code>MIN</code>, <code>NOM</code>, <code>TYP</code> and <code>MAX</code>. True means that the value is available,
+          false means the value is not available.
+        </div>
+        <div class="remarks">
+          <p>
+            EXAMPLE from [IEC61360-1]: In the case of having a property which is
+            of the LEVEL_TYPE min/max − expressing a range − only those two values
+            need to be provided.
+          </p>
+          <div class="alert alert-info">
+            <p>
+              This is how AAS deals with the following combinations of level types:
+            </p>
+            <ul>
+              <li>
+                Either all attributes are false. In this case the concept is mapped
+                to a <a href="Property.html">Property</a> and level type is ignored.
+              </li>
+              <li>
+                At most one of the attributes is set to true. In this case
+                the concept is mapped to a <a href="Property.html">Property</a>.
+              </li>
+              <li>
+                Min and max are set to true. In this case the concept is mapped
+                to a <a href="Range.html">Range</a>.
+              </li>
+              <li>
+                More than one attribute is set to true but not min and max only
+                (see second case). In this case the concept is mapped
+                to a <a href="Submodel_element_collection.html">Submodel_element_collection</a> with the corresponding
+                number of Properties.
+                Example: If attribute <a href="Level_type.html#property-min">Level_type.min</a> and <a href="Level_type.html#property-nom">Level_type.nom</a> are set to true
+                then the concept is mapped to a <a href="Submodel_element_collection.html">Submodel_element_collection</a>
+                with two Properties within: min and nom.
+                The data type of both Properties is the same.
+              </li>
+            </ul>
+          </div>
+          <div class="alert alert-info">
+            In the cases 2. and 4. the <a href="Property.html#property-semantic_id">Property.semantic_id</a> of the Property
+            or Properties within the <a href="Submodel_element_collection.html">Submodel_element_collection</a> needs to include
+            information about the level type. Otherwise, the semantics is not described
+            in a unique way. Please refer to the specification.
+          </div>
+        </div>
       </div>
+      <h2>
+        <a name="properties"></a>
+        Properties
+        <a class="aas-anchor-link" href="#properties">🔗</a>
+      </h2>
+      <dl>
+        <dt>
+          <a name="#property-min"></a>
+          min: <span class="aas-type-annotation">bool</span>
+          <a class="aas-anchor-link" href="#property-min">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Minimum of the value
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="#property-nom"></a>
+          nom: <span class="aas-type-annotation">bool</span>
+          <a class="aas-anchor-link" href="#property-nom">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Nominal value (value as designated)
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="#property-typ"></a>
+          typ: <span class="aas-type-annotation">bool</span>
+          <a class="aas-anchor-link" href="#property-typ">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Value as typically present
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="#property-max"></a>
+          max: <span class="aas-type-annotation">bool</span>
+          <a class="aas-anchor-link" href="#property-max">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Maximum of the value
+            </div>
+          </div>
+        </dd>
+      </dl>
       <h2>Usages</h2>
       <table class="table">
         <tr>
