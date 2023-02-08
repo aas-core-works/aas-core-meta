@@ -1241,16 +1241,6 @@ class Name_type(Non_empty_XML_serializable_string, DBC):
     """
 
 
-@invariant(
-    lambda self: len(self) <= 64,
-    "ShortNameType shall have a maximum length of 64 characters.",
-)
-class Short_name_type(Non_empty_XML_serializable_string, DBC):
-    """
-    string with length 64 maximum and 1 minimum
-    """
-
-
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 64,
