@@ -3939,7 +3939,7 @@ class Capability(Submodel_element):
 # We make the following verification functions implementation-specific since the casts
 # are very clumsy to formalize and transpile in a readable way across languages.
 # For example, since Python does not have a null-coalescing operator, formalizing
-# the constraints such as :constraintref:`AASc-004` would involve walrus operator and
+# the constraints such as :constraintref:`AASc-3a-004` would involve walrus operator and
 # would result in an unreadable invariant.
 #
 # Therefore, we decided to encapsulate the logic in these few functions and estimate
@@ -4124,7 +4124,7 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
         data_specification_IEC_61360s_for_property_or_value_have_appropriate_data_type(
             self.embedded_data_specifications)
     ),
-    "Constraint AASc-004: For a concept description with category PROPERTY or VALUE "
+    "Constraint AASc-3a-004: For a concept description with category PROPERTY or VALUE "
     "using data specification IEC 61360, the data type of the data specification is "
     "mandatory and shall be one of: DATE, STRING, STRING_TRANSLATABLE, "
     "INTEGER_MEASURE, INTEGER_COUNT, INTEGER_CURRENCY, REAL_MEASURE, REAL_COUNT, "
@@ -4140,9 +4140,9 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
         data_specification_IEC_61360s_for_reference_have_appropriate_data_type(
             self.embedded_data_specifications)
     ),
-    "Constraint AASc-005: For a concept description with category REFERENCE "
-    "using data specification IEC 61360, the data type of the data specification is "
-    "mandatory and shall be one of: STRING, IRI, IRDI."
+    "Constraint AASc-3a-005: For a concept description with category REFERENCE "
+    "using data specification IEC 61360, the data type of the data specification "
+    "shall be one of: STRING, IRI, IRDI."
 )
 @invariant(
     lambda self:
@@ -4155,9 +4155,9 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
             self.embedded_data_specifications
         )
     ),
-    "Constraint AASc-006: For a concept description with category DOCUMENT "
-    "using data specification IEC 61360, the data type of the data specification is "
-    "mandatory and shall be one of: FILE, BLOB, HTML."
+    "Constraint AASc-3a-006: For a concept description with category DOCUMENT "
+    "using data specification IEC 61360, the data type of the data specification "
+    "shall be one of: FILE, BLOB, HTML."
 )
 @invariant(
     lambda self:
@@ -4168,22 +4168,27 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
     ) or (
         data_specification_IEC_61360s_have_data_type(self.embedded_data_specifications)
     ),
-    "Constraint AASc-007: For a concept description with category QUALIFIER_TYPE "
+    "Constraint AASc-3a-007: For a concept description with category QUALIFIER_TYPE "
     "using data specification IEC 61360, the data type of the data specification is "
     "mandatory and shall be defined."
 )
 @invariant(
     lambda self:
     not (
-            self.category is not None
-            and self.category == "VALUE"
-            and self.embedded_data_specifications is not None
+            self.embedded_data_specifications is not None
     ) or (
-        data_specification_IEC_61360s_have_value(self.embedded_data_specifications)
+        (
+            data_specification_IEC_61360s_have_definition_at_least_in_english(
+                self.embedded_data_specifications
+            )
+        ) or (
+            data_specification_IEC_61360s_have_value(self.embedded_data_specifications)
+        )
     ),
-    "Constraint AASc-008: For a concept description with category VALUE "
-    "using data specification IEC 61360, the value of the data specification "
-    "shall be set."
+    "Constraint AASc-3a-008: For a concept description "
+    "using data specification template IEC 61360, the definition "
+    "is mandatory and shall be defined at least in English. "
+    "Exception: The concept description describes a value"
 )
 @invariant(
     lambda self:
@@ -4196,9 +4201,10 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
             self.embedded_data_specifications
         )
     ),
-    "Constraint AASc-003: For all concept descriptions with a category except VALUE "
-    "using data specification IEC 61360, the definition of the data specification "
-    "is mandatory and shall be defined at least in English."
+    "For a ConceptDescription referenced via value ID in a value list and "
+    "using data specification template IEC61360 "
+    "(http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/3/0), "
+    "value shall be set."
 )
 @invariant(
     lambda self:
@@ -4215,7 +4221,7 @@ class Concept_description(Identifiable, Has_data_specification):
     The description of the concept should follow a standardized schema (realized as
     data specification template).
 
-    :constraint AASc-004:
+    :constraint AASc-3a-004:
 
         For a :class:`Concept_description` with :attr:`category` ``PROPERTY`` or
         ``VALUE`` using data specification IEC61360,
@@ -4225,32 +4231,56 @@ class Concept_description(Identifiable, Has_data_specification):
         ``REAL_CURRENCY``, ``BOOLEAN``, ``RATIONAL``, ``RATIONAL_MEASURE``,
         ``TIME``, ``TIMESTAMP``.
 
-    :constraint AASc-005:
+    .. note::
+
+        Note: categories are deprecated since V3.0 of Part 1a of the document series
+        "Details of the Asset Administration Shell".
+
+    :constraint AASc-3a-005:
         For a :class:`Concept_description` with :attr:`category` ``REFERENCE``
-        using data specification IEC61360,
-        the :attr:`Data_specification_IEC_61360.data_type` is mandatory and shall be
+        using data specification template IEC61360,
+        the :attr:`Data_specification_IEC_61360.data_type` shall be
         one of: ``STRING``, ``IRI``, ``IRDI``.
 
-    :constraint AASc-006:
+    .. note::
+
+        Note: categories are deprecated since V3.0 of Part 1a of the document series
+        "Details of the Asset Administration Shell".
+
+    :constraint AASc-3a-006:
         For a :class:`Concept_description` with :attr:`category` ``DOCUMENT``
+        using data specification IEC61360,
+        the :attr:`Data_specification_IEC_61360.data_type` shall be one of ``FILE``,
+        ``BLOB``, ``HTML``
+
+    .. note::
+
+        Categories are deprecated since V3.0 of Part 1a of the document series
+        "Details of the Asset Administration Shell".
+
+    :constraint AASc-3a-007:
+        For a :class:`Concept_description` with :attr:`category` ``QUALIFIER_TYPE``
         using data specification IEC61360,
         the :attr:`Data_specification_IEC_61360.data_type` is mandatory and shall be
         defined.
 
-    :constraint AASc-007:
-        For a :class:`Concept_description` with :attr:`category` ``QUALIFIER_TYPE``
-        using data specification IEC61360,
-        the :attr:`Data_specification_IEC_61360.data_type` is mandatory and shall be
+    .. note::
 
-    :constraint AASc-008:
-        For all :class:`Concept_description`'s with a category except
-        :attr:`category` ``VALUE`` using data specification IEC61360,
+        Categories are deprecated since V3.0 of Part 1a of the document series
+        "Details of the Asset Administration Shell".
+
+    :constraint AASc-3a-008:
+        For a :class:`Concept_description` using data specification template IEC61360,
         :attr:`Data_specification_IEC_61360.definition` is mandatory and shall be
         defined at least in English.
 
-    :constraint AASc-003:
-        For a :class:`Concept_description` with :attr:`category` ``VALUE``
-        using data specification IEC61360,
+        Exception: The concept description describes a value, i.e.
+        :attr:`Data_specification_IEC_61360.value` is defined.
+
+    :constraint AASc-3a-003:
+        For a :class:`Concept_description` using data specification template IEC61360,
+        referenced via :attr:`Data_specification_IEC_61360.value_list`
+        :attr:`Value_reference_pair.value_id`
         the :attr:`Data_specification_IEC_61360.value` shall be set.
     """
 
@@ -4265,7 +4295,7 @@ class Concept_description(Identifiable, Has_data_specification):
 
     .. note::
 
-       Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360"
+       Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360
     """
 
     def __init__(
@@ -4971,6 +5001,15 @@ class Data_specification_content:
     Data specification content is part of a data specification template and defines
     which additional attributes shall be added to the element instance that references
     the data specification template and meta information about the template itself.
+
+    :constraint AASc-3a-050:
+        If the :class:`Data_specification_content` DataSpecificationIEC61360 is used
+        for an element, the value of
+        :attr:`Has_data_specification.embedded_data_specifications`
+        shall contain the global reference to the IRI of the corresponding
+        data specification template
+        https://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/3/0
+
     """
 
 
@@ -5194,12 +5233,67 @@ Data_type_IEC_61360_for_document: Set[Data_type_IEC_61360] = constant_set(
     index=4,
     fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
 )
-# NOTE (g1zzm0, 2022-07-21): There is no table for this class in the book at the moment.
-class Level_type(Enum):
-    Min = "Min"
-    Max = "Max"
-    Nom = "Nom"
-    Typ = "Typ"
+class Level_type(DBC):
+    """
+    Value represented by up to four variants of a numeric value in a specific role:
+    ``MIN``, ``NOM``, ``TYP`` and ``MAX``. True means that the value is available,
+    false means the value is not available.
+
+    EXAMPLE from [IEC61360-1]: In the case of having a property which is
+    of the LEVEL_TYPE min/max − expressing a range − only those two values
+    need to be provided.
+
+    .. note::
+
+        This is how AAS deals with the following combinations of level types:
+
+        - Either all attributes are false. In this case the concept is mapped
+          to a :class:`Property` and level type is ignored.
+        - At most one of the attributes is set to true. In this case
+          the concept is mapped to a :class:`Property`.
+        - Min and max are set to true. In this case the concept is mapped
+          to a :class:`Range`.
+        - More than one attribute is set to true but not min and max only
+          (see second case). In this case the concept is mapped
+          to a :class:`Submodel_element_collection` with the corresponding
+          number of Properties.
+          Example: If attribute :attr:`min` and :attr:`nom` are set to true
+          then the concept is mapped to a :class:`Submodel_element_collection`
+          with two Properties within: min and nom.
+          The data type of both Properties is the same.
+
+    .. note::
+
+        In the cases 2. and 4. the :attr:`Property.semantic_id` of the Property
+        or Properties within the :class:`Submodel_element_collection` needs to include
+        information about the level type. Otherwise, the semantics is not described
+        in a unique way. Please refer to the specification.
+
+    """
+
+    min: "bool"
+    """Minimum of the value"""
+
+    nom: "bool"
+    """Nominal value (value as designated)"""
+
+    typ: "bool"
+    """Value as typically present"""
+
+    max: "bool"
+    """Maximum of the value"""
+
+    def __init__(
+        self,
+        min: "bool",
+        nom: "bool",
+        typ: "bool",
+        max: "bool",
+    ) -> None:
+        self.min = min
+        self.nom = nom
+        self.typ = typ
+        self.max = max
 
 
 @reference_in_the_book(
@@ -5380,7 +5474,7 @@ def is_BCP_47_for_english(text: str) -> bool:
     or (
             self.unit is not None or self.unit_id is not None
     ),
-    "Constraint AASc-009: If data type is a an integer, real or rational with "
+    "Constraint AASc-3a-009: If data type is a an integer, real or rational with "
     "a measure or currency, unit or unit ID shall be defined."
 )
 @invariant(
@@ -5393,7 +5487,7 @@ def is_BCP_47_for_english(text: str) -> bool:
             and self.value_list is not None
             and len(self.value_list.value_reference_pairs) >= 1
     ),
-    "Constraint AASc-010: If value is not empty then value list shall be empty and "
+    "Constraint AASc-3a-010: If value is not empty then value list shall be empty and "
     "vice versa."
 )
 @reference_in_the_book(
@@ -5407,11 +5501,25 @@ class Data_specification_IEC_61360(Data_specification_content):
     Content of data specification template for concept descriptions for properties,
     values and value lists conformant to IEC 61360.
 
-    :constraint AASc-010:
+    :constraint AASc-3a-010:
         If :attr:`value` is not empty then :attr:`value_list` shall be empty
         and vice versa.
 
-    :constraint AASc-009:
+    .. note::
+
+        It is also possible that both :attr:`value` and :attr:`value_list` are empty.
+        This is the case for concept descriptions that define the semantics of a
+        property but do not have an enumeration (:attr:`value_list`) as data type.
+
+    .. note::
+
+        Although it is possible to define a :class:`Concept_description` for a
+        :attr:´value_list`,
+        it is not possible to reuse this :attr:`value_list`.
+        It is only possible to directly add a :attr:`value_list` as data type
+        to a specific semantic definition of a property.
+
+    :constraint AASc-3a-009:
         If :attr:`data_type` one of:
         :attr:`Data_type_IEC_61360.Integer_measure`,
         :attr:`Data_type_IEC_61360.Real_measure`,
@@ -5472,13 +5580,6 @@ class Data_specification_IEC_61360(Data_specification_content):
 
         It is recommended to use an external reference ID.
 
-    .. note::
-
-        Although the :attr:`unit_id` is a global reference there might exist a
-        :class:`Concept_description`
-        with data specification :class:`Data_specification_physical_unit` with
-        the same ID.
-
     """
 
     source_of_definition: Optional[Non_empty_XML_serializable_string]
@@ -5504,6 +5605,11 @@ class Data_specification_IEC_61360(Data_specification_content):
     value_format: Optional[Non_empty_XML_serializable_string]
     """
     Value Format
+
+    .. note::
+
+        The value format is based on ISO 13584-42 and IEC 61360-2.
+
     """
 
     value_list: Optional["Value_list"]
