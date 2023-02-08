@@ -1331,7 +1331,7 @@ class Qualifier_type(Name_type, DBC):
 
 class Value_data_type(str, DBC):
     """
-    any XSD atomic type as specified via :class:`Data_type_def_XSD`
+    any XSD simple type as specified via :class:`Data_type_def_XSD`
     """
 
 
