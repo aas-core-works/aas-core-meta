@@ -1676,27 +1676,14 @@ class Modelling_kind(Enum):
 
     Template = "Template"
     """
-    Software element which specifies the common attributes shared by all instances of
-    the template.
-
-    [SOURCE: IEC TR 62390:2005-01, 3.1.25] modified
+    Specification of the common features of a structured element in sufficient detail
+    that such a instance can be instantiated using it
     """
 
     Instance = "Instance"
     """
-    Concrete, clearly identifiable component of a certain template.
-
-    .. note::
-
-        It becomes an individual entity of a template, for example a
-        device model, by defining specific property values.
-
-    .. note::
-
-        In an object oriented view, an instance denotes an object of a
-        template (class).
-
-    [SOURCE: IEC 62890:2016, 3.1.16 65/617/CDV] modified
+    Concrete, clearly identifiable element instance. Its creation and validation
+    may be guided by a corresponding element template.
     """
 
 
