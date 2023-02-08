@@ -1332,20 +1332,6 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is equal to template qualifier and the qualified element has kind then the qualified element shall be of kind template.<br/>
-          <em>(From <a href="Submodel_element.html">Submodel_element</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="p">(</span>
-    <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
-        <span class="n">qualifier</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <a href="Qualifier_kind.html#literal-Template_qualifier"><span class="n">Qualifier_kind</span><span class="o">.</span><span class="n">Template_qualifier</span></a>
-        <span class="k">for</span> <span class="n">qualifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span>
-    <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">kind_or_default</span><span class="p">()</span> <span class="o">==</span> <a href="Modelling_kind.html#literal-Template"><span class="n">Modelling_kind</span><span class="o">.</span><span class="n">Template</span></a>
-    <span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
           Constraint AASd-134: For an Operation the ID-short of all values of input, output and in/output variables.<br/>
           <div class="highlight"><pre><span></span><span class="n"><a href="id_shorts_of_variables_are_unique.html">id_shorts_of_variables_are_unique</a></span><span class="p">(</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">input_variables</span><span class="p">,</span>
