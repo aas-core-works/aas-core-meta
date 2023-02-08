@@ -4175,7 +4175,7 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
 @invariant(
     lambda self:
     not (
-            self.embedded_data_specifications is not None
+        self.embedded_data_specifications is not None
     ) or (
         (
             data_specification_IEC_61360s_have_definition_at_least_in_english(
