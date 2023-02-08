@@ -984,7 +984,7 @@
             <a name="constraint-AASd-014"></a>Constraint AASd-014<a class="aas-anchor-link" href="#constraint-AASd-014">🔗</a>
           </dt>
           <dd>
-            Either the attribute <a href="Entity.html#property-global_asset_id">Entity.global_asset_id</a> or <a href="Entity.html#property-specific_asset_id">Entity.specific_asset_id</a>
+            Either the attribute <a href="Entity.html#property-global_asset_id">Entity.global_asset_id</a> or <a href="Entity.html#property-specific_asset_ids">Entity.specific_asset_ids</a>
             of an <a href="Entity.html">Entity</a> must be set if <a href="Entity.html#property-entity_type">Entity.entity_type</a> is set to
             <a href="Entity_type.html#literal-Self_managed_entity">Entity_type.Self_managed_entity</a>. They are not existing otherwise.
           </dd>
@@ -1252,9 +1252,9 @@
           </div>
         </dd>
         <dt>
-          <a name="#property-specific_asset_id"></a>
-          specific_asset_id: <span class="aas-type-annotation">Optional[<a href="Specific_asset_id.html">Specific_asset_id</a>]</span>
-          <a class="aas-anchor-link" href="#property-specific_asset_id">🔗</a>
+          <a name="#property-specific_asset_ids"></a>
+          specific_asset_ids: <span class="aas-type-annotation">Optional[List[<a href="Specific_asset_id.html">Specific_asset_id</a>]]</span>
+          <a class="aas-anchor-link" href="#property-specific_asset_ids">🔗</a>
         </dt>
 
         <dd>
@@ -1362,17 +1362,23 @@
     <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">==</span> <a href="Entity_type.html#literal-Self_managed_entity"><span class="n">Entity_type</span><span class="o">.</span><span class="n">Self_managed_entity</span></a>
     <span class="ow">and</span> <span class="p">(</span>
         <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_id</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span> <span class="ow">is</span> <span class="kc">None</span>
         <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span> <span class="ow">is</span> <span class="kc">None</span>
-            <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+                <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span> <span class="ow">is</span> <span class="kc">None</span>
+                <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
         <span class="p">)</span>
     <span class="p">)</span>
 <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span> <span class="ow">is</span> <span class="kc">None</span>
-    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_id</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span> <span class="ow">is</span> <span class="kc">None</span>
+        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span> <span class="ow">is</span> <span class="kc">None</span>
 <span class="p">)</span>
+</pre></div>
+        </li>
+        <li>
+          Specific asset IDs must be either not set or have at least one item<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
       </ul>
