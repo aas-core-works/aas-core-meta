@@ -2321,11 +2321,16 @@ class Specific_asset_id(Has_semantics):
 @invariant(
     lambda self:
     not (self.submodel_elements is not None)
-    or not (self.kind == Modelling_kind.Template)
     or (
-        not any(
-            qualifier.kind == Qualifier_kind.Template_qualifier
-            for qualifier in self.submodel_elements.qualifiers
+        not (self.kind == Modelling_kind.Template)
+        or (
+            not any(
+                not any(
+                    qualifier.kind == Qualifier_kind.Template_qualifier
+                    for qualifier in submodel_element.qualifiers
+                )
+                for submodel_element in self.submodel_elements
+            )
         )
     ),
     "Constraint AASd-129: If any qualifier kind value of a Submodel element qualifier "
