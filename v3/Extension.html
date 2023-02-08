@@ -1093,7 +1093,7 @@
         </dd>
         <dt>
           <a name="#property-refers_to"></a>
-          refers_to: <span class="aas-type-annotation">Optional[<a href="Reference.html">Reference</a>]</span>
+          refers_to: <span class="aas-type-annotation">Optional[List[<a href="Reference.html">Reference</a>]]</span>
           <a class="aas-anchor-link" href="#property-refers_to">🔗</a>
         </dt>
 
@@ -1125,6 +1125,12 @@
 <span class="ow">or</span> <span class="p">(</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">semantic_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="p">)</span>
+</pre></div>
+        </li>
+        <li>
+          Refers-to must be either not set or have at least one item<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refers_to</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">refers_to</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
