@@ -3318,28 +3318,6 @@ class Annotated_relationship_element(Relationship_element):
         self.annotations = annotations
 
 
-@reference_in_the_book(section=(5, 7, 7, 6), index=1)
-class Entity_type(Enum):
-    """
-    Enumeration for denoting whether an entity is a self-managed entity or a co-managed
-    entity.
-    """
-
-    Co_managed_entity = "CoManagedEntity"
-    """
-    For co-managed entities there is no separate AAS. Co-managed entities need to be
-    part of a self-managed entity.
-    """
-
-    Self_managed_entity = "SelfManagedEntity"
-    """
-    Self-Managed Entities have their own AAS but can be part of the bill of material of
-    a composite self-managed entity.
-
-    The asset of an I4.0 Component is a self-managed entity per definition."
-    """
-
-
 # fmt: off
 @reference_in_the_book(section=(5, 7, 7, 6))
 @invariant(
@@ -3442,6 +3420,28 @@ class Entity(Submodel_element):
         self.entity_type = entity_type
         self.global_asset_id = global_asset_id
         self.specific_asset_id = specific_asset_id
+
+
+@reference_in_the_book(section=(5, 7, 7, 6), index=1)
+class Entity_type(Enum):
+    """
+    Enumeration for denoting whether an entity is a self-managed entity or a co-managed
+    entity.
+    """
+
+    Co_managed_entity = "CoManagedEntity"
+    """
+    For co-managed entities there is no separate AAS. Co-managed entities need to be
+    part of a self-managed entity.
+    """
+
+    Self_managed_entity = "SelfManagedEntity"
+    """
+    Self-Managed Entities have their own AAS but can be part of the bill of material of
+    a composite self-managed entity.
+
+    The asset of an I4.0 Component is a self-managed entity per definition.
+    """
 
 
 @reference_in_the_book(section=(5, 7, 7, 2), index=1)
