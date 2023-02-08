@@ -1438,7 +1438,7 @@ class Extension(Has_semantics):
     Single extension of an element.
     """
 
-    name: Non_empty_XML_serializable_string
+    name: "Name_type"
     """
     Name of the extension.
 
@@ -1475,7 +1475,7 @@ class Extension(Has_semantics):
 
     def __init__(
             self,
-            name: Non_empty_XML_serializable_string,
+            name: "Name_type",
             semantic_id: Optional["Reference"] = None,
             supplemental_semantic_ids: Optional[List["Reference"]] = None,
             value_type: Optional["Data_type_def_XSD"] = None,
