@@ -2425,21 +2425,6 @@ class Submodel(
 
 # fmt: off
 @abstract
-@invariant(
-    lambda self:
-    not (self.qualifiers is not None)
-    or (
-        not any(
-            qualifier.kind == Qualifier_kind.Template_qualifier
-            for qualifier in self.qualifiers
-        ) or (
-            self.kind_or_default() == Modelling_kind.Template
-        )
-    ),
-    "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
-    "equal to template qualifier and the qualified element has kind then the qualified "
-    "element shall be of kind template."
-)
 @reference_in_the_book(section=(5, 7, 6))
 # fmt: on
 class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specification):
