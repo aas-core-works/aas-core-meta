@@ -105,8 +105,8 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Id_short.html">
-            Id_short
+          <a class="nav-item" href="ID_short_type.html">
+            ID_short_type
           </a>
         </li>
         <li class="nav-item">
@@ -377,8 +377,8 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Specific_asset_id.html">
-            Specific_asset_id
+          <a class="nav-item" href="Specific_asset_ID.html">
+            Specific_asset_ID
           </a>
         </li>
         <li class="nav-item">
@@ -499,7 +499,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Id_short.html#constraint-AASd-002">
+          <a class="nav-item" href="ID_short_type.html#constraint-AASd-002">
             AASd-002
           </a>
         </li>
@@ -584,7 +584,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Id_short.html#constraint-AASd-117">
+          <a class="nav-item" href="ID_short_type.html#constraint-AASd-117">
             AASd-117
           </a>
         </li>
@@ -654,7 +654,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Specific_asset_id.html#constraint-AASd-133">
+          <a class="nav-item" href="Specific_asset_ID.html#constraint-AASd-133">
             AASd-133
           </a>
         </li>
@@ -664,6 +664,16 @@
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
+        <li class="nav-item">
+          <a class="nav-item" href="ID_shorts_are_unique.html">
+            ID_shorts_are_unique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ID_shorts_of_variables_are_unique.html">
+            ID_shorts_of_variables_are_unique
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-item" href="data_specification_IEC_61360s_for_document_have_appropriate_data_type.html">
             data_specification_IEC_61360s_for_document_have_appropriate_data_type
@@ -697,16 +707,6 @@
         <li class="nav-item">
           <a class="nav-item" href="extension_names_are_unique.html">
             extension_names_are_unique
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="id_shorts_are_unique.html">
-            id_shorts_are_unique
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="id_shorts_of_variables_are_unique.html">
-            id_shorts_of_variables_are_unique
           </a>
         </li>
         <li class="nav-item">
@@ -745,6 +745,11 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="matches_ID_short.html">
+            matches_ID_short
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="matches_MIME_type.html">
             matches_MIME_type
           </a>
@@ -757,11 +762,6 @@
         <li class="nav-item">
           <a class="nav-item" href="matches_XML_serializable_string.html">
             matches_XML_serializable_string
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="matches_id_short.html">
-            matches_id_short
           </a>
         </li>
         <li class="nav-item">
@@ -940,8 +940,8 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="submodel_elements_have_identical_semantic_ids.html">
-            submodel_elements_have_identical_semantic_ids
+          <a class="nav-item" href="submodel_elements_have_identical_semantic_IDs.html">
+            submodel_elements_have_identical_semantic_IDs
           </a>
         </li>
         <li class="nav-item">
@@ -968,7 +968,7 @@
             The asset has a globally unique identifier plus – if needed – additional domain
             specific (proprietary) identifiers. However, to support the corner case of very
             first phase of lifecycle where a stabilised/constant_set global asset identifier
-            does not already exist, the corresponding attribute <a href="Asset_information.html#property-global_asset_id">Asset_information.global_asset_id</a> is
+            does not already exist, the corresponding attribute <a href="Asset_information.html#property-global_asset_ID">Asset_information.global_asset_ID</a> is
             optional.
           </p>
         </div>
@@ -978,14 +978,14 @@
           </dt>
           <dd>
             <code>globalAssetId</code> is a reserved key. If used as value for
-            <a href="Specific_asset_id.html#property-name">Specific_asset_id.name</a> then <a href="Specific_asset_id.html#property-value">Specific_asset_id.value</a> shall be
-            identical to <a href="Asset_information.html#property-global_asset_id">Asset_information.global_asset_id</a>.
+            <a href="Specific_asset_ID.html#property-name">Specific_asset_ID.name</a> then <a href="Specific_asset_ID.html#property-value">Specific_asset_ID.value</a> shall be
+            identical to <a href="Asset_information.html#property-global_asset_ID">Asset_information.global_asset_ID</a>.
           </dd>
           <dt>
             <a name="constraint-AASd-131"></a>Constraint AASd-131<a class="aas-anchor-link" href="#constraint-AASd-131">🔗</a>
           </dt>
           <dd>
-            For AssetInformation either the <a href="Asset_information.html#property-global_asset_id">Asset_information.global_asset_id</a> shall be defined
+            For AssetInformation either the <a href="Asset_information.html#property-global_asset_ID">Asset_information.global_asset_ID</a> shall be defined
             or at least one specificAssetId.
           </dd>
         </dl>
@@ -1011,9 +1011,9 @@
           </div>
         </dd>
         <dt>
-          <a name="#property-global_asset_id"></a>
-          global_asset_id: <span class="aas-type-annotation">Optional[<a href="Identifier.html">Identifier</a>]</span>
-          <a class="aas-anchor-link" href="#property-global_asset_id">🔗</a>
+          <a name="#property-global_asset_ID"></a>
+          global_asset_ID: <span class="aas-type-annotation">Optional[<a href="Identifier.html">Identifier</a>]</span>
+          <a class="aas-anchor-link" href="#property-global_asset_ID">🔗</a>
         </dt>
 
         <dd>
@@ -1026,7 +1026,7 @@
                 This attribute is required as soon as the AAS is exchanged via partners in the life
                 cycle of the asset. In a first phase of the life cycle the asset might not yet have
                 a global ID but already an internal identifier. The internal identifier would be
-                modelled via <a href="Asset_information.html#property-specific_asset_ids">Asset_information.specific_asset_ids</a>.
+                modelled via <a href="Asset_information.html#property-specific_asset_IDs">Asset_information.specific_asset_IDs</a>.
               </p>
               <div class="alert alert-info">
                 This is a global reference.
@@ -1035,9 +1035,9 @@
           </div>
         </dd>
         <dt>
-          <a name="#property-specific_asset_ids"></a>
-          specific_asset_ids: <span class="aas-type-annotation">Optional[List[<a href="Specific_asset_id.html">Specific_asset_id</a>]]</span>
-          <a class="aas-anchor-link" href="#property-specific_asset_ids">🔗</a>
+          <a name="#property-specific_asset_IDs"></a>
+          specific_asset_IDs: <span class="aas-type-annotation">Optional[List[<a href="Specific_asset_ID.html">Specific_asset_ID</a>]]</span>
+          <a class="aas-anchor-link" href="#property-specific_asset_IDs">🔗</a>
         </dt>
 
         <dd>
@@ -1059,7 +1059,7 @@
             <div class="summary">
               In case <a href="Asset_information.html#property-asset_kind">Asset_information.asset_kind</a> is applicable the <a href="Asset_information.html#property-asset_type">Asset_information.asset_type</a> is the asset ID
               of the type asset of the asset under consideration
-              as identified by <a href="Asset_information.html#property-global_asset_id">Asset_information.global_asset_id</a>.
+              as identified by <a href="Asset_information.html#property-global_asset_ID">Asset_information.global_asset_ID</a>.
             </div>
             <div class="remarks">
               <div class="alert alert-info">
@@ -1094,31 +1094,31 @@
       </h2>
       <ul>
         <li>
-          AASd-116: ``globalAssetId`` is a reserved key. If used as value for ``Specific_asset_id.name`` then ``Specific_asset_id.value`` shall be identical to ``global_asset_id``.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+          AASd-116: ``globalAssetId`` is a reserved key. If used as value for ``Specific_asset_ID.name`` then ``Specific_asset_ID.value`` shall be identical to ``global_asset_ID``.<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_IDs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="p">(</span>
     <span class="nb">all</span><span class="p">(</span>
         <span class="p">(</span>
-            <span class="n">specific_asset_id</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;globalAssetId&quot;</span>
+            <span class="n">specific_asset_ID</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;globalAssetId&quot;</span>
         <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-         <span class="n">specific_asset_id</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;globalAssetId&quot;</span> <span class="ow">and</span>
-         <span class="n">specific_asset_id</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span>
+         <span class="n">specific_asset_ID</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;globalAssetId&quot;</span> <span class="ow">and</span>
+         <span class="n">specific_asset_ID</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_ID</span>
         <span class="p">)</span>
-        <span class="k">for</span> <span class="n">specific_asset_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span>
+        <span class="k">for</span> <span class="n">specific_asset_ID</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_IDs</span>
     <span class="p">)</span>
 <span class="p">)</span>
 </pre></div>
         </li>
         <li>
           Constraint AASd-131: For AssetInformation either the globalAssetId shall be defined or at least one specificAssetId.<br/>
-          <div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+          <div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">global_asset_ID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_IDs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
           Specific asset IDs must be either not set or have at least one item<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_IDs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_IDs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
       </ul>

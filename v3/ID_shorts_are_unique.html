@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>id_shorts_of_variables_are_unique</title>
+  <title>ID_shorts_are_unique</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -105,8 +105,8 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Id_short.html">
-            Id_short
+          <a class="nav-item" href="ID_short_type.html">
+            ID_short_type
           </a>
         </li>
         <li class="nav-item">
@@ -377,8 +377,8 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Specific_asset_id.html">
-            Specific_asset_id
+          <a class="nav-item" href="Specific_asset_ID.html">
+            Specific_asset_ID
           </a>
         </li>
         <li class="nav-item">
@@ -499,7 +499,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Id_short.html#constraint-AASd-002">
+          <a class="nav-item" href="ID_short_type.html#constraint-AASd-002">
             AASd-002
           </a>
         </li>
@@ -584,7 +584,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Id_short.html#constraint-AASd-117">
+          <a class="nav-item" href="ID_short_type.html#constraint-AASd-117">
             AASd-117
           </a>
         </li>
@@ -654,7 +654,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Specific_asset_id.html#constraint-AASd-133">
+          <a class="nav-item" href="Specific_asset_ID.html#constraint-AASd-133">
             AASd-133
           </a>
         </li>
@@ -664,6 +664,16 @@
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
+        <li class="nav-item">
+          <a class="nav-item active" href="ID_shorts_are_unique.html">
+            ID_shorts_are_unique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ID_shorts_of_variables_are_unique.html">
+            ID_shorts_of_variables_are_unique
+          </a>
+        </li>
         <li class="nav-item">
           <a class="nav-item" href="data_specification_IEC_61360s_for_document_have_appropriate_data_type.html">
             data_specification_IEC_61360s_for_document_have_appropriate_data_type
@@ -697,16 +707,6 @@
         <li class="nav-item">
           <a class="nav-item" href="extension_names_are_unique.html">
             extension_names_are_unique
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="id_shorts_are_unique.html">
-            id_shorts_are_unique
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item active" href="id_shorts_of_variables_are_unique.html">
-            id_shorts_of_variables_are_unique
           </a>
         </li>
         <li class="nav-item">
@@ -745,6 +745,11 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="matches_ID_short.html">
+            matches_ID_short
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="matches_MIME_type.html">
             matches_MIME_type
           </a>
@@ -757,11 +762,6 @@
         <li class="nav-item">
           <a class="nav-item" href="matches_XML_serializable_string.html">
             matches_XML_serializable_string
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="matches_id_short.html">
-            matches_id_short
           </a>
         </li>
         <li class="nav-item">
@@ -940,8 +940,8 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="submodel_elements_have_identical_semantic_ids.html">
-            submodel_elements_have_identical_semantic_ids
+          <a class="nav-item" href="submodel_elements_have_identical_semantic_IDs.html">
+            submodel_elements_have_identical_semantic_IDs
           </a>
         </li>
         <li class="nav-item">
@@ -953,7 +953,7 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        id_shorts_of_variables_are_unique<a class="aas-anchor-link" href="">🔗</a>
+        ID_shorts_are_unique<a class="aas-anchor-link" href="">🔗</a>
       </h1>
       <du>
         <dt>Type: <span class="aas-type-annotation">Implementation specific</span></dt>
@@ -961,34 +961,19 @@
       </du>
       <div class="aas-description">
         <div class="summary">
-          Check that the <a href="Referable.html#property-id_short">Referable.id_short</a>&#x27;s among all the
-          <code>input_variables</code>, <code>output_variables</code>
-          and <code>inoutput_variables</code> are unique.
+          Check that the <a href="Referable.html#property-ID_short">Referable.ID_short</a>&#x27;s among the <code>referables</code> are
+          unique.
         </div>
       </div>
       <h2>Code</h2>
       <div class="highlight"><pre><span></span><span class="n">id_short_set</span> <span class="o">=</span> <span class="nb">set</span><span class="p">()</span>
-<span class="k">if</span> <span class="n">input_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">input_variables</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span> <span class="ow">in</span> <span class="n">id_short_set</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
+<span class="k">for</span> <span class="n">referable</span> <span class="ow">in</span> <span class="n">referables</span><span class="p">:</span>
+    <span class="k">if</span> <span class="n">referable</span><span class="o">.</span><span class="n">ID_short</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
+        <span class="k">if</span> <span class="n">referable</span><span class="o">.</span><span class="n">ID_short</span> <span class="ow">in</span> <span class="n">id_short_set</span><span class="p">:</span>
+            <span class="k">return</span> <span class="kc">False</span>
 
-            <span class="n">id_short_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">output_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">output_variables</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span> <span class="ow">in</span> <span class="n">id_short_set</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
+        <span class="n">id_short_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">referable</span><span class="o">.</span><span class="n">ID_short</span><span class="p">)</span>
 
-            <span class="n">id_short_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span><span class="p">)</span>
-<span class="k">if</span> <span class="n">inoutput_variables</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-    <span class="k">for</span> <span class="n">variable</span> <span class="ow">in</span> <span class="n">inoutput_variables</span><span class="p">:</span>
-        <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">:</span>
-            <span class="k">if</span> <span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span> <span class="ow">in</span> <span class="n">id_short_set</span><span class="p">:</span>
-                <span class="k">return</span> <span class="kc">False</span>
-
-            <span class="n">id_short_set</span><span class="o">.</span><span class="n">add</span><span class="p">(</span><span class="n">variable</span><span class="o">.</span><span class="n">value</span><span class="o">.</span><span class="n">id_short</span><span class="p">)</span>
 <span class="k">return</span> <span class="kc">True</span>
 </pre></div>
     </div>
