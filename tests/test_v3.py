@@ -850,25 +850,29 @@ class Test_assertions(unittest.TestCase):
     # but rather expect "Id" or "id", short for "identifier".
     #
     # See: https://english.stackexchange.com/questions/101248/how-should-the-abbreviation-for-identifier-be-capitalized
-    ABBREVIATIONS = {
-        "AAS",
-        "BCP",
-        "DIN",
-        "ECE",
-        "HTML",
-        "IEC",
-        "IRDI",
-        "IRI",
-        "MIME",
-        "NIST",
-        "RFC",
-        "SI",
-        "URI",
-        "URL",
-        "UTC",
-        "XML",
-        "XSD",
+    LOWER_TO_ABBREVIATION = {
+        "aas": "AAS",
+        "bcp": "BCP",
+        "din": "DIN",
+        "ece": "ECE",
+        "html": "HTML",
+        "id": "ID",
+        "ids": "IDs",
+        "iec": "IEC",
+        "irdi": "IRDI",
+        "iri": "IRI",
+        "mime": "MIME",
+        "nist": "NIST",
+        "rfc": "RFC",
+        "si": "SI",
+        "uri": "URI",
+        "url": "URL",
+        "utc": "UTC",
+        "xml": "XML",
+        "xsd": "XSD",
     }
+
+    ABBREVIATIONS = set(LOWER_TO_ABBREVIATION.values())
 
     @staticmethod
     def check_class_name(name: aas_core_codegen.common.Identifier) -> List[str]:
@@ -876,7 +880,7 @@ class Test_assertions(unittest.TestCase):
 
         parts = name.split("_")  # type: List[str]
 
-        if parts[0].upper() not in Test_assertions.ABBREVIATIONS:
+        if parts[0] not in Test_assertions.ABBREVIATIONS:
             if parts[0] != parts[0].capitalize():
                 errors.append(
                     f"Expected first part of a class name "
@@ -885,16 +889,20 @@ class Test_assertions(unittest.TestCase):
                 )
 
         for part in parts:
-            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
                 errors.append(
                     f"Expected a part of a class name "
-                    f"to be uppercase ({part.upper()!r})"
+                    f"to be {expected_part!r} "
                     f"since it denotes an abbreviation, "
-                    f"but it was not ({part!r}) for class {name!r}"
+                    f"but got {part!r} for the class {name!r}"
                 )
 
         for part in parts[1:]:
-            if part.upper() not in Test_assertions.ABBREVIATIONS:
+            if part not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a non-first part of a class name "
@@ -912,7 +920,7 @@ class Test_assertions(unittest.TestCase):
 
         parts = name.split("_")  # type: List[str]
 
-        if parts[0].upper() not in Test_assertions.ABBREVIATIONS:
+        if parts[0] not in Test_assertions.ABBREVIATIONS:
             if parts[0] != parts[0].capitalize():
                 errors.append(
                     f"Expected first part of an enumeration literal name "
@@ -921,15 +929,19 @@ class Test_assertions(unittest.TestCase):
                 )
 
         for part in parts:
-            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
                 errors.append(
-                    f"Expected a part of a enumeration literal name to be uppercase "
-                    f"since it denotes an abbreviation, "
-                    f"but it was not ({part!r}) for enumeration literal {name!r}"
+                    f"Expected a part of an enumeration literal name "
+                    f"to be {expected_part!r} since it denotes an abbreviation, "
+                    f"but got {part!r} for enumeration literal {name!r}"
                 )
 
         for part in parts[1:]:
-            if part.upper() not in Test_assertions.ABBREVIATIONS:
+            if part not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a non-first part of an enumeration literal name "
@@ -948,15 +960,20 @@ class Test_assertions(unittest.TestCase):
         parts = name.split("_")  # type: List[str]
 
         for part in parts:
-            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
                 errors.append(
-                    f"Expected a part of a property name to be uppercase "
+                    f"Expected a part of a property name "
+                    f"to be {expected_part!r} "
                     f"since it denotes an abbreviation, "
-                    f"but it was not ({part!r}) for the property {name!r}"
+                    f"but got {part!r} for the property {name!r}"
                 )
 
         for part in parts:
-            if part.upper() not in Test_assertions.ABBREVIATIONS:
+            if part not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a part of a property name "
@@ -975,15 +992,20 @@ class Test_assertions(unittest.TestCase):
         parts = name.split("_")  # type: List[str]
 
         for part in parts:
-            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
                 errors.append(
-                    f"Expected a part of a method name to be uppercase "
+                    f"Expected a part of a method name "
+                    f"to be {expected_part!r} "
                     f"since it denotes an abbreviation, "
-                    f"but it was not ({part!r}) for the method {name!r}"
+                    f"but got {part!r} for the method {name!r}"
                 )
 
         for part in parts:
-            if part.upper() not in Test_assertions.ABBREVIATIONS:
+            if part not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a part of a method name "
@@ -1002,15 +1024,20 @@ class Test_assertions(unittest.TestCase):
         parts = name.split("_")  # type: List[str]
 
         for part in parts:
-            if part.upper() in Test_assertions.ABBREVIATIONS and part.upper() != part:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
                 errors.append(
-                    f"Expected a part of a function name to be uppercase "
+                    f"Expected a part of a function name "
+                    f"to be {expected_part!r} "
                     f"since it denotes an abbreviation, "
-                    f"but it was not ({part!r}) for the function {name!r}"
+                    f"but got {part!r} for the function {name!r}"
                 )
 
         for part in parts:
-            if part.upper() not in Test_assertions.ABBREVIATIONS:
+            if part not in Test_assertions.ABBREVIATIONS:
                 if part.lower() != part:
                     errors.append(
                         f"Expected a part of a function name "
