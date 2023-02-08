@@ -997,7 +997,7 @@
             <a name="constraint-AASd-116"></a>Constraint AASd-116<a class="aas-anchor-link" href="#constraint-AASd-116">🔗</a>
           </dt>
           <dd>
-            <code>globalAssetId</code> (case-insensitive) is a reserved key. If used as value for
+            <code>globalAssetId</code> is a reserved key. If used as value for
             <a href="Specific_asset_id.html#property-name">Specific_asset_id.name</a> then <a href="Specific_asset_id.html#property-value">Specific_asset_id.value</a> shall be
             identical to <a href="Asset_information.html#property-global_asset_id">Asset_information.global_asset_id</a>.
           </dd>
@@ -1113,6 +1113,22 @@
         <a class="aas-anchor-link" href="#invariants">🔗</a>
       </h2>
       <ul>
+        <li>
+          AASd-116: ``globalAssetId`` is a reserved key. If used as value for ``Specific_asset_id.name`` then ``Specific_asset_id.value`` shall be identical to ``global_asset_id``.<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="p">(</span>
+    <span class="nb">all</span><span class="p">(</span>
+        <span class="p">(</span>
+            <span class="n">specific_asset_id</span><span class="o">.</span><span class="n">name</span> <span class="o">!=</span> <span class="s2">&quot;globalAssetId&quot;</span>
+        <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
+         <span class="n">specific_asset_id</span><span class="o">.</span><span class="n">name</span> <span class="o">==</span> <span class="s2">&quot;globalAssetId&quot;</span> <span class="ow">and</span>
+         <span class="n">specific_asset_id</span><span class="o">.</span><span class="n">value</span> <span class="o">==</span> <span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span>
+        <span class="p">)</span>
+        <span class="k">for</span> <span class="n">specific_asset_id</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_ids</span>
+    <span class="p">)</span>
+<span class="p">)</span>
+</pre></div>
+        </li>
         <li>
           Constraint AASd-131: For AssetInformation either the globalAssetId shall be defined or at least one specificAssetId.<br/>
           <div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">global_asset_id</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
