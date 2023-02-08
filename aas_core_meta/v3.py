@@ -261,10 +261,12 @@ def matches_BCP_47(text: str) -> bool:
 
 @verification
 @implementation_specific
-def lang_strings_have_unique_languages(lang_strings: List["Lang_string"]) -> bool:
+def lang_strings_have_unique_languages(
+    lang_strings: List["Abstract_lang_string"],
+) -> bool:
     """
     Check that the :paramref:`lang_strings` do not have overlapping
-    :attr:`Lang_string.language`'s
+    :attr:`Abstract_lang_string.language`'s
     """
     # NOTE (mristin, 2022-04-7):
     # This implementation will not be transpiled, but is given here as reference.
@@ -4858,9 +4860,9 @@ class Data_type_def_XSD(Enum):
     Negative_integer = "xs:negativeInteger"
 
 
+@abstract
 @reference_in_the_book(section=(5, 7, 12, 1))
-@serialization(with_model_type=True)
-class Lang_string(DBC):
+class Abstract_lang_string(DBC):
     """Strings with language tags"""
 
     language: BCP_47_language_tag
@@ -4880,22 +4882,20 @@ class Lang_string(DBC):
     lambda self: len(self.text) <= 128,
     "String shall have a maximum length of 128 characters.",
 )
-@serialization(with_model_type=True)
-class Lang_string_name_type(Lang_string, DBC):
+class Lang_string_name_type(Abstract_lang_string, DBC):
     """String with length 128 maximum and minimum 1 characters and with language tags"""
 
     def __init__(
         self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
-        Lang_string.__init__(self, language=language, text=text)
+        Abstract_lang_string.__init__(self, language=language, text=text)
 
 
 @invariant(
     lambda self: len(self.text) <= 1023,
     "String shall have a maximum length of 1023 characters.",
 )
-@serialization(with_model_type=True)
-class Lang_string_text_type(Lang_string, DBC):
+class Lang_string_text_type(Abstract_lang_string, DBC):
     """
     String with length 1023 maximum and minimum 1 characters and with language tags
     """
@@ -4903,7 +4903,7 @@ class Lang_string_text_type(Lang_string, DBC):
     def __init__(
         self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
-        Lang_string.__init__(self, language=language, text=text)
+        Abstract_lang_string.__init__(self, language=language, text=text)
 
 
 # fmt: off
@@ -5281,6 +5281,56 @@ These data types imply that the unit is defined in the data specification.""",
 )
 
 
+@invariant(
+    lambda self: len(self.text) <= 255,
+    "String shall have a maximum length of 1023 characters.",
+)
+class Lang_string_preferred_name_type_IEC_61360(Abstract_lang_string, DBC):
+    """
+    String with length 255 maximum and minimum 1 characters and with language tags
+
+    .. note::
+
+        It is advised to keep the length of the name limited to 35 characters.
+
+    """
+
+    def __init__(
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+    ) -> None:
+        Abstract_lang_string.__init__(self, language=language, text=text)
+
+
+@invariant(
+    lambda self: len(self.text) <= 18,
+    "String shall have a maximum length of 1023 characters.",
+)
+class Lang_string_short_name_type_IEC_61360(Abstract_lang_string, DBC):
+    """
+    String with length 18 maximum and minimum 1 characters and with language tags
+    """
+
+    def __init__(
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+    ) -> None:
+        Abstract_lang_string.__init__(self, language=language, text=text)
+
+
+@invariant(
+    lambda self: len(self.text) <= 1023,
+    "String shall have a maximum length of 1023 characters.",
+)
+class Lang_string_definition_type_IEC_61360(Abstract_lang_string, DBC):
+    """
+    String with length 1023 maximum and minimum 1 characters and with language tags
+    """
+
+    def __init__(
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+    ) -> None:
+        Abstract_lang_string.__init__(self, language=language, text=text)
+
+
 @verification
 def is_BCP_47_for_english(text: str) -> bool:
     """Check that the :paramref:`text` corresponds to a BCP47 code for english."""
@@ -5397,15 +5447,19 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     """
 
-    preferred_name: List["Lang_string"]
+    preferred_name: List["Lang_string_preferred_name_type_IEC_61360"]
     """
     Preferred name
 
-    :constraint AASc-002:
+    .. note::
+
+        It is advised to keep the length of the name limited to 35 characters.
+
+    :constraint AASc-3a-002:
         :attr:`preferred_name` shall be provided at least in English.
     """
 
-    short_name: Optional[List["Lang_string"]]
+    short_name: Optional[List["Lang_string_short_name_type_IEC_61360"]]
     """
     Short name
     """
@@ -5450,7 +5504,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     Data Type
     """
 
-    definition: Optional[List["Lang_string"]]
+    definition: Optional[List["Lang_string_definition_type_IEC_61360"]]
     """
     Definition in different languages
     """
@@ -5477,14 +5531,14 @@ class Data_specification_IEC_61360(Data_specification_content):
 
     def __init__(
         self,
-        preferred_name: List["Lang_string"],
-        short_name: Optional[List["Lang_string"]] = None,
+        preferred_name: List["Lang_string_preferred_name_type_IEC_61360"],
+        short_name: Optional[List["Lang_string_short_name_type_IEC_61360"]] = None,
         unit: Optional[Non_empty_XML_serializable_string] = None,
         unit_id: Optional["Reference"] = None,
         source_of_definition: Optional[Non_empty_XML_serializable_string] = None,
         symbol: Optional[Non_empty_XML_serializable_string] = None,
         data_type: Optional["Data_type_IEC_61360"] = None,
-        definition: Optional[List["Lang_string"]] = None,
+        definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
         value: Optional[str] = None,
@@ -5532,7 +5586,7 @@ class Data_specification_physical_unit(Data_specification_content):
     Symbol for the physical unit
     """
 
-    definition: List["Lang_string"]
+    definition: List["Lang_string_text_type"]
     """
     Definition in different languages
     """
@@ -5591,7 +5645,7 @@ class Data_specification_physical_unit(Data_specification_content):
         self,
         unit_name: Non_empty_XML_serializable_string,
         unit_symbol: Non_empty_XML_serializable_string,
-        definition: List["Lang_string"],
+        definition: List["Lang_string_text_type"],
         SI_notation: Optional[Non_empty_XML_serializable_string] = None,
         SI_name: Optional[Non_empty_XML_serializable_string] = None,
         DIN_notation: Optional[Non_empty_XML_serializable_string] = None,
