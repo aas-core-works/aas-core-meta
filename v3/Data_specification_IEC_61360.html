@@ -161,6 +161,11 @@
         </li>
         <li class="nav-item mt-2">Abstract Classes</li>
         <li class="nav-item">
+          <a class="nav-item" href="Abstract_lang_string.html">
+            Abstract_lang_string
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="Data_element.html">
             Data_element
           </a>
@@ -302,13 +307,23 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Lang_string.html">
-            Lang_string
+          <a class="nav-item" href="Lang_string_definition_type_IEC_61360.html">
+            Lang_string_definition_type_IEC_61360
           </a>
         </li>
         <li class="nav-item">
           <a class="nav-item" href="Lang_string_name_type.html">
             Lang_string_name_type
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Lang_string_preferred_name_type_IEC_61360.html">
+            Lang_string_preferred_name_type_IEC_61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Lang_string_short_name_type_IEC_61360.html">
+            Lang_string_short_name_type_IEC_61360
           </a>
         </li>
         <li class="nav-item">
@@ -464,11 +479,6 @@
         </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
-          <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-002">
-            AASc-002
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="Concept_description.html#constraint-AASc-003">
             AASc-003
           </a>
@@ -506,6 +516,11 @@
         <li class="nav-item">
           <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-010">
             AASc-010
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-002">
+            AASc-3a-002
           </a>
         </li>
         <li class="nav-item">
@@ -1027,7 +1042,7 @@
       <dl>
         <dt>
           <a name="#property-preferred_name"></a>
-          preferred_name: <span class="aas-type-annotation">List[<a href="Lang_string.html">Lang_string</a>]</span>
+          preferred_name: <span class="aas-type-annotation">List[<a href="Lang_string_preferred_name_type_IEC_61360.html">Lang_string_preferred_name_type_IEC_61360</a>]</span>
           <a class="aas-anchor-link" href="#property-preferred_name">🔗</a>
         </dt>
 
@@ -1036,9 +1051,14 @@
             <div class="summary">
               Preferred name
             </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                It is advised to keep the length of the name limited to 35 characters.
+              </div>
+            </div>
             <dl class="constraints">
               <dt>
-                <a name="constraint-AASc-002"></a>Constraint AASc-002<a class="aas-anchor-link" href="#constraint-AASc-002">🔗</a>
+                <a name="constraint-AASc-3a-002"></a>Constraint AASc-3a-002<a class="aas-anchor-link" href="#constraint-AASc-3a-002">🔗</a>
               </dt>
               <dd>
                 <a href="Data_specification_IEC_61360.html#property-preferred_name">Data_specification_IEC_61360.preferred_name</a> shall be provided at least in English.
@@ -1048,7 +1068,7 @@
         </dd>
         <dt>
           <a name="#property-short_name"></a>
-          short_name: <span class="aas-type-annotation">Optional[List[<a href="Lang_string.html">Lang_string</a>]]</span>
+          short_name: <span class="aas-type-annotation">Optional[List[<a href="Lang_string_short_name_type_IEC_61360.html">Lang_string_short_name_type_IEC_61360</a>]]</span>
           <a class="aas-anchor-link" href="#property-short_name">🔗</a>
         </dt>
 
@@ -1141,7 +1161,7 @@
         </dd>
         <dt>
           <a name="#property-definition"></a>
-          definition: <span class="aas-type-annotation">Optional[List[<a href="Lang_string.html">Lang_string</a>]]</span>
+          definition: <span class="aas-type-annotation">Optional[List[<a href="Lang_string_definition_type_IEC_61360.html">Lang_string_definition_type_IEC_61360</a>]]</span>
           <a class="aas-anchor-link" href="#property-definition">🔗</a>
         </dt>
 

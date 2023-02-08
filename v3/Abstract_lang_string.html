@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>is_BCP_47_for_english</title>
+  <title>Abstract_lang_string</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -161,7 +161,7 @@
         </li>
         <li class="nav-item mt-2">Abstract Classes</li>
         <li class="nav-item">
-          <a class="nav-item" href="Abstract_lang_string.html">
+          <a class="nav-item active" href="Abstract_lang_string.html">
             Abstract_lang_string
           </a>
         </li>
@@ -735,7 +735,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item active" href="is_BCP_47_for_english.html">
+          <a class="nav-item" href="is_BCP_47_for_english.html">
             is_BCP_47_for_english
           </a>
         </li>
@@ -978,22 +978,47 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        is_BCP_47_for_english<a class="aas-anchor-link" href="">🔗</a>
+        Abstract_lang_string<a class="aas-anchor-link" href="">🔗</a><br/>
+        <em>(abstract)</em>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Pattern verification</span></dt>
-        <dd></dd>
-      </du>
       <div class="aas-description">
         <div class="summary">
-          Check that the <code>text</code> corresponds to a BCP47 code for english.
+          Strings with language tags
         </div>
       </div>
-      <h2>Code</h2>
-      <div class="highlight"><pre><span></span><span class="n">pattern</span> <span class="o">=</span> <span class="sa">f</span><span class="s2">&quot;^(en|EN)(-.*)?$&quot;</span>
+      <h2>
+        <a name="properties"></a>
+        Properties
+        <a class="aas-anchor-link" href="#properties">🔗</a>
+      </h2>
+      <dl>
+        <dt>
+          <a name="#property-language"></a>
+          language: <span class="aas-type-annotation"><a href="BCP_47_language_tag.html">BCP_47_language_tag</a></span>
+          <a class="aas-anchor-link" href="#property-language">🔗</a>
+        </dt>
 
-<span class="k">return</span> <span class="n">match</span><span class="p">(</span><span class="n">pattern</span><span class="p">,</span> <span class="n">text</span><span class="p">)</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-</pre></div>
+        <dd>
+          <div>
+            <div class="summary">
+              Language tag conforming to BCP 47
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="#property-text"></a>
+          text: <span class="aas-type-annotation"><a href="Non_empty_XML_serializable_string.html">Non_empty_XML_serializable_string</a></span>
+          <a class="aas-anchor-link" href="#property-text">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Text in the <a href="Abstract_lang_string.html#property-language">Abstract_lang_string.language</a>
+            </div>
+          </div>
+        </dd>
+      </dl>
     </div>
   </div>
 </div>
