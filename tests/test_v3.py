@@ -1042,6 +1042,7 @@ class Test_assertions(unittest.TestCase):
             "Concept_description.is_case_of",
             "Submodel_element_collection.value",
             "Submodel_element_list.value",
+            "Extension.refers_to",
         }
 
         symbol_table = _META_MODEL.symbol_table
