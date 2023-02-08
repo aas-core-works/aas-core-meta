@@ -1025,7 +1025,7 @@ class Test_assertions(unittest.TestCase):
     @staticmethod
     def needs_plural(type_annotation: intermediate.TypeAnnotationUnion) -> bool:
         lang_string_cls = _META_MODEL.symbol_table.must_find_class(
-            aas_core_codegen.common.Identifier("Lang_string")
+            aas_core_codegen.common.Identifier("Abstract_lang_string")
         )
 
         type_anno = intermediate.beneath_optional(type_annotation)
@@ -1307,8 +1307,8 @@ not (self.qualifiers is not None)
     def test_that_all_list_of_lang_strings_are_lang_string_sets(self) -> None:
         symbol_table = _META_MODEL.symbol_table
 
-        lang_string_cls = symbol_table.must_find_class(
-            aas_core_codegen.common.Identifier("Lang_string")
+        abstract_lang_string_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Abstract_lang_string")
         )
 
         # List of (property reference, error message)
@@ -1402,7 +1402,9 @@ not (self.qualifiers is not None)
                 if (
                     isinstance(type_anno, intermediate.ListTypeAnnotation)
                     and isinstance(type_anno.items, intermediate.OurTypeAnnotation)
-                    and type_anno.items.our_type.is_subclass_of(lang_string_cls)
+                    and type_anno.items.our_type.is_subclass_of(
+                        abstract_lang_string_cls
+                    )
                 ):
                     if prop.name not in lang_string_set_props_with_uniqueness_invariant:
                         errors.append(
