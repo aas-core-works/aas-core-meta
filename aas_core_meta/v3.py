@@ -4748,7 +4748,7 @@ AAS_submodel_elements_as_keys: Set[Key_types] = constant_set(
         Key_types.Submodel_element_list,
     ],
     description="""\
-Enumeration of all referable elements within an asset administration shell.""",
+Enumeration of all submodel elements within an asset administration shell.""",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=6),
 )
 
