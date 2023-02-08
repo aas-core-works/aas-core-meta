@@ -1237,7 +1237,7 @@ not (self.qualifiers is not None)
             qualifier.kind == Qualifier_kind.Template_qualifier
             for qualifier in self.qualifiers
         ) or (
-            self.kind_or_default() == Modeling_kind.Template
+            self.kind_or_default() == Modelling_kind.Template
         )
     )"""
 
