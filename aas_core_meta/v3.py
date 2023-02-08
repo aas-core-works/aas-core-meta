@@ -1911,7 +1911,8 @@ class Qualifier_kind(Enum):
 
 # fmt: off
 @invariant(
-    lambda self: not (self.value is not None)
+    lambda self:
+    not (self.value is not None)
     or value_consistent_with_XSD_type(self.value, self.value_type),
     "Constraint AASd-020: The value shall be consistent to the data type as defined "
     "in value type.",
