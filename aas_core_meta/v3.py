@@ -4607,29 +4607,13 @@ class Key(DBC):
 class Key_types(Enum):
     """Enumeration of different key value types within a key."""
 
-    Fragment_reference = "FragmentReference"
-    """
-    Bookmark or a similar local identifier of a subordinate part of
-    a primary resource
-    """
-
-    External_reference = "ExternalReference"
-
     Annotated_relationship_element = "AnnotatedRelationshipElement"
     Asset_administration_shell = "AssetAdministrationShell"
     Basic_event_element = "BasicEventElement"
     Blob = "Blob"
     Capability = "Capability"
     Concept_description = "ConceptDescription"
-    Identifiable = "Identifiable"
-    """
-    Identifiable.
 
-    .. note::
-
-        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference
-        may be an Asset Administration Shell, a Submodel or a Concept Description.
-    """
     Data_element = "DataElement"
     """
     Data element.
@@ -4652,6 +4636,24 @@ class Key_types(Enum):
 
     File = "File"
 
+    Fragment_reference = "FragmentReference"
+    """
+    Bookmark or a similar local identifier of a subordinate part of
+    a primary resource
+    """
+
+    Global_reference = "GlobalReference"
+
+    Identifiable = "Identifiable"
+    """
+    Identifiable.
+
+    .. note::
+
+        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference
+        may be an Asset Administration Shell, a Submodel or a Concept Description.
+    """
+
     Multi_language_property = "MultiLanguageProperty"
     """Property with a value that can be provided in multiple languages"""
 
@@ -4659,11 +4661,13 @@ class Key_types(Enum):
     Property = "Property"
     Range = "Range"
     """Range with min and max"""
+    Referable = "Referable"
+
     Reference_element = "ReferenceElement"
     """
     Reference
     """
-    Referable = "Referable"
+
     Relationship_element = "RelationshipElement"
     """
     Relationship
@@ -4678,14 +4682,14 @@ class Key_types(Enum):
         Submodel Element is abstract, *i.e.* if a key uses :attr:`Submodel_element`
         the reference may be a :class:`Property`, an :class:`Operation` etc.
     """
+    Submodel_element_collection = "SubmodelElementCollection"
+    """
+    Struct of Submodel Elements
+    """
 
     Submodel_element_list = "SubmodelElementList"
     """
     List of Submodel Elements
-    """
-    Submodel_element_collection = "SubmodelElementCollection"
-    """
-    Struct of Submodel Elements
     """
 
 
@@ -4740,8 +4744,8 @@ AAS_submodel_elements_as_keys: Set[Key_types] = constant_set(
         Key_types.Reference_element,
         Key_types.Relationship_element,
         Key_types.Submodel_element,
-        Key_types.Submodel_element_list,
         Key_types.Submodel_element_collection,
+        Key_types.Submodel_element_list,
     ],
     description="""\
 Enumeration of all referable elements within an asset administration shell.""",
@@ -4835,8 +4839,8 @@ Fragment_keys: Set[Key_types] = constant_set(
         Key_types.Reference_element,
         Key_types.Relationship_element,
         Key_types.Submodel_element,
-        Key_types.Submodel_element_list,
         Key_types.Submodel_element_collection,
+        Key_types.Submodel_element_list,
     ],
     description="Enumeration of different key value types within a key.",
     reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=2),
@@ -4853,6 +4857,7 @@ class Data_type_def_XSD(Enum):
     Any_URI = "xs:anyURI"
     Base_64_binary = "xs:base64Binary"
     Boolean = "xs:boolean"
+    Byte = "xs:byte"
     Date = "xs:date"
     Date_time = "xs:dateTime"
     Decimal = "xs:decimal"
@@ -4865,21 +4870,20 @@ class Data_type_def_XSD(Enum):
     G_year = "xs:gYear"
     G_year_month = "xs:gYearMonth"
     Hex_binary = "xs:hexBinary"
-    String = "xs:string"
-    Time = "xs:time"
+    Int = "xs:int"
     Integer = "xs:integer"
     Long = "xs:long"
-    Int = "xs:int"
-    Short = "xs:short"
-    Byte = "xs:byte"
-    Non_negative_integer = "xs:nonNegativeInteger"
-    Positive_integer = "xs:positiveInteger"
-    Unsigned_long = "xs:unsignedLong"
-    Unsigned_int = "xs:unsignedInt"
-    Unsigned_short = "xs:unsignedShort"
-    Unsigned_byte = "xs:unsignedByte"
-    Non_positive_integer = "xs:nonPositiveInteger"
     Negative_integer = "xs:negativeInteger"
+    Non_negative_integer = "xs:nonNegativeInteger"
+    Non_positive_integer = "xs:nonPositiveInteger"
+    Positive_integer = "xs:positiveInteger"
+    Short = "xs:short"
+    String = "xs:string"
+    Time = "xs:time"
+    Unsigned_byte = "xs:unsignedByte"
+    Unsigned_int = "xs:unsignedInt"
+    Unsigned_long = "xs:unsignedLong"
+    Unsigned_short = "xs:unsignedShort"
 
 
 @abstract
