@@ -5299,7 +5299,18 @@ class Level_type(DBC):
         self.typ = typ
         self.max = max
 
-
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or lang_strings_have_unique_languages(self.value),
+    "Value specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or len(self.value) >= 1,
+    "Value must be either not set or have at least one item"
+)
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=3,
@@ -5311,7 +5322,7 @@ class Value_reference_pair(DBC):
     defining its semantic.
     """
 
-    value: str
+    value: List["Lang_string_short_name_type_IEC_61360"]
     """
     The value of the referenced concept definition of the value in valueId.
     """
@@ -5326,7 +5337,9 @@ class Value_reference_pair(DBC):
 
     """
 
-    def __init__(self, value: str, value_ID: "Reference") -> None:
+    def __init__(self,
+                 value: List["Lang_string_short_name_type_IEC_61360"],
+                 value_ID: "Reference") -> None:
         self.value = value
         self.value_ID = value_ID
 
