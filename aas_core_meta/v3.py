@@ -2247,6 +2247,11 @@ class Asset_kind(Enum):
     Instance asset
     """
 
+    NotApplicable = "NotApplicable"
+    """
+    Neither a type asset nor an instance asset
+    """
+
 
 @reference_in_the_book(section=(5, 7, 4), index=3)
 @invariant(
