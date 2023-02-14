@@ -1161,6 +1161,7 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 
 # endregion
 
+
 # fmt: off
 @invariant(
     lambda self: len(self) >= 1,
@@ -5462,6 +5463,18 @@ def is_BCP_47_for_english(text: str) -> bool:
 )
 @invariant(
     lambda self:
+    not (self.value is not None)
+    or lang_strings_have_unique_languages(self.value),
+    "Value specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or len(self.value) >= 1,
+    "Value must be either not set or have at least one item"
+)
+@invariant(
+    lambda self:
     not (self.definition is not None)
     or lang_strings_have_unique_languages(self.definition),
     "Definition specifies no duplicate languages"
@@ -5621,7 +5634,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     List of allowed values
     """
 
-    value: Optional[str]
+    value: Optional[List[Lang_string_short_name_type_IEC_61360]]
     """
     Value
     """
@@ -5643,7 +5656,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
-        value: Optional[str] = None,
+        value: Optional[List[Lang_string_short_name_type_IEC_61360]] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
