@@ -2247,7 +2247,7 @@ class Asset_kind(Enum):
     Instance asset
     """
 
-    NotApplicable = "NotApplicable"
+    Not_applicable = "NotApplicable"
     """
     Neither a type asset nor an instance asset
     """
