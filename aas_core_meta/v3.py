@@ -24,6 +24,10 @@ such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
 
+:constraintref:`AASd-116`: In this constraint the string ``globalAssetId`` is checked case-sensitively,
+as it would be not well defined, which characters would be equal in this kind of check
+otherwise. For example, would the UTF-8 characters U+04E7 and U+00F6 be equal?
+
 Furthermore, we diverge from the book in the following points regarding
 the enumerations. We have to implement subsets of enumerations as sets as common
 programming languages do not support inheritance of enumerations. The relationship
@@ -1161,6 +1165,7 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 
 # endregion
 
+
 # fmt: off
 @invariant(
     lambda self: len(self) >= 1,
@@ -2108,7 +2113,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
             for specific_asset_ID in self.specific_asset_IDs
         )
     ),
-    "AASd-116: ``globalAssetId`` is a reserved key. "
+    "Constraint AASd-116: ``globalAssetId`` is a reserved key. "
     "If used as value for ``Specific_asset_ID.name`` then ``Specific_asset_ID.value`` "
     "shall be identical to ``global_asset_ID``."
 )
@@ -2137,6 +2142,19 @@ class Asset_information(DBC):
 
         For AssetInformation either the :attr:`global_asset_ID` shall be defined
         or at least one specificAssetId.
+
+    .. note::
+
+        Constraint AASd-116 is important to enable a generic search across global and
+        specific asset IDs.
+
+    .. note::
+
+        We diverge from the specification, where ``globalAssetId`` is checked
+        case-insensitive, as it would be not well defined, which characters would be
+        equal in this kind of check. Therefore, here, the string ``globalAssetId``
+        is checked case-sensitively. For example, would the UTF-8 characters
+        U+04E7 and U+00F6 be equal?
     """
 
     asset_kind: "Asset_kind"
