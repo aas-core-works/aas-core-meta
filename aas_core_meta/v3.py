@@ -91,6 +91,26 @@ def matches_ID_short(text: str) -> bool:
 
 
 @verification
+def matches_version_type(text: str) -> bool:
+    """
+    Check that :paramref:`text` is a valid version string.
+    """
+    pattern = f"/^([0-9]|[1-9][0-9]*)$/"
+
+    return match(pattern, text) is not None
+
+
+@verification
+def matches_revision_type(text: str) -> bool:
+    """
+    Check that :paramref:`text` is a valid revision string.
+    """
+    pattern = f"/^([0-9]|[1-9][0-9]*)$/"
+
+    return match(pattern, text) is not None
+
+
+@verification
 def matches_xs_date_time_UTC(text: str) -> bool:
     """
     Check that :paramref:`text` conforms to the pattern of an ``xs:dateTime``.
@@ -1161,6 +1181,7 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 
 # endregion
 
+
 # fmt: off
 @invariant(
     lambda self: len(self) >= 1,
@@ -1750,16 +1771,28 @@ class Has_data_specification(DBC):
 @invariant(
     lambda self:
     not (self.version is not None)
-    or not (len(self.version) > 4),
-    "Constraint AASd-135: AdministrativeInformation/version shall have a length of "
-    "maximum 4 characters."
+    or not (len(self.version) > 4)
+    or not (len(self.version) < 1),
+    "AdministrativeInformation/version shall have a length of "
+    "maximum 4 characters and minimum 1 character."
 )
 @invariant(
     lambda self:
     not (self.revision is not None)
-    or not (len(self.revision) > 4),
-    "Constraint AASd-136: AdministrativeInformation/revision shall have a length of "
-    "maximum 4 characters."
+    or not (len(self.revision) > 4)
+    or not (len(self.revision) < 1),
+    "AdministrativeInformation/revision shall have a length of "
+    "maximum 4 characters and minimum 1 character."
+)
+@invariant(
+    lambda self:
+    matches_version_type(self.version),
+    "AdministrativeInformation/version shall be of VersionType"
+)
+@invariant(
+    lambda self:
+    matches_revision_type(self.revision),
+    "AdministrativeInformation/revision shall be of RevisionType"
 )
 @reference_in_the_book(section=(5, 7, 2, 5))
 # fmt: on
