@@ -2148,7 +2148,7 @@ class Asset_information(DBC):
 
     .. note::
 
-        Constraint AASd-116 is important to enable a generic search across global and
+        :constraintref:`AASd-116` is important to enable a generic search across global and
         specific asset IDs.
 
     .. note::
