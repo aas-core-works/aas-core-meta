@@ -1,5 +1,11 @@
 """
-Provide the meta-model for Asset Administration Shell V3.0.
+Provide an implementation of the Asset Administration Shell (AAS) V3.0.
+
+The presented version of the Metamodel is related to the work of
+aas-core-works, which can be found here: https://github.com/aas-core-works.
+
+The presented content is neither related to the IDTA nor
+Plattform Industrie 4.0 and does not represent an official publication.
 
 We had to diverge from the book in the following points.
 
