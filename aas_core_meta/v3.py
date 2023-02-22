@@ -2117,8 +2117,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         )
     ),
     "Constraint AASd-116: ``globalAssetId`` is a reserved key. "
-    "If used as value for ``Specific_asset_ID.name`` then ``Specific_asset_ID.value`` "
-    "shall be identical to ``global_asset_ID``."
+    "If used as value for the name of specific asset ID then the value of specific asset ID "
+    "shall be identical to the global asset ID."
 )
 @reference_in_the_book(section=(5, 7, 4), index=0)
 # fmt: on
