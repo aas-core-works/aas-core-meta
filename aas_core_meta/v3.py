@@ -23,14 +23,13 @@ Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
+* :constraintref:`AASd-116`: In the book, :constraintref:`AASd-116` imposes a
+  case-insensitive equality against globalAssetId. This is culturally-dependent,
+  and depends on the system settings. For example, the case-folding
+  for the letters "i" and "I" is different in Turkish from English.
 
-In the book, :constraintref:AASd-116 imposes a
-case-insensitive equality against globalAssetId. This is culturally-dependent,
-and depends on the system settings. For example, the case-folding
-for the letters "i" and "I" is different in Turkish from English.
-
-We implement the constraint as case-sensitive instead to allow for interoperability
-across different culture settings.
+  We implement the constraint as case-sensitive instead to allow for interoperability
+  across different culture settings.
 
 Furthermore, we diverge from the book in the following points regarding
 the enumerations. We have to implement subsets of enumerations as sets as common
