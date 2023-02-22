@@ -1062,8 +1062,6 @@ def _generate_page_for_class(
             )
         )
 
-    print(f"cls.name is {cls.name!r}")  # TODO: debug
-    print(f"cls.concrete_descendants is {cls.concrete_descendants!r}")  # TODO: debug
     if len(cls.concrete_descendants) > 0:
         li_descendants = [
             f"""\

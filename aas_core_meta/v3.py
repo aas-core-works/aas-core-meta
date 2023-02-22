@@ -2161,8 +2161,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
         )
     ),
     "Constraint AASd-116: ``globalAssetId`` is a reserved key. "
-    "If used as value for the name of specific asset ID then the value of specific asset ID "
-    "shall be identical to the global asset ID."
+    "If used as value for the name of specific asset ID then the value of specific "
+    "asset ID shall be identical to the global asset ID."
 )
 @reference_in_the_book(section=(5, 3, 4), index=0)
 # fmt: on
@@ -2197,14 +2197,14 @@ class Asset_information(DBC):
 
     .. note::
 
-		In the book, :constraintref:`AASd-116` imposes a
-		case-insensitive equality against globalAssetId. This is 
-		culturally-dependent, and depends on the system settings. 
-		For example, the case-folding for the letters "i" and "I" is 
-		different in Turkish from English.
+        In the book, :constraintref:`AASd-116` imposes a
+        case-insensitive equality against globalAssetId. This is
+        culturally-dependent, and depends on the system settings.
+        For example, the case-folding for the letters "i" and "I" is
+        different in Turkish from English.
 
-		We implement the constraint as case-sensitive instead to allow 
-		for interoperability across different culture settings.
+        We implement the constraint as case-sensitive instead to allow
+        for interoperability across different culture settings.
     """
 
     asset_kind: "Asset_kind"
