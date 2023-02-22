@@ -185,6 +185,7 @@ def main() -> int:
     parser.add_argument(
         "--html_dir",
         help="path to where the generated HTML will be saved",
+        required=True,
     )
     args = parser.parse_args()
 
