@@ -24,9 +24,13 @@ such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
 
-:constraintref:`AASd-116`: In this constraint the string ``globalAssetId`` is checked case-sensitively,
-as it would be not well defined, which characters would be equal in this kind of check
-otherwise. For example, would the UTF-8 characters U+04E7 and U+00F6 be equal?
+:constraintref:`AASd-116`: In the book, :constraintref:AASd-116 imposes a
+case-insensitive equality against globalAssetId. This is culturally-dependent,
+and depends on the system settings. For example, the case-folding
+for the letters "i" and "I" is different in Turkish from English.
+
+We implement the constraint as case-sensitive instead to allow for interoperability
+across different culture settings.
 
 Furthermore, we diverge from the book in the following points regarding
 the enumerations. We have to implement subsets of enumerations as sets as common
