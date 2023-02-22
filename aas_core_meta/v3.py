@@ -2153,11 +2153,14 @@ class Asset_information(DBC):
 
     .. note::
 
-        We diverge from the specification, where ``globalAssetId`` is checked
-        case-insensitive, as it would be not well defined, which characters would be
-        equal in this kind of check. Therefore, here, the string ``globalAssetId``
-        is checked case-sensitively. For example, would the UTF-8 characters
-        U+04E7 and U+00F6 be equal?
+		In the book, :constraintref:`AASd-116` imposes a
+		case-insensitive equality against globalAssetId. This is 
+		culturally-dependent, and depends on the system settings. 
+		For example, the case-folding for the letters "i" and "I" is 
+		different in Turkish from English.
+
+		We implement the constraint as case-sensitive instead to allow 
+		for interoperability across different culture settings.
     """
 
     asset_kind: "Asset_kind"
