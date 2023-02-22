@@ -24,7 +24,7 @@ such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
 
-:constraintref:`AASd-116`: In the book, :constraintref:AASd-116 imposes a
+In the book, :constraintref:AASd-116 imposes a
 case-insensitive equality against globalAssetId. This is culturally-dependent,
 and depends on the system settings. For example, the case-folding
 for the letters "i" and "I" is different in Turkish from English.
