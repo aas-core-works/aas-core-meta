@@ -1003,6 +1003,18 @@
           <li>
             <a href="Multi_language_property.html#constraint-AASd-012">AASd-012</a>
           </li>
+          <li>
+            <p>
+              <a href="Asset_information.html#constraint-AASd-116">AASd-116</a>: In the book, <a href="Asset_information.html#constraint-AASd-116">AASd-116</a> imposes a
+              case-insensitive equality against globalAssetId. This is culturally-dependent,
+              and depends on the system settings. For example, the case-folding
+              for the letters &quot;i&quot; and &quot;I&quot; is different in Turkish from English.
+            </p>
+            <p>
+              We implement the constraint as case-sensitive instead to allow for interoperability
+              across different culture settings.
+            </p>
+          </li>
         </ul>
         <p>
           Furthermore, we diverge from the book in the following points regarding

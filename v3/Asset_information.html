@@ -976,6 +976,23 @@
             does not already exist, the corresponding attribute <a href="Asset_information.html#property-global_asset_ID">Asset_information.global_asset_ID</a> is
             optional.
           </p>
+          <div class="alert alert-info">
+            <a href="Asset_information.html#constraint-AASd-116">AASd-116</a> is important to enable a generic search across global and
+            specific asset IDs.
+          </div>
+          <div class="alert alert-info">
+            <p>
+              In the book, <a href="Asset_information.html#constraint-AASd-116">AASd-116</a> imposes a
+              case-insensitive equality against globalAssetId. This is
+              culturally-dependent, and depends on the system settings.
+              For example, the case-folding for the letters &quot;i&quot; and &quot;I&quot; is
+              different in Turkish from English.
+            </p>
+            <p>
+              We implement the constraint as case-sensitive instead to allow
+              for interoperability across different culture settings.
+            </p>
+          </div>
         </div>
         <dl class="constraints">
           <dt>
@@ -1099,7 +1116,7 @@
       </h2>
       <ul>
         <li>
-          AASd-116: ``globalAssetId`` is a reserved key. If used as value for ``Specific_asset_ID.name`` then ``Specific_asset_ID.value`` shall be identical to ``global_asset_ID``.<br/>
+          Constraint AASd-116: ``globalAssetId`` is a reserved key. If used as value for the name of specific asset ID then the value of specific asset ID shall be identical to the global asset ID.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">specific_asset_IDs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="p">(</span>
     <span class="nb">all</span><span class="p">(</span>
