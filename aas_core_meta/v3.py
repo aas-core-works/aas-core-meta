@@ -2256,8 +2256,8 @@ class Asset_kind(Enum):
 
 @reference_in_the_book(section=(5, 7, 4), index=3)
 @invariant(
-    lambda self: not (self.specific_asset_ID is not None)
-    or (self.specific_asset_ID.type == Reference_types.External_reference),
+    lambda self: not (self.external_subject_ID is not None)
+    or (self.external_subject_ID.type == Reference_types.External_reference),
     "Constraint AASd-133: SpecificAssetId/externalSubjectId shall be "
     "a global reference, i.e. Reference/type = GlobalReference.",
 )
