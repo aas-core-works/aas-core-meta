@@ -1771,27 +1771,33 @@ class Has_data_specification(DBC):
 @invariant(
     lambda self:
     not (self.version is not None)
-    or not (len(self.version) > 4)
-    or not (len(self.version) < 1),
+    or (
+            len(self.version) > 0
+            and len(self.version) <= 4
+    ),
     "AdministrativeInformation/version shall have a length of "
     "maximum 4 characters and minimum 1 character."
 )
 @invariant(
     lambda self:
     not (self.revision is not None)
-    or not (len(self.revision) > 4)
-    or not (len(self.revision) < 1),
+    or (
+            len(self.version) > 0
+            and len(self.version) <= 4
+    ),
     "AdministrativeInformation/revision shall have a length of "
     "maximum 4 characters and minimum 1 character."
 )
 @invariant(
     lambda self:
-    matches_version_type(self.version),
+    not (self.version is not None)
+    or matches_version_type(self.version),
     "AdministrativeInformation/version shall be of VersionType"
 )
 @invariant(
     lambda self:
-    matches_revision_type(self.revision),
+    not (self.version is not None)
+    or matches_revision_type(self.revision),
     "AdministrativeInformation/revision shall be of RevisionType"
 )
 @reference_in_the_book(section=(5, 7, 2, 5))
