@@ -760,6 +760,16 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="matches_revision_type.html">
+            matches_revision_type
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="matches_version_type.html">
+            matches_version_type
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="matches_xs_any_URI.html">
             matches_xs_any_URI
           </a>
@@ -1079,15 +1089,33 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-136: AdministrativeInformation/revision shall have a length of maximum 4 characters.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span>
+          AdministrativeInformation/revision shall be of RevisionType<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="n"><a href="matches_revision_type.html">matches_revision_type</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span><span class="p">)</span>
 </pre></div>
         </li>
         <li>
-          Constraint AASd-135: AdministrativeInformation/version shall have a length of maximum 4 characters.<br/>
+          AdministrativeInformation/version shall be of VersionType<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">4</span><span class="p">)</span>
+<span class="ow">or</span> <span class="n"><a href="matches_version_type.html">matches_version_type</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
+</pre></div>
+        </li>
+        <li>
+          AdministrativeInformation/revision shall have a length of maximum 4 characters and minimum 1 character.<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span>
+<span class="p">)</span>
+</pre></div>
+        </li>
+        <li>
+          AdministrativeInformation/version shall have a length of maximum 4 characters and minimum 1 character.<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="p">(</span>
+        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
+        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span>
+<span class="p">)</span>
 </pre></div>
         </li>
         <li>
