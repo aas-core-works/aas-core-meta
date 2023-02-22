@@ -1905,6 +1905,10 @@ class Qualifiable(DBC):
         equal to :attr:`Qualifier_kind.Template_qualifier` and the qualified element
         inherits from :class:`Has_kind` then the qualified element shall be of
         kind Template (:attr:`Has_kind.kind` = :attr:`Modelling_kind.Template`).
+
+    .. note::
+
+        This constraint is checked at :class:`Submodel`.
     """
 
     qualifiers: Optional[List["Qualifier"]]
