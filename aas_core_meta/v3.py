@@ -1215,12 +1215,12 @@ class Duration(str, DBC):
     """Represent an ``xs:duration``."""
 
 
-@reference_in_the_book(section=(5, 7, 12, 2))
+@reference_in_the_book(section=(5, 3, 11, 2))
 class Blob_type(bytearray, DBC):
     """Group of bytes to represent file content (binaries and non-binaries)"""
 
 
-@reference_in_the_book(section=(5, 7, 12, 2))
+@reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 2000,
     "Identifier shall have a maximum length of 2000 characters.",
@@ -1277,7 +1277,7 @@ class BCP_47_language_tag(str, DBC):
     """
 
 
-@reference_in_the_book(section=(5, 7, 12, 2))
+@reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: matches_MIME_type(self),
     "The value must represent a valid content MIME type according to RFC 2046.",
@@ -1309,7 +1309,7 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
     lambda self: matches_RFC_8089_path(self),
     "The value must represent a valid file URI scheme according to RFC 8089.",
 )
-@reference_in_the_book(section=(5, 7, 12, 2))
+@reference_in_the_book(section=(5, 3, 11, 2))
 class Path_type(Identifier, DBC):
     """
     Identifier
@@ -1323,7 +1323,7 @@ class Path_type(Identifier, DBC):
     pass
 
 
-@reference_in_the_book(section=(5, 7, 12, 2))
+@reference_in_the_book(section=(5, 3, 11, 2))
 class Qualifier_type(Name_type, DBC):
     """
     string
@@ -1376,7 +1376,7 @@ class ID_short_type(Name_type, DBC):
     "Supplemental semantic IDs must be either not set or have at least one item"
 )
 # fmt: on
-@reference_in_the_book(section=(5, 7, 2, 6))
+@reference_in_the_book(section=(5, 3, 2, 6))
 class Has_semantics(DBC):
     """
     Element that can have a semantic definition plus some supplemental semantic
@@ -1433,7 +1433,7 @@ class Has_semantics(DBC):
     "Refers-to must be either not set or have at least one item"
 )
 # fmt: on
-@reference_in_the_book(section=(5, 7, 2, 1), index=1)
+@reference_in_the_book(section=(5, 3, 2, 4), index=1)
 class Extension(Has_semantics):
     """
     Single extension of an element.
@@ -1497,7 +1497,7 @@ class Extension(Has_semantics):
 
 # fmt: off
 @abstract
-@reference_in_the_book(section=(5, 7, 2, 1))
+@reference_in_the_book(section=(5, 3, 2, 4))
 @invariant(
     lambda self:
     not (self.extensions is not None) or extension_names_are_unique(self.extensions),
@@ -1555,7 +1555,7 @@ class Has_extensions(DBC):
     or len(self.description) >= 1,
     "Description must be either not set or have at least one item"
 )
-@reference_in_the_book(section=(5, 7, 2, 2))
+@reference_in_the_book(section=(5, 3, 2, 10))
 @serialization(with_model_type=True)
 # fmt: on
 class Referable(Has_extensions):
@@ -1631,7 +1631,7 @@ class Referable(Has_extensions):
 
 
 @abstract
-@reference_in_the_book(section=(5, 7, 2, 3))
+@reference_in_the_book(section=(5, 3, 2, 7))
 class Identifiable(Referable):
     """An element that has a globally unique identifier."""
 
@@ -1671,7 +1671,7 @@ class Identifiable(Referable):
         self.administration = administration
 
 
-@reference_in_the_book(section=(5, 7, 2, 4), index=1)
+@reference_in_the_book(section=(5, 3, 2, 5), index=1)
 class Modelling_kind(Enum):
     """Enumeration for denoting whether an element is a template or an instance."""
 
@@ -1689,7 +1689,7 @@ class Modelling_kind(Enum):
 
 
 @abstract
-@reference_in_the_book(section=(5, 7, 2, 4))
+@reference_in_the_book(section=(5, 3, 2, 5))
 class Has_kind(DBC):
     """
     An element with a kind is an element that can either represent a template or an
@@ -1723,7 +1723,7 @@ class Has_kind(DBC):
     or len(self.embedded_data_specifications) >= 1,
     "Embedded data specifications must be either not set or have at least one item"
 )
-@reference_in_the_book(section=(5, 7, 2, 9))
+@reference_in_the_book(section=(5, 3, 2, 3))
 # fmt: on
 class Has_data_specification(DBC):
     """
@@ -1768,7 +1768,7 @@ class Has_data_specification(DBC):
     "Constraint AASd-136: AdministrativeInformation/revision shall have a length of "
     "maximum 4 characters."
 )
-@reference_in_the_book(section=(5, 7, 2, 5))
+@reference_in_the_book(section=(5, 3, 2, 2))
 # fmt: on
 class Administrative_information(Has_data_specification):
     """
@@ -1846,7 +1846,7 @@ class Administrative_information(Has_data_specification):
     or len(self.qualifiers) >= 1,
     "Qualifiers must be either not set or have at least one item"
 )
-@reference_in_the_book(section=(5, 7, 2, 7))
+@reference_in_the_book(section=(5, 3, 2, 8))
 @serialization(with_model_type=True)
 # fmt: on
 class Qualifiable(DBC):
@@ -1876,7 +1876,7 @@ class Qualifiable(DBC):
         self.qualifiers = qualifiers
 
 
-@reference_in_the_book(section=(5, 7, 2, 8), index=1)
+@reference_in_the_book(section=(5, 3, 2, 9), index=1)
 class Qualifier_kind(Enum):
     """
     Enumeration for kinds of qualifiers.
@@ -1918,7 +1918,7 @@ class Qualifier_kind(Enum):
     "Constraint AASd-020: The value shall be consistent to the data type as defined "
     "in value type.",
 )
-@reference_in_the_book(section=(5, 7, 2, 8))
+@reference_in_the_book(section=(5, 3, 2, 9))
 # fmt: on
 class Qualifier(Has_semantics):
     """
@@ -2001,7 +2001,7 @@ class Qualifier(Has_semantics):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 3))
+@reference_in_the_book(section=(5, 3, 3))
 @invariant(
     lambda self:
     not (self.submodels is not None)
@@ -2119,7 +2119,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     "If used as value for ``Specific_asset_ID.name`` then ``Specific_asset_ID.value`` "
     "shall be identical to ``global_asset_ID``."
 )
-@reference_in_the_book(section=(5, 7, 4), index=0)
+@reference_in_the_book(section=(5, 3, 4), index=0)
 # fmt: on
 class Asset_information(DBC):
     """
@@ -2208,7 +2208,7 @@ class Asset_information(DBC):
         self.default_thumbnail = default_thumbnail
 
 
-@reference_in_the_book(section=(5, 7, 4), index=1)
+@reference_in_the_book(section=(5, 3, 4), index=1)
 class Resource(DBC):
     """
     Resource represents an address to a file (a locator). The value is an URI that
@@ -2238,7 +2238,7 @@ class Resource(DBC):
         self.content_type = content_type
 
 
-@reference_in_the_book(section=(5, 7, 4), index=2)
+@reference_in_the_book(section=(5, 3, 4), index=2)
 class Asset_kind(Enum):
     """
     Enumeration for denoting whether an asset is a type asset or an instance asset.
@@ -2260,7 +2260,7 @@ class Asset_kind(Enum):
     """
 
 
-@reference_in_the_book(section=(5, 7, 4), index=3)
+@reference_in_the_book(section=(5, 3, 4), index=3)
 @invariant(
     lambda self: not (self.external_subject_ID is not None)
     or (self.external_subject_ID.type == Reference_types.External_reference),
@@ -2314,7 +2314,7 @@ class Specific_asset_ID(Has_semantics):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 5))
+@reference_in_the_book(section=(5, 3, 5))
 @invariant(
     lambda self:
     not (self.qualifiers is not None)
@@ -2437,7 +2437,7 @@ class Submodel(
 
 # fmt: off
 @abstract
-@reference_in_the_book(section=(5, 7, 6))
+@reference_in_the_book(section=(5, 3, 6))
 # fmt: on
 class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specification):
     """
@@ -2491,7 +2491,7 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
         )
 
 
-@reference_in_the_book(section=(5, 7, 7, 14))
+@reference_in_the_book(section=(5, 3, 7, 15))
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two elements
@@ -2564,7 +2564,7 @@ class AAS_submodel_elements(Enum):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 16))
+@reference_in_the_book(section=(5, 3, 7, 17))
 @invariant(
     lambda self:
     not (self.value is not None)
@@ -2753,7 +2753,7 @@ class Submodel_element_list(Submodel_element):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 15))
+@reference_in_the_book(section=(5, 3, 7, 16))
 @invariant(
     lambda self:
     not (self.value is not None)
@@ -2838,7 +2838,7 @@ Categories for :class:`Data_element` as defined in :constraintref:`AASd-090`""",
     "Constraint AASd-090: For data elements category shall be one "
     "of the following values: CONSTANT, PARAMETER or VARIABLE",
 )
-@reference_in_the_book(section=(5, 7, 7, 5))
+@reference_in_the_book(section=(5, 3, 7, 6))
 # fmt: on
 class Data_element(Submodel_element):
     """
@@ -2892,7 +2892,7 @@ class Data_element(Submodel_element):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 11))
+@reference_in_the_book(section=(5, 3, 7, 12))
 @invariant(
     lambda self:
     not (self.value is not None)
@@ -2978,7 +2978,7 @@ class Property(Data_element):
     or lang_strings_have_unique_languages(self.value),
     "Value specifies no duplicate languages"
 )
-@reference_in_the_book(section=(5, 7, 7, 9))
+@reference_in_the_book(section=(5, 3, 7, 10))
 # fmt: on
 class Multi_language_property(Data_element):
     """
@@ -3038,7 +3038,7 @@ class Multi_language_property(Data_element):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 12))
+@reference_in_the_book(section=(5, 3, 7, 13))
 @invariant(
     lambda self:
     not (self.min is not None)
@@ -3111,7 +3111,7 @@ class Range(Data_element):
         self.max = max
 
 
-@reference_in_the_book(section=(5, 7, 7, 15))
+@reference_in_the_book(section=(5, 3, 7, 14))
 class Reference_element(Data_element):
     """
     A reference element is a data element that defines a logical reference to another
@@ -3157,7 +3157,7 @@ class Reference_element(Data_element):
         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 7, 3))
+@reference_in_the_book(section=(5, 3, 7, 4))
 class Blob(Data_element):
     """
     A :class:`Blob` is a data element that represents a file that is contained with its
@@ -3219,7 +3219,7 @@ class Blob(Data_element):
         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 7, 8))
+@reference_in_the_book(section=(5, 3, 7, 9))
 class File(Data_element):
     """
     A File is a data element that represents an address to a file (a locator).
@@ -3281,7 +3281,7 @@ class File(Data_element):
     or len(self.annotations) >= 1,
     "Annotations must be either not set or have at least one item"
 )
-@reference_in_the_book(section=(5, 7, 7, 1))
+@reference_in_the_book(section=(5, 3, 7, 2))
 # fmt: on
 class Annotated_relationship_element(Relationship_element):
     """
@@ -3331,7 +3331,7 @@ class Annotated_relationship_element(Relationship_element):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 6))
+@reference_in_the_book(section=(5, 3, 7, 7))
 @invariant(
     lambda self:
     not (self.specific_asset_IDs is not None)
@@ -3440,7 +3440,7 @@ class Entity(Submodel_element):
         self.specific_asset_IDs = specific_asset_IDs
 
 
-@reference_in_the_book(section=(5, 7, 7, 6), index=1)
+@reference_in_the_book(section=(5, 3, 7, 7), index=1)
 class Entity_type(Enum):
     """
     Enumeration for denoting whether an entity is a self-managed entity or a co-managed
@@ -3462,7 +3462,7 @@ class Entity_type(Enum):
     """
 
 
-@reference_in_the_book(section=(5, 7, 7, 2), index=1)
+@reference_in_the_book(section=(5, 3, 7, 3), index=1)
 class Direction(Enum):
     """
     Direction
@@ -3484,7 +3484,7 @@ class Direction(Enum):
     """
 
 
-@reference_in_the_book(section=(5, 7, 7, 2), index=2)
+@reference_in_the_book(section=(5, 3, 7, 3), index=2)
 class State_of_event(Enum):
     """
     State of an event
@@ -3520,7 +3520,7 @@ class State_of_event(Enum):
     ),
     "Source must be a model reference to an EventElement."
 )
-@reference_in_the_book(section=(5, 7, 7, 2), index=3)
+@reference_in_the_book(section=(5, 3, 7, 3), index=3)
 # fmt: on
 class Event_payload(DBC):
     """
@@ -3613,7 +3613,7 @@ class Event_payload(DBC):
 
 
 @abstract
-@reference_in_the_book(section=(5, 7, 7, 7))
+@reference_in_the_book(section=(5, 3, 7, 8))
 class Event_element(Submodel_element):
     """
     An event element.
@@ -3653,7 +3653,7 @@ class Event_element(Submodel_element):
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 7, 2))
+@reference_in_the_book(section=(5, 3, 7, 3))
 @invariant(
     lambda self:
     not (self.message_broker is not None)
@@ -3828,7 +3828,7 @@ class Basic_event_element(Event_element):
     "Constraint AASd-134: For an Operation the ID-short of all values of "
     "input, output and in/output variables."
 )
-@reference_in_the_book(section=(5, 7, 7, 10))
+@reference_in_the_book(section=(5, 3, 7, 11))
 # fmt: on
 class Operation(Submodel_element):
     """
@@ -3891,7 +3891,7 @@ class Operation(Submodel_element):
         self.inoutput_variables = inoutput_variables
 
 
-@reference_in_the_book(section=(5, 7, 7, 10), index=1)
+@reference_in_the_book(section=(5, 3, 7, 11), index=1)
 class Operation_variable(DBC):
     """
     The value of an operation variable is a submodel element that is used as input
@@ -3907,7 +3907,7 @@ class Operation_variable(DBC):
         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 7, 4))
+@reference_in_the_book(section=(5, 3, 7, 5))
 class Capability(Submodel_element):
     """
     A capability is the implementation-independent description of the potential of an
@@ -4125,7 +4125,7 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
 
 
 # fmt: off
-@reference_in_the_book(section=(5, 7, 8))
+@reference_in_the_book(section=(5, 3, 8))
 @invariant(
     lambda self:
     not (
@@ -4342,7 +4342,7 @@ class Concept_description(Identifiable, Has_data_specification):
         self.is_case_of = is_case_of
 
 
-@reference_in_the_book(section=(5, 7, 10, 2), index=1)
+@reference_in_the_book(section=(5, 3, 10, 2), index=1)
 class Reference_types(Enum):
     """
     ReferenceTypes
@@ -4468,7 +4468,7 @@ class Reference_types(Enum):
     lambda self: len(self.keys) >= 1,
     "Keys must contain at least one item."
 )
-@reference_in_the_book(section=(5, 7, 10, 2))
+@reference_in_the_book(section=(5, 3, 10, 2))
 # fmt: on
 class Reference(DBC):
     """
@@ -4591,7 +4591,7 @@ class Reference(DBC):
         self.referred_semantic_ID = referred_semantic_ID
 
 
-@reference_in_the_book(section=(5, 7, 10, 3), index=1)
+@reference_in_the_book(section=(5, 3, 10, 3))
 class Key(DBC):
     """A key is a reference to an element by its ID."""
 
@@ -4615,7 +4615,7 @@ class Key(DBC):
         self.value = value
 
 
-@reference_in_the_book(section=(5, 7, 10, 3), index=1)
+@reference_in_the_book(section=(5, 3, 10, 3), index=1)
 class Key_types(Enum):
     """Enumeration of different key value types within a key."""
 
@@ -4711,7 +4711,7 @@ Generic_fragment_keys: Set[Key_types] = constant_set(
     ],
     description="""\
 Enumeration of all identifiable elements within an asset administration shell.""",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=9),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=7),
 )
 
 assert Key_types.Fragment_reference in Generic_fragment_keys, (
@@ -4725,7 +4725,7 @@ Generic_globally_identifiables: Set[Key_types] = constant_set(
         Key_types.Global_reference,
     ],
     description="Enumeration of different key value types within a key.",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=8),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=9),
 )
 
 AAS_identifiables: Set[Key_types] = constant_set(
@@ -4736,7 +4736,7 @@ AAS_identifiables: Set[Key_types] = constant_set(
         Key_types.Submodel,
     ],
     description="Enumeration of different key value types within a key.",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=7),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=8),
 )
 
 AAS_submodel_elements_as_keys: Set[Key_types] = constant_set(
@@ -4761,7 +4761,7 @@ AAS_submodel_elements_as_keys: Set[Key_types] = constant_set(
     ],
     description="""\
 Enumeration of all submodel elements within an asset administration shell.""",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=6),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=5),
 )
 
 AAS_referable_non_identifiables: Set[Key_types] = constant_set(
@@ -4785,7 +4785,7 @@ AAS_referable_non_identifiables: Set[Key_types] = constant_set(
         Key_types.Submodel_element_list,
     ],
     description="Enumeration of different fragment key value types within a key.",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=4),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=4),
     superset_of=[AAS_submodel_elements_as_keys],
 )
 
@@ -4815,7 +4815,7 @@ AAS_referables: Set[Key_types] = constant_set(
         Key_types.Submodel_element_list,
     ],
     description="Enumeration of referables.",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=5),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=6),
     superset_of=[AAS_referable_non_identifiables, AAS_identifiables],
 )
 
@@ -4829,7 +4829,7 @@ Globally_identifiables: Set[Key_types] = constant_set(
     ],
     description="""\
 Enumeration of all referable elements within an asset administration shell""",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=3),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=3),
     superset_of=[AAS_identifiables, Generic_globally_identifiables],
 )
 
@@ -4855,12 +4855,12 @@ Fragment_keys: Set[Key_types] = constant_set(
         Key_types.Submodel_element_list,
     ],
     description="Enumeration of different key value types within a key.",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=2),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=2),
     superset_of=[AAS_referable_non_identifiables, Generic_fragment_keys],
 )
 
 
-@reference_in_the_book(section=(5, 7, 11, 3))
+@reference_in_the_book(section=(5, 3, 11, 3))
 class Data_type_def_XSD(Enum):
     """
     Enumeration listing all XSD anySimpleTypes
@@ -4899,7 +4899,7 @@ class Data_type_def_XSD(Enum):
 
 
 @abstract
-@reference_in_the_book(section=(5, 7, 12, 1))
+@reference_in_the_book(section=(5, 3, 11, 1))
 class Abstract_lang_string(DBC):
     """Strings with language tags"""
 
@@ -4963,7 +4963,7 @@ class Lang_string_text_type(Abstract_lang_string, DBC):
     or len(self.concept_descriptions) >= 1,
     "Concept descriptions must be either not set or have at least one item"
 )
-@reference_in_the_book(section=(5, 7, 9))
+@reference_in_the_book(section=(5, 3, 9))
 # fmt: on
 class Environment:
     """
@@ -5007,9 +5007,9 @@ class Environment:
 
 @abstract
 @reference_in_the_book(
-    section=(6, 2, 1, 1),
+    section=(6, 1, 1),
     index=1,
-    fragment="6.2.1.1 Data Specification Template Attributes",
+    fragment="6.1.1 Data Specification Template Attributes",
 )
 @serialization(with_model_type=True)
 class Data_specification_content:
@@ -5030,8 +5030,8 @@ class Data_specification_content:
 
 
 @reference_in_the_book(
-    section=(9, 2, 5),
-    fragment="9.2.5 Embedded Data Specifications",
+    section=(7, 2, 5),
+    fragment="7.2.5 Embedded Data Specifications",
 )
 class Embedded_data_specification:
     """Embed the content of a data specification."""
@@ -5051,10 +5051,11 @@ class Embedded_data_specification:
         self.data_specification_content = data_specification_content
 
 
+# todo: Reference applies to Part 3a document
 @reference_in_the_book(
-    section=(6, 3, 3, 1),
+    section=(6, 3),
     index=1,
-    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
+    fragment="6.3 Enumeration IEC61360",
 )
 class Data_type_IEC_61360(Enum):
     Date = "DATE"
@@ -5244,10 +5245,11 @@ Data_type_IEC_61360_for_document: Set[Data_type_IEC_61360] = constant_set(
 )
 
 
+# todo: Reference applies to Part 3a document
 @reference_in_the_book(
-    section=(6, 3, 3, 1),
+    section=(6, 2),
     index=4,
-    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
+    fragment="6.2 Data Specification IEC61360 Template Attributes",
 )
 class Level_type(DBC):
     """
@@ -5312,10 +5314,11 @@ class Level_type(DBC):
         self.max = max
 
 
+# todo: Reference applies to Part 3a document
 @reference_in_the_book(
-    section=(6, 3, 3, 1),
+    section=(6, 2),
     index=3,
-    fragment="4.8.2 Predefined Templates for Property and Value Descriptions",
+    fragment="6.2 Predefined Templates for Property and Value Descriptions",
 )
 class Value_reference_pair(DBC):
     """
@@ -5349,10 +5352,11 @@ class Value_reference_pair(DBC):
     len(self.value_reference_pairs) >= 1,
     "Value reference pair types must contain at least one item."
 )
+# todo: Reference applies to Part 3a document
 @reference_in_the_book(
-    section=(6, 3, 3, 1),
+    section=(6, 2),
     index=2,
-    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
+    fragment="6.2 Data Specification IEC61360 Template Attributes",
 )
 # fmt: on
 class Value_list(DBC):
@@ -5369,6 +5373,7 @@ class Value_list(DBC):
         self.value_reference_pairs = value_reference_pairs
 
 
+# todo: Update Reference as it applies to Part 3b document
 IEC_61360_data_types_with_unit: Set[Data_type_IEC_61360] = constant_set(
     values=[
         Data_type_IEC_61360.Integer_measure,
@@ -5379,7 +5384,7 @@ IEC_61360_data_types_with_unit: Set[Data_type_IEC_61360] = constant_set(
     ],
     description="""\
 These data types imply that the unit is defined in the data specification.""",
-    reference_in_the_book=reference_in_the_book(section=(5, 7, 10, 3), index=9),
+    reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=9),
 )
 
 
@@ -5506,9 +5511,10 @@ def is_BCP_47_for_english(text: str) -> bool:
     "Constraint AASc-3a-010: If value is not empty then value list shall be empty and "
     "vice versa."
 )
+# todo: Reference applies to Part 3a document
 @reference_in_the_book(
-    section=(6, 3, 3, 1),
-    fragment="6.3.3.1 Data Specification IEC61360 Template Attributes",
+    section=(6, 2),
+    fragment="6.2 Data Specification IEC61360 Template Attributes",
 )
 @serialization(with_model_type=True)
 # fmt: on
