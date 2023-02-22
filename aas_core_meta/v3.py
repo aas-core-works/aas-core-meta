@@ -29,6 +29,13 @@ Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
+* :constraintref:`AASd-116`: In the book, :constraintref:`AASd-116` imposes a
+  case-insensitive equality against globalAssetId. This is culturally-dependent,
+  and depends on the system settings. For example, the case-folding
+  for the letters "i" and "I" is different in Turkish from English.
+
+  We implement the constraint as case-sensitive instead to allow for interoperability
+  across different culture settings.
 
 Furthermore, we diverge from the book in the following points regarding
 the enumerations. We have to implement subsets of enumerations as sets as common
@@ -2153,9 +2160,9 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
             for specific_asset_ID in self.specific_asset_IDs
         )
     ),
-    "AASd-116: ``globalAssetId`` is a reserved key. "
-    "If used as value for ``Specific_asset_ID.name`` then ``Specific_asset_ID.value`` "
-    "shall be identical to ``global_asset_ID``."
+    "Constraint AASd-116: ``globalAssetId`` is a reserved key. "
+    "If used as value for the name of specific asset ID then the value of specific "
+    "asset ID shall be identical to the global asset ID."
 )
 @reference_in_the_book(section=(5, 3, 4), index=0)
 # fmt: on
@@ -2182,6 +2189,22 @@ class Asset_information(DBC):
 
         For AssetInformation either the :attr:`global_asset_ID` shall be defined
         or at least one specificAssetId.
+
+    .. note::
+
+        :constraintref:`AASd-116` is important to enable a generic search across global and
+        specific asset IDs.
+
+    .. note::
+
+        In the book, :constraintref:`AASd-116` imposes a
+        case-insensitive equality against globalAssetId. This is
+        culturally-dependent, and depends on the system settings.
+        For example, the case-folding for the letters "i" and "I" is
+        different in Turkish from English.
+
+        We implement the constraint as case-sensitive instead to allow
+        for interoperability across different culture settings.
     """
 
     asset_kind: "Asset_kind"
