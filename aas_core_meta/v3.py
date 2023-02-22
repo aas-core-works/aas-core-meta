@@ -1,5 +1,11 @@
 """
-Provide the meta-model for Asset Administration Shell V3.0.
+Provide an implementation of the Asset Administration Shell (AAS) V3.0.
+
+The presented version of the Metamodel is related to the work of
+aas-core-works, which can be found here: https://github.com/aas-core-works.
+
+The presented content is neither related to the IDTA nor
+Plattform Industrie 4.0 and does not represent an official publication.
 
 We had to diverge from the book in the following points.
 
@@ -1161,6 +1167,7 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 
 # endregion
 
+
 # fmt: off
 @invariant(
     lambda self: len(self) >= 1,
@@ -2247,11 +2254,16 @@ class Asset_kind(Enum):
     Instance asset
     """
 
+    Not_applicable = "NotApplicable"
+    """
+    Neither a type asset nor an instance asset
+    """
+
 
 @reference_in_the_book(section=(5, 3, 4), index=3)
 @invariant(
-    lambda self: not (self.specific_asset_ID is not None)
-    or (self.specific_asset_ID.type == Reference_types.External_reference),
+    lambda self: not (self.external_subject_ID is not None)
+    or (self.external_subject_ID.type == Reference_types.External_reference),
     "Constraint AASd-133: SpecificAssetId/externalSubjectId shall be "
     "a global reference, i.e. Reference/type = GlobalReference.",
 )
@@ -5664,118 +5676,3 @@ class Data_specification_IEC_61360(Data_specification_content):
         self.value_list = value_list
         self.value = value
         self.level_type = level_type
-
-
-# fmt: off
-@invariant(
-    lambda self:
-    lang_strings_have_unique_languages(self.definition),
-    "Definition specifies no duplicate languages"
-)
-@invariant(
-    lambda self:
-    len(self.definition) >= 1,
-    "Definition must have at least one item"
-)
-# todo: Update Reference as it applies to Part 3b document
-@reference_in_the_book(
-    section=(6, 4, 2, 1),
-    fragment="6.4.2.1 Data Specification Template Physical Unit Attributes",
-)
-@serialization(with_model_type=True)
-# fmt: on
-class Data_specification_physical_unit(Data_specification_content):
-    unit_name: Non_empty_XML_serializable_string
-    """
-    Name of the physical unit
-    """
-
-    unit_symbol: Non_empty_XML_serializable_string
-    """
-    Symbol for the physical unit
-    """
-
-    definition: List["Lang_string_text_type"]
-    """
-    Definition in different languages
-    """
-
-    SI_notation: Optional[Non_empty_XML_serializable_string]
-    """
-    Notation of SI physical unit
-    """
-
-    SI_name: Optional[Non_empty_XML_serializable_string]
-    """
-    Name of SI physical unit
-    """
-
-    DIN_notation: Optional[Non_empty_XML_serializable_string]
-    """
-    Notation of physical unit conformant to DIN
-    """
-
-    ECE_name: Optional[Non_empty_XML_serializable_string]
-    """
-    Name of physical unit conformant to ECE
-    """
-
-    ECE_code: Optional[Non_empty_XML_serializable_string]
-    """
-    Code of physical unit conformant to ECE
-    """
-
-    NIST_name: Optional[Non_empty_XML_serializable_string]
-    """
-    Name of NIST physical unit
-    """
-
-    source_of_definition: Optional[Non_empty_XML_serializable_string]
-    """
-    Source of definition
-    """
-
-    conversion_factor: Optional[Non_empty_XML_serializable_string]
-    """
-    Conversion factor
-    """
-
-    registration_authority_ID: Optional[Non_empty_XML_serializable_string]
-    """
-    Registration authority ID
-    """
-
-    supplier: Optional[Non_empty_XML_serializable_string]
-    """
-    Supplier
-    """
-
-    def __init__(
-        self,
-        unit_name: Non_empty_XML_serializable_string,
-        unit_symbol: Non_empty_XML_serializable_string,
-        definition: List["Lang_string_text_type"],
-        SI_notation: Optional[Non_empty_XML_serializable_string] = None,
-        SI_name: Optional[Non_empty_XML_serializable_string] = None,
-        DIN_notation: Optional[Non_empty_XML_serializable_string] = None,
-        ECE_name: Optional[Non_empty_XML_serializable_string] = None,
-        ECE_code: Optional[Non_empty_XML_serializable_string] = None,
-        NIST_name: Optional[Non_empty_XML_serializable_string] = None,
-        source_of_definition: Optional[Non_empty_XML_serializable_string] = None,
-        conversion_factor: Optional[Non_empty_XML_serializable_string] = None,
-        registration_authority_ID: Optional[Non_empty_XML_serializable_string] = None,
-        supplier: Optional[Non_empty_XML_serializable_string] = None,
-    ) -> None:
-        self.unit_name = unit_name
-        self.unit_symbol = unit_symbol
-        self.definition = definition
-        self.SI_notation = SI_notation
-        self.SI_name = SI_name
-        self.DIN_notation = DIN_notation
-        self.ECE_name = ECE_name
-        self.ECE_code = ECE_code
-        self.NIST_name = NIST_name
-        self.source_of_definition = source_of_definition
-        self.conversion_factor = conversion_factor
-        self.registration_authority_ID = registration_authority_ID
-        self.supplier = supplier
