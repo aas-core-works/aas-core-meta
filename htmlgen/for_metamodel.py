@@ -1062,6 +1062,35 @@ def _generate_page_for_class(
             )
         )
 
+    if len(cls.concrete_descendants) > 0:
+        li_descendants = [
+            f"""\
+<li>
+{I}<a href="{descendant.name}.html">{descendant.name}</a>
+</li>"""
+            for descendant in cls.concrete_descendants
+        ]
+
+        li_descendants_joined = "\n".join(li_descendants)
+        ul_descendants = Stripped(
+            f"""\
+<ul>
+{I}{indent_but_first_line(li_descendants_joined, I)}
+</ul>"""
+        )
+
+        blocks.append(
+            Stripped(
+                f"""\
+<h2>
+{I}<a name="concrete-descendants"></a>
+{I}Concrete Descendants
+{I}<a class="aas-anchor-link" href="#concrete-descendants">🔗</a>
+</h2>
+{ul_descendants}"""
+            )
+        )
+
     if len(cls.properties) > 0:
         blocks.append(
             Stripped(
