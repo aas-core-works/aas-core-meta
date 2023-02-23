@@ -1225,6 +1225,16 @@ class Identifier(Non_empty_XML_serializable_string, DBC):
     """
 
 
+@invariant(
+    lambda self: len(self) <= 2000,
+    "ValueTypeIec61360 shall have a maximum length of 2000 characters.",
+)
+class Value_type_Iec_61360(Non_empty_XML_serializable_string, DBC):
+    """
+    string
+    """
+
+
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 128,
@@ -5301,15 +5311,6 @@ class Level_type(DBC):
         self.max = max
 
 
-@invariant(
-    lambda self: not (self.value is not None)
-    or lang_strings_have_unique_languages(self.value),
-    "Value specifies no duplicate languages",
-)
-@invariant(
-    lambda self: not (self.value is not None) or len(self.value) >= 1,
-    "Value must be either not set or have at least one item",
-)
 @reference_in_the_book(
     section=(6, 3, 3, 1),
     index=3,
@@ -5321,7 +5322,7 @@ class Value_reference_pair(DBC):
     defining its semantic.
     """
 
-    value: Value_type_Iec_61360
+    value: str
     """
     The value of the referenced concept definition of the value in valueId.
     """
@@ -5336,11 +5337,7 @@ class Value_reference_pair(DBC):
 
     """
 
-    def __init__(
-        self,
-        value: Value_type_Iec_61360,
-        value_ID: "Reference",
-    ) -> None:
+    def __init__(self, value: str, value_ID: "Reference") -> None:
         self.value = value
         self.value_ID = value_ID
 
@@ -5473,6 +5470,18 @@ def is_BCP_47_for_english(text: str) -> bool:
     not (self.short_name is not None)
     or len(self.short_name) >= 1,
     "Short name must be either not set or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or lang_strings_have_unique_languages(self.value),
+    "Value specifies no duplicate languages"
+)
+@invariant(
+    lambda self:
+    not (self.value is not None)
+    or len(self.value) >= 1,
+    "Value must be either not set or have at least one item"
 )
 @invariant(
     lambda self:
@@ -5635,7 +5644,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     List of allowed values
     """
 
-    value: Optional[str]
+    value: Optional[Value_type_Iec_61360]
     """
     Value
     """
@@ -5657,7 +5666,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
-        value: Optional[str] = None,
+        value: Optional[Value_type_Iec_61360] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
