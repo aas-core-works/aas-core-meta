@@ -5321,7 +5321,7 @@ class Value_reference_pair(DBC):
     defining its semantic.
     """
 
-    value: List["Lang_string_short_name_type_IEC_61360"]
+    value: Value_type_Iec_61360
     """
     The value of the referenced concept definition of the value in valueId.
     """
@@ -5338,7 +5338,7 @@ class Value_reference_pair(DBC):
 
     def __init__(
         self,
-        value: List["Lang_string_short_name_type_IEC_61360"],
+        value: Value_type_Iec_61360,
         value_ID: "Reference",
     ) -> None:
         self.value = value
