@@ -1225,7 +1225,6 @@ class Identifier(Non_empty_XML_serializable_string, DBC):
     """
 
 
-@reference_in_the_book(section=(5, 7, 12, 2))
 @invariant(
     lambda self: len(self) <= 2000,
     "ValueTypeIec61360 shall have a maximum length of 2000 characters.",
