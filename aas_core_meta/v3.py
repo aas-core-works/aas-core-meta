@@ -1225,6 +1225,17 @@ class Identifier(Non_empty_XML_serializable_string, DBC):
     """
 
 
+@reference_in_the_book(section=(5, 7, 12, 2))
+@invariant(
+    lambda self: len(self) <= 2000,
+    "ValueTypeIec61360 shall have a maximum length of 2000 characters.",
+)
+class Value_type_Iec_61360(Non_empty_XML_serializable_string, DBC):
+    """
+    string
+    """
+
+
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 128,
@@ -5634,7 +5645,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     List of allowed values
     """
 
-    value: Optional[List[Lang_string_short_name_type_IEC_61360]]
+    value: Optional[Value_type_Iec_61360]
     """
     Value
     """
@@ -5656,7 +5667,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
-        value: Optional[List[Lang_string_short_name_type_IEC_61360]] = None,
+        value: Optional[Value_type_Iec_61360] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
