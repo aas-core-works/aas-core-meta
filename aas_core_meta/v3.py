@@ -1258,6 +1258,16 @@ class Identifier(Non_empty_XML_serializable_string, DBC):
     """
 
 
+@invariant(
+    lambda self: len(self) <= 2000,
+    "ValueTypeIec61360 shall have a maximum length of 2000 characters.",
+)
+class Value_type_IEC_61360(Non_empty_XML_serializable_string, DBC):
+    """
+    string
+    """
+
+
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 128,
@@ -5391,7 +5401,7 @@ class Value_reference_pair(DBC):
     defining its semantic.
     """
 
-    value: str
+    value: Value_type_IEC_61360
     """
     The value of the referenced concept definition of the value in valueId.
     """
@@ -5406,7 +5416,7 @@ class Value_reference_pair(DBC):
 
     """
 
-    def __init__(self, value: str, value_ID: "Reference") -> None:
+    def __init__(self, value: Value_type_IEC_61360, value_ID: "Reference") -> None:
         self.value = value
         self.value_ID = value_ID
 
@@ -5704,7 +5714,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     List of allowed values
     """
 
-    value: Optional[str]
+    value: Optional[Value_type_IEC_61360]
     """
     Value
     """
@@ -5726,7 +5736,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
-        value: Optional[str] = None,
+        value: Optional[Value_type_IEC_61360] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
