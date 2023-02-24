@@ -28,6 +28,7 @@ Contributors
 * Sebastian Bader
 * Igor Garmaev
 * Sebastian Heppner
+* IDTA (https://industrialdigitaltwin.org)
 
 Contributing
 ============
