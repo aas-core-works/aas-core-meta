@@ -7,9 +7,9 @@ aas-core-works, which can be found here: https://github.com/aas-core-works.
 The presented content is neither related to the IDTA nor
 Plattform Industrie 4.0 and does not represent an official publication.
 
-We had to diverge from the book in the following points.
+We diverge from the book in the following points.
 
-We could not implement the following constraints as they are too general and can not
+We did not implement the following constraints as they are too general and can not
 be formalized as part of the core library, but affects external components such as
 AAS registry or AAS server:
 
@@ -18,7 +18,7 @@ AAS registry or AAS server:
     :attr:`Referable.ID_short` of non-identifiable referables
     within the same name space shall be unique (case-sensitive).
 
-We could not implement the following constraints since they depend on registry and
+We did not implement the following constraints since they depend on registry and
 de-referencing, so we can not formalize them with formalizing such external
 dependencies:
 
@@ -1253,6 +1253,16 @@ class Blob_type(bytearray, DBC):
     "Identifier shall have a maximum length of 2000 characters.",
 )
 class Identifier(Non_empty_XML_serializable_string, DBC):
+    """
+    string
+    """
+
+
+@invariant(
+    lambda self: len(self) <= 2000,
+    "ValueTypeIec61360 shall have a maximum length of 2000 characters.",
+)
+class Value_type_IEC_61360(Non_empty_XML_serializable_string):
     """
     string
     """
@@ -5391,7 +5401,7 @@ class Value_reference_pair(DBC):
     defining its semantic.
     """
 
-    value: str
+    value: Value_type_IEC_61360
     """
     The value of the referenced concept definition of the value in valueId.
     """
@@ -5406,7 +5416,7 @@ class Value_reference_pair(DBC):
 
     """
 
-    def __init__(self, value: str, value_ID: "Reference") -> None:
+    def __init__(self, value: Value_type_IEC_61360, value_ID: "Reference") -> None:
         self.value = value
         self.value_ID = value_ID
 
@@ -5704,7 +5714,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     List of allowed values
     """
 
-    value: Optional[str]
+    value: Optional[Value_type_IEC_61360]
     """
     Value
     """
@@ -5726,7 +5736,7 @@ class Data_specification_IEC_61360(Data_specification_content):
         definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
         value_format: Optional[Non_empty_XML_serializable_string] = None,
         value_list: Optional["Value_list"] = None,
-        value: Optional[str] = None,
+        value: Optional[Value_type_IEC_61360] = None,
         level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
