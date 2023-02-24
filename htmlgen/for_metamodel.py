@@ -1509,7 +1509,7 @@ def _generate_home_page(
     content = Stripped(
         f"""\
 <h1>
-{I}Meta-model {html.escape(symbol_table.meta_model.book_version)}
+{I}aas-core-meta {html.escape(symbol_table.meta_model.book_version)}
 {I}<a class="aas-anchor-link" href="">🔗</a>
 </h1>
 <div class="aas-description">
