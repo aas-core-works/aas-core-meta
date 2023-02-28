@@ -50,15 +50,12 @@ the following divergences:
 
 * The enumeration :class:`AAS_submodel_elements` is used in two different contexts.
   One context is the definition of key types in a reference. Another context is
-  the definition of element types in a :class:`Submodel_element_list`. It is very
-  counter-intuitive to see the type of
-  :attr:`Submodel_element_list.type_value_list_element` as
-  :class:`Key_types` even though an invariant might specify that it is an element of
-  :class:`AAS_submodel_elements`.
+  the definition of element types in a :class:`Submodel_element_list`.
 
-  To avoid confusion, we introduce a set of :class:`Key_types`,
-  :const:`AAS_submodel_elements_as_keys` to represent the first context (key type
-  in a reference). The enumeration :class:`AAS_submodel_elements` is kept as designator
+  To avoid confusion, we introduce two separate enumerations for the separate contexts.
+  Firstly, a set of :class:`Key_types`, :const:`AAS_submodel_elements_as_keys` to
+  represent the first context (key type in a reference).
+  Secondly, the enumeration :class:`AAS_submodel_elements` is kept as designator
   for :attr:`Submodel_element_list.type_value_list_element`.
 
 Concerning the data specifications, we embed them within
