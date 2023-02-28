@@ -1039,16 +1039,13 @@
             <p>
               The enumeration <a href="AAS_submodel_elements.html">AAS_submodel_elements</a> is used in two different contexts.
               One context is the definition of key types in a reference. Another context is
-              the definition of element types in a <a href="Submodel_element_list.html">Submodel_element_list</a>. It is very
-              counter-intuitive to see the type of
-              <a href="Submodel_element_list.html#property-type_value_list_element">Submodel_element_list.type_value_list_element</a> as
-              <a href="Key_types.html">Key_types</a> even though an invariant might specify that it is an element of
-              <a href="AAS_submodel_elements.html">AAS_submodel_elements</a>.
+              the definition of element types in a <a href="Submodel_element_list.html">Submodel_element_list</a>.
             </p>
             <p>
-              To avoid confusion, we introduce a set of <a href="Key_types.html">Key_types</a>,
-              <a href="AAS_submodel_elements_as_keys.html">AAS_submodel_elements_as_keys</a> to represent the first context (key type
-              in a reference). The enumeration <a href="AAS_submodel_elements.html">AAS_submodel_elements</a> is kept as designator
+              To avoid confusion, we introduce two separate enumerations for the separate contexts.
+              Firstly, a set of <a href="Key_types.html">Key_types</a>, <a href="AAS_submodel_elements_as_keys.html">AAS_submodel_elements_as_keys</a> to
+              represent the first context (key type in a reference).
+              Secondly, the enumeration <a href="AAS_submodel_elements.html">AAS_submodel_elements</a> is kept as designator
               for <a href="Submodel_element_list.html#property-type_value_list_element">Submodel_element_list.type_value_list_element</a>.
             </p>
           </li>
