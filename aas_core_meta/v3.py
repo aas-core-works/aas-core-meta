@@ -105,7 +105,7 @@ def matches_version_type(text: str) -> bool:
     """
     Check that :paramref:`text` is a valid version string.
     """
-    pattern = f"/^([0-9]|[1-9][0-9]*)$/"
+    pattern = f"^(0|[1-9][0-9]*)$"
 
     return match(pattern, text) is not None
 
@@ -115,7 +115,7 @@ def matches_revision_type(text: str) -> bool:
     """
     Check that :paramref:`text` is a valid revision string.
     """
-    pattern = f"/^([0-9]|[1-9][0-9]*)$/"
+    pattern = f"^(0|[1-9][0-9]*)$"
 
     return match(pattern, text) is not None
 
