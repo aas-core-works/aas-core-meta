@@ -1812,13 +1812,13 @@ class Has_data_specification(DBC):
     lambda self:
     not (self.version is not None)
     or matches_version_type(self.version),
-    "AdministrativeInformation/version shall be of VersionType"
+    "Version shall match the version pattern"
 )
 @invariant(
     lambda self:
-    not (self.version is not None)
+    not (self.revision is not None)
     or matches_revision_type(self.revision),
-    "AdministrativeInformation/revision shall be of RevisionType"
+    "Revision shall match the revision pattern"
 )
 @reference_in_the_book(section=(5, 3, 2, 2))
 # fmt: on
