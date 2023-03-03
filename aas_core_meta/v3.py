@@ -2407,7 +2407,8 @@ class Specific_asset_ID(Has_semantics):
         not (self.kind == Modelling_kind.Template)
         or (
             not any(
-                not any(
+                not (submodel_element.qualifiers is not None)
+                or not any(
                     qualifier.kind == Qualifier_kind.Template_qualifier
                     for qualifier in submodel_element.qualifiers
                 )
