@@ -1795,18 +1795,16 @@ class Has_data_specification(DBC):
             len(self.version) > 0
             and len(self.version) <= 4
     ),
-    "AdministrativeInformation/version shall have a length of "
-    "maximum 4 characters and minimum 1 character."
+    "Version shall have a length of maximum 4 characters and minimum 1 character."
 )
 @invariant(
     lambda self:
     not (self.revision is not None)
     or (
-            len(self.version) > 0
-            and len(self.version) <= 4
+            len(self.revision) > 0
+            and len(self.revision) <= 4
     ),
-    "AdministrativeInformation/revision shall have a length of "
-    "maximum 4 characters and minimum 1 character."
+    "Revision shall have a length of maximum 4 characters and minimum 1 character."
 )
 @invariant(
     lambda self:
