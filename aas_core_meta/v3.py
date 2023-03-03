@@ -2150,10 +2150,16 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 )
 @invariant(
     lambda self:
-    self.global_asset_ID is not None
-    or len(self.specific_asset_IDs) >= 1,
-    "Constraint AASd-131: For AssetInformation either "
-    "the globalAssetId shall be defined or at least one specificAssetId."
+    (
+            self.global_asset_ID is not None
+            and self.specific_asset_IDs is None
+    ) or (
+            self.global_asset_ID is None
+            and self.specific_asset_IDs is not None
+            and len(self.specific_asset_IDs) >= 1
+    ),
+    "Constraint AASd-131: Either the global asset ID shall be defined or at least one "
+    "specific asset ID."
 )
 @invariant(
     lambda self:
