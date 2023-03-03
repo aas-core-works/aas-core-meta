@@ -3419,6 +3419,7 @@ class Annotated_relationship_element(Relationship_element):
                     and self.specific_asset_IDs is None
             ) or (
                     self.global_asset_ID is None
+                    and self.specific_asset_IDs is not None
                     and len(self.specific_asset_IDs) >= 1
             )
         )
