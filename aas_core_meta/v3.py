@@ -1866,8 +1866,8 @@ class Administrative_information(Has_data_specification):
         embedded_data_specifications: Optional[
             List["Embedded_data_specification"]
         ] = None,
-        version: Optional[Non_empty_XML_serializable_string] = None,
-        revision: Optional[Non_empty_XML_serializable_string] = None,
+        version: Optional[Version_type] = None,
+        revision: Optional[Revision_type] = None,
         creator: Optional["Reference"] = None,
         template_ID: Optional["Identifier"] = None,
     ) -> None:
