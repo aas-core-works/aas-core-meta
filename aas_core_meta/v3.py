@@ -1282,10 +1282,8 @@ class Name_type(Non_empty_XML_serializable_string, DBC):
     "VersionType shall have a maximum length of 4 characters.",
 )
 @invariant(
-    lambda self:
-    not (self.version is not None)
-    or matches_version_type(self.version),
-    "VersionType shall match the version pattern"
+    lambda self: matches_version_type(self),
+    "VersionType shall match the version pattern",
 )
 class Version_type(Non_empty_XML_serializable_string):
     """
@@ -1299,10 +1297,8 @@ class Version_type(Non_empty_XML_serializable_string):
     "RevisionType shall have a maximum length of 4 characters.",
 )
 @invariant(
-    lambda self:
-    not (self.revision is not None)
-    or matches_revision_type(self.revision),
-    "RevisionType shall match the revision pattern"
+    lambda self: matches_revision_type(self),
+    "RevisionType shall match the revision pattern",
 )
 class Revision_type(Non_empty_XML_serializable_string):
     """
