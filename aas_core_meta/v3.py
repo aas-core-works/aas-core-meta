@@ -4559,7 +4559,7 @@ class Reference(DBC):
     complete list of keys may for example be concatenated to a path that then gives
     unique access to an element.
 
-    A global reference is a reference to an external entity.
+    An external reference is a reference to an external entity.
 
     :constraint AASd-121:
 
@@ -4638,7 +4638,7 @@ class Reference(DBC):
     """
     Type of the reference.
 
-    Denotes, whether reference is a global reference or a model reference.
+    Denotes, whether reference is an external reference or a model reference.
     """
 
     referred_semantic_ID: Optional["Reference"]
@@ -4646,11 +4646,11 @@ class Reference(DBC):
     :attr:`Has_semantics.semantic_ID` of the referenced model element
     (:attr:`Reference.type` = :attr:`Reference_types.Model_reference`).
 
-    For global references there typically is no semantic ID.
+    For external references there typically is no semantic ID.
 
     .. note::
 
-        It is recommended to use a global reference.
+        It is recommended to use a external reference.
     """
 
     keys: List["Key"]
