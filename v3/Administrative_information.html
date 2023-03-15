@@ -145,6 +145,11 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="Revision_type.html">
+            Revision_type
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="Value_data_type.html">
             Value_data_type
           </a>
@@ -152,6 +157,11 @@
         <li class="nav-item">
           <a class="nav-item" href="Value_type_IEC_61360.html">
             Value_type_IEC_61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Version_type.html">
+            Version_type
           </a>
         </li>
         <li class="nav-item mt-2">Abstract Classes</li>
@@ -1015,7 +1025,7 @@
         </dd>
         <dt>
           <a name="#property-version"></a>
-          version: <span class="aas-type-annotation">Optional[<a href="Non_empty_XML_serializable_string.html">Non_empty_XML_serializable_string</a>]</span>
+          version: <span class="aas-type-annotation">Optional[<a href="Version_type.html">Version_type</a>]</span>
           <a class="aas-anchor-link" href="#property-version">🔗</a>
         </dt>
 
@@ -1028,7 +1038,7 @@
         </dd>
         <dt>
           <a name="#property-revision"></a>
-          revision: <span class="aas-type-annotation">Optional[<a href="Non_empty_XML_serializable_string.html">Non_empty_XML_serializable_string</a>]</span>
+          revision: <span class="aas-type-annotation">Optional[<a href="Revision_type.html">Revision_type</a>]</span>
           <a class="aas-anchor-link" href="#property-revision">🔗</a>
         </dt>
 
@@ -1091,36 +1101,6 @@
           <em>(From <a href="Has_data_specification.html">Has_data_specification</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedded_data_specifications</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedded_data_specifications</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
-</pre></div>
-        </li>
-        <li>
-          Revision shall match the revision pattern<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="n"><a href="matches_revision_type.html">matches_revision_type</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span><span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Version shall match the version pattern<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="n"><a href="matches_version_type.html">matches_version_type</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Revision shall have a length of maximum 4 characters and minimum 1 character.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="p">(</span>
-        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">revision</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span>
-<span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Version shall have a length of maximum 4 characters and minimum 1 character.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="p">(</span>
-        <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">0</span>
-        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">version</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span>
-<span class="p">)</span>
 </pre></div>
         </li>
         <li>

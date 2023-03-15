@@ -2,7 +2,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>Submodel_element_list</title>
+  <title>Version_type</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -160,7 +160,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="Version_type.html">
+          <a class="nav-item active" href="Version_type.html">
             Version_type
           </a>
         </li>
@@ -402,7 +402,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item active" href="Submodel_element_list.html">
+          <a class="nav-item" href="Submodel_element_list.html">
             Submodel_element_list
           </a>
         </li>
@@ -973,58 +973,21 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        Submodel_element_list<a class="aas-anchor-link" href="">🔗</a>
+        Version_type
+        <a class="aas-anchor-link" href="">🔗</a>
       </h1>
+      <dl>
+      <dt>
+        <a name="primitive-type"></a>
+        Primitive type: <code>str</code>
+        <a class="aas-anchor-link" href="#primitive-type">🔗</a>
+      </dt>
+      <dd></dd>
+      </dl>
       <div class="aas-description">
         <div class="summary">
-          A submodel element list is an ordered list of submodel elements.
+          string with length 4 maximum and 1 minimum
         </div>
-        <div class="remarks">
-          The numbering starts with zero (0).
-        </div>
-        <dl class="constraints">
-          <dt>
-            <a name="constraint-AASd-107"></a>Constraint AASd-107<a class="aas-anchor-link" href="#constraint-AASd-107">🔗</a>
-          </dt>
-          <dd>
-            If a first level child element in a <a href="Submodel_element_list.html">Submodel_element_list</a> has
-            a <a href="Has_semantics.html#property-semantic_ID">Has_semantics.semantic_ID</a> it
-            shall be identical to <a href="Submodel_element_list.html#property-semantic_ID_list_element">Submodel_element_list.semantic_ID_list_element</a>.
-          </dd>
-          <dt>
-            <a name="constraint-AASd-114"></a>Constraint AASd-114<a class="aas-anchor-link" href="#constraint-AASd-114">🔗</a>
-          </dt>
-          <dd>
-            If two first level child elements in a <a href="Submodel_element_list.html">Submodel_element_list</a> have
-            a <a href="Has_semantics.html#property-semantic_ID">Has_semantics.semantic_ID</a> then they shall be identical.
-          </dd>
-          <dt>
-            <a name="constraint-AASd-115"></a>Constraint AASd-115<a class="aas-anchor-link" href="#constraint-AASd-115">🔗</a>
-          </dt>
-          <dd>
-            If a first level child element in a <a href="Submodel_element_list.html">Submodel_element_list</a> does not
-            specify a <a href="Has_semantics.html#property-semantic_ID">Has_semantics.semantic_ID</a> then the value is assumed to be
-            identical to <a href="Submodel_element_list.html#property-semantic_ID_list_element">Submodel_element_list.semantic_ID_list_element</a>.
-          </dd>
-          <dt>
-            <a name="constraint-AASd-108"></a>Constraint AASd-108<a class="aas-anchor-link" href="#constraint-AASd-108">🔗</a>
-          </dt>
-          <dd>
-            All first level child elements in a <a href="Submodel_element_list.html">Submodel_element_list</a> shall have
-            the same submodel element type as specified in <a href="Submodel_element_list.html#property-type_value_list_element">Submodel_element_list.type_value_list_element</a>.
-          </dd>
-          <dt>
-            <a name="constraint-AASd-109"></a>Constraint AASd-109<a class="aas-anchor-link" href="#constraint-AASd-109">🔗</a>
-          </dt>
-          <dd>
-            If <a href="Submodel_element_list.html#property-type_value_list_element">Submodel_element_list.type_value_list_element</a> is equal to
-            <a href="AAS_submodel_elements.html#literal-Property">AAS_submodel_elements.Property</a> or
-            <a href="AAS_submodel_elements.html#literal-Range">AAS_submodel_elements.Range</a>
-            <a href="Submodel_element_list.html#property-value_type_list_element">Submodel_element_list.value_type_list_element</a> shall be set and all first
-            level child elements in the <a href="Submodel_element_list.html">Submodel_element_list</a> shall have
-            the value type as specified in <a href="Submodel_element_list.html#property-value_type_list_element">Submodel_element_list.value_type_list_element</a>.
-          </dd>
-        </dl>
       </div>
       <h2>
         <a name="inheritances"></a>
@@ -1033,293 +996,9 @@
       </h2>
       <ul>
         <li>
-          <a href="Submodel_element.html">Submodel_element</a>
+          <a href="Non_empty_XML_serializable_string.html">Non_empty_XML_serializable_string</a>
         </li>
       </ul>
-      <h2>
-        <a name="properties"></a>
-        Properties
-        <a class="aas-anchor-link" href="#properties">🔗</a>
-      </h2>
-      <dl>
-        <dt>
-          <a name="#property-extensions"></a>
-          extensions: <span class="aas-type-annotation">Optional[List[<a href="Extension.html">Extension</a>]]</span>
-          <a class="aas-anchor-link" href="#property-extensions">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Has_extensions.html">Has_extensions</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              An extension of the element.
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-category"></a>
-          category: <span class="aas-type-annotation">Optional[<a href="Name_type.html">Name_type</a>]</span>
-          <a class="aas-anchor-link" href="#property-category">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Referable.html">Referable</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              The category is a value that gives further meta information
-              w.r.t. to the class of the element.
-              It affects the expected existence of attributes and the applicability of
-              constraints.
-            </div>
-            <div class="remarks">
-              <div class="alert alert-info">
-                The category is not identical to the semantic definition
-                (<a href="Has_semantics.html">Has_semantics</a>) of an element. The category e.g. could denote that
-                the element is a measurement value whereas the semantic definition of
-                the element would denote that it is the measured temperature.
-              </div>
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-ID_short"></a>
-          ID_short: <span class="aas-type-annotation">Optional[<a href="ID_short_type.html">ID_short_type</a>]</span>
-          <a class="aas-anchor-link" href="#property-ID_short">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Referable.html">Referable</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              In case of identifiables this attribute is a short name of the element.
-              In case of referable this ID is an identifying string of the element within
-              its name space.
-            </div>
-            <div class="remarks">
-              <div class="alert alert-info">
-                In case the element is a property and the property has a semantic definition
-                (<a href="Has_semantics.html#property-semantic_ID">Has_semantics.semantic_ID</a>) conformant to IEC61360
-                the <a href="Referable.html#property-ID_short">Referable.ID_short</a> is typically identical to the short name in English.
-              </div>
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-display_name"></a>
-          display_name: <span class="aas-type-annotation">Optional[List[<a href="Lang_string_name_type.html">Lang_string_name_type</a>]]</span>
-          <a class="aas-anchor-link" href="#property-display_name">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Referable.html">Referable</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              Display name. Can be provided in several languages.
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-description"></a>
-          description: <span class="aas-type-annotation">Optional[List[<a href="Lang_string_text_type.html">Lang_string_text_type</a>]]</span>
-          <a class="aas-anchor-link" href="#property-description">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Referable.html">Referable</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              Description or comments on the element.
-            </div>
-            <div class="remarks">
-              <p>
-                The description can be provided in several languages.
-              </p>
-              <p>
-                If no description is defined, then the definition of the concept
-                description that defines the semantics of the element is used.
-              </p>
-              <p>
-                Additional information can be provided, e.g., if the element is
-                qualified and which qualifier types can be expected in which
-                context or which additional data specification templates are
-                provided.
-              </p>
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-semantic_ID"></a>
-          semantic_ID: <span class="aas-type-annotation">Optional[<a href="Reference.html">Reference</a>]</span>
-          <a class="aas-anchor-link" href="#property-semantic_ID">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Has_semantics.html">Has_semantics</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              Identifier of the semantic definition of the element. It is called semantic ID
-              of the element or also main semantic ID of the element.
-            </div>
-            <div class="remarks">
-              <div class="alert alert-info">
-                It is recommended to use a global reference.
-              </div>
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-supplemental_semantic_IDs"></a>
-          supplemental_semantic_IDs: <span class="aas-type-annotation">Optional[List[<a href="Reference.html">Reference</a>]]</span>
-          <a class="aas-anchor-link" href="#property-supplemental_semantic_IDs">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Has_semantics.html">Has_semantics</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              Identifier of a supplemental semantic definition of the element.
-              It is called supplemental semantic ID of the element.
-            </div>
-            <div class="remarks">
-              <div class="alert alert-info">
-                It is recommended to use a global reference.
-              </div>
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-qualifiers"></a>
-          qualifiers: <span class="aas-type-annotation">Optional[List[<a href="Qualifier.html">Qualifier</a>]]</span>
-          <a class="aas-anchor-link" href="#property-qualifiers">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Qualifiable.html">Qualifiable</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              Additional qualification of a qualifiable element.
-            </div>
-            <dl class="constraints">
-              <dt>
-                <a name="constraint-AASd-021"></a>Constraint AASd-021<a class="aas-anchor-link" href="#constraint-AASd-021">🔗</a>
-              </dt>
-              <dd>
-                Every qualifiable can only have one qualifier with the same
-                <a href="Qualifier.html#property-type">Qualifier.type</a>.
-              </dd>
-            </dl>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-embedded_data_specifications"></a>
-          embedded_data_specifications: <span class="aas-type-annotation">Optional[List[<a href="Embedded_data_specification.html">Embedded_data_specification</a>]]</span>
-          <a class="aas-anchor-link" href="#property-embedded_data_specifications">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <em>(From <a href="Has_data_specification.html">Has_data_specification</a>)</em>
-          </div>
-          <div>
-            <div class="summary">
-              Embedded data specification.
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-order_relevant"></a>
-          order_relevant: <span class="aas-type-annotation">Optional[bool]</span>
-          <a class="aas-anchor-link" href="#property-order_relevant">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <div class="summary">
-              Defines whether order in list is relevant. If <a href="Submodel_element_list.html#property-order_relevant">Submodel_element_list.order_relevant</a> = <code>False</code>
-              then the list is representing a set or a bag.
-            </div>
-            <div class="remarks">
-              Default: <code>True</code>
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-semantic_ID_list_element"></a>
-          semantic_ID_list_element: <span class="aas-type-annotation">Optional[<a href="Reference.html">Reference</a>]</span>
-          <a class="aas-anchor-link" href="#property-semantic_ID_list_element">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <div class="summary">
-              Semantic ID the submodel elements contained in the list match to.
-            </div>
-            <div class="remarks">
-              <div class="alert alert-info">
-                It is recommended to use a global reference.
-              </div>
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-type_value_list_element"></a>
-          type_value_list_element: <span class="aas-type-annotation"><a href="AAS_submodel_elements.html">AAS_submodel_elements</a></span>
-          <a class="aas-anchor-link" href="#property-type_value_list_element">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <div class="summary">
-              The submodel element type of the submodel elements contained in the list.
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-value_type_list_element"></a>
-          value_type_list_element: <span class="aas-type-annotation">Optional[<a href="Data_type_def_XSD.html">Data_type_def_XSD</a>]</span>
-          <a class="aas-anchor-link" href="#property-value_type_list_element">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <div class="summary">
-              The value type of the submodel element contained in the list.
-            </div>
-          </div>
-        </dd>
-        <dt>
-          <a name="#property-value"></a>
-          value: <span class="aas-type-annotation">Optional[List[<a href="Submodel_element.html">Submodel_element</a>]]</span>
-          <a class="aas-anchor-link" href="#property-value">🔗</a>
-        </dt>
-
-        <dd>
-          <div>
-            <div class="summary">
-              Submodel element contained in the list.
-            </div>
-            <div class="remarks">
-              The list is ordered.
-            </div>
-          </div>
-        </dd>
-      </dl>
       <h2>
         <a name="invariants"></a>
         Invariants
@@ -1327,147 +1006,39 @@
       </h2>
       <ul>
         <li>
-          Extensions must be either not set or have at least one item<br/>
-          <em>(From <a href="Has_extensions.html">Has_extensions</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+          Constraint AASd-130: An attribute with data type &#x27;string&#x27; shall consist of these characters only: ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$<br/>
+          <em>(From <a href="Non_empty_XML_serializable_string.html">Non_empty_XML_serializable_string</a>)</em><br/>
+          <div class="highlight"><pre><span></span><span class="n"><a href="matches_XML_serializable_string.html">matches_XML_serializable_string</a></span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
         </li>
         <li>
-          Constraint AASd-077: The name of an extension (Extension/name) within Has-Extensions needs to be unique.<br/>
-          <em>(From <a href="Has_extensions.html">Has_extensions</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n"><a href="extension_names_are_unique.html">extension_names_are_unique</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">)</span>
+          Check if string is not empty.<br/>
+          <em>(From <a href="Non_empty_XML_serializable_string.html">Non_empty_XML_serializable_string</a>)</em><br/>
+          <div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
-          Description must be either not set or have at least one item<br/>
-          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+          Version type shall match the version pattern<br/>
+          <div class="highlight"><pre><span></span><span class="n"><a href="matches_version_type.html">matches_version_type</a></span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
         </li>
         <li>
-          Description specifies no duplicate languages<br/>
-          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="n"><a href="lang_strings_have_unique_languages.html">lang_strings_have_unique_languages</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Display name must be either not set or have at least one item<br/>
-          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
-</pre></div>
-        </li>
-        <li>
-          Display name specifies no duplicate languages<br/>
-          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="n"><a href="lang_strings_have_unique_languages.html">lang_strings_have_unique_languages</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Supplemental semantic IDs must be either not set or have at least one item<br/>
-          <em>(From <a href="Has_semantics.html">Has_semantics</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental_semantic_IDs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental_semantic_IDs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
-</pre></div>
-        </li>
-        <li>
-          Constraint AASd-118: If there are supplemental semantic IDs defined then there shall be also a main semantic ID.<br/>
-          <em>(From <a href="Has_semantics.html">Has_semantics</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental_semantic_IDs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="p">(</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">semantic_ID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Qualifiers must be either not set or have at least one item<br/>
-          <em>(From <a href="Qualifiable.html">Qualifiable</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
-</pre></div>
-        </li>
-        <li>
-          Constraint AASd-021: Every qualifiable can only have one qualifier with the same type.<br/>
-          <em>(From <a href="Qualifiable.html">Qualifiable</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="n"><a href="qualifier_types_are_unique.html">qualifier_types_are_unique</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Embedded data specifications must be either not set or have at least one item<br/>
-          <em>(From <a href="Has_data_specification.html">Has_data_specification</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedded_data_specifications</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedded_data_specifications</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
-</pre></div>
-        </li>
-        <li>
-          Value must be either not set or have at least one item<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
-</pre></div>
-        </li>
-        <li>
-          Constraint AASd-107: If a first level child element has a semantic ID it shall be identical to semantic ID list element.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">semantic_ID_list_element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-    <span class="nb">all</span><span class="p">(</span>
-        <span class="ow">not</span> <span class="p">(</span><span class="n">child</span><span class="o">.</span><span class="n">semantic_ID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-        <span class="ow">or</span> <span class="n"><a href="reference_key_values_equal.html">reference_key_values_equal</a></span><span class="p">(</span>
-            <span class="n">child</span><span class="o">.</span><span class="n">semantic_ID</span><span class="p">,</span>
-            <span class="bp">self</span><span class="o">.</span><span class="n">semantic_ID_list_element</span><span class="p">)</span>
-        <span class="k">for</span> <span class="n">child</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-    <span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Constraint AASd-114: If two first level child elements have a semantic ID then they shall be identical.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="n"><a href="submodel_elements_have_identical_semantic_IDs.html">submodel_elements_have_identical_semantic_IDs</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Constraint AASd-108: All first level child elements shall have the same submodel element type as specified in type value list element.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">all</span><span class="p">(</span>
-    <span class="n"><a href="submodel_element_is_of_type.html">submodel_element_is_of_type</a></span><span class="p">(</span><span class="n">element</span><span class="p">,</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_value_list_element</span><span class="p">)</span>
-    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-<span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Constraint AASd-109: If type value list element is equal to Property or Range value type list element shall be set and all first level child elements shall have the value type as specified in value type list element.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="ow">and</span> <span class="p">(</span>
-                <span class="bp">self</span><span class="o">.</span><span class="n">type_value_list_element</span> <span class="o">==</span> <a href="AAS_submodel_elements.html#literal-Property"><span class="n">AAS_submodel_elements</span><span class="o">.</span><span class="n">Property</span></a>
-                <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">type_value_list_element</span> <span class="o">==</span> <a href="AAS_submodel_elements.html#literal-Range"><span class="n">AAS_submodel_elements</span><span class="o">.</span><span class="n">Range</span></a>
-        <span class="p">)</span>
-<span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-    <span class="bp">self</span><span class="o">.</span><span class="n">value_type_list_element</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-    <span class="ow">and</span> <span class="n"><a href="properties_or_ranges_have_value_type.html">properties_or_ranges_have_value_type</a></span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span><span class="p">,</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value_type_list_element</span>
-    <span class="p">)</span>
-<span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Constraint AASd-120: idShort of submodel elements being a direct child of a  SubmodelElementList shall not be specified.<br/>
-          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
-<span class="ow">or</span> <span class="nb">all</span><span class="p">(</span>
-    <span class="n">element</span><span class="o">.</span><span class="n">ID_short</span> <span class="ow">is</span> <span class="kc">None</span>
-    <span class="k">for</span> <span class="n">element</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">value</span>
-<span class="p">)</span>
+          VersionType shall have a maximum length of 4 characters.<br/>
+          <div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">4</span>
 </pre></div>
         </li>
       </ul>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="Administrative_information.html">Administrative_information</a>
+          </td>
+          <td>
+            <a href="Administrative_information.html#property-version">Administrative_information.version</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>
