@@ -1848,7 +1848,7 @@ class Administrative_information(Has_data_specification):
     .. note::
 
        In case of a submodel the :attr:`template_ID` is the identifier
-       of the submodel template_ID that guided the creation of the submodel
+       of the submodel template ID that guided the creation of the submodel
 
     .. note::
 
