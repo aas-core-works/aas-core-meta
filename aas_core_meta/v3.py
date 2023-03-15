@@ -4282,22 +4282,6 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
 )
 @invariant(
     lambda self:
-    not (
-        self.category is not None
-        and self.category != "VALUE"
-        and self.embedded_data_specifications is not None
-    ) or (
-        data_specification_IEC_61360s_have_definition_at_least_in_english(
-            self.embedded_data_specifications
-        )
-    ),
-    "For a ConceptDescription referenced via value ID in a value list and "
-    "using data specification template IEC61360 "
-    "(http://admin-shell.io/DataSpecificationTemplates/DataSpecificationIEC61360/3/0), "
-    "value shall be set."
-)
-@invariant(
-    lambda self:
     not (self.is_case_of is not None)
     or len(self.is_case_of) >= 1,
     "Is-case-of must be either not set or have at least one item"
