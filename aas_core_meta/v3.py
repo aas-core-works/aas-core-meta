@@ -1278,6 +1278,36 @@ class Name_type(Non_empty_XML_serializable_string, DBC):
 
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
+    lambda self: len(self) <= 4,
+    "VersionType shall have a maximum length of 4 characters.",
+)
+@invariant(
+    lambda self: matches_version_type(self),
+    "Version type shall match the version pattern",
+)
+class Version_type(Non_empty_XML_serializable_string):
+    """
+    string with length 4 maximum and 1 minimum
+    """
+
+
+@reference_in_the_book(section=(5, 3, 11, 2))
+@invariant(
+    lambda self: len(self) <= 4,
+    "RevisionType shall have a maximum length of 4 characters.",
+)
+@invariant(
+    lambda self: matches_revision_type(self),
+    "Revision type shall match the revision pattern",
+)
+class Revision_type(Non_empty_XML_serializable_string):
+    """
+    string with length 4 maximum and 1 minimum
+    """
+
+
+@reference_in_the_book(section=(5, 3, 11, 2))
+@invariant(
     lambda self: len(self) <= 64,
     "LabelType shall have a maximum length of 64 characters.",
 )
@@ -1788,36 +1818,6 @@ class Has_data_specification(DBC):
     "be unspecified. This means, a revision requires a version. If there is "
     "no version there is no revision either. Revision is optional."
 )
-@invariant(
-    lambda self:
-    not (self.version is not None)
-    or (
-            len(self.version) > 0
-            and len(self.version) <= 4
-    ),
-    "Version shall have a length of maximum 4 characters and minimum 1 character."
-)
-@invariant(
-    lambda self:
-    not (self.revision is not None)
-    or (
-            len(self.revision) > 0
-            and len(self.revision) <= 4
-    ),
-    "Revision shall have a length of maximum 4 characters and minimum 1 character."
-)
-@invariant(
-    lambda self:
-    not (self.version is not None)
-    or matches_version_type(self.version),
-    "Version shall match the version pattern"
-)
-@invariant(
-    lambda self:
-    not (self.revision is not None)
-    or matches_revision_type(self.revision),
-    "Revision shall match the revision pattern"
-)
 @reference_in_the_book(section=(5, 3, 2, 2))
 # fmt: on
 class Administrative_information(Has_data_specification):
@@ -1832,10 +1832,10 @@ class Administrative_information(Has_data_specification):
         there is no revision neither. Revision is optional.
     """
 
-    version: Optional[Non_empty_XML_serializable_string]
+    version: Optional[Version_type]
     """Version of the element."""
 
-    revision: Optional[Non_empty_XML_serializable_string]
+    revision: Optional[Revision_type]
     """Revision of the element."""
 
     creator: Optional["Reference"]
@@ -1866,8 +1866,8 @@ class Administrative_information(Has_data_specification):
         embedded_data_specifications: Optional[
             List["Embedded_data_specification"]
         ] = None,
-        version: Optional[Non_empty_XML_serializable_string] = None,
-        revision: Optional[Non_empty_XML_serializable_string] = None,
+        version: Optional[Version_type] = None,
+        revision: Optional[Revision_type] = None,
         creator: Optional["Reference"] = None,
         template_ID: Optional["Identifier"] = None,
     ) -> None:
