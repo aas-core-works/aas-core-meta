@@ -1262,7 +1262,7 @@ Observed literals: {sorted(literal_set)!r}"""
 not (self.qualifiers is not None)
     or (
         not any(
-            qualifier.kind == Qualifier_kind.Template_qualifier
+            qualifier.kind_or_default() == Qualifier_kind.Template_qualifier
             for qualifier in self.qualifiers
         ) or (
             self.kind_or_default() == Modelling_kind.Template
