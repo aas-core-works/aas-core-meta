@@ -1298,7 +1298,7 @@ class Version_type(Non_empty_XML_serializable_string):
 )
 @invariant(
     lambda self: matches_revision_type(self),
-    "RevisionType shall match the revision pattern",
+    "Revision type shall match the revision pattern",
 )
 class Revision_type(Non_empty_XML_serializable_string):
     """
