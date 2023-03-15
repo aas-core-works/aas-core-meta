@@ -1283,7 +1283,7 @@ class Name_type(Non_empty_XML_serializable_string, DBC):
 )
 @invariant(
     lambda self: matches_version_type(self),
-    "VersionType shall match the version pattern",
+    "Version type shall match the version pattern",
 )
 class Version_type(Non_empty_XML_serializable_string):
     """
