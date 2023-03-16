@@ -2084,6 +2084,12 @@ class Qualifier(Has_semantics):
     or len(self.submodels) >= 1,
     "Submodels must be either not set or have at least one item"
 )
+@invariant(
+    lambda self:
+    not (self.ID_short is None),
+    "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
+    "Submodel element list shall be specified"
+)
 # fmt: on
 class Asset_administration_shell(Identifiable, Has_data_specification):
     """An asset administration shell."""
@@ -2391,6 +2397,18 @@ class Specific_asset_ID(Has_semantics):
 
 # fmt: off
 @reference_in_the_book(section=(5, 3, 5))
+@invariant(
+    lambda self:
+    not (self.ID_short is None)
+    and (
+            all(
+                submodel_element.ID_short is not None
+                for submodel_element in self.submodel_elements
+            )
+    ),
+    "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
+    "Submodel element list shall be specified"
+)
 @invariant(
     lambda self:
     not (self.qualifiers is not None)
@@ -2851,6 +2869,17 @@ class Submodel_element_list(Submodel_element):
     not (self.value is not None)
     or len(self.value) >= 1,
     "Value must be either not set or have at least one item"
+)
+@invariant(
+    lambda self:
+    (
+        all(
+            submodel_element.ID_short is not None
+            for submodel_element in self.value
+        )
+    ),
+    "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
+    "Submodel element list shall be specified"
 )
 # fmt: on
 class Submodel_element_collection(Submodel_element):
@@ -4285,6 +4314,12 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
     not (self.is_case_of is not None)
     or len(self.is_case_of) >= 1,
     "Is-case-of must be either not set or have at least one item"
+)
+@invariant(
+    lambda self:
+    not (self.ID_short is None),
+    "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
+    "Submodel element list shall be specified"
 )
 # fmt: on
 class Concept_description(Identifiable, Has_data_specification):
