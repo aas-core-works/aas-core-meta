@@ -1397,7 +1397,7 @@ Observed literals: {sorted(literal_set)!r}"""
                 # fmt: on
 
                 expected_description = (
-                    f"{human_readable_prop_name} specifies no duplicate languages"
+                    f"{human_readable_prop_name} specifies no duplicate languages."
                 )
 
                 if invariant.description is None:
@@ -1454,7 +1454,7 @@ Observed literals: {sorted(literal_set)!r}"""
     def test_constraint_117_on_non_submodel_element(self) -> None:
         expected_description = (
             "Constraint AASd-117: ID-short of Referables not being "
-            "a direct child of a Submodel element list shall be specified"
+            "a direct child of a Submodel element list shall be specified."
         )
 
         symbol_table = _META_MODEL.symbol_table
@@ -1594,7 +1594,7 @@ Observed literals: {sorted(literal_set)!r}"""
                 expected_description = (
                     f"{prop_name_readable} must have the ID-short specified according "
                     f"to Constraint AASd-117 (ID-short of Referables not being "
-                    f"a direct child of a Submodel element list shall be specified)"
+                    f"a direct child of a Submodel element list shall be specified)."
                 )
 
                 if not tests.common.has_invariant(
@@ -1700,7 +1700,7 @@ Observed literals: {sorted(literal_set)!r}"""
                     f"ID-shorts need to be defined for all the items of "
                     f"{prop_name_readable} according to AASd-117 (ID-short of "
                     f"Referables not being a direct child of a Submodel element list "
-                    f"shall be specified)"
+                    f"shall be specified)."
                 )
 
                 if not tests.common.has_invariant(
@@ -1719,6 +1719,37 @@ Observed literals: {sorted(literal_set)!r}"""
                         f"{expected_condition_str}\n\n"
                         f"Expected description was:\n"
                         f"{expected_description}"
+                    )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_dot_suffix_in_invariant_descriptions(self) -> None:
+        symbol_table = _META_MODEL.symbol_table
+
+        errors = []  # type: List[str]
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type,
+                (
+                    intermediate.ConstrainedPrimitive,
+                    intermediate.AbstractClass,
+                    intermediate.ConcreteClass,
+                ),
+            ):
+                continue
+
+            for invariant in our_type.invariants:
+                if invariant.specified_for is not our_type:
+                    continue
+
+                if not invariant.description.endswith("."):
+                    errors.append(
+                        f"The invariant description in class {our_type.name!r} "
+                        f"must end with a dot: "
+                        f"{invariant.description!r}"
                     )
 
         if len(errors) > 0:

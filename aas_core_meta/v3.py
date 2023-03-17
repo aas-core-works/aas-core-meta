@@ -30,7 +30,7 @@ such as language understanding, so we could not formalize them:
 
 * :constraintref:`AASd-012`
 * :constraintref:`AASd-116`: In the book, :constraintref:`AASd-116` imposes a
-  case-insensitive equality against globalAssetId. This is culturally-dependent,
+  case-insensitive equality against ``globalAssetId``. This is culturally-dependent,
   and depends on the system settings. For example, the case-folding
   for the letters "i" and "I" is different in Turkish from English.
 
@@ -1195,13 +1195,13 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 # fmt: off
 @invariant(
     lambda self: len(self) >= 1,
-    "Check if string is not empty."
+    "The value must not be empty."
 )
 @invariant(
     lambda self: matches_XML_serializable_string(self),
     "Constraint AASd-130: An attribute with data type 'string' shall consist "
     "of these characters only: "
-    r"^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$"
+    r"^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$."
 )
 # fmt: on
 class Non_empty_XML_serializable_string(str, DBC):
@@ -1224,8 +1224,7 @@ class Non_empty_XML_serializable_string(str, DBC):
 )
 @invariant(
     lambda self: matches_xs_date_time_UTC(self),
-    "The value must match the pattern of xs:dateTime with the time zone fixed "
-    "to UTC.",
+    "The value must match the pattern of xs:dateTime with the time zone fixed to UTC.",
 )
 class Date_time_UTC(str, DBC):
     """Represent an ``xs:dateTime`` with the time zone fixed to UTC."""
@@ -1233,7 +1232,7 @@ class Date_time_UTC(str, DBC):
 
 @invariant(
     lambda self: matches_xs_duration(self),
-    "The value must match the pattern of xs:duration",
+    "The value must match the pattern of xs:duration.",
 )
 class Duration(str, DBC):
     """Represent an ``xs:duration``."""
@@ -1257,7 +1256,7 @@ class Identifier(Non_empty_XML_serializable_string, DBC):
 
 @invariant(
     lambda self: len(self) <= 2000,
-    "ValueTypeIec61360 shall have a maximum length of 2000 characters.",
+    "Value type IEC 61360 shall have a maximum length of 2000 characters.",
 )
 class Value_type_IEC_61360(Non_empty_XML_serializable_string):
     """
@@ -1268,7 +1267,7 @@ class Value_type_IEC_61360(Non_empty_XML_serializable_string):
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 128,
-    "NameType shall have a maximum length of 128 characters.",
+    "Name type shall have a maximum length of 128 characters.",
 )
 class Name_type(Non_empty_XML_serializable_string, DBC):
     """
@@ -1279,11 +1278,11 @@ class Name_type(Non_empty_XML_serializable_string, DBC):
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 4,
-    "VersionType shall have a maximum length of 4 characters.",
+    "Version type shall have a maximum length of 4 characters.",
 )
 @invariant(
     lambda self: matches_version_type(self),
-    "Version type shall match the version pattern",
+    "Version type shall match the version pattern.",
 )
 class Version_type(Non_empty_XML_serializable_string):
     """
@@ -1294,11 +1293,11 @@ class Version_type(Non_empty_XML_serializable_string):
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 4,
-    "RevisionType shall have a maximum length of 4 characters.",
+    "Revision type shall have a maximum length of 4 characters.",
 )
 @invariant(
     lambda self: matches_revision_type(self),
-    "Revision type shall match the revision pattern",
+    "Revision type shall match the revision pattern.",
 )
 class Revision_type(Non_empty_XML_serializable_string):
     """
@@ -1309,7 +1308,7 @@ class Revision_type(Non_empty_XML_serializable_string):
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 64,
-    "LabelType shall have a maximum length of 64 characters.",
+    "Label type shall have a maximum length of 64 characters.",
 )
 class Label_type(Non_empty_XML_serializable_string, DBC):
     """
@@ -1320,7 +1319,7 @@ class Label_type(Non_empty_XML_serializable_string, DBC):
 @reference_in_the_book(section=(5, 3, 11, 2))
 @invariant(
     lambda self: len(self) <= 255,
-    "LabelType shall have a maximum length of 255 characters.",
+    "Message topic type shall have a maximum length of 255 characters.",
 )
 class Message_topic_type(Non_empty_XML_serializable_string, DBC):
     """
@@ -1348,7 +1347,7 @@ class BCP_47_language_tag(str, DBC):
 )
 @invariant(
     lambda self: len(self) <= 100,
-    "ContentType shall have a maximum length of 100 characters.",
+    "Content type shall have a maximum length of 100 characters.",
 )
 class Content_type(Non_empty_XML_serializable_string, DBC):
     """
@@ -1417,8 +1416,9 @@ class ID_short_type(Name_type, DBC):
 
     :constraint AASd-117:
 
-        Constraint AASd-117: idShort of non-identifiable :class:`Referable`
-        not being a direct child of a :class:`Submodel_element_list` shall be specified.
+        Constraint AASd-117: :attr:`Referable.ID_short` of
+        non-identifiable :class:`Referable` not being a direct child of
+        a :class:`Submodel_element_list` shall be specified.
     """
 
 
@@ -1437,7 +1437,7 @@ class ID_short_type(Name_type, DBC):
     lambda self:
     not (self.supplemental_semantic_IDs is not None)
     or len(self.supplemental_semantic_IDs) >= 1,
-    "Supplemental semantic IDs must be either not set or have at least one item"
+    "Supplemental semantic IDs must be either not set or have at least one item."
 )
 # fmt: on
 @reference_in_the_book(section=(5, 3, 2, 6))
@@ -1494,7 +1494,7 @@ class Has_semantics(DBC):
     lambda self:
     not (self.refers_to is not None)
     or len(self.refers_to) >= 1,
-    "Refers-to must be either not set or have at least one item"
+    "Refers-to must be either not set or have at least one item."
 )
 # fmt: on
 @reference_in_the_book(section=(5, 3, 2, 4), index=1)
@@ -1565,14 +1565,14 @@ class Extension(Has_semantics):
 @invariant(
     lambda self:
     not (self.extensions is not None) or extension_names_are_unique(self.extensions),
-    "Constraint AASd-077: The name of an extension (Extension/name) within "
+    "Constraint AASd-077: The name of an extension within "
     "Has-Extensions needs to be unique."
 )
 @invariant(
     lambda self:
     not (self.extensions is not None)
     or len(self.extensions) >= 1,
-    "Extensions must be either not set or have at least one item"
+    "Extensions must be either not set or have at least one item."
 )
 # fmt: on
 class Has_extensions(DBC):
@@ -1599,25 +1599,25 @@ class Has_extensions(DBC):
     lambda self:
     not (self.display_name is not None)
     or lang_strings_have_unique_languages(self.display_name),
-    "Display name specifies no duplicate languages"
+    "Display name specifies no duplicate languages."
 )
 @invariant(
     lambda self:
     not (self.display_name is not None)
     or len(self.display_name) >= 1,
-    "Display name must be either not set or have at least one item"
+    "Display name must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
     not (self.description is not None)
     or lang_strings_have_unique_languages(self.description),
-    "Description specifies no duplicate languages"
+    "Description specifies no duplicate languages."
 )
 @invariant(
     lambda self:
     not (self.description is not None)
     or len(self.description) >= 1,
-    "Description must be either not set or have at least one item"
+    "Description must be either not set or have at least one item."
 )
 @reference_in_the_book(section=(5, 3, 2, 10))
 @serialization(with_model_type=True)
@@ -1701,7 +1701,7 @@ class Referable(Has_extensions):
     lambda self:
     self.ID_short is not None,
     "Constraint AASd-117: ID-short of Referables not being a direct child of "
-    "a Submodel element list shall be specified"
+    "a Submodel element list shall be specified."
 )
 # fmt: on
 class Identifiable(Referable):
@@ -1793,7 +1793,7 @@ class Has_kind(DBC):
     lambda self:
     not (self.embedded_data_specifications is not None)
     or len(self.embedded_data_specifications) >= 1,
-    "Embedded data specifications must be either not set or have at least one item"
+    "Embedded data specifications must be either not set or have at least one item."
 )
 @reference_in_the_book(section=(5, 3, 2, 3))
 # fmt: on
@@ -1902,7 +1902,7 @@ class Administrative_information(Has_data_specification):
     lambda self:
     not (self.qualifiers is not None)
     or len(self.qualifiers) >= 1,
-    "Qualifiers must be either not set or have at least one item"
+    "Qualifiers must be either not set or have at least one item."
 )
 @reference_in_the_book(section=(5, 3, 2, 8))
 @serialization(with_model_type=True)
@@ -2090,7 +2090,7 @@ class Qualifier(Has_semantics):
     lambda self:
     not (self.submodels is not None)
     or len(self.submodels) >= 1,
-    "Submodels must be either not set or have at least one item"
+    "Submodels must be either not set or have at least one item."
 )
 # fmt: on
 class Asset_administration_shell(Identifiable, Has_data_specification):
@@ -2154,7 +2154,7 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     lambda self:
     not (self.specific_asset_IDs is not None)
     or len(self.specific_asset_IDs) >= 1,
-    "Specific asset IDs must be either not set or have at least one item"
+    "Specific asset IDs must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
@@ -2210,18 +2210,18 @@ class Asset_information(DBC):
 
     :constraint AASd-131:
 
-        For AssetInformation either the :attr:`global_asset_ID` shall be defined
-        or at least one specificAssetId.
+        For :class:`Asset_information` either the :attr:`global_asset_ID` shall be
+        defined or at least one item in :attr:`specific_asset_IDs`.
 
     .. note::
 
-        :constraintref:`AASd-116` is important to enable a generic search across global and
-        specific asset IDs.
+        :constraintref:`AASd-116` is important to enable a generic search across global
+        and specific asset IDs.
 
     .. note::
 
         In the book, :constraintref:`AASd-116` imposes a
-        case-insensitive equality against globalAssetId. This is
+        case-insensitive equality against ``globalAssetId``. This is
         culturally-dependent, and depends on the system settings.
         For example, the case-folding for the letters "i" and "I" is
         different in Turkish from English.
@@ -2348,8 +2348,7 @@ class Asset_kind(Enum):
 @invariant(
     lambda self: not (self.external_subject_ID is not None)
     or (self.external_subject_ID.type == Reference_types.External_reference),
-    "Constraint AASd-133: SpecificAssetId/externalSubjectId shall be "
-    "a global reference, i.e. Reference/type = GlobalReference.",
+    "Constraint AASd-133: External subject ID shall be an external reference.",
 )
 class Specific_asset_ID(Has_semantics):
     """
@@ -2360,8 +2359,8 @@ class Specific_asset_ID(Has_semantics):
 
     :constraint AASd-133:
 
-        :attr:`external_subject_ID` shall be a global reference,
-        i.e. :attr:`Reference.type` = GlobalReference.
+        :attr:`external_subject_ID` shall be an external reference,
+        i.e. :attr:`Reference.type` = :attr:`Reference_types.External_reference`.
     """
 
     name: Label_type
@@ -2431,10 +2430,10 @@ class Specific_asset_ID(Has_semantics):
         )
     ),
     "Constraint AASd-129: If any qualifier kind value of a Submodel element qualifier "
-    "(attribute qualifier inherited via Qualifiable) is equal to TemplateQualifier "
+    "(attribute qualifier inherited via Qualifiable) is equal to Template Qualifier "
     "then the submodel element shall be part of a submodel template, i.e. a Submodel "
-    "with submodel kind (attribute kind inherited via HasKind) value is equal to "
-    "Template"
+    "with submodel kind (attribute kind inherited via Has-Kind) value is equal to "
+    "Template."
 )
 @invariant(
     lambda self:
@@ -2452,13 +2451,13 @@ class Specific_asset_ID(Has_semantics):
     ),
     "ID-shorts need to be defined for all the items of submodel elements according to "
     "AASd-117 (ID-short of Referables not being a direct child of "
-    "a Submodel element list shall be specified)"
+    "a Submodel element list shall be specified)."
 )
 @invariant(
     lambda self:
     not (self.submodel_elements is not None)
     or len(self.submodel_elements) >= 1,
-    "Submodel elements must be either not set or have at least one item"
+    "Submodel elements must be either not set or have at least one item."
 )
 # fmt: on
 class Submodel(
@@ -2538,8 +2537,8 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
         If any :attr:`Qualifier.kind` value of :attr:`qualifiers` (attribute qualifier
         inherited via Qualifiable) is equal to :attr:`Qualifier_kind.Template_qualifier`
         then the submodel element shall be part of a submodel template, i.e.
-        a Submodel with :attr:`Submodel.kind` (attribute kind inherited via HasKind)
-        value is equal to Template.
+        a Submodel with :attr:`Submodel.kind` (attribute kind inherited via
+        :class:`Has_kind`) value is equal to :attr:`Modelling_kind.Template`.
     """
 
     def __init__(
@@ -2584,7 +2583,7 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
     lambda self:
     self.ID_short is not None,
     "Constraint AASd-117: ID-short of Referables not being a direct child of a "
-    "Submodel element list shall be specified"
+    "Submodel element list shall be specified."
 )
 # fmt: on
 class Relationship_element(Submodel_element):
@@ -2667,8 +2666,8 @@ class AAS_submodel_elements(Enum):
         element.ID_short is None
         for element in self.value
     ),
-    "Constraint AASd-120: idShort of submodel elements being a direct child of a  "
-    "SubmodelElementList shall not be specified."
+    "Constraint AASd-120: ID-short of submodel elements being a direct child of a  "
+    "Submodel element list shall not be specified."
 )
 @invariant(
     lambda self:
@@ -2688,7 +2687,8 @@ class AAS_submodel_elements(Enum):
     "Constraint AASd-109: If type value list element is equal to "
     "Property or Range value type list element shall be set "
     "and all first level child elements shall have the value type as specified in "
-    "value type list element.")
+    "value type list element."
+)
 @invariant(
     lambda self:
     not (self.value is not None)
@@ -2727,7 +2727,7 @@ class AAS_submodel_elements(Enum):
     lambda self:
     not (self.value is not None)
     or len(self.value) >= 1,
-    "Value must be either not set or have at least one item"
+    "Value must be either not set or have at least one item."
 )
 # fmt: on
 class Submodel_element_list(Submodel_element):
@@ -2864,13 +2864,13 @@ class Submodel_element_list(Submodel_element):
     ),
     "ID-shorts need to be defined for all the items of value according to AASd-117 "
     "(ID-short of Referables not being a direct child of a Submodel element list "
-    "shall be specified)"
+    "shall be specified)."
 )
 @invariant(
     lambda self:
     not (self.value is not None)
     or len(self.value) >= 1,
-    "Value must be either not set or have at least one item"
+    "Value must be either not set or have at least one item."
 )
 # fmt: on
 class Submodel_element_collection(Submodel_element):
@@ -2933,7 +2933,7 @@ Categories for :class:`Data_element` as defined in :constraintref:`AASd-090`""",
     not (self.category is not None)
     or self.category in Valid_categories_for_data_element,
     "Constraint AASd-090: For data elements category shall be one "
-    "of the following values: CONSTANT, PARAMETER or VARIABLE",
+    "of the following values: CONSTANT, PARAMETER or VARIABLE.",
 )
 @reference_in_the_book(section=(5, 3, 7, 6))
 # fmt: on
@@ -3067,13 +3067,13 @@ class Property(Data_element):
     lambda self:
     not (self.value is not None)
     or len(self.value) >= 1,
-    "Value must be either not set or have at least one item"
+    "Value must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
     not (self.value is not None)
     or lang_strings_have_unique_languages(self.value),
-    "Value specifies no duplicate languages"
+    "Value specifies no duplicate languages."
 )
 @reference_in_the_book(section=(5, 3, 7, 10))
 # fmt: on
@@ -3381,13 +3381,13 @@ class File(Data_element):
     ),
     "ID-shorts need to be defined for all the items of annotations according to "
     "AASd-117 (ID-short of Referables not being a direct child of "
-    "a Submodel element list shall be specified)"
+    "a Submodel element list shall be specified)."
 )
 @invariant(
     lambda self:
     not (self.annotations is not None)
     or len(self.annotations) >= 1,
-    "Annotations must be either not set or have at least one item"
+    "Annotations must be either not set or have at least one item."
 )
 @reference_in_the_book(section=(5, 3, 7, 2))
 # fmt: on
@@ -3444,7 +3444,7 @@ class Annotated_relationship_element(Relationship_element):
     lambda self:
     not (self.specific_asset_IDs is not None)
     or len(self.specific_asset_IDs) >= 1,
-    "Specific asset IDs must be either not set or have at least one item"
+    "Specific asset IDs must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
@@ -3465,7 +3465,7 @@ class Annotated_relationship_element(Relationship_element):
             and self.specific_asset_IDs is None
     ),
     "Constraint AASd-014: Either the attribute global asset ID or "
-    "specific asset ID must be set if entity type is set to 'SelfManagedEntity'. "
+    "specific asset ID must be set if entity type is set to self-managed entity. "
     "They are not existing otherwise."
 )
 @invariant(
@@ -3477,13 +3477,13 @@ class Annotated_relationship_element(Relationship_element):
     ),
     "ID-shorts need to be defined for all the items of statements according to "
     "AASd-117 (ID-short of Referables not being a direct child of "
-    "a Submodel element list shall be specified)"
+    "a Submodel element list shall be specified)."
 )
 @invariant(
     lambda self:
     not (self.statements is not None)
     or len(self.statements) >= 1,
-    "Statements must be either not set or have at least one item"
+    "Statements must be either not set or have at least one item."
 )
 # fmt: on
 class Entity(Submodel_element):
@@ -3638,7 +3638,7 @@ class State_of_event(Enum):
         is_model_reference_to(self.source, Key_types.Event_element)
         or is_model_reference_to(self.source, Key_types.Basic_event_element)
     ),
-    "Source must be a model reference to an EventElement."
+    "Source must be a model reference to an Event element."
 )
 @reference_in_the_book(section=(5, 3, 7, 3), index=3)
 # fmt: on
@@ -3739,7 +3739,7 @@ class Event_payload(DBC):
     lambda self:
     self.ID_short is not None,
     "Constraint AASd-117: ID-short of Referables not being a direct child of "
-    "a Submodel element list shall be specified"
+    "a Submodel element list shall be specified."
 )
 # fmt: on
 class Event_element(Submodel_element):
@@ -3797,7 +3797,7 @@ class Event_element(Submodel_element):
     lambda self:
     not (self.direction == Direction.Input)
     or self.max_interval is None,
-    "Max. interval is not applicable for input direction"
+    "Max. interval is not applicable for input direction."
 )
 # fmt: on
 class Basic_event_element(Event_element):
@@ -3932,19 +3932,19 @@ class Basic_event_element(Event_element):
     lambda self:
     not (self.inoutput_variables is not None)
     or len(self.inoutput_variables) >= 1,
-    "Inoutput variables must be either not set or have at least one item"
+    "Inoutput variables must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
     not (self.output_variables is not None)
     or len(self.output_variables) >= 1,
-    "Output variables must be either not set or have at least one item"
+    "Output variables must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
     not (self.input_variables is not None)
     or len(self.input_variables) >= 1,
-    "Input variables must be either not set or have at least one item"
+    "Input variables must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
@@ -4026,7 +4026,7 @@ class Operation(Submodel_element):
     self.value.ID_short is not None,
     "Value must have the ID-short specified according to Constraint AASd-117 "
     "(ID-short of Referables not being a direct child of a Submodel element list "
-    "shall be specified)"
+    "shall be specified)."
 )
 # fmt: on
 class Operation_variable(DBC):
@@ -4337,13 +4337,13 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
     "Constraint AASc-3a-008: For a concept description "
     "using data specification template IEC 61360, the definition "
     "is mandatory and shall be defined at least in English. "
-    "Exception: The concept description describes a value"
+    "Exception: The concept description describes a value."
 )
 @invariant(
     lambda self:
     not (self.is_case_of is not None)
     or len(self.is_case_of) >= 1,
-    "Is-case-of must be either not set or have at least one item"
+    "Is-case-of must be either not set or have at least one item."
 )
 # fmt: on
 class Concept_description(Identifiable, Has_data_specification):
@@ -4466,17 +4466,17 @@ class Concept_description(Identifiable, Has_data_specification):
 @reference_in_the_book(section=(5, 3, 10, 2), index=1)
 class Reference_types(Enum):
     """
-    ReferenceTypes
+    Reference types
     """
 
     External_reference = "ExternalReference"
     """
-    ExternalReference.
+    External reference.
     """
 
     Model_reference = "ModelReference"
     """
-    ModelReference
+    Model reference.
     """
 
 
@@ -4511,8 +4511,8 @@ class Reference_types(Enum):
       or self.keys[-2].type == Key_types.Blob
     ),
     "Constraint AASd-127: For model references, with more than one key "
-    "in Reference/keys a key with Key/type Fragment reference shall be preceded "
-    "by a key with Key/type File or Blob. "
+    "in keys a key with type Fragment Reference shall be preceded "
+    "by a key with type File or Blob."
 )
 @invariant(
     lambda self:
@@ -4527,9 +4527,9 @@ class Reference_types(Enum):
         )
     ),
     "Constraint AASd-126: For model references with more than one key "
-    "in Reference/keys the value of Key/type of the last key "
-    "in the reference key chain may be one of Generic fragment keys or "
-    "no key at all shall have a value out of Generic fragment keys."
+    "in keys the value of type of the last key "
+    "in the reference key chain may be one of Generic Fragment Keys or "
+    "no key at all shall have a value out of Generic Fragment Keys."
 )
 @invariant(
     lambda self:
@@ -4540,9 +4540,9 @@ class Reference_types(Enum):
             for i in range(1, len(self.keys))
         )
     ),
-    "Constraint AASd-125: For model references with more than one key in Reference/keys"
-    " the value of Key/type of each of the keys following the first key "
-    "of Reference/keys shall be one of Fragment keys."
+    "Constraint AASd-125: For model references with more than one key in keys "
+    "the value of type of each of the keys following the first key "
+    "of keys shall be one of Fragment Keys."
 )
 @invariant(
     lambda self:
@@ -4554,9 +4554,9 @@ class Reference_types(Enum):
         self.keys[-1].type in Generic_globally_identifiables
         or self.keys[-1].type in Generic_fragment_keys
     ),
-    "Constraint AASd-124: For external references the last key of Reference/keys "
-    "shall be either one of Generic globally identifiables or "
-    "one of Generic fragment keys."
+    "Constraint AASd-124: For external references the last key of keys "
+    "shall be either one of Generic Globally Identifiables or "
+    "one of Generic Fragment Keys."
 )
 @invariant(
     lambda self:
@@ -4565,8 +4565,8 @@ class Reference_types(Enum):
         and len(self.keys) >= 1
     )
     or self.keys[0].type in AAS_identifiables,
-    "Constraint AASd-123: For model references the value of Key/type of the first key "
-    "of Reference/keys shall be one of AAS identifiables."
+    "Constraint AASd-123: For model references the value of type of the first key "
+    "of keys shall be one of AAS identifiables."
 )
 @invariant(
     lambda self:
@@ -4575,15 +4575,15 @@ class Reference_types(Enum):
         and len(self.keys) >= 1
     )
     or self.keys[0].type in Generic_globally_identifiables,
-    "Constraint AASd-122: For external references the value of Key/type "
-    "of the first key of Reference/keys shall be one of Generic globally identifiables."
+    "Constraint AASd-122: For external references the value of type "
+    "of the first key of keys shall be one of Generic Globally Identifiables."
 )
 @invariant(
     lambda self:
     not (len(self.keys) >= 1)
     or self.keys[0].type in Globally_identifiables,
-    "Constraint AASd-121: For References the value of Key/type of the first key of "
-    "Reference/keys shall be one of GloballyIdentifiables."
+    "Constraint AASd-121: For References the value of type of the first key of "
+    "keys shall be one of Globally Identifiables."
 )
 @invariant(
     lambda self: len(self.keys) >= 1,
@@ -5070,19 +5070,19 @@ class Lang_string_text_type(Abstract_lang_string, DBC):
     lambda self:
     not (self.asset_administration_shells is not None)
     or len(self.asset_administration_shells) >= 1,
-    "Asset administration shells must be either not set or have at least one item"
+    "Asset administration shells must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
     not (self.submodels is not None)
     or len(self.submodels) >= 1,
-    "Submodels must be either not set or have at least one item"
+    "Submodels must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
     not (self.concept_descriptions is not None)
     or len(self.concept_descriptions) >= 1,
-    "Concept descriptions must be either not set or have at least one item"
+    "Concept descriptions must be either not set or have at least one item."
 )
 @reference_in_the_book(section=(5, 3, 9))
 # fmt: on
@@ -5140,7 +5140,7 @@ class Data_specification_content:
     the data specification template and meta information about the template itself.
 
     :constraint AASc-3a-050:
-        If the :class:`Data_specification_content` DataSpecificationIEC61360 is used
+        If the :class:`Data_specification_IEC_61360` is used
         for an element, the value of
         :attr:`Has_data_specification.embedded_data_specifications`
         shall contain the global reference to the IRI of the corresponding
@@ -5449,7 +5449,7 @@ class Value_reference_pair(DBC):
 
     value: Value_type_IEC_61360
     """
-    The value of the referenced concept definition of the value in valueId.
+    The value of the referenced concept definition of the value in :attr:`value_ID`.
     """
 
     value_ID: "Reference"
@@ -5579,36 +5579,36 @@ def is_BCP_47_for_english(text: str) -> bool:
 @invariant(
     lambda self:
     lang_strings_have_unique_languages(self.preferred_name),
-    "Preferred name specifies no duplicate languages"
+    "Preferred name specifies no duplicate languages."
 )
 @invariant(
     lambda self:
     len(self.preferred_name) >= 1,
-    "Preferred name must have at least one item"
+    "Preferred name must have at least one item."
 )
 @invariant(
     lambda self:
     not (self.short_name is not None)
     or lang_strings_have_unique_languages(self.short_name),
-    "Short name specifies no duplicate languages"
+    "Short name specifies no duplicate languages."
 )
 @invariant(
     lambda self:
     not (self.short_name is not None)
     or len(self.short_name) >= 1,
-    "Short name must be either not set or have at least one item"
+    "Short name must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
     not (self.definition is not None)
     or lang_strings_have_unique_languages(self.definition),
-    "Definition specifies no duplicate languages"
+    "Definition specifies no duplicate languages."
 )
 @invariant(
     lambda self:
     not (self.definition is not None)
     or len(self.definition) >= 1,
-    "Definition must be either not set or have at least one item"
+    "Definition must be either not set or have at least one item."
 )
 @invariant(
     lambda self:
