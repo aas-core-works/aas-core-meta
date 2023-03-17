@@ -4010,13 +4010,9 @@ class Operation(Submodel_element):
 
 # fmt off
 @invariant(
-    lambda self:
-    all(
-        element.ID_short is not None
-        for element in self.value
-    ),
+    lambda self: all(element.ID_short is not None for element in self.value),
     "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
-    "Submodel element list shall be specified"
+    "Submodel element list shall be specified",
 )
 # fmt on
 @reference_in_the_book(section=(5, 3, 7, 11), index=1)
