@@ -1357,6 +1357,15 @@
 </pre></div>
         </li>
         <li>
+          ID-shorts need to be defined for all the items of statements according to AASd-117 (ID-short of Referables not being a direct child of a Submodel element list shall be specified)<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">statements</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="nb">all</span><span class="p">(</span>
+    <span class="n">item</span><span class="o">.</span><span class="n">ID_short</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">statements</span>
+<span class="p">)</span>
+</pre></div>
+        </li>
+        <li>
           Constraint AASd-014: Either the attribute global asset ID or specific asset ID must be set if entity type is set to &#x27;SelfManagedEntity&#x27;. They are not existing otherwise.<br/>
           <div class="highlight"><pre><span></span><span class="p">(</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">entity_type</span> <span class="o">==</span> <a href="Entity_type.html#literal-Self_managed_entity"><span class="n">Entity_type</span><span class="o">.</span><span class="n">Self_managed_entity</span></a>

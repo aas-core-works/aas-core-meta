@@ -1329,9 +1329,24 @@
 </pre></div>
         </li>
         <li>
+          Constraint AASd-117: ID-short of Referables not being a direct child of a Submodel element list shall be specified<br/>
+          <em>(From <a href="Relationship_element.html">Relationship_element</a>)</em><br/>
+          <div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">ID_short</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+</pre></div>
+        </li>
+        <li>
           Annotations must be either not set or have at least one item<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+</pre></div>
+        </li>
+        <li>
+          ID-shorts need to be defined for all the items of annotations according to AASd-117 (ID-short of Referables not being a direct child of a Submodel element list shall be specified)<br/>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">annotations</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
+<span class="ow">or</span> <span class="nb">all</span><span class="p">(</span>
+  <span class="n">item</span><span class="o">.</span><span class="n">ID_short</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+  <span class="k">for</span> <span class="n">item</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">annotations</span>
+<span class="p">)</span>
 </pre></div>
         </li>
       </ul>
