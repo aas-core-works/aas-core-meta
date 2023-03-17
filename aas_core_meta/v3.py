@@ -1419,6 +1419,28 @@ class ID_short_type(Name_type, DBC):
 
         Constraint AASd-117: idShort of non-identifiable :class:`Referable`
         not being a direct child of a :class:`Submodel_element_list` shall be specified.
+
+    .. Note::
+
+        Due to implementation limitations, this cannot be checked at :class:`ID_short`
+        level or at :class:`Referable`s, rather it has to be checked at the level of
+        the parent-object holding the :class:`Referable`s.
+
+        * An :class:`Asset_administration_shell`-object can never be a child of a
+          :class:`Submodel_element_list`, therefore check that :class:`ID_short` is set.
+
+        * A :class:`Submodel`-object can never be a child of a
+          :class:`Submodel_element_list`, as well as its children are not children of
+          :class:`Submodel_element_list`, therefore check that its own :class:`ID_short`
+          as well as its children's :class:`ID_short` is not `None`.
+
+        * A :class:`Submodel_element_collection` can be child of a
+          :class:`Submodel_element_list`, its children cannot, though. Therefore check
+          that its children have :class:`ID_short` set.
+
+        * An :class:`Operation_variable` has a :attr:`Operation_variable.value`, that
+          is not child of a :class:`Submodel_element_list`, therefore check that its
+          :class:`ID_short` is not `None`.
     """
 
 
@@ -2399,18 +2421,6 @@ class Specific_asset_ID(Has_semantics):
 @reference_in_the_book(section=(5, 3, 5))
 @invariant(
     lambda self:
-    not (self.ID_short is None)
-    and (
-            all(
-                submodel_element.ID_short is not None
-                for submodel_element in self.submodel_elements
-            )
-    ),
-    "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
-    "Submodel element list shall be specified"
-)
-@invariant(
-    lambda self:
     not (self.qualifiers is not None)
     or (
         not any(
@@ -2460,7 +2470,8 @@ class Specific_asset_ID(Has_semantics):
         element.ID_short is not None
         for element in self.submodel_elements
     ),
-    "ID-shorts need to be defined for all the submodel elements."
+    "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
+    "Submodel element list shall be specified."
 )
 @invariant(
     lambda self:
@@ -2872,11 +2883,10 @@ class Submodel_element_list(Submodel_element):
 )
 @invariant(
     lambda self:
-    (
-        all(
-            submodel_element.ID_short is not None
-            for submodel_element in self.value
-        )
+    not (self.value is not None)
+    or all(
+        element.ID_short is not None
+        for element in self.value
     ),
     "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
     "Submodel element list shall be specified"
@@ -3998,6 +4008,17 @@ class Operation(Submodel_element):
         self.inoutput_variables = inoutput_variables
 
 
+# fmt off
+@invariant(
+    lambda self:
+    all(
+        element.ID_short is not None
+        for element in self.value
+    ),
+    "Constraint AASd-117: ID-short of of Referables not being a direct child of a"
+    "Submodel element list shall be specified"
+)
+# fmt on
 @reference_in_the_book(section=(5, 3, 7, 11), index=1)
 class Operation_variable(DBC):
     """
