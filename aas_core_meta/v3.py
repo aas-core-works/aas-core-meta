@@ -1417,31 +1417,31 @@ class ID_short_type(Name_type, DBC):
 
     :constraint AASd-117:
 
-        Constraint AASd-117: `ID_short` of non-identifiable :class:`Referable`
+        Constraint AASd-117: ID-short of non-identifiable :class:`Referable`
         not being a direct child of a :class:`Submodel_element_list` shall be specified.
 
     .. note::
 
         Due to implementation limitations, this cannot be checked at
-        `ID_short_type` level or at :class:`Referable` s,
+        ID_short_type level or at :class:`Referable` s,
         rather it has to be checked at the level of the parent-object
         holding the :class:`Referable` s.
 
         An :class:`Asset_administration_shell` -object can never be a child of a
-        :class:`Submodel_element_list`, therefore check that `ID_short` is set.
+        :class:`Submodel_element_list`, therefore check that ID-short is set.
 
         A :class:`Submodel`-object can never be a child of a
         :class:`Submodel_element_list` , as well as its children are not children of
-        :class:`Submodel_element_list` , therefore check that its own `ID_short`
-        as well as its children's `ID_short` is not `None`.
+        :class:`Submodel_element_list` , therefore check that its own ID-short
+        as well as its children's ID-short is not `None`.
 
         A :class:`Submodel_element_collection` can be child of a
         :class:`Submodel_element_list` , its children cannot, though. Therefore check
-        that its children have `ID_short` set.
+        that its children have ID-short set.
 
         An :class:`Operation_variable` has a :attr:`Operation_variable.value`, that
         is not child of a :class:`Submodel_element_list` , therefore check that its
-        `ID_short` is not `None`.
+        ID-short is not `None`.
     """
 
 
@@ -1647,7 +1647,7 @@ class Has_extensions(DBC):
 # fmt: on
 class Referable(Has_extensions):
     """
-    An element that is referable by its :attr:`ID_short`.
+    An element that is referable by its :attr:ID-short.
 
     This ID is not globally unique.
     This ID is unique within the name space of the element.
@@ -1678,7 +1678,7 @@ class Referable(Has_extensions):
 
         In case the element is a property and the property has a semantic definition
         (:attr:`Has_semantics.semantic_ID`) conformant to IEC61360
-        the :attr:`ID_short` is typically identical to the short name in English.
+        the :attr:ID-short is typically identical to the short name in English.
     """
 
     display_name: Optional[List["Lang_string_name_type"]]
