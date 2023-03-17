@@ -1423,7 +1423,7 @@ class ID_short_type(Name_type, DBC):
     .. note::
 
         Due to implementation limitations, this cannot be checked at
-        :class:`ID_short_type` level or at :class:`Referable` s,
+        `ID_short_type` level or at :class:`Referable` s,
         rather it has to be checked at the level of the parent-object
         holding the :class:`Referable` s.
 
