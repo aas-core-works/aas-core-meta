@@ -1,7 +1,9 @@
 """Provide common functionalities used across the tests."""
+import ast
 import io
 import pathlib
-from typing import Tuple, MutableMapping, List, Final, Set, Union
+import textwrap
+from typing import Tuple, MutableMapping, List, Final, Set, Union, Sequence
 
 import aas_core_codegen.common
 import aas_core_codegen.parse
@@ -159,10 +161,75 @@ def human_readable_property_name(name: str) -> str:
     leave it as "id" in the code.
 
     >>> human_readable_property_name('some_URL_to_id')
-    "some URL to ID"
+    'some URL to ID'
 
     >>> human_readable_property_name('some_URL_to_ids')
-    "some URL to IDs"
+    'some URL to IDs'
+
+    >>> human_readable_property_name('some_URL_to_SaaS')
+    'some URL to SaaS'
+
+    >>> human_readable_property_name('URL_to_SaaS')
+    'URL to SaaS'
+    """
+    # NOTE (mristin, 2023-03-17):
+    # The code related to ``id`` and ``ids`` is necessary for v3rc2.
+
+    if name == "id":
+        return "ID"
+    elif name == "ids":
+        return "IDs"
+    elif name == "ID_short":
+        return "ID-short"
+    else:
+        pass
+
+    parts = name.split("_")
+
+    iterator = iter(parts)
+
+    cased = []  # type: List[str]
+
+    first_part = next(iterator)
+
+    if first_part == "id":
+        cased.append("ID")
+    elif first_part == "ids":
+        cased.append("IDs")
+    else:
+        cased.append(first_part)
+
+    while (part := next(iterator, None), part is not None)[1]:
+        assert part is not None
+
+        if part == "id":
+            cased.append("ID")
+        elif part == "ids":
+            cased.append("IDs")
+        else:
+            cased.append(part)
+
+    return " ".join(cased)
+
+
+def human_readable_property_name_capitalized(name: str) -> str:
+    """
+    Convert the property name from the specs to a human-readable property name.
+
+    The abbreviation "id" is upper-cased to "ID" for human-readable text, though we
+    leave it as "id" in the code.
+
+    >>> human_readable_property_name_capitalized('URL_to_id')
+    'URL to ID'
+
+    >>> human_readable_property_name_capitalized('some_URL_to_ids')
+    'Some URL to IDs'
+
+    >>> human_readable_property_name_capitalized('URL_to_SaaS')
+    'URL to SaaS'
+
+    >>> human_readable_property_name_capitalized('some_URL_to_SaaS')
+    'Some URL to SaaS'
     """
     if name == "id":
         return "ID"
@@ -170,20 +237,39 @@ def human_readable_property_name(name: str) -> str:
     if name == "ids":
         return "IDs"
 
+    if name == "ID_short":
+        return "ID-short"
+
     parts = name.split("_")
-    if len(parts) == 1:
-        return name
 
-    human_readable_parts = []  # type: List[str]
-    for part in parts:
+    iterator = iter(parts)
+
+    cased = []  # type: List[str]
+
+    first_part = next(iterator)
+
+    if first_part == "id":
+        cased.append("ID")
+    elif first_part == "ids":
+        cased.append("IDs")
+    elif first_part.lower() == first_part:
+        cased.append(first_part.capitalize())
+    else:
+        # The properties are expected to start with a lower case, so anything diverging
+        # from it means a special case.
+        cased.append(first_part)
+
+    while (part := next(iterator, None), part is not None)[1]:
+        assert part is not None
+
         if part == "id":
-            human_readable_parts.append("ID")
+            cased.append("ID")
         elif part == "ids":
-            human_readable_parts.append("IDs")
+            cased.append("IDs")
         else:
-            human_readable_parts.append(part)
+            cased.append(part)
 
-    return " ".join(human_readable_parts)
+    return " ".join(cased)
 
 
 def assert_subclasses_correspond_to_enumeration_literals(
@@ -298,3 +384,53 @@ def assert_all_lists_have_min_length_at_least_one(
             f"as at least 1, but:\n"
             f"{joined_errors}"
         )
+
+
+def parse_condition(text: str) -> ast.AST:
+    """Parse the condition given as code."""
+    try:
+        atok = asttokens.ASTTokens(text, parse=True)
+    except SyntaxError as exception:
+        raise ValueError(f"Failed to parse the condition: {text!r}") from exception
+
+    root = atok.tree
+
+    assert isinstance(root, ast.Module)
+    assert len(root.body) >= 1
+
+    expr = root.body[0]
+    if not isinstance(expr, ast.Expr):
+        raise ValueError(f"Expected an expression, but got: {atok.get_text(expr)}")
+
+    return expr.value
+
+
+def has_invariant(
+    expected_condition: ast.AST,
+    expected_description: str,
+    invariants: Sequence[intermediate.Invariant],
+) -> bool:
+    """
+    Check whether the given invariant is in the ``invariants``.
+
+    The expected condition and text must *literally* match.
+    """
+    for invariant in invariants:
+        if (
+            ast.dump(invariant.body.original_node) == ast.dump(expected_condition)
+            and invariant.description == expected_description
+        ):
+            return True
+
+    return False
+
+
+def make_bullet_points(items: Sequence[str]) -> List[str]:
+    """Indent and add bullet points."""
+    result = []  # type: List[str]
+    for item in items:
+        indented = textwrap.indent(item, "  ")
+        bulleted = "* " + indented[2:]
+        result.append(bulleted)
+
+    return result
