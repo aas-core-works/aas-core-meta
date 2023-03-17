@@ -1156,13 +1156,13 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-121: For References the value of Key/type of the first key of Reference/keys shall be one of GloballyIdentifiables.<br/>
+          Constraint AASd-121: For References the value of type of the first key of keys shall be one of Globally Identifiables.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span><span class="p">)</span>
 <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">[</span><span class="mi">0</span><span class="p">]</span><span class="o">.</span><span class="n">type</span> <span class="ow">in</span> <span class="n"><a href="Globally_identifiables.html">Globally_identifiables</a></span>
 </pre></div>
         </li>
         <li>
-          Constraint AASd-122: For external references the value of Key/type of the first key of Reference/keys shall be one of Generic globally identifiables.<br/>
+          Constraint AASd-122: For external references the value of type of the first key of keys shall be one of Generic Globally Identifiables.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <a href="Reference_types.html#literal-External_reference"><span class="n">Reference_types</span><span class="o">.</span><span class="n">External_reference</span></a>
     <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
@@ -1171,7 +1171,7 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-123: For model references the value of Key/type of the first key of Reference/keys shall be one of AAS identifiables.<br/>
+          Constraint AASd-123: For model references the value of type of the first key of keys shall be one of AAS identifiables.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <a href="Reference_types.html#literal-Model_reference"><span class="n">Reference_types</span><span class="o">.</span><span class="n">Model_reference</span></a>
     <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
@@ -1180,7 +1180,7 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-124: For external references the last key of Reference/keys shall be either one of Generic globally identifiables or one of Generic fragment keys.<br/>
+          Constraint AASd-124: For external references the last key of keys shall be either one of Generic Globally Identifiables or one of Generic Fragment Keys.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <a href="Reference_types.html#literal-External_reference"><span class="n">Reference_types</span><span class="o">.</span><span class="n">External_reference</span></a>
     <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
@@ -1192,7 +1192,7 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-125: For model references with more than one key in Reference/keys the value of Key/type of each of the keys following the first key of Reference/keys shall be one of Fragment keys.<br/>
+          Constraint AASd-125: For model references with more than one key in keys the value of type of each of the keys following the first key of keys shall be one of Fragment Keys.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <a href="Reference_types.html#literal-Model_reference"><span class="n">Reference_types</span><span class="o">.</span><span class="n">Model_reference</span></a> <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span><span class="p">)</span>
 <span class="ow">or</span> <span class="p">(</span>
     <span class="nb">all</span><span class="p">(</span>
@@ -1203,7 +1203,7 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-126: For model references with more than one key in Reference/keys the value of Key/type of the last key in the reference key chain may be one of Generic fragment keys or no key at all shall have a value out of Generic fragment keys.<br/>
+          Constraint AASd-126: For model references with more than one key in keys the value of type of the last key in the reference key chain may be one of Generic Fragment Keys or no key at all shall have a value out of Generic Fragment Keys.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <a href="Reference_types.html#literal-Model_reference"><span class="n">Reference_types</span><span class="o">.</span><span class="n">Model_reference</span></a>
         <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>
@@ -1217,7 +1217,7 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-127: For model references, with more than one key in Reference/keys a key with Key/type Fragment reference shall be preceded by a key with Key/type File or Blob.<br/>
+          Constraint AASd-127: For model references, with more than one key in keys a key with type Fragment Reference shall be preceded by a key with type File or Blob.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span>
     <span class="bp">self</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <a href="Reference_types.html#literal-Model_reference"><span class="n">Reference_types</span><span class="o">.</span><span class="n">Model_reference</span></a>
     <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">keys</span><span class="p">)</span> <span class="o">&gt;</span> <span class="mi">1</span>

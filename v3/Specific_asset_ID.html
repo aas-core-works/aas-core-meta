@@ -988,8 +988,8 @@
             <a name="constraint-AASd-133"></a>Constraint AASd-133<a class="aas-anchor-link" href="#constraint-AASd-133">🔗</a>
           </dt>
           <dd>
-            <a href="Specific_asset_ID.html#property-external_subject_ID">Specific_asset_ID.external_subject_ID</a> shall be a global reference,
-            i.e. <a href="Reference.html#property-type">Reference.type</a> = GlobalReference.
+            <a href="Specific_asset_ID.html#property-external_subject_ID">Specific_asset_ID.external_subject_ID</a> shall be an external reference,
+            i.e. <a href="Reference.html#property-type">Reference.type</a> = <a href="Reference_types.html#literal-External_reference">Reference_types.External_reference</a>.
           </dd>
         </dl>
       </div>
@@ -1105,7 +1105,7 @@
       </h2>
       <ul>
         <li>
-          Supplemental semantic IDs must be either not set or have at least one item<br/>
+          Supplemental semantic IDs must be either not set or have at least one item.<br/>
           <em>(From <a href="Has_semantics.html">Has_semantics</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental_semantic_IDs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental_semantic_IDs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
@@ -1121,7 +1121,7 @@
 </pre></div>
         </li>
         <li>
-          Constraint AASd-133: SpecificAssetId/externalSubjectId shall be a global reference, i.e. Reference/type = GlobalReference.<br/>
+          Constraint AASd-133: External subject ID shall be an external reference.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">external_subject_ID</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
    <span class="ow">or</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">external_subject_ID</span><span class="o">.</span><span class="n">type</span> <span class="o">==</span> <a href="Reference_types.html#literal-External_reference"><span class="n">Reference_types</span><span class="o">.</span><span class="n">External_reference</span></a><span class="p">)</span>
 </pre></div>

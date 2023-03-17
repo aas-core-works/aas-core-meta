@@ -1071,13 +1071,13 @@
       </h2>
       <ul>
         <li>
-          Extensions must be either not set or have at least one item<br/>
+          Extensions must be either not set or have at least one item.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
-          Constraint AASd-077: The name of an extension (Extension/name) within Has-Extensions needs to be unique.<br/>
+          Constraint AASd-077: The name of an extension within Has-Extensions needs to be unique.<br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n"><a href="extension_names_are_unique.html">extension_names_are_unique</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">)</span>
 </pre></div>
         </li>

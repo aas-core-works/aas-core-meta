@@ -1006,19 +1006,19 @@
       </h2>
       <ul>
         <li>
-          Constraint AASd-130: An attribute with data type &#x27;string&#x27; shall consist of these characters only: ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$<br/>
+          Constraint AASd-130: An attribute with data type &#x27;string&#x27; shall consist of these characters only: ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$.<br/>
           <em>(From <a href="Non_empty_XML_serializable_string.html">Non_empty_XML_serializable_string</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="n"><a href="matches_XML_serializable_string.html">matches_XML_serializable_string</a></span><span class="p">(</span><span class="bp">self</span><span class="p">)</span>
 </pre></div>
         </li>
         <li>
-          Check if string is not empty.<br/>
+          The value must not be empty.<br/>
           <em>(From <a href="Non_empty_XML_serializable_string.html">Non_empty_XML_serializable_string</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
-          LabelType shall have a maximum length of 255 characters.<br/>
+          Message topic type shall have a maximum length of 255 characters.<br/>
           <div class="highlight"><pre><span></span><span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="p">)</span> <span class="o">&lt;=</span> <span class="mi">255</span>
 </pre></div>
         </li>

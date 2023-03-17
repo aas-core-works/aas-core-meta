@@ -1221,48 +1221,48 @@
       </h2>
       <ul>
         <li>
-          Extensions must be either not set or have at least one item<br/>
+          Extensions must be either not set or have at least one item.<br/>
           <em>(From <a href="Has_extensions.html">Has_extensions</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
-          Constraint AASd-077: The name of an extension (Extension/name) within Has-Extensions needs to be unique.<br/>
+          Constraint AASd-077: The name of an extension within Has-Extensions needs to be unique.<br/>
           <em>(From <a href="Has_extensions.html">Has_extensions</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span> <span class="ow">or</span> <span class="n"><a href="extension_names_are_unique.html">extension_names_are_unique</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">extensions</span><span class="p">)</span>
 </pre></div>
         </li>
         <li>
-          Description must be either not set or have at least one item<br/>
+          Description must be either not set or have at least one item.<br/>
           <em>(From <a href="Referable.html">Referable</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
-          Description specifies no duplicate languages<br/>
+          Description specifies no duplicate languages.<br/>
           <em>(From <a href="Referable.html">Referable</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="n"><a href="lang_strings_have_unique_languages.html">lang_strings_have_unique_languages</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">description</span><span class="p">)</span>
 </pre></div>
         </li>
         <li>
-          Display name must be either not set or have at least one item<br/>
+          Display name must be either not set or have at least one item.<br/>
           <em>(From <a href="Referable.html">Referable</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
-          Display name specifies no duplicate languages<br/>
+          Display name specifies no duplicate languages.<br/>
           <em>(From <a href="Referable.html">Referable</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="n"><a href="lang_strings_have_unique_languages.html">lang_strings_have_unique_languages</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
 </pre></div>
         </li>
         <li>
-          Supplemental semantic IDs must be either not set or have at least one item<br/>
+          Supplemental semantic IDs must be either not set or have at least one item.<br/>
           <em>(From <a href="Has_semantics.html">Has_semantics</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental_semantic_IDs</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">supplemental_semantic_IDs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
@@ -1278,7 +1278,7 @@
 </pre></div>
         </li>
         <li>
-          Qualifiers must be either not set or have at least one item<br/>
+          Qualifiers must be either not set or have at least one item.<br/>
           <em>(From <a href="Qualifiable.html">Qualifiable</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
@@ -1292,14 +1292,14 @@
 </pre></div>
         </li>
         <li>
-          Embedded data specifications must be either not set or have at least one item<br/>
+          Embedded data specifications must be either not set or have at least one item.<br/>
           <em>(From <a href="Has_data_specification.html">Has_data_specification</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedded_data_specifications</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">embedded_data_specifications</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
 </pre></div>
         </li>
         <li>
-          Constraint AASd-090: For data elements category shall be one of the following values: CONSTANT, PARAMETER or VARIABLE<br/>
+          Constraint AASd-090: For data elements category shall be one of the following values: CONSTANT, PARAMETER or VARIABLE.<br/>
           <em>(From <a href="Data_element.html">Data_element</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="bp">self</span><span class="o">.</span><span class="n">category</span> <span class="ow">in</span> <span class="n"><a href="Valid_categories_for_data_element.html">Valid_categories_for_data_element</a></span>
