@@ -1417,30 +1417,31 @@ class ID_short_type(Name_type, DBC):
 
     :constraint AASd-117:
 
-        Constraint AASd-117: idShort of non-identifiable :class:`Referable`
+        Constraint AASd-117: `ID_short` of non-identifiable :class:`Referable`
         not being a direct child of a :class:`Submodel_element_list` shall be specified.
 
     .. note::
 
-        Due to implementation limitations, this cannot be checked at :class:`ID_short`
-        level or at :class:`Referable` s, rather it has to be checked at the level of
-        the parent-object holding the :class:`Referable` s.
+        Due to implementation limitations, this cannot be checked at
+        :class:`ID_short_type` level or at :class:`Referable` s,
+        rather it has to be checked at the level of the parent-object
+        holding the :class:`Referable` s.
 
         An :class:`Asset_administration_shell` -object can never be a child of a
-        :class:`Submodel_element_list`, therefore check that :class:`ID_short` is set.
+        :class:`Submodel_element_list`, therefore check that `ID_short` is set.
 
         A :class:`Submodel`-object can never be a child of a
         :class:`Submodel_element_list` , as well as its children are not children of
-        :class:`Submodel_element_list` , therefore check that its own :class:`ID_short`
-        as well as its children's :class:`ID_short` is not `None`.
+        :class:`Submodel_element_list` , therefore check that its own `ID_short`
+        as well as its children's `ID_short` is not `None`.
 
         A :class:`Submodel_element_collection` can be child of a
         :class:`Submodel_element_list` , its children cannot, though. Therefore check
-        that its children have :class:`ID_short` set.
+        that its children have `ID_short` set.
 
         An :class:`Operation_variable` has a :attr:`Operation_variable.value`, that
         is not child of a :class:`Submodel_element_list` , therefore check that its
-        :class:`ID_short` is not `None`.
+        `ID_short` is not `None`.
     """
 
 
