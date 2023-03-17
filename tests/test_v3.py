@@ -1,9 +1,13 @@
+import ast
 import pathlib
+import textwrap
 import unittest
-from typing import List, Set, Optional, Union, Tuple
+from typing import List, Set, Optional, Union, Tuple, Sequence
 
+import asttokens
 from aas_core_codegen import intermediate
 import aas_core_codegen.common
+from aas_core_codegen.common import Identifier
 from aas_core_codegen.infer_for_schema import match as infer_for_schema_match
 import aas_core_meta.v3 as v3
 
@@ -844,6 +848,120 @@ _META_MODEL: tests.common.MetaModel = tests.common.load_meta_model(
 )
 
 
+def _two_ast_expr_equal(that: ast.AST, other: ast.AST) -> bool:
+    """
+    Check whether the two AST expressions are equal.
+
+    We simply compare the two AST dumps, relying on :py:mod:`ast` to be consistent.
+    """
+    return ast.dump(that) == ast.dump(other)
+
+
+def _parse_condition(text: str) -> ast.AST:
+    """Parse the condition given as code."""
+    try:
+        atok = asttokens.ASTTokens(text, parse=True)
+    except SyntaxError as exception:
+        raise ValueError(f"Failed to parse the condition: {text!r}") from exception
+
+    root = atok.tree
+
+    assert isinstance(root, ast.Module)
+    assert len(root.body) >= 1
+
+    expr = root.body[0]
+    if not isinstance(expr, ast.Expr):
+        raise ValueError(f"Expected an expression, but got: {atok.get_text(expr)}")
+
+    return expr.value
+
+
+def _identifier_capitalized_in_description(identifier: Identifier) -> str:
+    """Generate the capitalized human-readable text based on ``identifier``."""
+    if identifier == "ID_short":
+        return "ID-short"
+
+    parts = identifier.split("_")
+
+    iterator = iter(parts)
+
+    cased = []  # type: List[str]
+
+    first_part = next(iterator)
+
+    # NOTE (mristin, 2023-03-17):
+    # Leave abbreviations all upper-cased.
+    if first_part.upper() == first_part:
+        cased.append(first_part)
+    else:
+        cased.append(first_part.capitalize())
+
+    while (part := next(iterator, None), part is not None)[1]:
+        assert part is not None
+        cased.append(part)
+
+    return " ".join(cased)
+
+
+def _identifier_in_description(identifier: Identifier) -> str:
+    """Generate the capitalized human-readable text based on ``identifier``."""
+    if identifier == "ID_short":
+        return "ID-short"
+
+    parts = identifier.split("_")
+
+    iterator = iter(parts)
+
+    cased = []  # type: List[str]
+
+    first_part = next(iterator)
+
+    # NOTE (mristin, 2023-03-17):
+    # We need to lower-case only the very first capitalization. All the other variants
+    # are considered intentional.
+    if first_part.capitalize() == first_part:
+        cased.append(first_part.lower())
+    else:
+        cased.append(first_part)
+
+    while (part := next(iterator, None), part is not None)[1]:
+        assert part is not None
+        cased.append(part)
+
+    return " ".join(cased)
+
+
+def _has_invariant(
+    expected_condition: ast.AST,
+    expected_description: str,
+    invariants: Sequence[intermediate.Invariant],
+) -> bool:
+    """
+    Check whether the given invariant is in the ``invariants``.
+
+    The expected condition and text must *literally* match.
+    """
+    for invariant in invariants:
+        if (
+            _two_ast_expr_equal(invariant.body.original_node, expected_condition)
+            and invariant.description == expected_description
+        ):
+            return True
+
+    return False
+
+
+def _make_bullet_points(items: Sequence[str]) -> List[str]:
+    """Indent and add bullet points."""
+    result = []  # type: List[str]
+    for item in items:
+        indented = textwrap.indent(item, "  ")
+        bulleted = "* " + indented[2:]
+        result.append(bulleted)
+
+    return result
+
+
 class Test_assertions(unittest.TestCase):
     # NOTE (mristin, 2023-01-25):
     # We do not state "ID" as an abbreviation (which might imply "Identity Document"),
@@ -1259,7 +1377,8 @@ Observed literals: {sorted(literal_set)!r}"""
         renegade_classes = []  # type: List[str]
 
         expected_condition_str = f"""\
-not (self.qualifiers is not None)
+(
+    not (self.qualifiers is not None)
     or (
         not any(
             qualifier.kind_or_default() == Qualifier_kind.Template_qualifier
@@ -1267,7 +1386,10 @@ not (self.qualifiers is not None)
         ) or (
             self.kind_or_default() == Modelling_kind.Template
         )
-    )"""
+    )
+)"""
+
+        expected_condition = _parse_condition(expected_condition_str)
 
         expected_description = (
             "Constraint AASd-119: If any qualifier kind value of "
@@ -1296,18 +1418,11 @@ not (self.qualifiers is not None)
             if our_type.is_subclass_of(qualifiable_cls) and our_type.is_subclass_of(
                 has_kind_cls
             ):
-                found_invariant = False
-                for invariant in our_type.invariants:
-                    condition_str = atok.get_text(invariant.body.original_node)
-
-                    if (
-                        condition_str == expected_condition_str
-                        and invariant.description == expected_description
-                    ):
-                        found_invariant = True
-                        break
-
-                if not found_invariant:
+                if not _has_invariant(
+                    expected_condition=expected_condition,
+                    expected_description=expected_description,
+                    invariants=our_type.invariants,
+                ):
                     renegade_classes.append(our_type.name)
                     continue
 
@@ -1321,9 +1436,7 @@ not (self.qualifiers is not None)
                 f"Expected condition of the invariant was:\n"
                 f"{expected_condition_str}\n\n"
                 f"Expected description was:\n"
-                f"{expected_description}\n\n"
-                f"The expected condition and description need to be "
-                f"literally the same for this test to pass."
+                f"{expected_description}"
             )
 
     def test_all_lists_have_min_length_at_least_one(self) -> None:
@@ -1452,6 +1565,268 @@ not (self.qualifiers is not None)
                 f"but:\n"
                 f"{joined_errors}"
             )
+
+    def test_constraint_117_on_non_submodel_element(self) -> None:
+        expected_description = (
+            "Constraint AASd-117: ID-short of Referables not being "
+            "a direct child of a Submodel element list shall be specified"
+        )
+
+        symbol_table = _META_MODEL.symbol_table
+
+        referable_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Referable")
+        )
+
+        submodel_element_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Submodel_element")
+        )
+
+        errors = []  # type: List[str]
+
+        # NOTE (mristin, 2023-03-17):
+        # If the ancestor class defines the constraint on ID-short, we do not have to
+        # repeat it in the descendants.
+        descendants_to_skip_id_set = set()  # type: Set[int]
+
+        for our_type in symbol_table.our_types_topologically_sorted:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
+                continue
+
+            # NOTE (mristin, 2023-03-17):
+            # We can not assert that ID-short is non-None in ``Submodel_element`` as
+            # the submodel elements can be in the value of ``Submodel_element_list``.
+            if our_type.is_subclass_of(submodel_element_cls):
+                continue
+
+            # NOTE (mristin, 2023-03-17):
+            # We can not assert that ID-short is non-None in this class as
+            # ``Submodel_element`` inherits from it, and the submodel elements can be
+            # in the value of ``Submodel_element_list``.
+            if id(submodel_element_cls) in our_type.descendant_id_set:
+                continue
+
+            # NOTE (mristin, 2023-03-17):
+            # Constraint AASd-117 considers only the class ``Referable``.
+            if not our_type.is_subclass_of(referable_cls):
+                continue
+
+            # NOTE (mristin, 2023-03-17):
+            # If the ancestor class defines the constraint on ID-short, we do not have to
+            # repeat it in the descendants.
+            if id(our_type) in descendants_to_skip_id_set:
+                continue
+
+            expected_condition_str = "self.ID_short is not None"
+            expected_condition = _parse_condition(expected_condition_str)
+
+            if not _has_invariant(
+                expected_condition=expected_condition,
+                expected_description=expected_description,
+                invariants=our_type.invariants,
+            ):
+                errors.append(
+                    f"The invariant corresponding to Constraint AASd-117 is "
+                    f"expected in the class {our_type.name!r} "
+                    f"which inherits from {referable_cls.name!r}, "
+                    f"but it could not be found.\n"
+                    f"\n"
+                    f"Expected condition of the invariant was:\n"
+                    f"{expected_condition_str}\n\n"
+                    f"Expected description was:\n"
+                    f"{expected_description}"
+                )
+
+            descendants_to_skip_id_set.update(our_type.descendant_id_set)
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(_make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_constraint_117_on_properties_of_type_class(self) -> None:
+        symbol_table = _META_MODEL.symbol_table
+
+        submodel_element_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Submodel_element")
+        )
+
+        errors = []  # type: List[str]
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
+                continue
+
+            # Check the invariants for properties which are submodel elements
+            for prop in our_type.properties:
+                if prop.specified_for is not our_type:
+                    continue
+
+                type_anno = intermediate.beneath_optional(prop.type_annotation)
+
+                if not isinstance(type_anno, intermediate.OurTypeAnnotation):
+                    continue
+
+                if not isinstance(
+                    type_anno.our_type,
+                    (intermediate.AbstractClass, intermediate.ConcreteClass),
+                ):
+                    continue
+
+                # NOTE (mristin, 2023-03-17):
+                # All Referable classes already have to define the constraint as
+                # their invariant (see the previous test), so we do not have to check
+                # their ID-shorts here.
+                if not type_anno.our_type.is_subclass_of(submodel_element_cls):
+                    continue
+
+                if isinstance(
+                    prop.type_annotation, intermediate.OptionalTypeAnnotation
+                ):
+                    expected_condition_str = f"""\
+(
+    not ({prop.name} is not None)
+    or (self.{prop.name}.ID_short is not None
+)"""
+                else:
+                    expected_condition_str = f"self.{prop.name}.ID_short is not None"
+
+                expected_condition = _parse_condition(expected_condition_str)
+
+                prop_name_readable = _identifier_capitalized_in_description(prop.name)
+
+                expected_description = (
+                    f"{prop_name_readable} must have the ID-short specified according "
+                    f"to Constraint AASd-117 (ID-short of Referables not being "
+                    f"a direct child of a Submodel element list shall be specified)"
+                )
+
+                if not _has_invariant(
+                    expected_condition=expected_condition,
+                    expected_description=expected_description,
+                    invariants=our_type.invariants,
+                ):
+                    errors.append(
+                        f"The invariant corresponding to Constraint AASd-117 is "
+                        f"expected in the class {our_type.name!r} "
+                        f"for the property {prop.name!r} "
+                        f"of type {prop.type_annotation}, "
+                        f"but it could not be found.\n"
+                        f"\n"
+                        f"Expected condition of the invariant was:\n"
+                        f"{expected_condition_str}\n\n"
+                        f"Expected description was:\n"
+                        f"{expected_description}"
+                    )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(_make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_constraint_117_on_properties_of_type_list(self) -> None:
+        symbol_table = _META_MODEL.symbol_table
+
+        submodel_element_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Submodel_element")
+        )
+
+        submodel_element_list_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Submodel_element_list")
+        )
+
+        assert Identifier("value") in submodel_element_list_cls.properties_by_name
+
+        errors = []  # type: List[str]
+
+        # Check the invariants for properties which are lists of submodel elements
+        for our_type in symbol_table.our_types:
+            if not isinstance(
+                our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
+                continue
+
+            for prop in our_type.properties:
+                if prop.specified_for is not our_type:
+                    continue
+
+                # The property Submodel_element_list.property is the only property
+                # where ID-short can be ``None``.
+                if prop.name == "value" and our_type is submodel_element_list_cls:
+                    continue
+
+                type_anno = intermediate.beneath_optional(prop.type_annotation)
+
+                if not isinstance(type_anno, intermediate.ListTypeAnnotation):
+                    continue
+
+                assert isinstance(
+                    type_anno.items, intermediate.OurTypeAnnotation
+                ) and isinstance(
+                    type_anno.items.our_type,
+                    (intermediate.AbstractClass, intermediate.ConcreteClass),
+                ), (
+                    f"Expected only lists of class instances, "
+                    f"but got: {type_anno.items}"
+                )
+
+                # NOTE (mristin, 2023-03-17):
+                # All Referable classes already have to define the constraint as
+                # their invariant (see the test above), so we do not have to check
+                # their ID-shorts here.
+                if not type_anno.items.our_type.is_subclass_of(submodel_element_cls):
+                    continue
+
+                if isinstance(
+                    prop.type_annotation, intermediate.OptionalTypeAnnotation
+                ):
+                    expected_condition_str = f"""\
+(
+    not (self.{prop.name} is not None)
+    or all(
+        item.ID_short is not None
+        for item in self.{prop.name}
+    )
+)"""
+                else:
+                    expected_condition_str = (
+                        f"all(item.ID_short is not None for item in self.{prop.name})"
+                    )
+
+                expected_condition = _parse_condition(expected_condition_str)
+
+                prop_name_readable = _identifier_in_description(prop.name)
+
+                expected_description = (
+                    f"ID-shorts need to be defined for all the items of "
+                    f"{prop_name_readable} according to AASd-117 (ID-short of "
+                    f"Referables not being a direct child of a Submodel element list "
+                    f"shall be specified)"
+                )
+
+                if not _has_invariant(
+                    expected_condition=expected_condition,
+                    expected_description=expected_description,
+                    invariants=our_type.invariants,
+                ):
+                    errors.append(
+                        f"The invariant corresponding to Constraint AASd-117 is "
+                        f"expected in the class {our_type.name!r} "
+                        f"for the property {prop.name!r} "
+                        f"of type {prop.type_annotation}, "
+                        f"but it could not be found.\n"
+                        f"\n"
+                        f"Expected condition of the invariant was:\n"
+                        f"{expected_condition_str}\n\n"
+                        f"Expected description was:\n"
+                        f"{expected_description}"
+                    )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(_make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
 
 
 if __name__ == "__main__":

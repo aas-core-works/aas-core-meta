@@ -1694,8 +1694,16 @@ class Referable(Has_extensions):
         self.description = description
 
 
+# fmt: off
 @abstract
 @reference_in_the_book(section=(5, 3, 2, 7))
+@invariant(
+    lambda self:
+    self.ID_short is not None,
+    "Constraint AASd-117: ID-short of Referables not being a direct child of "
+    "a Submodel element list shall be specified"
+)
+# fmt: on
 class Identifiable(Referable):
     """An element that has a globally unique identifier."""
 
@@ -2439,10 +2447,12 @@ class Specific_asset_ID(Has_semantics):
     lambda self:
     not (self.submodel_elements is not None)
     or all(
-        element.ID_short is not None
-        for element in self.submodel_elements
+        item.ID_short is not None
+        for item in self.submodel_elements
     ),
-    "ID-shorts need to be defined for all the submodel elements."
+    "ID-shorts need to be defined for all the items of submodel elements according to "
+    "AASd-117 (ID-short of Referables not being a direct child of "
+    "a Submodel element list shall be specified)"
 )
 @invariant(
     lambda self:
@@ -2568,7 +2578,15 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
         )
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 3, 7, 15))
+@invariant(
+    lambda self:
+    self.ID_short is not None,
+    "Constraint AASd-117: ID-short of Referables not being a direct child of a "
+    "Submodel element list shall be specified"
+)
+# fmt: on
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two elements
@@ -2841,10 +2859,12 @@ class Submodel_element_list(Submodel_element):
     lambda self:
     not (self.value is not None)
     or all(
-        element.ID_short is not None
-        for element in self.value
+        item.ID_short is not None
+        for item in self.value
     ),
-    "ID-shorts need to be defined for all the elements."
+    "ID-shorts need to be defined for all the items of value according to AASd-117 "
+    "(ID-short of Referables not being a direct child of a Submodel element list "
+    "shall be specified)"
 )
 @invariant(
     lambda self:
@@ -3355,6 +3375,17 @@ class File(Data_element):
 @invariant(
     lambda self:
     not (self.annotations is not None)
+    or all(
+      item.ID_short is not None
+      for item in self.annotations
+    ),
+    "ID-shorts need to be defined for all the items of annotations according to "
+    "AASd-117 (ID-short of Referables not being a direct child of "
+    "a Submodel element list shall be specified)"
+)
+@invariant(
+    lambda self:
+    not (self.annotations is not None)
     or len(self.annotations) >= 1,
     "Annotations must be either not set or have at least one item"
 )
@@ -3436,6 +3467,17 @@ class Annotated_relationship_element(Relationship_element):
     "Constraint AASd-014: Either the attribute global asset ID or "
     "specific asset ID must be set if entity type is set to 'SelfManagedEntity'. "
     "They are not existing otherwise."
+)
+@invariant(
+    lambda self:
+    not (self.statements is not None)
+    or all(
+        item.ID_short is not None
+        for item in self.statements
+    ),
+    "ID-shorts need to be defined for all the items of statements according to "
+    "AASd-117 (ID-short of Referables not being a direct child of "
+    "a Submodel element list shall be specified)"
 )
 @invariant(
     lambda self:
@@ -3690,8 +3732,16 @@ class Event_payload(DBC):
         self.payload = payload
 
 
+# fmt: off
 @abstract
 @reference_in_the_book(section=(5, 3, 7, 8))
+@invariant(
+    lambda self:
+    self.ID_short is not None,
+    "Constraint AASd-117: ID-short of Referables not being a direct child of "
+    "a Submodel element list shall be specified"
+)
+# fmt: on
 class Event_element(Submodel_element):
     """
     An event element.
@@ -3969,7 +4019,16 @@ class Operation(Submodel_element):
         self.inoutput_variables = inoutput_variables
 
 
+# fmt: off
 @reference_in_the_book(section=(5, 3, 7, 11), index=1)
+@invariant(
+    lambda self:
+    self.value.ID_short is not None,
+    "Value must have the ID-short specified according to Constraint AASd-117 "
+    "(ID-short of Referables not being a direct child of a Submodel element list "
+    "shall be specified)"
+)
+# fmt: on
 class Operation_variable(DBC):
     """
     The value of an operation variable is a submodel element that is used as input
