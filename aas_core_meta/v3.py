@@ -4897,7 +4897,6 @@ Enumeration of all referable elements within an asset administration shell""",
 
 Fragment_keys: Set[Key_types] = constant_set(
     values=[
-        Key_types.Fragment_reference,
         Key_types.Annotated_relationship_element,
         Key_types.Basic_event_element,
         Key_types.Blob,
@@ -4906,6 +4905,7 @@ Fragment_keys: Set[Key_types] = constant_set(
         Key_types.Entity,
         Key_types.Event_element,
         Key_types.File,
+        Key_types.Fragment_reference,
         Key_types.Multi_language_property,
         Key_types.Operation,
         Key_types.Property,
