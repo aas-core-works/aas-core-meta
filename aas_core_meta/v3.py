@@ -1420,27 +1420,27 @@ class ID_short_type(Name_type, DBC):
         Constraint AASd-117: idShort of non-identifiable :class:`Referable`
         not being a direct child of a :class:`Submodel_element_list` shall be specified.
 
-    .. Note::
+    .. note::
 
         Due to implementation limitations, this cannot be checked at :class:`ID_short`
         level or at :class:`Referable`s, rather it has to be checked at the level of
         the parent-object holding the :class:`Referable`s.
 
-        * An :class:`Asset_administration_shell`-object can never be a child of a
-          :class:`Submodel_element_list`, therefore check that :class:`ID_short` is set.
+        An :class:`Asset_administration_shell`-object can never be a child of a
+        :class:`Submodel_element_list`, therefore check that :class:`ID_short` is set.
 
-        * A :class:`Submodel`-object can never be a child of a
-          :class:`Submodel_element_list`, as well as its children are not children of
-          :class:`Submodel_element_list`, therefore check that its own :class:`ID_short`
-          as well as its children's :class:`ID_short` is not `None`.
+        A :class:`Submodel`-object can never be a child of a
+        :class:`Submodel_element_list`, as well as its children are not children of
+        :class:`Submodel_element_list`, therefore check that its own :class:`ID_short`
+        as well as its children's :class:`ID_short` is not `None`.
 
-        * A :class:`Submodel_element_collection` can be child of a
-          :class:`Submodel_element_list`, its children cannot, though. Therefore check
-          that its children have :class:`ID_short` set.
+        A :class:`Submodel_element_collection` can be child of a
+        :class:`Submodel_element_list`, its children cannot, though. Therefore check
+        that its children have :class:`ID_short` set.
 
-        * An :class:`Operation_variable` has a :attr:`Operation_variable.value`, that
-          is not child of a :class:`Submodel_element_list`, therefore check that its
-          :class:`ID_short` is not `None`.
+        An :class:`Operation_variable` has a :attr:`Operation_variable.value`, that
+        is not child of a :class:`Submodel_element_list`, therefore check that its
+        :class:`ID_short` is not `None`.
     """
 
 
