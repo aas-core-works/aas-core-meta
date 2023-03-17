@@ -1433,7 +1433,7 @@ class ID_short_type(Name_type, DBC):
         A :class:`Submodel`-object can never be a child of a
         :class:`Submodel_element_list` , as well as its children are not children of
         :class:`Submodel_element_list` , therefore check that its own ID-short
-        as well as its children's ID-short is not `None`.
+        as well as its children's ID-short is not None.
 
         A :class:`Submodel_element_collection` can be child of a
         :class:`Submodel_element_list` , its children cannot, though. Therefore check
@@ -1441,7 +1441,7 @@ class ID_short_type(Name_type, DBC):
 
         An :class:`Operation_variable` has a :attr:`Operation_variable.value`, that
         is not child of a :class:`Submodel_element_list` , therefore check that its
-        ID-short is not `None`.
+        ID-short is not None.
     """
 
 
