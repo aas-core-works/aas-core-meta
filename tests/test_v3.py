@@ -1,16 +1,13 @@
-import ast
 import pathlib
-import textwrap
 import unittest
-from typing import List, Set, Optional, Union, Tuple, Sequence
+from typing import List, Set, Optional, Tuple
 
-import asttokens
-from aas_core_codegen import intermediate
 import aas_core_codegen.common
+from aas_core_codegen import intermediate
 from aas_core_codegen.common import Identifier
 from aas_core_codegen.infer_for_schema import match as infer_for_schema_match
-import aas_core_meta.v3 as v3
 
+import aas_core_meta.v3 as v3
 import tests.common
 
 
@@ -848,120 +845,6 @@ _META_MODEL: tests.common.MetaModel = tests.common.load_meta_model(
 )
 
 
-def _two_ast_expr_equal(that: ast.AST, other: ast.AST) -> bool:
-    """
-    Check whether the two AST expressions are equal.
-
-    We simply compare the two AST dumps, relying on :py:mod:`ast` to be consistent.
-    """
-    return ast.dump(that) == ast.dump(other)
-
-
-def _parse_condition(text: str) -> ast.AST:
-    """Parse the condition given as code."""
-    try:
-        atok = asttokens.ASTTokens(text, parse=True)
-    except SyntaxError as exception:
-        raise ValueError(f"Failed to parse the condition: {text!r}") from exception
-
-    root = atok.tree
-
-    assert isinstance(root, ast.Module)
-    assert len(root.body) >= 1
-
-    expr = root.body[0]
-    if not isinstance(expr, ast.Expr):
-        raise ValueError(f"Expected an expression, but got: {atok.get_text(expr)}")
-
-    return expr.value
-
-
-def _identifier_capitalized_in_description(identifier: Identifier) -> str:
-    """Generate the capitalized human-readable text based on ``identifier``."""
-    if identifier == "ID_short":
-        return "ID-short"
-
-    parts = identifier.split("_")
-
-    iterator = iter(parts)
-
-    cased = []  # type: List[str]
-
-    first_part = next(iterator)
-
-    # NOTE (mristin, 2023-03-17):
-    # Leave abbreviations all upper-cased.
-    if first_part.upper() == first_part:
-        cased.append(first_part)
-    else:
-        cased.append(first_part.capitalize())
-
-    while (part := next(iterator, None), part is not None)[1]:
-        assert part is not None
-        cased.append(part)
-
-    return " ".join(cased)
-
-
-def _identifier_in_description(identifier: Identifier) -> str:
-    """Generate the capitalized human-readable text based on ``identifier``."""
-    if identifier == "ID_short":
-        return "ID-short"
-
-    parts = identifier.split("_")
-
-    iterator = iter(parts)
-
-    cased = []  # type: List[str]
-
-    first_part = next(iterator)
-
-    # NOTE (mristin, 2023-03-17):
-    # We need to lower-case only the very first capitalization. All the other variants
-    # are considered intentional.
-    if first_part.capitalize() == first_part:
-        cased.append(first_part.lower())
-    else:
-        cased.append(first_part)
-
-    while (part := next(iterator, None), part is not None)[1]:
-        assert part is not None
-        cased.append(part)
-
-    return " ".join(cased)
-
-
-def _has_invariant(
-    expected_condition: ast.AST,
-    expected_description: str,
-    invariants: Sequence[intermediate.Invariant],
-) -> bool:
-    """
-    Check whether the given invariant is in the ``invariants``.
-
-    The expected condition and text must *literally* match.
-    """
-    for invariant in invariants:
-        if (
-            _two_ast_expr_equal(invariant.body.original_node, expected_condition)
-            and invariant.description == expected_description
-        ):
-            return True
-
-    return False
-
-
-def _make_bullet_points(items: Sequence[str]) -> List[str]:
-    """Indent and add bullet points."""
-    result = []  # type: List[str]
-    for item in items:
-        indented = textwrap.indent(item, "  ")
-        bulleted = "* " + indented[2:]
-        result.append(bulleted)
-
-    return result
-
-
 class Test_assertions(unittest.TestCase):
     # NOTE (mristin, 2023-01-25):
     # We do not state "ID" as an abbreviation (which might imply "Identity Document"),
@@ -1389,7 +1272,7 @@ Observed literals: {sorted(literal_set)!r}"""
     )
 )"""
 
-        expected_condition = _parse_condition(expected_condition_str)
+        expected_condition = tests.common.parse_condition(expected_condition_str)
 
         expected_description = (
             "Constraint AASd-119: If any qualifier kind value of "
@@ -1398,7 +1281,6 @@ Observed literals: {sorted(literal_set)!r}"""
             "shall be of kind template."
         )
 
-        atok = _META_MODEL.atok
         symbol_table = _META_MODEL.symbol_table
 
         qualifiable_cls = symbol_table.must_find_class(
@@ -1418,7 +1300,7 @@ Observed literals: {sorted(literal_set)!r}"""
             if our_type.is_subclass_of(qualifiable_cls) and our_type.is_subclass_of(
                 has_kind_cls
             ):
-                if not _has_invariant(
+                if not tests.common.has_invariant(
                     expected_condition=expected_condition,
                     expected_description=expected_description,
                     invariants=our_type.invariants,
@@ -1506,13 +1388,16 @@ Observed literals: {sorted(literal_set)!r}"""
                     )
                     continue
 
-                human_readable_prop_name = tests.common.human_readable_property_name(
-                    prop_name
+                # fmt: off
+                human_readable_prop_name = (
+                    tests.common.human_readable_property_name_capitalized(
+                        prop_name
+                    )
                 )
+                # fmt: on
 
                 expected_description = (
-                    f"{human_readable_prop_name.capitalize()} specifies no duplicate "
-                    f"languages"
+                    f"{human_readable_prop_name} specifies no duplicate languages"
                 )
 
                 if invariant.description is None:
@@ -1620,9 +1505,9 @@ Observed literals: {sorted(literal_set)!r}"""
                 continue
 
             expected_condition_str = "self.ID_short is not None"
-            expected_condition = _parse_condition(expected_condition_str)
+            expected_condition = tests.common.parse_condition(expected_condition_str)
 
-            if not _has_invariant(
+            if not tests.common.has_invariant(
                 expected_condition=expected_condition,
                 expected_description=expected_description,
                 invariants=our_type.invariants,
@@ -1642,7 +1527,7 @@ Observed literals: {sorted(literal_set)!r}"""
             descendants_to_skip_id_set.update(our_type.descendant_id_set)
 
         if len(errors) > 0:
-            errors_joined = "\n".join(_make_bullet_points(errors))
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
             raise AssertionError(f"One or more errors:\n{errors_joined}")
 
     def test_constraint_117_on_properties_of_type_class(self) -> None:
@@ -1694,9 +1579,17 @@ Observed literals: {sorted(literal_set)!r}"""
                 else:
                     expected_condition_str = f"self.{prop.name}.ID_short is not None"
 
-                expected_condition = _parse_condition(expected_condition_str)
+                expected_condition = tests.common.parse_condition(
+                    expected_condition_str
+                )
 
-                prop_name_readable = _identifier_capitalized_in_description(prop.name)
+                # fmt: off
+                prop_name_readable = (
+                    tests.common.human_readable_property_name_capitalized(
+                        prop.name
+                    )
+                )
+                # fmt: on
 
                 expected_description = (
                     f"{prop_name_readable} must have the ID-short specified according "
@@ -1704,7 +1597,7 @@ Observed literals: {sorted(literal_set)!r}"""
                     f"a direct child of a Submodel element list shall be specified)"
                 )
 
-                if not _has_invariant(
+                if not tests.common.has_invariant(
                     expected_condition=expected_condition,
                     expected_description=expected_description,
                     invariants=our_type.invariants,
@@ -1723,7 +1616,7 @@ Observed literals: {sorted(literal_set)!r}"""
                     )
 
         if len(errors) > 0:
-            errors_joined = "\n".join(_make_bullet_points(errors))
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
             raise AssertionError(f"One or more errors:\n{errors_joined}")
 
     def test_constraint_117_on_properties_of_type_list(self) -> None:
@@ -1795,9 +1688,13 @@ Observed literals: {sorted(literal_set)!r}"""
                         f"all(item.ID_short is not None for item in self.{prop.name})"
                     )
 
-                expected_condition = _parse_condition(expected_condition_str)
+                expected_condition = tests.common.parse_condition(
+                    expected_condition_str
+                )
 
-                prop_name_readable = _identifier_in_description(prop.name)
+                prop_name_readable = tests.common.human_readable_property_name(
+                    prop.name
+                )
 
                 expected_description = (
                     f"ID-shorts need to be defined for all the items of "
@@ -1806,7 +1703,7 @@ Observed literals: {sorted(literal_set)!r}"""
                     f"shall be specified)"
                 )
 
-                if not _has_invariant(
+                if not tests.common.has_invariant(
                     expected_condition=expected_condition,
                     expected_description=expected_description,
                     invariants=our_type.invariants,
@@ -1825,7 +1722,7 @@ Observed literals: {sorted(literal_set)!r}"""
                     )
 
         if len(errors) > 0:
-            errors_joined = "\n".join(_make_bullet_points(errors))
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
             raise AssertionError(f"One or more errors:\n{errors_joined}")
 
 
