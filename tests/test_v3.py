@@ -1469,11 +1469,6 @@ Observed literals: {sorted(literal_set)!r}"""
 
         errors = []  # type: List[str]
 
-        # NOTE (mristin, 2023-03-17):
-        # If the ancestor class defines the constraint on ID-short, we do not have to
-        # repeat it in the descendants.
-        descendants_to_skip_id_set = set()  # type: Set[int]
-
         for our_type in symbol_table.our_types_topologically_sorted:
             if not isinstance(
                 our_type, (intermediate.AbstractClass, intermediate.ConcreteClass)
@@ -1498,33 +1493,25 @@ Observed literals: {sorted(literal_set)!r}"""
             if not our_type.is_subclass_of(referable_cls):
                 continue
 
-            # NOTE (mristin, 2023-03-17):
-            # If the ancestor class defines the constraint on ID-short, we do not have to
-            # repeat it in the descendants.
-            if id(our_type) in descendants_to_skip_id_set:
+            # NOTE (mristin, 2023-03-21):
+            # We use type strengthening to implement 117.
+            if Identifier("ID_short") not in our_type.properties_by_name:
+                errors.append(
+                    f"Expected the referable class {our_type.name!r} to define "
+                    f"the property ID_short, but it does not. See Constraint AASd-117."
+                )
                 continue
 
-            expected_condition_str = "self.ID_short is not None"
-            expected_condition = tests.common.parse_condition(expected_condition_str)
-
-            if not tests.common.has_invariant(
-                expected_condition=expected_condition,
-                expected_description=expected_description,
-                invariants=our_type.invariants,
+            id_short_prop = our_type.properties_by_name[Identifier("ID_short")]
+            if isinstance(
+                id_short_prop.type_annotation, intermediate.OptionalTypeAnnotation
             ):
                 errors.append(
-                    f"The invariant corresponding to Constraint AASd-117 is "
-                    f"expected in the class {our_type.name!r} "
-                    f"which inherits from {referable_cls.name!r}, "
-                    f"but it could not be found.\n"
-                    f"\n"
-                    f"Expected condition of the invariant was:\n"
-                    f"{expected_condition_str}\n\n"
-                    f"Expected description was:\n"
-                    f"{expected_description}"
+                    f"Expected the referable class {our_type.name!r} to define "
+                    f"the property ID_short as required, but it defines it "
+                    f"as {id_short_prop.type_annotation}. See Constraint AASd-117."
                 )
-
-            descendants_to_skip_id_set.update(our_type.descendant_id_set)
+                continue
 
         if len(errors) > 0:
             errors_joined = "\n".join(tests.common.make_bullet_points(errors))
