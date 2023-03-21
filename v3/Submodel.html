@@ -1059,13 +1059,13 @@
         </dd>
         <dt>
           <a name="#property-ID_short"></a>
-          ID_short: <span class="aas-type-annotation">Optional[<a href="ID_short_type.html">ID_short_type</a>]</span>
+          ID_short: <span class="aas-type-annotation"><a href="ID_short_type.html">ID_short_type</a></span>
           <a class="aas-anchor-link" href="#property-ID_short">🔗</a>
         </dt>
 
         <dd>
           <div>
-            <em>(From <a href="Referable.html">Referable</a>)</em>
+            <em>(From <a href="Identifiable.html">Identifiable</a>)</em>
           </div>
           <div>
             <div class="summary">
@@ -1077,8 +1077,12 @@
               <div class="alert alert-info">
                 In case the element is a property and the property has a semantic definition
                 (<a href="Has_semantics.html#property-semantic_ID">Has_semantics.semantic_ID</a>) conformant to IEC61360
-                the <a href="Referable.html#property-ID_short">Referable.ID_short</a> is typically identical to the short name in English.
+                the <a href="Identifiable.html#property-ID_short">Identifiable.ID_short</a> is typically identical to the short name in English.
               </div>
+              <p>
+                <a href="Identifiable.html#property-ID_short">Identifiable.ID_short</a> is strengthened to required in this class,
+                see <a href="ID_short_type.html#constraint-AASd-117">AASd-117</a>.
+              </p>
             </div>
           </div>
         </dd>
@@ -1330,12 +1334,6 @@
           <em>(From <a href="Referable.html">Referable</a>)</em><br/>
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="n"><a href="lang_strings_have_unique_languages.html">lang_strings_have_unique_languages</a></span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">display_name</span><span class="p">)</span>
-</pre></div>
-        </li>
-        <li>
-          Constraint AASd-117: ID-short of Referables not being a direct child of a Submodel element list shall be specified.<br/>
-          <em>(From <a href="Identifiable.html">Identifiable</a>)</em><br/>
-          <div class="highlight"><pre><span></span><span class="bp">self</span><span class="o">.</span><span class="n">ID_short</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 </pre></div>
         </li>
         <li>
