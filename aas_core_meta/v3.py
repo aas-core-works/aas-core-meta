@@ -1694,16 +1694,8 @@ class Referable(Has_extensions):
         self.description = description
 
 
-# fmt: off
 @abstract
 @reference_in_the_book(section=(5, 3, 2, 7))
-@invariant(
-    lambda self:
-    self.ID_short is not None,
-    "Constraint AASd-117: ID-short of Referables not being a direct child of "
-    "a Submodel element list shall be specified."
-)
-# fmt: on
 class Identifiable(Referable):
     """An element that has a globally unique identifier."""
 
@@ -1720,12 +1712,28 @@ class Identifiable(Referable):
     ID: "Identifier"
     """The globally unique identification of the element."""
 
+    ID_short: "ID_short_type"
+    """
+    In case of identifiables this attribute is a short name of the element.
+    In case of referable this ID is an identifying string of the element within
+    its name space.
+
+    .. note::
+
+        In case the element is a property and the property has a semantic definition
+        (:attr:`Has_semantics.semantic_ID`) conformant to IEC61360
+        the :attr:`ID_short` is typically identical to the short name in English.
+
+    :attr:`ID_short` is strengthened to required in this class,
+    see :constraintref:`AASd-117`.
+    """
+
     def __init__(
         self,
+        ID_short: ID_short_type,
         ID: "Identifier",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
-        ID_short: Optional[ID_short_type] = None,
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
@@ -2115,11 +2123,11 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 
     def __init__(
         self,
+        ID_short: ID_short_type,
         ID: Identifier,
         asset_information: "Asset_information",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
-        ID_short: Optional[ID_short_type] = None,
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
@@ -2477,10 +2485,10 @@ class Submodel(
 
     def __init__(
         self,
+        ID_short: ID_short_type,
         ID: Identifier,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
-        ID_short: Optional[ID_short_type] = None,
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
@@ -2577,15 +2585,7 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
         )
 
 
-# fmt: off
 @reference_in_the_book(section=(5, 3, 7, 15))
-@invariant(
-    lambda self:
-    self.ID_short is not None,
-    "Constraint AASd-117: ID-short of Referables not being a direct child of a "
-    "Submodel element list shall be specified."
-)
-# fmt: on
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two elements
@@ -3732,16 +3732,8 @@ class Event_payload(DBC):
         self.payload = payload
 
 
-# fmt: off
 @abstract
 @reference_in_the_book(section=(5, 3, 7, 8))
-@invariant(
-    lambda self:
-    self.ID_short is not None,
-    "Constraint AASd-117: ID-short of Referables not being a direct child of "
-    "a Submodel element list shall be specified."
-)
-# fmt: on
 class Event_element(Submodel_element):
     """
     An event element.
@@ -4433,10 +4425,10 @@ class Concept_description(Identifiable, Has_data_specification):
 
     def __init__(
         self,
+        ID_short: ID_short_type,
         ID: Identifier,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
-        ID_short: Optional[ID_short_type] = None,
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
