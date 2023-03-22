@@ -549,7 +549,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="index.html#constraint-AASd-022">
+          <a class="nav-item" href="Referable.html#constraint-AASd-022">
             AASd-022
           </a>
         </li>
@@ -997,10 +997,14 @@
           be formalized as part of the core library, but affects external components such as
           AAS registry or AAS server:
         </p>
+        <ul>
+          <li>
+            <a href="Referable.html#constraint-AASd-022">AASd-022</a>
+          </li>
+        </ul>
         <p>
           We did not implement the following constraints since they depend on registry and
-          de-referencing, so we can not formalize them with formalizing such external
-          dependencies:
+          de-referencing of <a href="Reference.html">Reference</a> objects:
         </p>
         <ul>
           <li>
@@ -1009,6 +1013,9 @@
           <li>
             <a href="Property.html#constraint-AASd-007">AASd-007</a>
           </li>
+          <li>
+            <a href="Concept_description.html#constraint-AASc-3a-003">AASc-3a-003</a>
+          </li>
         </ul>
         <p>
           Some constraints are not enforceable as they depend on the wider context
@@ -1016,7 +1023,9 @@
         </p>
         <ul>
           <li>
-            <a href="Multi_language_property.html#constraint-AASd-012">AASd-012</a>
+            <a href="Multi_language_property.html#constraint-AASd-012">AASd-012</a>: This constraint requires that the texts inside
+            <code>Multi_language_property</code> shall have the same meanings in the separate languages.
+            This cannot be tested.
           </li>
           <li>
             <p>
@@ -1040,10 +1049,10 @@
         </p>
         <ul>
           <li>
-            We decided therefore to remove the enumerations <code>DataTypeDef</code> and <code>DataTypeDefRDF</code>
+            We decided therefore to remove the enumeration <code>DataTypeDefRDF</code>
             and keep only <a href="Data_type_def_XSD.html">Data_type_def_XSD</a> as enumeration. Otherwise, we would have
-            to write redundant invariants all over the meta-model because <code>DataTypeDef</code> and
-            <code>DataTypeDefRDF</code> are actually never used in any type definition.
+            to write redundant invariants all over the meta-model because <code>DataTypeDefRDF</code>
+            is actually never used in any type definition.
           </li>
           <li>
             <p>
@@ -1059,13 +1068,47 @@
               for <a href="Submodel_element_list.html#property-type_value_list_element">Submodel_element_list.type_value_list_element</a>.
             </p>
           </li>
+          <li>
+            <p>
+              The specification introduces several types of <code>Lang_string_set</code>.
+              These types differ between the allowed length of their text inside the singular
+              <code>Lang_string</code> objects. Since the native representation of <code>Lang_string_set</code> as
+              <code>List</code> of <code>Lang_string</code> is required by specification, it is impossible to
+              introduce separate <code>Lang_string_set</code> types. Therefore, the distinction is drawn here
+              between the <code>Lang_string</code> types.
+            </p>
+            <p>
+              <code>DefinitionTypeIEC61360</code> is represented as a
+              <code>List</code> of <a href="Lang_string_definition_type_IEC_61360.html">Lang_string_definition_type_IEC_61360</a>
+            </p>
+            <p>
+              <code>MultiLanguageNameType</code> is represented as a
+              <code>List</code> of <a href="Lang_string_name_type.html">Lang_string_name_type</a>
+            </p>
+            <p>
+              <code>PreferredNameTypeIEC61360</code> is represented as a
+              <code>List</code> of <a href="Lang_string_preferred_name_type_IEC_61360.html">Lang_string_preferred_name_type_IEC_61360</a>
+            </p>
+            <p>
+              <code>ShortNameTypeIEC61360</code> is represented as a
+              <code>List</code> of <a href="Lang_string_short_name_type_IEC_61360.html">Lang_string_short_name_type_IEC_61360</a>
+            </p>
+            <p>
+              <code>MultiLanguageTextType</code> is represented as a
+              <code>List</code> of <a href="Lang_string_text_type.html">Lang_string_text_type</a>
+            </p>
+            <p>
+              Furthermore, since <code>Lang_string</code> is not used anywhere, we rename it to
+              <a href="Abstract_lang_string.html">Abstract_lang_string</a>.
+            </p>
+          </li>
         </ul>
         <p>
           Concerning the data specifications, we embed them within
           <a href="Has_data_specification.html">Has_data_specification</a> instead of referencing them 
           <em>
             via
-          </em> a global reference.
+          </em> an external reference.
           The working group decided to change the rules for serialization 
           <em>
             after
@@ -1075,15 +1118,6 @@
           an environment.
         </p>
       </div>
-      <dl class="constraints">
-        <dt>
-          <a name="constraint-AASd-022"></a>Constraint AASd-022<a class="aas-anchor-link" href="#constraint-AASd-022">🔗</a>
-        </dt>
-        <dd>
-          <a href="Referable.html#property-ID_short">Referable.ID_short</a> of non-identifiable referables
-          within the same name space shall be unique (case-sensitive).
-        </dd>
-      </dl>
       </div>
     </div>
   </div>
