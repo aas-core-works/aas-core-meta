@@ -1,3 +1,5 @@
+"""Test the functions and assertions of v3.py meta-model."""
+
 import pathlib
 import unittest
 from typing import List, Set, Optional, Tuple
@@ -7,8 +9,10 @@ from aas_core_codegen import intermediate
 from aas_core_codegen.common import Identifier
 from aas_core_codegen.infer_for_schema import match as infer_for_schema_match
 
-import aas_core_meta.v3 as v3
+from aas_core_meta import v3
 import tests.common
+
+# pylint: disable=missing-docstring
 
 
 class Test_matches_XML_serializable_string(unittest.TestCase):
@@ -1206,6 +1210,7 @@ class Test_assertions(unittest.TestCase):
         }
 
         if class_name_set != literal_set:
+            # pylint: disable=line-too-long
             errors.append(
                 f"""\
 The sub-classes of {referable_cls.name} which are not {identifiable_cls.name} do not correspond to {aas_referable_non_identifiables_set.name}.
@@ -1259,7 +1264,7 @@ Observed literals: {sorted(literal_set)!r}"""
     def test_constraint_119_in_all_qualifiable_with_has_kind(self) -> None:
         renegade_classes = []  # type: List[str]
 
-        expected_condition_str = f"""\
+        expected_condition_str = """\
 (
     not (self.qualifiers is not None)
     or (
@@ -1452,11 +1457,6 @@ Observed literals: {sorted(literal_set)!r}"""
             )
 
     def test_constraint_117_on_non_submodel_element(self) -> None:
-        expected_description = (
-            "Constraint AASd-117: ID-short of Referables not being "
-            "a direct child of a Submodel element list shall be specified."
-        )
-
         symbol_table = _META_MODEL.symbol_table
 
         referable_cls = symbol_table.must_find_class(

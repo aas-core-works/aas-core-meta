@@ -18,6 +18,7 @@ class Step(enum.Enum):
     AAS_CORE_CODEGEN_SMOKE = "aas-core-codegen-smoke"
     TEST = "test"
     CHECK_INIT_AND_SETUP_COINCIDE = "check-init-and-setup-coincide"
+    PYLINT = "pylint"
 
 
 def call_and_report(
@@ -267,6 +268,21 @@ def main() -> int:
             return 1
     else:
         print("Skipped checking that aas_core_meta/__init__.py and setup.py coincide.")
+
+    if Step.PYLINT in selects and Step.PYLINT not in skips:
+        print("Pylint'ing...")
+        pylint_targets = ["tests", "htmlgen"]
+        rcfile = "pylint.rc"
+
+        exit_code = call_and_report(
+            verb="pylint",
+            cmd=[sys.executable, "-m", "pylint", f"--rcfile={rcfile}"] + pylint_targets,
+            cwd=repo_root,
+        )
+        if exit_code != 0:
+            return 1
+    else:
+        print("Skipped pylint'ing.")
 
     return 0
 

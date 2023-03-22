@@ -1,3 +1,5 @@
+# pylint: disable=missing-docstring
+
 import pathlib
 import unittest
 from typing import List, Set, Optional
@@ -1233,6 +1235,7 @@ class Test_assertions(unittest.TestCase):
         }
 
         if class_name_set != literal_set:
+            # pylint: disable=line-too-long
             errors.append(
                 f"""\
 The sub-classes of {referable_cls.name} which are not {identifiable_cls.name} do not correspond to {aas_referable_non_identifiables_set.name}.
@@ -1240,6 +1243,7 @@ The sub-classes of {referable_cls.name} which are not {identifiable_cls.name} do
 Observed classes:  {sorted(class_name_set)!r}
 Observed literals: {sorted(literal_set)!r}"""
             )
+            # pylint: enable=line-too-long
 
         if len(errors) != 0:
             raise AssertionError("\n".join(f"* {error}" for error in errors))
@@ -1286,7 +1290,7 @@ Observed literals: {sorted(literal_set)!r}"""
     def test_constraint_119_in_all_qualifiable_with_has_kind(self) -> None:
         renegade_classes = []  # type: List[str]
 
-        expected_condition_str = f"""\
+        expected_condition_str = """\
 not (self.qualifiers is not None)
     or (
         not any(

@@ -1006,8 +1006,6 @@ def _render_description_of_signature(
             assert remark_node is not None
             remark_nodes.append(remark_node)
 
-    # TODO (mristin, 2023-01-13): render param nodes with "{signature name}-{name}" anchor and <dl>
-    # TODO (mristin, 2023-01-13): define Return with "{signature}-return" anchor as <dt><dd>
     args_and_return_nodes = []  # type: List[_NodeUnion]
 
     for name, docutils_element in description.arguments_by_name.items():
