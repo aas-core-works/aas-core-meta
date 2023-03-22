@@ -13,22 +13,22 @@ We did not implement the following constraints as they are too general and can n
 be formalized as part of the core library, but affects external components such as
 AAS registry or AAS server:
 
-:constraint AASd-022:
-
-    :attr:`Referable.ID_short` of non-identifiable referables
-    within the same name space shall be unique (case-sensitive).
+* :constraintref:`AASd-022`
 
 We did not implement the following constraints since they depend on registry and
-de-referencing, so we can not formalize them with formalizing such external
-dependencies:
+de-referencing of :class:`Reference` objects:
 
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
+* :constraintref:`AASc-3a-003`
 
 Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
-* :constraintref:`AASd-012`
+* :constraintref:`AASd-012`: This constraint requires that the texts inside
+  ``Multi_language_property`` shall have the same meanings in the separate languages.
+  This cannot be tested.
+
 * :constraintref:`AASd-116`: In the book, :constraintref:`AASd-116` imposes a
   case-insensitive equality against ``globalAssetId``. This is culturally-dependent,
   and depends on the system settings. For example, the case-folding
@@ -43,10 +43,10 @@ programming languages do not support inheritance of enumerations. The relationsh
 between the properties and the sets is defined through invariants. This causes
 the following divergences:
 
-* We decided therefore to remove the enumerations ``DataTypeDef`` and ``DataTypeDefRDF``
+* We decided therefore to remove the enumeration ``DataTypeDefRDF``
   and keep only :class:`Data_type_def_XSD` as enumeration. Otherwise, we would have
-  to write redundant invariants all over the meta-model because ``DataTypeDef`` and
-  ``DataTypeDefRDF`` are actually never used in any type definition.
+  to write redundant invariants all over the meta-model because ``DataTypeDefRDF``
+  is actually never used in any type definition.
 
 * The enumeration :class:`AAS_submodel_elements` is used in two different contexts.
   One context is the definition of key types in a reference. Another context is
@@ -58,8 +58,33 @@ the following divergences:
   Secondly, the enumeration :class:`AAS_submodel_elements` is kept as designator
   for :attr:`Submodel_element_list.type_value_list_element`.
 
+* The specification introduces several types of ``Lang_string_set``.
+  These types differ between the allowed length of their text inside the singular
+  ``Lang_string`` objects. Since the native representation of ``Lang_string_set`` as
+  ``List`` of ``Lang_string`` is required by specification, it is impossible to
+  introduce separate ``Lang_string_set`` types. Therefore, the distinction is drawn here
+  between the ``Lang_string`` types.
+
+  ``DefinitionTypeIEC61360`` is represented as a
+  ``List`` of :class:`Lang_string_definition_type_IEC_61360`
+
+  ``MultiLanguageNameType`` is represented as a
+  ``List`` of :class:`Lang_string_name_type`
+
+  ``PreferredNameTypeIEC61360`` is represented as a
+  ``List`` of :class:`Lang_string_preferred_name_type_IEC_61360`
+
+  ``ShortNameTypeIEC61360`` is represented as a
+  ``List`` of :class:`Lang_string_short_name_type_IEC_61360`
+
+  ``MultiLanguageTextType`` is represented as a
+  ``List`` of :class:`Lang_string_text_type`
+
+  Furthermore, since ``Lang_string`` is not used anywhere, we rename it to
+  :class:`Abstract_lang_string`.
+
 Concerning the data specifications, we embed them within
-:class:`Has_data_specification` instead of referencing them *via* a global reference.
+:class:`Has_data_specification` instead of referencing them *via* an external reference.
 The working group decided to change the rules for serialization *after* the book was
 published. The data specifications are critical in applications, but there is no
 possibility to access them through a data channel as they are not part of
@@ -1628,6 +1653,11 @@ class Referable(Has_extensions):
 
     This ID is not globally unique.
     This ID is unique within the name space of the element.
+
+    :constraint AASd-022:
+
+        :attr:`Referable.ID_short` of non-identifiable referables
+        within the same name space shall be unique (case-sensitive).
     """
 
     category: Optional[Name_type]
@@ -4697,6 +4727,9 @@ class Key(DBC):
     """
     Denotes which kind of entity is referenced.
 
+    In case :attr:`type` = :attr:`Key_types.Global_reference`,
+    the key represents a reference to a source that can be globally identified.
+
     In case :attr:`type` = :attr:`Key_types.Fragment_reference` the key represents
     a bookmark or a similar local identifier within its parent element as specified
     by the key that precedes this key.
@@ -4912,7 +4945,10 @@ AAS_referables: Set[Key_types] = constant_set(
         Key_types.Submodel_element_collection,
         Key_types.Submodel_element_list,
     ],
-    description="Enumeration of referables.",
+    description="Enumeration of referables. "
+    "We need this to check that model references refer to a Referable. "
+    "For example, the observed attribute of the "
+    "Basic Event Element object must be a model reference to a Referable.",
     reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=6),
     superset_of=[AAS_referable_non_identifiables, AAS_identifiables],
 )
