@@ -1744,10 +1744,10 @@ class Identifiable(Referable):
 
     def __init__(
         self,
-        ID_short: ID_short_type,
         ID: "Identifier",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
@@ -2137,11 +2137,11 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 
     def __init__(
         self,
-        ID_short: ID_short_type,
         ID: Identifier,
         asset_information: "Asset_information",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
@@ -2499,10 +2499,10 @@ class Submodel(
 
     def __init__(
         self,
-        ID_short: ID_short_type,
         ID: Identifier,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
@@ -4440,10 +4440,10 @@ class Concept_description(Identifiable, Has_data_specification):
 
     def __init__(
         self,
-        ID_short: ID_short_type,
         ID: Identifier,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
         display_name: Optional[List["Lang_string_name_type"]] = None,
         description: Optional[List["Lang_string_text_type"]] = None,
         administration: Optional["Administrative_information"] = None,
