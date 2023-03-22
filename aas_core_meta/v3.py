@@ -58,6 +58,28 @@ the following divergences:
   Secondly, the enumeration :class:`AAS_submodel_elements` is kept as designator
   for :attr:`Submodel_element_list.type_value_list_element`.
 
+* The specification introduces several types of ``Lang_string_set`` .
+  These types differ between the allowed length of their text inside the singular
+  ``Lang_string`` s. Since the native representation of ``Lang_string_set`` s as
+  ``List`` of ``Lang_string`` is required, it is impossible to introduce separate
+  ``Lang_string_set`` types. Therefore, the distinction is drawn here between the
+  ``Lang_string`` types.
+
+   * ``DefinitionTypeIEC61360`` is represented through a
+     ``List`` of :class:`Lang_string_definition_type_IEC_61360`
+
+   * ``MultiLanguageNameType`` is represented through a
+     ``List`` of :class:`Lang_string_name_type`
+
+   * ``PreferredNameTypeIEC61360`` is represented through a
+     ``List`` of :class:`Lang_string_preferred_name_type_IEC_61360`
+
+   * ``ShortNameTypeIEC61360`` is represented through a
+     ``List`` of :class:`Lang_string_short_name_type_IEC_61360`
+
+   * ``MultiLanguageTextType`` is represented through a
+     ``List`` of :class:`Lang_string_text_type`
+
 Concerning the data specifications, we embed them within
 :class:`Has_data_specification` instead of referencing them *via* an external reference.
 The working group decided to change the rules for serialization *after* the book was
