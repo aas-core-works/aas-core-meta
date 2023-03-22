@@ -58,7 +58,7 @@ the following divergences:
   Secondly, the enumeration :class:`AAS_submodel_elements` is kept as designator
   for :attr:`Submodel_element_list.type_value_list_element`.
 
-* The specification introduces several types of ``Lang_string_set`` .
+* The specification introduces several types of ``Lang_string_set``.
   These types differ between the allowed length of their text inside the singular
   ``Lang_string`` s. Since the native representation of ``Lang_string_set`` s as
   ``List`` of ``Lang_string`` is required, it is impossible to introduce separate
