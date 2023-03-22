@@ -65,20 +65,20 @@ the following divergences:
   ``Lang_string_set`` types. Therefore, the distinction is drawn here between the
   ``Lang_string`` types.
 
-   ``DefinitionTypeIEC61360`` is represented through a
-   ``List`` of :class:`Lang_string_definition_type_IEC_61360`
+  ``DefinitionTypeIEC61360`` is represented through a
+  ``List`` of :class:`Lang_string_definition_type_IEC_61360`
 
-   ``MultiLanguageNameType`` is represented through a
-   ``List`` of :class:`Lang_string_name_type`
+  ``MultiLanguageNameType`` is represented through a
+  ``List`` of :class:`Lang_string_name_type`
 
-   ``PreferredNameTypeIEC61360`` is represented through a
-   ``List`` of :class:`Lang_string_preferred_name_type_IEC_61360`
+  ``PreferredNameTypeIEC61360`` is represented through a
+  ``List`` of :class:`Lang_string_preferred_name_type_IEC_61360`
 
-   ``ShortNameTypeIEC61360`` is represented through a
-   ``List`` of :class:`Lang_string_short_name_type_IEC_61360`
+  ``ShortNameTypeIEC61360`` is represented through a
+  ``List`` of :class:`Lang_string_short_name_type_IEC_61360`
 
-   ``MultiLanguageTextType`` is represented through a
-   ``List`` of :class:`Lang_string_text_type`
+  ``MultiLanguageTextType`` is represented through a
+  ``List`` of :class:`Lang_string_text_type`
 
   Furthermore, since ``Lang_string`` is not used anywhere, we rename it to
   :class:`Abstract_lang_string` .
