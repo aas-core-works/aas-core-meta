@@ -80,6 +80,9 @@ the following divergences:
    * ``MultiLanguageTextType`` is represented through a
      ``List`` of :class:`Lang_string_text_type`
 
+  Furthermore, since ``Lang_string`` is not used anywhere, we rename it to
+  :class:`Abstract_lang_string` .
+
 Concerning the data specifications, we embed them within
 :class:`Has_data_specification` instead of referencing them *via* an external reference.
 The working group decided to change the rules for serialization *after* the book was
