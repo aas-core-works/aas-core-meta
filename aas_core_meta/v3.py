@@ -43,10 +43,10 @@ programming languages do not support inheritance of enumerations. The relationsh
 between the properties and the sets is defined through invariants. This causes
 the following divergences:
 
-* We decided therefore to remove the enumerations ``DataTypeDef`` and ``DataTypeDefRDF``
+* We decided therefore to remove the enumeration ``DataTypeDefRDF``
   and keep only :class:`Data_type_def_XSD` as enumeration. Otherwise, we would have
-  to write redundant invariants all over the meta-model because ``DataTypeDef`` and
-  ``DataTypeDefRDF`` are actually never used in any type definition.
+  to write redundant invariants all over the meta-model because ``DataTypeDefRDF``
+  is actually never used in any type definition.
 
 * The enumeration :class:`AAS_submodel_elements` is used in two different contexts.
   One context is the definition of key types in a reference. Another context is
