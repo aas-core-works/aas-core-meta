@@ -3445,7 +3445,8 @@ class Annotated_relationship_element(Relationship_element):
             )
         )
     ) or (
-            self.global_asset_ID is None
+            self.entity_type != Entity_type.Self_managed_entity
+            and self.global_asset_ID is None
             and self.specific_asset_IDs is None
     ),
     "Constraint AASd-014: Either the attribute global asset ID or "
