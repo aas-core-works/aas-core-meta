@@ -13,14 +13,11 @@ We did not implement the following constraints as they are too general and can n
 be formalized as part of the core library, but affects external components such as
 AAS registry or AAS server:
 
-:constraint AASd-022:
-
-    :attr:`Referable.ID_short` of non-identifiable referables
-    within the same name space shall be unique (case-sensitive).
+* :constraintref:`AASd-022`
 
 We did not implement the following constraints since they depend on registry and
-de-referencing, so we can not formalize them with formalizing such external
-dependencies:
+de-referencing of ``valueID``s, so we can not formalize them with formalizing such
+external dependencies:
 
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
@@ -28,7 +25,9 @@ dependencies:
 Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
-* :constraintref:`AASd-012`
+* :constraintref:`AASd-012`: This constraint requires that the texts inside
+  ``Multi_language_property`` shall have the same meanings in the separate languages.
+  This cannot be tested.
 * :constraintref:`AASd-116`: In the book, :constraintref:`AASd-116` imposes a
   case-insensitive equality against ``globalAssetId``. This is culturally-dependent,
   and depends on the system settings. For example, the case-folding
@@ -59,7 +58,7 @@ the following divergences:
   for :attr:`Submodel_element_list.type_value_list_element`.
 
 Concerning the data specifications, we embed them within
-:class:`Has_data_specification` instead of referencing them *via* a global reference.
+:class:`Has_data_specification` instead of referencing them *via* an external reference.
 The working group decided to change the rules for serialization *after* the book was
 published. The data specifications are critical in applications, but there is no
 possibility to access them through a data channel as they are not part of
@@ -1628,6 +1627,11 @@ class Referable(Has_extensions):
 
     This ID is not globally unique.
     This ID is unique within the name space of the element.
+
+    :constraint AASd-022:
+
+        :attr:`Referable.ID_short` of non-identifiable referables
+        within the same name space shall be unique (case-sensitive).
     """
 
     category: Optional[Name_type]
