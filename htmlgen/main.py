@@ -12,7 +12,6 @@ import aas_core_codegen.run
 import asttokens
 import pygments.formatters
 from aas_core_codegen import intermediate
-from aas_core_codegen.common import Error
 from icontract import require, ensure
 
 import htmlgen.for_metamodel
@@ -57,7 +56,7 @@ def _load_meta_model(
     if error is not None:
         writer = io.StringIO()
         aas_core_codegen.run.write_error_report(
-            message=f"Failed to construct the symbol table",
+            message="Failed to construct the symbol table",
             errors=[lineno_columner.error_message(error)],
             stderr=writer,
         )
@@ -72,8 +71,8 @@ def _load_meta_model(
     if error is not None:
         writer = io.StringIO()
         aas_core_codegen.run.write_error_report(
-            message=f"Failed to translate the parsed symbol table "
-            f"to intermediate symbol table",
+            message="Failed to translate the parsed symbol table "
+            "to intermediate symbol table",
             errors=[lineno_columner.error_message(error)],
             stderr=writer,
         )

@@ -233,8 +233,8 @@ def _generate_nav(
     lis.append('<li class="nav-item mt-2">Constants</li>')
 
     constants = sorted(
-        [constant for constant in symbol_table.constants],
-        key=lambda constant: constant.name,
+        list(symbol_table.constants),
+        key=lambda a_constant: a_constant.name,
     )
     for constant in constants:
         a_class = "nav-item active" if active_item is constant else "nav-item"
@@ -278,11 +278,8 @@ def _generate_nav(
     lis.append('<li class="nav-item mt-2">Verification Functions</li>')
 
     verification_functions = sorted(
-        [
-            verification_function
-            for verification_function in symbol_table.verification_functions
-        ],
-        key=lambda verification_function: verification_function.name,
+        list(symbol_table.verification_functions),
+        key=lambda a_verification_function: a_verification_function.name,
     )
     for verification_function in verification_functions:
         a_class = (
@@ -864,7 +861,6 @@ def _property_as_dt_dd(
 {dd_element}"""
     ), None
 
-# TODO (mristin, 2023-01-18): include htmlgen in precommit for black and mypy
 
 def  _render_type_annotation_recursively(
         type_annotation: intermediate.TypeAnnotationUnion
@@ -1446,25 +1442,6 @@ DEDENT!]]"""
     )
 
 
-# TODO (mristin, 2023-01-13): continue here, implement constrained primitive
-# TODO (mristin, 2023-01-13): list constraints, show invariants, show inherited invariants
-# TODO (mristin, 2023-01-13): show invariants simply as dt for text and dd with pre
-
-
-# TODO (mristin, 2023-01-13): put types in header of a verification function
-# TODO (mristin, 2023-01-13): include the source code with <pre>
-
-# TODO (mristin, 2023-01-13): hide properties with https://getbootstrap.com/docs/5.0/components/accordion/
-# TODO (mristin, 2023-01-13): properties, methods, literals etc. have simple anchor, "#{name}"
-
-# TODO (mristin, 2023-01-13): for a concrete or abstract class: hide inherited invariants with accordion
-# TODO (mristin, 2023-01-13): show invariants as code + text
-
-# TODO (mristin, 2023-01-13): for property: prefix cardinality if optional (0..1) or list (1..*)
-# TODO (mristin, 2023-01-13): for property: link to our type
-
-# TODO (mristin, 2023-01-13): use pygments to colorize the source code
-
 # fmt: off
 @ensure(
     lambda result:
@@ -1609,16 +1586,15 @@ def generate(
                 atok=atok,
             )
         else:
-            # TODO (mristin, 2023-01-13): assert_never when done
-            pass
+            assert_never(something)
 
         if error is not None:
             errors.append(error)
         else:
-            # TODO (mristin, 2023-01-13): remove this is not None once done
-            if page is not None:
-                (target_dir / f"{something.name}.html").write_text(
-                    page, encoding="utf-8"
-                )
+            assert page is not None
+
+            (target_dir / f"{something.name}.html").write_text(
+                page, encoding="utf-8"
+            )
 
     return errors

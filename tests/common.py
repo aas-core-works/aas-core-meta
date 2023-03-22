@@ -13,6 +13,8 @@ from aas_core_codegen import intermediate, infer_for_schema
 
 
 class MetaModel:
+    """Bundle all the information about a parsed and understood meta-model."""
+
     #: Tokens of the original meta-model
     atok: Final[asttokens.ASTTokens]
 
