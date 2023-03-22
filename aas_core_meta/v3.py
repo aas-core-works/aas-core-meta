@@ -28,6 +28,7 @@ such as language understanding, so we could not formalize them:
 * :constraintref:`AASd-012`: This constraint requires that the texts inside
   ``Multi_language_property`` shall have the same meanings in the separate languages.
   This cannot be tested.
+
 * :constraintref:`AASd-116`: In the book, :constraintref:`AASd-116` imposes a
   case-insensitive equality against ``globalAssetId``. This is culturally-dependent,
   and depends on the system settings. For example, the case-folding
