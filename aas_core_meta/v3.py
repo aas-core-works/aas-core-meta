@@ -4738,7 +4738,7 @@ class Key(DBC):
     type: "Key_types"
     """
     Denotes which kind of entity is referenced.
-    
+
     In case :attr:`type` = :attr:`Key_types.Global_reference`, 
     the key represents a reference to a source that can be globally identified.
 
