@@ -16,7 +16,7 @@ AAS registry or AAS server:
 * :constraintref:`AASd-022`
 
 We did not implement the following constraints since they depend on registry and
-de-referencing of :class:`Reference` s:
+de-referencing of :class:`Reference` objects:
 
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
