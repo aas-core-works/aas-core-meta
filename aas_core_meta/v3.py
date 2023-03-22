@@ -4935,7 +4935,10 @@ AAS_referables: Set[Key_types] = constant_set(
         Key_types.Submodel_element_collection,
         Key_types.Submodel_element_list,
     ],
-    description="Enumeration of referables.",
+    description="Enumeration of referables. "
+                "This is needed to check that a model references refers to a Referable,"
+                "for example the observed attribute of the "
+                "Basic Event Element object must be a model reference to a Referable.",
     reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=6),
     superset_of=[AAS_referable_non_identifiables, AAS_identifiables],
 )
