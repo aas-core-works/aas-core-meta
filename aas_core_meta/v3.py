@@ -4716,6 +4716,9 @@ class Key(DBC):
     type: "Key_types"
     """
     Denotes which kind of entity is referenced.
+    
+    In case :attr:`type` = :attr:`Key_types.Global_reference`, 
+    the key represents a reference to a source that can be globally identified.
 
     In case :attr:`type` = :attr:`Key_types.Fragment_reference` the key represents
     a bookmark or a similar local identifier within its parent element as specified
