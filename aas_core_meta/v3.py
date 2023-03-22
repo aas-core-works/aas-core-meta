@@ -60,28 +60,28 @@ the following divergences:
 
 * The specification introduces several types of ``Lang_string_set``.
   These types differ between the allowed length of their text inside the singular
-  ``Lang_string`` s. Since the native representation of ``Lang_string_set`` s as
-  ``List`` of ``Lang_string`` is required, it is impossible to introduce separate
-  ``Lang_string_set`` types. Therefore, the distinction is drawn here between the
-  ``Lang_string`` types.
+  ``Lang_string`` objects. Since the native representation of ``Lang_string_set`` as
+  ``List`` of ``Lang_string`` is required by specification, it is impossible to
+  introduce separate ``Lang_string_set`` types. Therefore, the distinction is drawn here
+  between the ``Lang_string`` types.
 
-  ``DefinitionTypeIEC61360`` is represented through a
+  ``DefinitionTypeIEC61360`` is represented as a
   ``List`` of :class:`Lang_string_definition_type_IEC_61360`
 
-  ``MultiLanguageNameType`` is represented through a
+  ``MultiLanguageNameType`` is represented as a
   ``List`` of :class:`Lang_string_name_type`
 
-  ``PreferredNameTypeIEC61360`` is represented through a
+  ``PreferredNameTypeIEC61360`` is represented as a
   ``List`` of :class:`Lang_string_preferred_name_type_IEC_61360`
 
-  ``ShortNameTypeIEC61360`` is represented through a
+  ``ShortNameTypeIEC61360`` is represented as a
   ``List`` of :class:`Lang_string_short_name_type_IEC_61360`
 
-  ``MultiLanguageTextType`` is represented through a
+  ``MultiLanguageTextType`` is represented as a
   ``List`` of :class:`Lang_string_text_type`
 
   Furthermore, since ``Lang_string`` is not used anywhere, we rename it to
-  :class:`Abstract_lang_string` .
+  :class:`Abstract_lang_string`.
 
 Concerning the data specifications, we embed them within
 :class:`Has_data_specification` instead of referencing them *via* an external reference.
@@ -4742,7 +4742,7 @@ class Key(DBC):
     """
     Denotes which kind of entity is referenced.
 
-    In case :attr:`type` = :attr:`Key_types.Global_reference`, 
+    In case :attr:`type` = :attr:`Key_types.Global_reference`,
     the key represents a reference to a source that can be globally identified.
 
     In case :attr:`type` = :attr:`Key_types.Fragment_reference` the key represents
@@ -4961,8 +4961,8 @@ AAS_referables: Set[Key_types] = constant_set(
         Key_types.Submodel_element_list,
     ],
     description="Enumeration of referables. "
-    "This is needed to check that a model references refers to a Referable,"
-    "for example the observed attribute of the "
+    "We need this to check that model references refer to a Referable. "
+    "For example, the observed attribute of the "
     "Basic Event Element object must be a model reference to a Referable.",
     reference_in_the_book=reference_in_the_book(section=(5, 3, 10, 3), index=6),
     superset_of=[AAS_referable_non_identifiables, AAS_identifiables],
