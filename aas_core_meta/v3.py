@@ -1712,22 +1712,6 @@ class Identifiable(Referable):
     ID: "Identifier"
     """The globally unique identification of the element."""
 
-    ID_short: "ID_short_type"
-    """
-    In case of identifiables this attribute is a short name of the element.
-    In case of referable this ID is an identifying string of the element within
-    its name space.
-
-    .. note::
-
-        In case the element is a property and the property has a semantic definition
-        (:attr:`Has_semantics.semantic_ID`) conformant to IEC61360
-        the :attr:`ID_short` is typically identical to the short name in English.
-
-    :attr:`ID_short` is strengthened to required in this class,
-    see :constraintref:`AASd-117`.
-    """
-
     def __init__(
         self,
         ID_short: ID_short_type,
