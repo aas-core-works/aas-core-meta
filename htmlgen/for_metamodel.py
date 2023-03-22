@@ -1058,13 +1058,13 @@ def _generate_page_for_class(
             )
         )
 
-    if len(cls.concrete_descendants) > 0:
+    if len(cls.descendants) > 0:
         li_descendants = [
             f"""\
 <li>
 {I}<a href="{descendant.name}.html">{descendant.name}</a>
 </li>"""
-            for descendant in cls.concrete_descendants
+            for descendant in cls.descendants
         ]
 
         li_descendants_joined = "\n".join(li_descendants)
@@ -1080,7 +1080,7 @@ def _generate_page_for_class(
                 f"""\
 <h2>
 {I}<a name="concrete-descendants"></a>
-{I}Concrete Descendants
+{I}Descendants
 {I}<a class="aas-anchor-link" href="#concrete-descendants">🔗</a>
 </h2>
 {ul_descendants}"""
