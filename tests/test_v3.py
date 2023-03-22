@@ -1463,6 +1463,10 @@ Observed literals: {sorted(literal_set)!r}"""
             aas_core_codegen.common.Identifier("Referable")
         )
 
+        identifiable_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Identifiable")
+        )
+
         submodel_element_cls = symbol_table.must_find_class(
             aas_core_codegen.common.Identifier("Submodel_element")
         )
@@ -1486,6 +1490,12 @@ Observed literals: {sorted(literal_set)!r}"""
             # ``Submodel_element`` inherits from it, and the submodel elements can be
             # in the value of ``Submodel_element_list``.
             if id(submodel_element_cls) in our_type.descendant_id_set:
+                continue
+
+            # NOTE (mristin, 2023-03-22):
+            # Identifiables are not affected by Constraint-117 so their ID-shorts remain
+            # optional.
+            if our_type.is_subclass_of(identifiable_cls):
                 continue
 
             # NOTE (mristin, 2023-03-17):
