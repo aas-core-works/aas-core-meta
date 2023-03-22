@@ -16,11 +16,11 @@ AAS registry or AAS server:
 * :constraintref:`AASd-022`
 
 We did not implement the following constraints since they depend on registry and
-de-referencing of ``valueID`` s, so we can not formalize them with formalizing such
-external dependencies:
+de-referencing of :class:`Reference` s:
 
 * :constraintref:`AASd-006`
 * :constraintref:`AASd-007`
+* :constraintref:`AASc-3a-003`
 
 Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
