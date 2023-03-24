@@ -43,7 +43,7 @@ setup(
             "mypy==0.910",
             "pylint==2.17.0",
             "asttokens>=2.0.8,<3",
-            "aas-core-codegen@git+https://github.com/aas-core-works/aas-core-codegen@b2c0e4a#egg=aas-core-codegen",
+            "aas-core-codegen@git+https://github.com/aas-core-works/aas-core-codegen@67f789e#egg=aas-core-codegen",
             "astpretty==3.0.0",
             "pygments>=2,<3"
         ],
