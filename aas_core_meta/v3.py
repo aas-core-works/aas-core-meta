@@ -107,7 +107,7 @@ from aas_core_meta.marker import (
 )
 
 __book_url__ = "https://to-be-published"
-__book_version__ = "V3.0-work-in-progress"
+__book_version__ = "V3.0"
 
 __xml_namespace__ = "https://admin-shell.io/aas/3/0"
 
