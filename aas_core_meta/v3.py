@@ -2199,8 +2199,9 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
             (
                 specific_asset_ID.name != "globalAssetId"
             ) or (
-             specific_asset_ID.name == "globalAssetId" and
-             specific_asset_ID.value == self.global_asset_ID
+             self.global_asset_ID is not None
+             and specific_asset_ID.name == "globalAssetId"
+             and specific_asset_ID.value == self.global_asset_ID
             )
             for specific_asset_ID in self.specific_asset_IDs
         )
