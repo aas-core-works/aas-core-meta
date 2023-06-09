@@ -1322,7 +1322,7 @@
           <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span><span class="p">)</span>
 <span class="ow">or</span> <span class="p">(</span>
     <span class="ow">not</span> <span class="nb">any</span><span class="p">(</span>
-        <span class="n">qualifier</span><span class="o">.</span><span class="n">kind</span> <span class="o">==</span> <a href="Qualifier_kind.html#literal-Template_qualifier"><span class="n">Qualifier_kind</span><span class="o">.</span><span class="n">Template_qualifier</span></a>
+        <span class="n">qualifier</span><span class="o">.</span><span class="n">kind_or_default</span><span class="p">()</span> <span class="o">==</span> <a href="Qualifier_kind.html#literal-Template_qualifier"><span class="n">Qualifier_kind</span><span class="o">.</span><span class="n">Template_qualifier</span></a>
         <span class="k">for</span> <span class="n">qualifier</span> <span class="ow">in</span> <span class="bp">self</span><span class="o">.</span><span class="n">qualifiers</span>
     <span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
         <span class="bp">self</span><span class="o">.</span><span class="n">kind_or_default</span><span class="p">()</span> <span class="o">==</span> <a href="Modeling_kind.html#literal-Template"><span class="n">Modeling_kind</span><span class="o">.</span><span class="n">Template</span></a>
