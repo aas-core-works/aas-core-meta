@@ -2440,7 +2440,7 @@ class Specific_asset_ID(Has_semantics):
     lambda self:
     not (self.submodel_elements is not None)
     or (
-        not (self.kind != Modelling_kind.Template)
+        not (self.kind_or_default() != Modelling_kind.Template)
         or (
             all(
                 not (submodel_element.qualifiers is not None)
