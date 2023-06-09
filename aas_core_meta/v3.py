@@ -5626,8 +5626,10 @@ def is_BCP_47_for_english(text: str) -> bool:
 )
 @invariant(
     lambda self:
-    not (self.data_type is None and self.data_type in IEC_61360_data_types_with_unit)
-    or (
+    not (
+            self.data_type is not None
+            and self.data_type in IEC_61360_data_types_with_unit
+    ) or (
             self.unit is not None or self.unit_ID is not None
     ),
     "Constraint AASc-3a-009: If data type is a an integer, real or rational with "
