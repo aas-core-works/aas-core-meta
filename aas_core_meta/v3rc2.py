@@ -2251,7 +2251,7 @@ class Specific_asset_id(Has_semantics):
     not (self.qualifiers is not None)
     or (
         not any(
-            qualifier.kind == Qualifier_kind.Template_qualifier
+            qualifier.kind_or_default() == Qualifier_kind.Template_qualifier
             for qualifier in self.qualifiers
         ) or (
             self.kind_or_default() == Modeling_kind.Template
@@ -2354,7 +2354,7 @@ class Submodel(
     not (self.qualifiers is not None)
     or (
         not any(
-            qualifier.kind == Qualifier_kind.Template_qualifier
+            qualifier.kind_or_default() == Qualifier_kind.Template_qualifier
             for qualifier in self.qualifiers
         ) or (
             self.kind_or_default() == Modeling_kind.Template
@@ -5288,8 +5288,10 @@ def is_BCP_47_for_english(text: str) -> bool:
 )
 @invariant(
     lambda self:
-    not (self.data_type is None and self.data_type in IEC_61360_data_types_with_unit)
-    or (
+    not (
+            self.data_type is not None
+            and self.data_type in IEC_61360_data_types_with_unit
+    ) or (
             self.unit is not None or self.unit_id is not None
     ),
     "Constraint AASc-009: If data type is a an integer, real or rational with "
