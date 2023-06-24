@@ -1,21 +1,15 @@
 """Define markers for the meta model to mark the functions and data structures."""
-from enum import Enum
 from typing import (
     TypeVar,
     Type,
     Optional,
-    Tuple,
-    Generic,
     Sequence,
     Callable,
     Any,
-    Union,
     overload,
     Set,
     List,
 )
-
-from icontract import require
 
 T = TypeVar("T")
 
@@ -59,62 +53,6 @@ def abstract(thing: Type[T]) -> Type[T]:
     return thing
 
 
-class reference_in_the_book:
-    """Mark the location in the book where the definition resides."""
-
-    @require(lambda section: all(number >= 1 for number in section))
-    @require(lambda index: index >= 0)
-    def __init__(
-        self, section: Tuple[int, ...], index: int = 0, fragment: Optional[str] = None
-    ) -> None:
-        """
-        Initialize with the given values.
-
-        :param section: Section of the book given as tuple (so that it is sortable)
-        :param index:
-            Index in the section.
-            The index helps us distinguish between multiple definitions in a section.
-        :param fragment:
-            Fragment of the section as a fragment suffix to the book URL.
-
-            If no fragment is given, the fragment is computed as a concatenation
-            of the indicated section number and the capitalized class name.
-
-            Example of an inferred fragment:
-
-            .. code-block:
-
-                @reference_in_the_book(section=(4, 7, 2, 8))
-                class Qualifiable(...):
-                    ...
-
-            The inferred fragment will be ``4.7.2.8 Qualifiable``.
-
-            Example of a fully specified fragment:
-
-            .. code-block:
-
-                @reference_in_the_book(
-                    section=(4, 7, 2, 13),
-                    fragment=(
-                        "4.7.2.13 Used Templates for Data Specification "
-                        "Attributes (HasDataSpecification)"
-                    )
-                )
-                class HasDataSpecification(...):
-                    ...
-
-            We expect the downstream to URL-encode the fragment and prepend the literal
-            ``#``.
-        """
-        self.section = section
-        self.index = index
-        self.fragment = fragment
-
-    def __call__(self, func: Type[T]) -> Type[T]:
-        return func
-
-
 class serialization:
     """Mark the settings for the general serialization schemas."""
 
@@ -142,7 +80,6 @@ def verification(thing: CallableT) -> CallableT:
 def constant_bool(
     value: bool,
     description: Optional[str] = None,
-    reference_in_the_book: Optional[reference_in_the_book] = None,
 ) -> bool:
     """Define a constant boolean in the meta-model."""
     return value
@@ -152,7 +89,6 @@ def constant_bool(
 def constant_int(
     value: int,
     description: Optional[str] = None,
-    reference_in_the_book: Optional[reference_in_the_book] = None,
 ) -> int:
     """Define a constant integer in the meta-model."""
     return value
@@ -162,7 +98,6 @@ def constant_int(
 def constant_float(
     value: float,
     description: Optional[str] = None,
-    reference_in_the_book: Optional[reference_in_the_book] = None,
 ) -> float:
     """Define a constant floating-point number in the meta-model."""
     return value
@@ -172,7 +107,6 @@ def constant_float(
 def constant_str(
     value: str,
     description: Optional[str] = None,
-    reference_in_the_book: Optional[reference_in_the_book] = None,
 ) -> str:
     """Define a constant string in the meta-model."""
     return value
@@ -182,7 +116,6 @@ def constant_str(
 def constant_bytearray(
     value: bytearray,
     description: Optional[str] = None,
-    reference_in_the_book: Optional[reference_in_the_book] = None,
 ) -> bytearray:
     """Define a constant bytearray in the meta-model."""
     return value
@@ -192,7 +125,6 @@ def constant_bytearray(
 def constant_set(
     values: Sequence[T],
     description: Optional[str] = None,
-    reference_in_the_book: Optional[reference_in_the_book] = None,
     superset_of: Optional[Sequence[Set[T]]] = None,
 ) -> Set[T]:
     """

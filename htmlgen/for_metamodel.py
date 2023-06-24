@@ -118,7 +118,7 @@ def _generate_nav(
     lis.append(
         f"""\
 <li class="nav-item  mb-2">
-{I}<a class="{a_class}" href="index.html">{symbol_table.meta_model.book_version}</a>
+{I}<a class="{a_class}" href="index.html">{symbol_table.meta_model.version}</a>
 </li>"""
     )
 
@@ -1486,7 +1486,7 @@ def _generate_home_page(
     content = Stripped(
         f"""\
 <h1>
-{I}aas-core-meta {html.escape(symbol_table.meta_model.book_version)}
+{I}aas-core-meta {html.escape(symbol_table.meta_model.version)}
 {I}<a class="aas-anchor-link" href="">🔗</a>
 </h1>
 <div class="aas-description">
@@ -1502,7 +1502,7 @@ def _generate_home_page(
 
     return (
         _generate_page(
-            title=Stripped(f"Meta-model {symbol_table.meta_model.book_version}"),
+            title=Stripped(f"Meta-model {symbol_table.meta_model.version}"),
             nav=nav,
             content=content
         ),
