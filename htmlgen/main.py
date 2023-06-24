@@ -214,7 +214,7 @@ def main() -> int:
 
         names_paths.append(
             (
-                symbol_table.meta_model.book_version,
+                symbol_table.meta_model.version,
                 (target_dir / "index.html").relative_to(html_dir).as_posix(),
             )
         )
