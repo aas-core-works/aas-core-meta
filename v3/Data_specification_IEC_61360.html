@@ -494,6 +494,26 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-004">
+            AASc-3a-004
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-005">
+            AASc-3a-005
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-006">
+            AASc-3a-006
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-007">
+            AASc-3a-007
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-008">
             AASc-3a-008
           </a>
@@ -501,6 +521,11 @@
         <li class="nav-item">
           <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-009">
             AASc-3a-009
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-010">
+            AASc-3a-010
           </a>
         </li>
         <li class="nav-item">
@@ -982,18 +1007,6 @@
         </div>
         <div class="remarks">
           <div class="alert alert-info">
-            It is also possible that both <a href="Data_specification_IEC_61360.html#property-value">Data_specification_IEC_61360.value</a> and <a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a> are empty.
-            This is the case for concept descriptions that define the semantics of a
-            property but do not have an enumeration (<a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a>) as data type.
-          </div>
-          <div class="alert alert-info">
-            Although it is possible to define a <a href="Concept_description.html">Concept_description</a> for a
-            :attr:´value_list`,
-            it is not possible to reuse this <a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a>.
-            It is only possible to directly add a <a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a> as data type
-            to a specific semantic definition of a property.
-          </div>
-          <div class="alert alert-info">
             IEC61360 requires also a globally unique identifier for a concept
             description. This ID is not part of the data specification template.
             Instead the <a href="Concept_description.html#property-ID">Concept_description.ID</a> as inherited via
@@ -1010,6 +1023,28 @@
           </div>
         </div>
         <dl class="constraints">
+          <dt>
+            <a name="constraint-AASc-3a-010"></a>Constraint AASc-3a-010<a class="aas-anchor-link" href="#constraint-AASc-3a-010">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              If <a href="Data_specification_IEC_61360.html#property-value">Data_specification_IEC_61360.value</a> is not empty then <a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a> shall be empty
+              and vice versa.
+            </p>
+            <div class="alert alert-info">
+              It is also possible that both <a href="Data_specification_IEC_61360.html#property-value">Data_specification_IEC_61360.value</a> and <a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a> are
+              empty. This is the case for concept descriptions that define the semantics
+              of a property but do not have an enumeration (<a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a>) as
+              data type.
+            </div>
+            <div class="alert alert-info">
+              Although it is possible to define a <a href="Concept_description.html">Concept_description</a> for a
+              :attr:´value_list`,
+              it is not possible to reuse this <a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a>.
+              It is only possible to directly add a <a href="Data_specification_IEC_61360.html#property-value_list">Data_specification_IEC_61360.value_list</a> as data type
+              to a specific semantic definition of a property.
+            </div>
+          </dd>
           <dt>
             <a name="constraint-AASc-3a-009"></a>Constraint AASc-3a-009<a class="aas-anchor-link" href="#constraint-AASc-3a-009">🔗</a>
           </dt>

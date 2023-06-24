@@ -494,6 +494,26 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-004">
+            AASc-3a-004
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-005">
+            AASc-3a-005
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-006">
+            AASc-3a-006
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-007">
+            AASc-3a-007
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-008">
             AASc-3a-008
           </a>
@@ -501,6 +521,11 @@
         <li class="nav-item">
           <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-009">
             AASc-3a-009
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-010">
+            AASc-3a-010
           </a>
         </li>
         <li class="nav-item">
@@ -991,32 +1016,34 @@
             does not already exist, the corresponding attribute <a href="Asset_information.html#property-global_asset_ID">Asset_information.global_asset_ID</a> is
             optional.
           </p>
-          <div class="alert alert-info">
-            <a href="Asset_information.html#constraint-AASd-116">AASd-116</a> is important to enable a generic search across global
-            and specific asset IDs.
-          </div>
-          <div class="alert alert-info">
-            <p>
-              In the book, <a href="Asset_information.html#constraint-AASd-116">AASd-116</a> imposes a
-              case-insensitive equality against <code>globalAssetId</code>. This is
-              culturally-dependent, and depends on the system settings.
-              For example, the case-folding for the letters &quot;i&quot; and &quot;I&quot; is
-              different in Turkish from English.
-            </p>
-            <p>
-              We implement the constraint as case-sensitive instead to allow
-              for interoperability across different culture settings.
-            </p>
-          </div>
         </div>
         <dl class="constraints">
           <dt>
             <a name="constraint-AASd-116"></a>Constraint AASd-116<a class="aas-anchor-link" href="#constraint-AASd-116">🔗</a>
           </dt>
           <dd>
-            <code>globalAssetId</code> is a reserved key. If used as value for
-            <a href="Specific_asset_ID.html#property-name">Specific_asset_ID.name</a> then <a href="Specific_asset_ID.html#property-value">Specific_asset_ID.value</a> shall be
-            identical to <a href="Asset_information.html#property-global_asset_ID">Asset_information.global_asset_ID</a>.
+            <p>
+              <code>globalAssetId</code> is a reserved key. If used as value for
+              <a href="Specific_asset_ID.html#property-name">Specific_asset_ID.name</a> then <a href="Specific_asset_ID.html#property-value">Specific_asset_ID.value</a> shall be
+              identical to <a href="Asset_information.html#property-global_asset_ID">Asset_information.global_asset_ID</a>.
+            </p>
+            <div class="alert alert-info">
+              <a href="Asset_information.html#constraint-AASd-116">AASd-116</a> is important to enable a generic search across
+              global and specific asset IDs.
+            </div>
+            <div class="alert alert-info">
+              <p>
+                In the book, <a href="Asset_information.html#constraint-AASd-116">AASd-116</a> imposes a
+                case-insensitive equality against <code>globalAssetId</code>. This is
+                culturally-dependent, and depends on the system settings.
+                For example, the case-folding for the letters &quot;i&quot; and &quot;I&quot; is
+                different in Turkish from English.
+              </p>
+              <p>
+                We implement the constraint as case-sensitive instead to allow
+                for interoperability across different culture settings.
+              </p>
+            </div>
           </dd>
           <dt>
             <a name="constraint-AASd-131"></a>Constraint AASd-131<a class="aas-anchor-link" href="#constraint-AASd-131">🔗</a>

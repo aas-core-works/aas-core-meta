@@ -494,6 +494,26 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-004">
+            AASc-3a-004
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-005">
+            AASc-3a-005
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-006">
+            AASc-3a-006
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-007">
+            AASc-3a-007
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="Concept_description.html#constraint-AASc-3a-008">
             AASc-3a-008
           </a>
@@ -501,6 +521,11 @@
         <li class="nav-item">
           <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-009">
             AASc-3a-009
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Data_specification_IEC_61360.html#constraint-AASc-3a-010">
+            AASc-3a-010
           </a>
         </li>
         <li class="nav-item">
@@ -981,28 +1006,73 @@
           is defined by a concept description.
         </div>
         <div class="remarks">
-          <p>
-            The description of the concept should follow a standardized schema (realized as
-            data specification template).
-          </p>
-          <div class="alert alert-info">
-            Note: categories are deprecated since V3.0 of Part 1a of the document series
-            &quot;Details of the Asset Administration Shell&quot;.
-          </div>
-          <div class="alert alert-info">
-            Note: categories are deprecated since V3.0 of Part 1a of the document series
-            &quot;Details of the Asset Administration Shell&quot;.
-          </div>
-          <div class="alert alert-info">
-            Categories are deprecated since V3.0 of Part 1a of the document series
-            &quot;Details of the Asset Administration Shell&quot;.
-          </div>
-          <div class="alert alert-info">
-            Categories are deprecated since V3.0 of Part 1a of the document series
-            &quot;Details of the Asset Administration Shell&quot;.
-          </div>
+          The description of the concept should follow a standardized schema (realized as
+          data specification template).
         </div>
         <dl class="constraints">
+          <dt>
+            <a name="constraint-AASc-3a-004"></a>Constraint AASc-3a-004<a class="aas-anchor-link" href="#constraint-AASc-3a-004">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="Concept_description.html">Concept_description</a> with <a href="Concept_description.html#property-category">Concept_description.category</a> <code>PROPERTY</code> or
+              <code>VALUE</code> using data specification IEC61360,
+              the <a href="Data_specification_IEC_61360.html#property-data_type">Data_specification_IEC_61360.data_type</a> is mandatory and shall be
+              one of: <code>DATE</code>, <code>STRING</code>, <code>STRING_TRANSLATABLE</code>, <code>INTEGER_MEASURE</code>,
+              <code>INTEGER_COUNT</code>, <code>INTEGER_CURRENCY</code>, <code>REAL_MEASURE</code>, <code>REAL_COUNT</code>,
+              <code>REAL_CURRENCY</code>, <code>BOOLEAN</code>, <code>RATIONAL</code>, <code>RATIONAL_MEASURE</code>,
+              <code>TIME</code>, <code>TIMESTAMP</code>.
+            </p>
+            <div class="alert alert-info">
+              Note: categories are deprecated since V3.0 of Part 1a of the document series
+              &quot;Details of the Asset Administration Shell&quot;.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-005"></a>Constraint AASc-3a-005<a class="aas-anchor-link" href="#constraint-AASc-3a-005">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="Concept_description.html">Concept_description</a> with <a href="Concept_description.html#property-category">Concept_description.category</a> <code>REFERENCE</code>
+              using data specification template IEC61360,
+              the <a href="Data_specification_IEC_61360.html#property-data_type">Data_specification_IEC_61360.data_type</a> shall be
+              one of: <code>STRING</code>, <code>IRI</code>, <code>IRDI</code>.
+            </p>
+            <div class="alert alert-info">
+              Note: categories are deprecated since V3.0 of Part 1a of the document series
+              &quot;Details of the Asset Administration Shell&quot;.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-006"></a>Constraint AASc-3a-006<a class="aas-anchor-link" href="#constraint-AASc-3a-006">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="Concept_description.html">Concept_description</a> with <a href="Concept_description.html#property-category">Concept_description.category</a> <code>DOCUMENT</code>
+              using data specification IEC61360,
+              the <a href="Data_specification_IEC_61360.html#property-data_type">Data_specification_IEC_61360.data_type</a> shall be one of <code>FILE</code>,
+              <code>BLOB</code>, <code>HTML</code>
+            </p>
+            <div class="alert alert-info">
+              Categories are deprecated since V3.0 of Part 1a of the document series
+              &quot;Details of the Asset Administration Shell&quot;.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-007"></a>Constraint AASc-3a-007<a class="aas-anchor-link" href="#constraint-AASc-3a-007">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="Concept_description.html">Concept_description</a> with <a href="Concept_description.html#property-category">Concept_description.category</a> <code>QUALIFIER_TYPE</code>
+              using data specification IEC61360,
+              the <a href="Data_specification_IEC_61360.html#property-data_type">Data_specification_IEC_61360.data_type</a> is mandatory and shall be
+              defined.
+            </p>
+            <div class="alert alert-info">
+              Categories are deprecated since V3.0 of Part 1a of the document series
+              &quot;Details of the Asset Administration Shell&quot;.
+            </div>
+          </dd>
           <dt>
             <a name="constraint-AASc-3a-008"></a>Constraint AASc-3a-008<a class="aas-anchor-link" href="#constraint-AASc-3a-008">🔗</a>
           </dt>
