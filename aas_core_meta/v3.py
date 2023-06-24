@@ -1941,9 +1941,9 @@ class Qualifiable(DBC):
         inherits from :class:`Has_kind` then the qualified element shall be of
         kind Template (:attr:`Has_kind.kind` = :attr:`Modelling_kind.Template`).
 
-    .. note::
+        .. note::
 
-        This constraint is checked at :class:`Submodel`.
+            This constraint is checked at :class:`Submodel`.
     """
 
     qualifiers: Optional[List["Qualifier"]]
@@ -2231,26 +2231,28 @@ class Asset_information(DBC):
         :attr:`Specific_asset_ID.name` then :attr:`Specific_asset_ID.value` shall be
         identical to :attr:`global_asset_ID`.
 
+        .. note::
+
+            :constraintref:`AASd-116` is important to enable a generic search across
+            global and specific asset IDs.
+
+        .. note::
+
+            In the book, :constraintref:`AASd-116` imposes a
+            case-insensitive equality against ``globalAssetId``. This is
+            culturally-dependent, and depends on the system settings.
+            For example, the case-folding for the letters "i" and "I" is
+            different in Turkish from English.
+
+            We implement the constraint as case-sensitive instead to allow
+            for interoperability across different culture settings.
+
     :constraint AASd-131:
 
         For :class:`Asset_information` either the :attr:`global_asset_ID` shall be
         defined or at least one item in :attr:`specific_asset_IDs`.
 
-    .. note::
 
-        :constraintref:`AASd-116` is important to enable a generic search across global
-        and specific asset IDs.
-
-    .. note::
-
-        In the book, :constraintref:`AASd-116` imposes a
-        case-insensitive equality against ``globalAssetId``. This is
-        culturally-dependent, and depends on the system settings.
-        For example, the case-folding for the letters "i" and "I" is
-        different in Turkish from English.
-
-        We implement the constraint as case-sensitive instead to allow
-        for interoperability across different culture settings.
     """
 
     asset_kind: "Asset_kind"
@@ -4372,10 +4374,10 @@ class Concept_description(Identifiable, Has_data_specification):
         ``REAL_CURRENCY``, ``BOOLEAN``, ``RATIONAL``, ``RATIONAL_MEASURE``,
         ``TIME``, ``TIMESTAMP``.
 
-    .. note::
+        .. note::
 
-        Note: categories are deprecated since V3.0 of Part 1a of the document series
-        "Details of the Asset Administration Shell".
+            Note: categories are deprecated since V3.0 of Part 1a of the document series
+            "Details of the Asset Administration Shell".
 
     :constraint AASc-3a-005:
         For a :class:`Concept_description` with :attr:`category` ``REFERENCE``
@@ -4383,10 +4385,10 @@ class Concept_description(Identifiable, Has_data_specification):
         the :attr:`Data_specification_IEC_61360.data_type` shall be
         one of: ``STRING``, ``IRI``, ``IRDI``.
 
-    .. note::
+        .. note::
 
-        Note: categories are deprecated since V3.0 of Part 1a of the document series
-        "Details of the Asset Administration Shell".
+            Note: categories are deprecated since V3.0 of Part 1a of the document series
+            "Details of the Asset Administration Shell".
 
     :constraint AASc-3a-006:
         For a :class:`Concept_description` with :attr:`category` ``DOCUMENT``
@@ -4394,10 +4396,10 @@ class Concept_description(Identifiable, Has_data_specification):
         the :attr:`Data_specification_IEC_61360.data_type` shall be one of ``FILE``,
         ``BLOB``, ``HTML``
 
-    .. note::
+        .. note::
 
-        Categories are deprecated since V3.0 of Part 1a of the document series
-        "Details of the Asset Administration Shell".
+            Categories are deprecated since V3.0 of Part 1a of the document series
+            "Details of the Asset Administration Shell".
 
     :constraint AASc-3a-007:
         For a :class:`Concept_description` with :attr:`category` ``QUALIFIER_TYPE``
@@ -4405,10 +4407,10 @@ class Concept_description(Identifiable, Has_data_specification):
         the :attr:`Data_specification_IEC_61360.data_type` is mandatory and shall be
         defined.
 
-    .. note::
+        .. note::
 
-        Categories are deprecated since V3.0 of Part 1a of the document series
-        "Details of the Asset Administration Shell".
+            Categories are deprecated since V3.0 of Part 1a of the document series
+            "Details of the Asset Administration Shell".
 
     :constraint AASc-3a-008:
         For a :class:`Concept_description` using data specification template IEC61360,
@@ -5660,33 +5662,6 @@ class Data_specification_IEC_61360(Data_specification_content):
     Content of data specification template for concept descriptions for properties,
     values and value lists conformant to IEC 61360.
 
-    :constraint AASc-3a-010:
-        If :attr:`value` is not empty then :attr:`value_list` shall be empty
-        and vice versa.
-
-    .. note::
-
-        It is also possible that both :attr:`value` and :attr:`value_list` are empty.
-        This is the case for concept descriptions that define the semantics of a
-        property but do not have an enumeration (:attr:`value_list`) as data type.
-
-    .. note::
-
-        Although it is possible to define a :class:`Concept_description` for a
-        :attr:´value_list`,
-        it is not possible to reuse this :attr:`value_list`.
-        It is only possible to directly add a :attr:`value_list` as data type
-        to a specific semantic definition of a property.
-
-    :constraint AASc-3a-009:
-        If :attr:`data_type` one of:
-        :attr:`Data_type_IEC_61360.Integer_measure`,
-        :attr:`Data_type_IEC_61360.Real_measure`,
-        :attr:`Data_type_IEC_61360.Rational_measure`,
-        :attr:`Data_type_IEC_61360.Integer_currency`,
-        :attr:`Data_type_IEC_61360.Real_currency`, then :attr:`unit` or
-        :attr:`unit_ID` shall be defined.
-
     .. note::
 
         IEC61360 requires also a globally unique identifier for a concept
@@ -5704,6 +5679,33 @@ class Data_specification_IEC_61360(Data_specification_content):
         :attr:`preferred_name`. Same holds for
         :attr:`Concept_description.description` and :attr:`definition`.
 
+    :constraint AASc-3a-010:
+        If :attr:`value` is not empty then :attr:`value_list` shall be empty
+        and vice versa.
+
+        .. note::
+
+            It is also possible that both :attr:`value` and :attr:`value_list` are
+            empty. This is the case for concept descriptions that define the semantics
+            of a property but do not have an enumeration (:attr:`value_list`) as
+            data type.
+
+        .. note::
+
+            Although it is possible to define a :class:`Concept_description` for a
+            :attr:´value_list`,
+            it is not possible to reuse this :attr:`value_list`.
+            It is only possible to directly add a :attr:`value_list` as data type
+            to a specific semantic definition of a property.
+
+    :constraint AASc-3a-009:
+        If :attr:`data_type` one of:
+        :attr:`Data_type_IEC_61360.Integer_measure`,
+        :attr:`Data_type_IEC_61360.Real_measure`,
+        :attr:`Data_type_IEC_61360.Rational_measure`,
+        :attr:`Data_type_IEC_61360.Integer_currency`,
+        :attr:`Data_type_IEC_61360.Real_currency`, then :attr:`unit` or
+        :attr:`unit_ID` shall be defined.
     """
 
     preferred_name: List["Lang_string_preferred_name_type_IEC_61360"]
