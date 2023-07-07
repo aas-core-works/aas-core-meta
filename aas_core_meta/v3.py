@@ -103,6 +103,7 @@ from aas_core_meta.marker import (
     implementation_specific,
     verification,
     constant_set,
+    non_mutating,
 )
 
 __version__ = "V3.0"
@@ -1532,6 +1533,7 @@ class Extension(Has_semantics):
     """
 
     @implementation_specific
+    @non_mutating
     def value_type_or_default(self) -> "Data_type_def_XSD":
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
@@ -1781,6 +1783,7 @@ class Has_kind(DBC):
     """
 
     @implementation_specific
+    @non_mutating
     def kind_or_default(self) -> "Modelling_kind":
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
@@ -2007,6 +2010,7 @@ class Qualifier(Has_semantics):
     """
 
     @implementation_specific
+    @non_mutating
     def kind_or_default(self) -> "Qualifier_kind":
         # NOTE (mristin, 2022-05-24):
         # This implementation will not be transpiled, but is given here as reference.
@@ -2759,6 +2763,7 @@ class Submodel_element_list(Submodel_element):
     """
 
     @implementation_specific
+    @non_mutating
     def order_relevant_or_default(self) -> bool:
         # NOTE (mristin, 2022-04-7):
         # This implementation will not be transpiled, but is given here as reference.
@@ -2961,6 +2966,7 @@ class Data_element(Submodel_element):
         )
 
     @implementation_specific
+    @non_mutating
     @ensure(lambda result: result in Valid_categories_for_data_element)
     def category_or_default(self) -> str:
         # NOTE (mristin, 2022-04-7):

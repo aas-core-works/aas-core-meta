@@ -38,6 +38,21 @@ def implementation_specific(thing: Any) -> Any:
     return thing
 
 
+def non_mutating(thing: CallableT) -> CallableT:
+    """
+    Mark the method as non-mutating.
+
+    At the moment (2023-07-07), the non-mutating property of the method will *not*
+    be checked by the downstream code generators as that is very complex. Some compilers
+    might partially enforce it (such as popular C++ compilers like clang or g++), but
+    bear in mind that they also do not completely cover the whole problem space.
+
+    See, for example, this paper for some background:
+    https://pm.inf.ethz.ch/publications/LeinoMuellerWallenburg08.pdf
+    """
+    return thing
+
+
 def comment(text: str) -> None:
     """Mark a comment to be included in the generated code."""
     pass
