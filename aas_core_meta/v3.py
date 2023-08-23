@@ -5541,13 +5541,9 @@ def is_BCP_47_for_english(text: str) -> bool:
 )
 @invariant(
     lambda self:
-    (
-            self.value is not None
-            and self.value_list is None
-    ) or (
-            self.value is None
-            and self.value_list is not None
-            and len(self.value_list.value_reference_pairs) >= 1
+    not (
+        self.value is not None
+        and self.value_list is not None
     ),
     "Constraint AASc-3a-010: If value is not empty then value list shall be empty and "
     "vice versa."
