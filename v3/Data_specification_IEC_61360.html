@@ -1267,13 +1267,9 @@
       <ul>
         <li>
           Constraint AASc-3a-010: If value is not empty then value list shall be empty and vice versa.<br/>
-          <div class="highlight"><pre><span></span><span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_list</span> <span class="ow">is</span> <span class="kc">None</span>
-<span class="p">)</span> <span class="ow">or</span> <span class="p">(</span>
-        <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="kc">None</span>
-        <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
-        <span class="ow">and</span> <span class="nb">len</span><span class="p">(</span><span class="bp">self</span><span class="o">.</span><span class="n">value_list</span><span class="o">.</span><span class="n">value_reference_pairs</span><span class="p">)</span> <span class="o">&gt;=</span> <span class="mi">1</span>
+          <div class="highlight"><pre><span></span><span class="ow">not</span> <span class="p">(</span>
+    <span class="bp">self</span><span class="o">.</span><span class="n">value</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
+    <span class="ow">and</span> <span class="bp">self</span><span class="o">.</span><span class="n">value_list</span> <span class="ow">is</span> <span class="ow">not</span> <span class="kc">None</span>
 <span class="p">)</span>
 </pre></div>
         </li>
