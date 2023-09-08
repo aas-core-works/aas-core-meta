@@ -2161,11 +2161,10 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     lambda self:
     (
             self.global_asset_ID is not None
-            and self.specific_asset_IDs is None
-    ) or (
-            self.global_asset_ID is None
-            and self.specific_asset_IDs is not None
-            and len(self.specific_asset_IDs) >= 1
+            or self.specific_asset_IDs is not None
+    ) and (
+            not (self.specific_asset_IDs is not None)
+            or len(self.specific_asset_IDs) >= 1
     ),
     "Constraint AASd-131: Either the global asset ID shall be defined or at least one "
     "specific asset ID."
