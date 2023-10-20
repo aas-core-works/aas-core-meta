@@ -481,7 +481,11 @@ def _generate_page_for_enumeration(
     )
 
     return (
-        _generate_page(title=Stripped(enumeration.name), nav=nav, content=content),
+        _generate_page(
+            title=Stripped(htmlgen.naming.of(enumeration)),
+            nav=nav,
+            content=content
+        ),
         None
     )
 
@@ -691,7 +695,7 @@ Stripped(
 
     return (
         _generate_page(
-            title=Stripped(constrained_primitive.name),
+            title=Stripped(htmlgen.naming.of(constrained_primitive)),
             nav=nav,
             content=content
         ),
@@ -1043,7 +1047,7 @@ def _generate_page_for_class(
 
     return (
         _generate_page(
-            title=Stripped(cls.name),
+            title=Stripped(htmlgen.naming.of(cls)),
             nav=nav,
             content=content
         ),
@@ -1189,7 +1193,7 @@ def _generate_page_for_constant(
 
     return (
         _generate_page(
-            title=Stripped(constant.name),
+            title=Stripped(htmlgen.naming.of(constant)),
             nav=nav,
             content=content
         ),
@@ -1300,7 +1304,7 @@ DEDENT!]]"""
 
     return (
         _generate_page(
-            title=Stripped(verification.name),
+            title=Stripped(htmlgen.naming.of(verification)),
             nav=nav,
             content=content
         ),
