@@ -503,11 +503,11 @@ def _invariant_as_li(
         )
 
     if invariant.specified_for is not our_type:
+        specified_for_name = htmlgen.naming.of(invariant.specified_for)
         parts.append(
             Stripped(
                 f'<em>(From '
-                f'<a href="{htmlgen.naming.of(invariant.specified_for)}.html">'
-                f'{invariant.specified_for.name}</a>)</em>'
+                f'<a href="{specified_for_name}.html">{specified_for_name}</a>)</em>'
             )
         )
 
