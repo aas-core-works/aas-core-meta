@@ -36,6 +36,8 @@ from aas_core_codegen.intermediate import (
 )
 from icontract import require, ensure, DBC
 
+import htmlgen.naming
+
 
 class _Node(DBC):
     """Represent a node in an AST of a documentation."""
@@ -166,9 +168,9 @@ class _ElementRenderer(intermediate_rendering.DocutilsElementTransformer[_NodeUn
             _Element(
                 name="a",
                 attrs=collections.OrderedDict(
-                    [("href", f"{element.our_type.name}.html")]
+                    [("href", f"{htmlgen.naming.of(element.our_type)}.html")]
                 ),
-                children=_List(items=[_Text(element.our_type.name)]),
+                children=_List(items=[_Text(htmlgen.naming.of(element.our_type))]),
             ),
             None,
         )
@@ -180,21 +182,24 @@ class _ElementRenderer(intermediate_rendering.DocutilsElementTransformer[_NodeUn
         href = None  # type: Optional[str]
 
         if isinstance(element.reference, intermediate_doc.ReferenceToProperty):
-            text = f"{element.reference.cls.name}.{element.reference.prop.name}"
+            text = (
+                f"{htmlgen.naming.of(element.reference.cls)}"
+                f".{htmlgen.naming.of(element.reference.prop)}"
+            )
             href = (
-                f"{element.reference.cls.name}.html"
-                f"#property-{element.reference.prop.name}"
+                f"{htmlgen.naming.of(element.reference.cls)}.html"
+                f"#{htmlgen.naming.of(element.reference.prop)}"
             )
         elif isinstance(
             element.reference, intermediate_doc.ReferenceToEnumerationLiteral
         ):
             text = (
-                f"{element.reference.enumeration.name}"
-                f".{element.reference.literal.name}"
+                f"{htmlgen.naming.of(element.reference.enumeration)}"
+                f".{htmlgen.naming.of(element.reference.literal)}"
             )
             href = (
-                f"{element.reference.enumeration.name}.html"
-                f"#literal-{element.reference.literal.name}"
+                f"{htmlgen.naming.of(element.reference.enumeration)}.html"
+                f"#{htmlgen.naming.of(element.reference.literal)}"
             )
 
         else:
@@ -215,7 +220,7 @@ class _ElementRenderer(intermediate_rendering.DocutilsElementTransformer[_NodeUn
     def transform_reference_to_argument_in_doc(
         self, element: intermediate_doc.ReferenceToArgument
     ) -> Tuple[Optional[_NodeUnion], Optional[List[str]]]:
-        arg_name = element.reference
+        arg_name = htmlgen.naming.argument_name(Identifier(element.reference))
 
         return (
             _Element(name="code", children=_List(items=[_Text(arg_name)])),
@@ -241,7 +246,7 @@ class _ElementRenderer(intermediate_rendering.DocutilsElementTransformer[_NodeUn
     def transform_reference_to_constant_in_doc(
         self, element: intermediate_doc.ReferenceToConstant
     ) -> Tuple[Optional[_NodeUnion], Optional[List[str]]]:
-        name = element.constant.name
+        name = htmlgen.naming.of(element.constant)
 
         return (
             _Element(
@@ -1017,6 +1022,8 @@ def _render_description_of_signature(
         else:
             assert arg_body is not None
 
+            arg_name = htmlgen.naming.argument_name(name)
+
             args_and_return_nodes.append(
                 _Element(
                     name="dt",
@@ -1025,7 +1032,7 @@ def _render_description_of_signature(
                             _Element(
                                 name="a",
                                 attrs=collections.OrderedDict(
-                                    [("name", f"{signature_name}-{name}")]
+                                    [("name", f"{arg_name}")]
                                 ),
                             ),
                             _Text(name),
@@ -1034,7 +1041,7 @@ def _render_description_of_signature(
                                 attrs=collections.OrderedDict(
                                     [
                                         ("class", "aas-anchor-link"),
-                                        ("href", f"#{signature_name}-{name}"),
+                                        ("href", f"#{arg_name}"),
                                     ]
                                 ),
                                 children=_List(items=[_Text("🔗")]),
@@ -1068,9 +1075,7 @@ def _render_description_of_signature(
                         items=[
                             _Element(
                                 name="a",
-                                attrs=collections.OrderedDict(
-                                    [("name", f"{signature_name}-return")]
-                                ),
+                                attrs=collections.OrderedDict([("name", "return")]),
                             ),
                             _Text("Return"),
                             _Element(
@@ -1078,7 +1083,7 @@ def _render_description_of_signature(
                                 attrs=collections.OrderedDict(
                                     [
                                         ("class", "aas-anchor-link"),
-                                        ("href", f"#{signature_name}-return"),
+                                        ("href", "return"),
                                     ]
                                 ),
                                 children=_List(items=[_Text("🔗")]),

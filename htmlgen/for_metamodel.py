@@ -1,5 +1,4 @@
 """Generate HTML for a given meta-model."""
-import ast
 import collections
 import html
 import itertools
@@ -18,9 +17,6 @@ from typing import (
 )
 
 import asttokens
-import pygments
-import pygments.formatters
-import pygments.lexers
 from aas_core_codegen import intermediate
 from aas_core_codegen.common import (
     Stripped,
@@ -29,9 +25,12 @@ from aas_core_codegen.common import (
     Error,
     Identifier,
 )
+from aas_core_codegen.intermediate import type_inference as intermediate_type_inference
 from icontract import require, ensure
 
 import htmlgen.description
+import htmlgen.naming
+import htmlgen.transpilation
 from htmlgen.common import I, II, III
 
 
@@ -40,7 +39,7 @@ def _over_descriptions_and_page_paths(
 ) -> Iterator[Tuple[intermediate.DescriptionUnion, str]]:
     """Iterate over the descriptions along the page paths."""
     for our_type in symbol_table.our_types:
-        page_path = f"{our_type.name}.html"
+        page_path = f"{htmlgen.naming.of(our_type)}.html"
 
         if our_type.description is not None:
             yield our_type.description, page_path
@@ -68,12 +67,12 @@ def _over_descriptions_and_page_paths(
             assert_never(our_type)
 
     for constant in symbol_table.constants:
-        page_path = f"{constant.name}.html"
+        page_path = f"{htmlgen.naming.of(constant)}.html"
         if constant.description is not None:
             yield constant.description, page_path
 
     for verification in symbol_table.verification_functions:
-        page_path = f"{verification.name}.html"
+        page_path = f"{htmlgen.naming.of(verification)}.html"
         if verification.description is not None:
             yield verification.description, page_path
 
@@ -126,22 +125,14 @@ def _generate_nav(
 
     lis.append('<li class="nav-item mt-2">Enumerations</li>')
 
-    enumerations = sorted(
-        [
-            our_type
-            for our_type in symbol_table.our_types
-            if isinstance(our_type, intermediate.Enumeration)
-        ],
-        key=lambda our_type: our_type.name,
-    )
-    for enumeration in enumerations:
+    for enumeration in sorted(symbol_table.enumerations, key=htmlgen.naming.of):
         a_class = "nav-item active" if active_item is enumeration else "nav-item"
 
         lis.append(
             f"""\
 <li class="nav-item">
-{I}<a class="{a_class}" href="{enumeration.name}.html">
-{II}{enumeration.name}
+{I}<a class="{a_class}" href="{htmlgen.naming.of(enumeration)}.html">
+{II}{htmlgen.naming.of(enumeration)}
 {I}</a>
 </li>"""
         )
@@ -152,15 +143,9 @@ def _generate_nav(
 
     lis.append('<li class="nav-item mt-2">Constrained Primitives</li>')
 
-    constrained_primitives = sorted(
-        [
-            our_type
-            for our_type in symbol_table.our_types
-            if isinstance(our_type, intermediate.ConstrainedPrimitive)
-        ],
-        key=lambda our_type: our_type.name,
-    )
-    for constrained_primitive in constrained_primitives:
+    for constrained_primitive in sorted(
+        symbol_table.constrained_primitives, key=htmlgen.naming.of
+    ):
         a_class = (
             "nav-item active" if active_item is constrained_primitive else "nav-item"
         )
@@ -168,8 +153,8 @@ def _generate_nav(
         lis.append(
             f"""\
 <li class="nav-item">
-{I}<a class="{a_class}" href="{constrained_primitive.name}.html">
-{II}{constrained_primitive.name}
+{I}<a class="{a_class}" href="{htmlgen.naming.of(constrained_primitive)}.html">
+{II}{htmlgen.naming.of(constrained_primitive)}
 {I}</a>
 </li>"""
         )
@@ -186,7 +171,7 @@ def _generate_nav(
             for our_type in symbol_table.our_types
             if isinstance(our_type, intermediate.AbstractClass)
         ],
-        key=lambda our_type: our_type.name,
+        key=htmlgen.naming.of,
     )
     for abstract_class in abstract_classes:
         a_class = "nav-item active" if active_item is abstract_class else "nav-item"
@@ -194,8 +179,8 @@ def _generate_nav(
         lis.append(
             f"""\
 <li class="nav-item">
-{I}<a class="{a_class}" href="{abstract_class.name}.html">
-{II}{abstract_class.name}
+{I}<a class="{a_class}" href="{htmlgen.naming.of(abstract_class)}.html">
+{II}{htmlgen.naming.of(abstract_class)}
 {I}</a>
 </li>"""
         )
@@ -206,22 +191,14 @@ def _generate_nav(
 
     lis.append('<li class="nav-item mt-2">Concrete Classes</li>')
 
-    concrete_classes = sorted(
-        [
-            our_type
-            for our_type in symbol_table.our_types
-            if isinstance(our_type, intermediate.ConcreteClass)
-        ],
-        key=lambda our_type: our_type.name,
-    )
-    for concrete_class in concrete_classes:
+    for concrete_class in sorted(symbol_table.concrete_classes, key=htmlgen.naming.of):
         a_class = "nav-item active" if active_item is concrete_class else "nav-item"
 
         lis.append(
             f"""\
 <li class="nav-item">
-{I}<a class="{a_class}" href="{concrete_class.name}.html">
-{II}{concrete_class.name}
+{I}<a class="{a_class}" href="{htmlgen.naming.of(concrete_class)}.html">
+{II}{htmlgen.naming.of(concrete_class)}
 {I}</a>
 </li>"""
         )
@@ -232,18 +209,14 @@ def _generate_nav(
 
     lis.append('<li class="nav-item mt-2">Constants</li>')
 
-    constants = sorted(
-        list(symbol_table.constants),
-        key=lambda a_constant: a_constant.name,
-    )
-    for constant in constants:
+    for constant in sorted(symbol_table.constants, key=htmlgen.naming.of):
         a_class = "nav-item active" if active_item is constant else "nav-item"
 
         lis.append(
             f"""\
 <li class="nav-item">
-{I}<a class="{a_class}" href="{constant.name}.html">
-{II}{constant.name}
+{I}<a class="{a_class}" href="{htmlgen.naming.of(constant)}.html">
+{II}{htmlgen.naming.of(constant)}
 {I}</a>
 </li>"""
         )
@@ -277,11 +250,9 @@ def _generate_nav(
 
     lis.append('<li class="nav-item mt-2">Verification Functions</li>')
 
-    verification_functions = sorted(
-        list(symbol_table.verification_functions),
-        key=lambda a_verification_function: a_verification_function.name,
-    )
-    for verification_function in verification_functions:
+    for verification_function in sorted(
+        symbol_table.verification_functions, key=htmlgen.naming.of
+    ):
         a_class = (
             "nav-item active" if active_item is verification_function else "nav-item"
         )
@@ -289,8 +260,8 @@ def _generate_nav(
         lis.append(
             f"""\
 <li class="nav-item">
-{I}<a class="{a_class}" href="{verification_function.name}.html">
-{II}{verification_function.name}
+{I}<a class="{a_class}" href="{htmlgen.naming.of(verification_function)}.html">
+{II}{htmlgen.naming.of(verification_function)}
 {I}</a>
 </li>"""
         )
@@ -327,6 +298,7 @@ def _generate_page(
     """Generate a HTML page."""
     # noinspection SpellCheckingInspection
     page = f"""\
+<!DOCTYPE html>
 <html>
 <head>
 {I}<meta charset="UTF-8">
@@ -413,7 +385,7 @@ def _generate_page_for_enumeration(
         Stripped(
             f"""\
 <h1>
-{I}{enumeration.name}
+{I}{htmlgen.naming.of(enumeration)}
 {I}<a class="aas-anchor-link" href="">🔗</a>
 </h1>"""
         )
@@ -470,9 +442,9 @@ def _generate_page_for_enumeration(
         literal_elements.append(
             f"""\
 <dt>
-{I}<a name="literal-{literal.name}" />
-{I}{html.escape(literal.name)}
-{I}<a class="aas-anchor-link" href="#literal-{literal.name}">🔗</a>
+{I}<a name="{htmlgen.naming.of(literal)}" />
+{I}{html.escape(htmlgen.naming.of(literal))}
+{I}<a class="aas-anchor-link" href="#{htmlgen.naming.of(literal)}">🔗</a>
 {I} = <code>{html.escape(repr(literal.value))}</code>
 </dt>
 <dd>
@@ -514,99 +486,14 @@ def _generate_page_for_enumeration(
     )
 
 
-NAME_MEMBER_SPAN_RE = re.compile(
-    r'<span class="n">([a-zA-Z0-9_]+)</span>'
-    r'<span class="o">\.</span>'
-    r'<span class="n">([a-zA-Z0-9_]+)</span>'
-)
-NAME_SPAN_RE = re.compile(r'<span class="n">([a-zA-Z0-9_]+)</span>')
-
-
-def _code_as_div(
-        code: str,
-        symbol_table: intermediate.SymbolTable
-) -> Stripped:
-    """Format the code and link names to verification functions and constants."""
-    code_div = pygments.highlight(
-        code,
-        pygments.lexers.PythonLexer(),
-        pygments.formatters.HtmlFormatter()
-    ).strip()
-
-    # NOTE (mristin, 2023-01-18):
-    # We now hard-wire names to matching literals, functions and constants. This is
-    # super fragile and will break with changes in pygments! For now, it works.
-    #
-    # See this pygments issue in case you ever want to implement this in a robust way:
-    # https://github.com/pygments/pygments/issues/1091
-
-    # region Link literals
-
-    parts = []  # type: List[str]
-    last_end = 0
-
-    for match in NAME_MEMBER_SPAN_RE.finditer(code_div):
-        parts.append(code_div[last_end:match.start()])
-        last_end = match.end()
-
-        name = match.group(1)
-        member = match.group(2)
-
-        our_type = symbol_table.find_our_type(Identifier(name))
-
-        literal = None  # type: Optional[intermediate.EnumerationLiteral]
-        if isinstance(our_type, intermediate.Enumeration):
-            literal = our_type.literals_by_name.get(member, None)
-
-        if literal is not None:
-            parts.append(
-                f'<a href="{name}.html#literal-{member}">{match.group()}</a>'
-            )
-        else:
-            parts.append(match.group())
-
-    parts.append(code_div[last_end:])
-
-    code_div = "".join(parts)
-
-    # endregion
-
-    # region Link constants and verification functions
-
-    parts = []
-    last_end = 0
-
-    for match in NAME_SPAN_RE.finditer(code_div):
-        parts.append(code_div[last_end:match.start()])
-        last_end = match.end()
-
-        name = match.group(1)
-        if (
-                name in symbol_table.verification_functions_by_name
-                or name in symbol_table.constants_by_name
-        ):
-            parts.append(
-                f'<span class="n"><a href="{name}.html">{name}</a></span>'
-            )
-        else:
-            parts.append(match.group())
-
-    parts.append(code_div[last_end:])
-
-    code_div = "".join(parts)
-
-    # endregion
-
-    return Stripped(code_div)
-
-
 @require(lambda invariant, our_type: id(invariant) in our_type.invariant_id_set)
+@ensure(lambda result: (result[0] is not None) ^ (result[1] is not None))
 def _invariant_as_li(
         invariant: intermediate.Invariant,
-        atok: asttokens.ASTTokens,
         our_type: intermediate.OurType,
-        symbol_table: intermediate.SymbolTable
-) -> Stripped:
+        symbol_table: intermediate.SymbolTable,
+        base_environment: intermediate_type_inference.Environment
+) -> Tuple[Optional[Stripped], Optional[Error]]:
     """Render an invariant as an ``<li>`` element."""
     parts = []  # type: List[Stripped]
 
@@ -618,29 +505,39 @@ def _invariant_as_li(
     if invariant.specified_for is not our_type:
         parts.append(
             Stripped(
-                f'<em>(From <a href="{invariant.specified_for.name}.html">'
+                f'<em>(From '
+                f'<a href="{htmlgen.naming.of(invariant.specified_for)}.html">'
                 f'{invariant.specified_for.name}</a>)</em>'
             )
         )
 
-    invariant_start, invariant_end = atok.get_text_range(
-        invariant.parsed.body.original_node
+    # region Transpile the body of the environment
+    environment = intermediate_type_inference.MutableEnvironment(
+        parent=base_environment
     )
 
-    # NOTE (mristin, 2023-01-18):
-    # We include the preceding whitespace to facilitate dedent.
-    while invariant_start > 0 and atok._text[invariant_start - 1] in (' ', '\t'):
-        invariant_start -= 1
+    assert environment.find(Identifier("self")) is None
+    environment.set(
+        identifier=Identifier("self"),
+        type_annotation=intermediate_type_inference.OurTypeAnnotation(
+            our_type=our_type),
+    )
 
-    code = textwrap.dedent(atok._text[invariant_start:invariant_end])
-
-    code_div = _code_as_div(code=code, symbol_table=symbol_table)
+    code_div, error = htmlgen.transpilation.transpile_invariant(
+        invariant=invariant,
+        symbol_table=symbol_table,
+        environment=environment
+    )
+    if error is not None:
+        return None, error
+    assert code_div is not None
+    # endregion
 
     parts.append(
         Stripped(
             f"""\
 [[!DEDENT
-{code_div}
+{code_div.strip()}
 DEDENT!]]"""
         )
     )
@@ -655,7 +552,7 @@ DEDENT!]]"""
 <li>
 {parts_joined_and_indented}
 </li>"""
-    )
+    ), None
 
 
 # fmt: off
@@ -670,7 +567,7 @@ def _generate_page_for_constrained_primitive(
         constrained_primitive: intermediate.ConstrainedPrimitive,
         symbol_table: intermediate.SymbolTable,
         constraint_href_map: Mapping[str, str],
-        atok: asttokens.ASTTokens
+        base_environment: intermediate_type_inference.Environment,
 ) -> Tuple[Optional[str], Optional[Error]]:
     primitive_type_snippet = Stripped(
         f"""\
@@ -688,7 +585,7 @@ def _generate_page_for_constrained_primitive(
 Stripped(
     f"""\
 <h1>
-{I}{html.escape(constrained_primitive.name)}
+{I}{html.escape(htmlgen.naming.of(constrained_primitive))}
 {I}<a class="aas-anchor-link" href="">🔗</a>
 </h1>
 {primitive_type_snippet}"""
@@ -722,7 +619,7 @@ Stripped(
         li_inheritances = [
             f"""\
 <li>
-{I}<a href="{inheritance.name}.html">{inheritance.name}</a>
+{I}<a href="{htmlgen.naming.of(inheritance)}.html">{htmlgen.naming.of(inheritance)}</a>
 </li>"""
             for inheritance in constrained_primitive.inheritances
         ]
@@ -748,15 +645,19 @@ Stripped(
         )
 
     if len(constrained_primitive.invariants) > 0:
-        li_invariants = [
-            _invariant_as_li(
+        li_invariants = []  # type: List[Stripped]
+        for invariant in constrained_primitive.invariants:
+            li_invariant, error = _invariant_as_li(
                 invariant=invariant,
-                atok=atok,
                 our_type=constrained_primitive,
-                symbol_table=symbol_table
+                symbol_table=symbol_table,
+                base_environment=base_environment
             )
-            for invariant in constrained_primitive.invariants
-        ]
+            if error is not None:
+                return None, error
+            else:
+                assert li_invariant is not None
+                li_invariants.append(li_invariant)
 
         li_invariants_joined = "\n".join(li_invariants)
 
@@ -812,7 +713,7 @@ def _property_as_dt_dd(
         dd_divs.append(
             f"""\
 <div>
-{I}<em>(From <a href="{prop.specified_for.name}.html">{prop.specified_for.name}</a>)</em>
+{I}<em>(From <a href="{htmlgen.naming.of(prop.specified_for)}.html">{htmlgen.naming.of(prop.specified_for)}</a>)</em>
 </div>"""
         )
 
@@ -846,12 +747,12 @@ def _property_as_dt_dd(
     else:
         dd_element = "<dd></dd>"
 
-    span_type_anno = _type_annotation_as_span(prop.type_annotation)
+    span_type_anno = htmlgen.common.type_annotation_html(prop.type_annotation)
     dt_element = f"""\
 <dt>
-{I}<a name="#property-{prop.name}"></a>
-{I}{prop.name}: {span_type_anno}
-{I}<a class="aas-anchor-link" href="#property-{prop.name}">🔗</a>
+{I}<a name="{htmlgen.naming.of(prop)}"></a>
+{I}{htmlgen.naming.of(prop)}: {span_type_anno}
+{I}<a class="aas-anchor-link" href="#{htmlgen.naming.of(prop)}">🔗</a>
 </dt>
 """
 
@@ -860,33 +761,6 @@ def _property_as_dt_dd(
 {dt_element}
 {dd_element}"""
     ), None
-
-
-def  _render_type_annotation_recursively(
-        type_annotation: intermediate.TypeAnnotationUnion
-)->Stripped:
-    """Render the type annotation as HTML, without enclosing ``<span>``."""
-    if isinstance(type_annotation, intermediate.PrimitiveTypeAnnotation):
-        return Stripped(type_annotation.a_type.value)
-    elif isinstance(type_annotation, intermediate.OurTypeAnnotation):
-        name = type_annotation.our_type.name
-        return Stripped(f'<a href="{name}.html">{name}</a>')
-    elif isinstance(type_annotation, intermediate.ListTypeAnnotation):
-        items_type_anno = _render_type_annotation_recursively(type_annotation.items)
-        return Stripped(f"List[{items_type_anno}]")
-    elif isinstance(type_annotation, intermediate.OptionalTypeAnnotation):
-        value_type_anno = _render_type_annotation_recursively(type_annotation.value)
-        return Stripped(f"Optional[{value_type_anno}]")
-    else:
-        assert_never(type_annotation)
-
-
-def _type_annotation_as_span(
-        type_annotation: intermediate.TypeAnnotationUnion
-)->Stripped:
-    """Render the type annotation as a ``<span>``."""
-    content = _render_type_annotation_recursively(type_annotation)
-    return Stripped(f'<span class="aas-type-annotation">{content}</span>')
 
 
 def _our_type_appears_in_type_annotation(
@@ -937,8 +811,9 @@ def _generate_usages_block(
     for other_type, props in usages.items():
         a_props = [
             (
-                f'<a href="{other_type.name}.html#property-{prop.name}">'
-                f'{other_type.name}.{prop.name}</a>'
+                f'<a href="{htmlgen.naming.of(other_type)}.html'
+                f'#{htmlgen.naming.of(prop)}">'
+                f'{htmlgen.naming.of(other_type)}.{htmlgen.naming.of(prop)}</a>'
             )
             for prop in props
         ]
@@ -947,7 +822,7 @@ def _generate_usages_block(
             f"""\
 <tr>
 {I}<td>
-{II}<a href="{other_type.name}.html">{other_type.name}</a>
+{II}<a href="{htmlgen.naming.of(other_type)}.html">{htmlgen.naming.of(other_type)}</a>
 {I}</td>
 {I}<td>
 {II}{indent_but_first_line(a_props_joined, II)}
@@ -980,7 +855,8 @@ def _generate_page_for_class(
         cls: intermediate.ClassUnion,
         symbol_table: intermediate.SymbolTable,
         constraint_href_map: Mapping[str, str],
-        atok: asttokens.ASTTokens
+        atok: asttokens.ASTTokens,
+        base_environment: intermediate_type_inference.Environment,
 ) -> Tuple[Optional[str], Optional[Error]]:
     blocks = []  # type: List[Stripped]
 
@@ -989,7 +865,7 @@ def _generate_page_for_class(
             Stripped(
                 f"""\
 <h1>
-{I}{cls.name}<a class="aas-anchor-link" href="">🔗</a><br/>
+{I}{htmlgen.naming.of(cls)}<a class="aas-anchor-link" href="">🔗</a><br/>
 {I}<em>(abstract)</em>
 </h1>"""
             )
@@ -999,7 +875,7 @@ def _generate_page_for_class(
             Stripped(
                 f"""\
 <h1>
-{I}{cls.name}<a class="aas-anchor-link" href="">🔗</a>
+{I}{htmlgen.naming.of(cls)}<a class="aas-anchor-link" href="">🔗</a>
 </h1>"""
             )
         )
@@ -1033,7 +909,7 @@ def _generate_page_for_class(
         li_inheritances = [
             f"""\
 <li>
-{I}<a href="{inheritance.name}.html">{inheritance.name}</a>
+{I}<a href="{htmlgen.naming.of(inheritance)}.html">{htmlgen.naming.of(inheritance)}</a>
 </li>"""
             for inheritance in cls.inheritances
         ]
@@ -1062,7 +938,7 @@ def _generate_page_for_class(
         li_descendants = [
             f"""\
 <li>
-{I}<a href="{descendant.name}.html">{descendant.name}</a>
+{I}<a href="{htmlgen.naming.of(descendant)}.html">{htmlgen.naming.of(descendant)}</a>
 </li>"""
             for descendant in cls.descendants
         ]
@@ -1123,15 +999,19 @@ def _generate_page_for_class(
         )
 
     if len(cls.invariants) > 0:
-        li_invariants = [
-            _invariant_as_li(
+        li_invariants = []  # type: List[Stripped]
+        for invariant in cls.invariants:
+            li_invariant, error = _invariant_as_li(
                 invariant=invariant,
-                atok=atok,
                 our_type=cls,
-                symbol_table=symbol_table
+                symbol_table=symbol_table,
+                base_environment=base_environment
             )
-            for invariant in cls.invariants
-        ]
+            if error is not None:
+                return None, error
+            else:
+                assert li_invariant is not None
+                li_invariants.append(li_invariant)
 
         li_invariants_joined = "\n".join(li_invariants)
 
@@ -1188,7 +1068,7 @@ def _generate_page_for_constant(
         Stripped(
             f"""\
 <h1>
-{I}{constant.name}<a class="aas-anchor-link" href="">🔗</a>
+{I}{htmlgen.naming.of(constant)}<a class="aas-anchor-link" href="">🔗</a>
 </h1>"""
         )
     ]  # type: List[Stripped]
@@ -1199,7 +1079,7 @@ def _generate_page_for_constant(
     elif isinstance(constant, intermediate.ConstantSetOfPrimitives):
         constant_type = f"Set[{constant.a_type.value}]"
     elif isinstance(constant, intermediate.ConstantSetOfEnumerationLiterals):
-        name = constant.enumeration.name
+        name = htmlgen.naming.of(constant.enumeration)
         constant_type = f'<a href="{name}.html">{name}</a>'
     else:
         assert_never(constant)
@@ -1273,8 +1153,14 @@ def _generate_page_for_constant(
 
         li_values = []
         for literal in constant.literals:
-            text = f"{constant.enumeration.name}.{literal.name}"
-            href = f"{constant.enumeration.name}.html#literal-{literal.name}"
+            text = (
+                f"{htmlgen.naming.of(constant.enumeration)}"
+                f".{htmlgen.naming.of(literal)}"
+            )
+            href = (
+                f"{htmlgen.naming.of(constant.enumeration)}.html"
+                f"#{htmlgen.naming.of(literal)}"
+            )
             li_values.append(
                 f'<li><a href="{html.escape(href, quote=True)}">'
                 f'{html.escape(text)}</a></li>'
@@ -1321,33 +1207,33 @@ WHITESPACE_RE = re.compile(r'^[ |\t]+')
 @ensure(lambda result: (result[0] is not None) ^ (result[1] is not None))
 # fmt: off
 def _generate_page_for_verification_function(
-        func: Union[
+        verification: Union[
             intermediate.ImplementationSpecificVerification,
             intermediate.PatternVerification,
             intermediate.TranspilableVerification,
         ],
         symbol_table: intermediate.SymbolTable,
         constraint_href_map: Mapping[str, str],
-        atok: asttokens.ASTTokens
+        base_environment: intermediate_type_inference.Environment
 ) -> Tuple[Optional[str], Optional[Error]]:
     blocks = [
         Stripped(
             f"""\
 <h1>
-{I}{func.name}<a class="aas-anchor-link" href="">🔗</a>
+{I}{htmlgen.naming.of(verification)}<a class="aas-anchor-link" href="">🔗</a>
 </h1>"""
         )
     ]  # type: List[Stripped]
 
     func_type = None  # type: Optional[str]
-    if isinstance(func, intermediate.ImplementationSpecificVerification):
+    if isinstance(verification, intermediate.ImplementationSpecificVerification):
         func_type = "Implementation specific"
-    elif isinstance(func, intermediate.PatternVerification):
+    elif isinstance(verification, intermediate.PatternVerification):
         func_type = "Pattern verification"
-    elif isinstance(func, intermediate.TranspilableVerification):
+    elif isinstance(verification, intermediate.TranspilableVerification):
         func_type = "Transpilable verification function"
     else:
-        assert_never(func)
+        assert_never(verification)
 
     assert func_type is not None
 
@@ -1361,17 +1247,17 @@ def _generate_page_for_verification_function(
         )
     )
 
-    if func.description is not None:
+    if verification.description is not None:
         description, errors = htmlgen.description.generate_for_signature(
-            signature_name=func.name,
-            description=func.description,
+            signature_name=verification.name,
+            description=verification.description,
             constraint_href_map=constraint_href_map
         )
         if errors is not None:
             return None, Error(
-                func.parsed.node,
+                verification.parsed.node,
                 f"Failed to render the description "
-                f"of the verification function {func.name}",
+                f"of the verification function {verification.name}",
                 errors
             )
 
@@ -1385,34 +1271,14 @@ def _generate_page_for_verification_function(
             )
         )
 
-    func_node = func.parsed.node
-    assert isinstance(func_node, ast.FunctionDef)
-
-    code = ""
-    if len(func_node.body) > 0:
-        non_description_node = None  # type: Optional[ast.AST]
-
-        for node in func_node.body:
-            if isinstance(node, ast.Expr) and isinstance(node.value, ast.Constant):
-                continue
-
-            non_description_node = node
-            break
-
-        last_node = func_node.body[-1]
-        if non_description_node is not None:
-            start, _ = atok.get_text_range(non_description_node)
-            _, end = atok.get_text_range(last_node)
-
-            # NOTE (mristin, 2023-01-18):
-            # We include the whitespace *before* the first statement so that we can
-            # easily dedent afterwards.
-            while start > 0 and atok._text[start-1] in (' ', '\t'):
-                start -= 1
-
-            code = textwrap.dedent(atok._text[start:end])
-
-    code_div = _code_as_div(code=code, symbol_table=symbol_table)
+    code_div, error = htmlgen.transpilation.transpile_body_of_verification(
+        verification=verification,
+        symbol_table=symbol_table,
+        environment=base_environment,
+    )
+    if error is not None:
+        return None, error
+    assert code_div is not None
 
     blocks.append(
         Stripped(
@@ -1428,13 +1294,13 @@ DEDENT!]]"""
 
     nav = _generate_nav(
         symbol_table=symbol_table,
-        active_item=func,
+        active_item=verification,
         constraint_href_map=constraint_href_map
     )
 
     return (
         _generate_page(
-            title=Stripped(func.name),
+            title=Stripped(verification.name),
             nav=nav,
             content=content
         ),
@@ -1530,6 +1396,10 @@ def generate(
         assert home_page is not None
         (target_dir / "index.html").write_text(home_page, encoding="utf-8")
 
+    base_environment = intermediate_type_inference.populate_base_environment(
+        symbol_table=symbol_table
+    )
+
     for something in itertools.chain(
         symbol_table.our_types,
         symbol_table.constants,
@@ -1547,7 +1417,7 @@ def generate(
                 constrained_primitive=something,
                 symbol_table=symbol_table,
                 constraint_href_map=constraint_href_map,
-                atok=atok,
+                base_environment=base_environment
             )
         elif isinstance(
             something, (intermediate.AbstractClass, intermediate.ConcreteClass)
@@ -1557,6 +1427,7 @@ def generate(
                 symbol_table=symbol_table,
                 constraint_href_map=constraint_href_map,
                 atok=atok,
+                base_environment=base_environment
             )
         elif isinstance(
             something,
@@ -1580,10 +1451,10 @@ def generate(
             ),
         ):
             page, error = _generate_page_for_verification_function(
-                func=something,
+                verification=something,
                 symbol_table=symbol_table,
                 constraint_href_map=constraint_href_map,
-                atok=atok,
+                base_environment=base_environment
             )
         else:
             assert_never(something)
@@ -1593,7 +1464,7 @@ def generate(
         else:
             assert page is not None
 
-            (target_dir / f"{something.name}.html").write_text(
+            (target_dir / f"{htmlgen.naming.of(something)}.html").write_text(
                 page, encoding="utf-8"
             )
 
