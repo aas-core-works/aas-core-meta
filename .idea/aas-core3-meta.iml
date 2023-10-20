@@ -7,6 +7,7 @@
       <excludeFolder url="file://$MODULE_DIR$/.mypy_cache" />
       <excludeFolder url="file://$MODULE_DIR$/build" />
       <excludeFolder url="file://$MODULE_DIR$/dist" />
+      <excludeFolder url="file://$MODULE_DIR$/htmlgen/html-for-debug" />
     </content>
     <orderEntry type="jdk" jdkName="Python 3.8 (aas-core-meta) (2)" jdkType="Python SDK" />
     <orderEntry type="sourceFolder" forTests="false" />
