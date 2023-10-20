@@ -1132,13 +1132,13 @@
       <ul>
         <li>
           Supplemental semantic IDs must be either not set or have at least one item.<br/>
-          <em>(From <a href="HasSemantics.html">Has_semantics</a>)</em><br/>
+          <em>(From <a href="HasSemantics.html">HasSemantics</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SpecificAssetId.html#supplementalSemanticIds">supplementalSemanticIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SpecificAssetId.html#supplementalSemanticIds">supplementalSemanticIds</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
         </li>
         <li>
           Constraint AASd-118: If there are supplemental semantic IDs defined then there shall be also a main semantic ID.<br/>
-          <em>(From <a href="HasSemantics.html">Has_semantics</a>)</em><br/>
+          <em>(From <a href="HasSemantics.html">HasSemantics</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SpecificAssetId.html#supplementalSemanticIds">supplementalSemanticIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SpecificAssetId.html#semanticId">semanticId</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span></pre></div>
         </li>

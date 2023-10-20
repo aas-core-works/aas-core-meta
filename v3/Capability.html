@@ -1238,13 +1238,13 @@
       <ul>
         <li>
           Extensions must be either not set or have at least one item.<br/>
-          <em>(From <a href="HasExtensions.html">Has_extensions</a>)</em><br/>
+          <em>(From <a href="HasExtensions.html">HasExtensions</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#extensions">extensions</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#extensions">extensions</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
         </li>
         <li>
           Constraint AASd-077: The name of an extension within Has-Extensions needs to be unique.<br/>
-          <em>(From <a href="HasExtensions.html">Has_extensions</a>)</em><br/>
+          <em>(From <a href="HasExtensions.html">HasExtensions</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#extensions">extensions</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='nf'><a href='ExtensionNamesAreUnique.html'>ExtensionNamesAreUnique</a></span><span class='p'>(</span>
     <span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#extensions">extensions</a>
@@ -1280,13 +1280,13 @@
         </li>
         <li>
           Supplemental semantic IDs must be either not set or have at least one item.<br/>
-          <em>(From <a href="HasSemantics.html">Has_semantics</a>)</em><br/>
+          <em>(From <a href="HasSemantics.html">HasSemantics</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#supplementalSemanticIds">supplementalSemanticIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#supplementalSemanticIds">supplementalSemanticIds</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
         </li>
         <li>
           Constraint AASd-118: If there are supplemental semantic IDs defined then there shall be also a main semantic ID.<br/>
-          <em>(From <a href="HasSemantics.html">Has_semantics</a>)</em><br/>
+          <em>(From <a href="HasSemantics.html">HasSemantics</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#supplementalSemanticIds">supplementalSemanticIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#semanticId">semanticId</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span></pre></div>
         </li>
@@ -1306,7 +1306,7 @@
         </li>
         <li>
           Embedded data specifications must be either not set or have at least one item.<br/>
-          <em>(From <a href="HasDataSpecification.html">Has_data_specification</a>)</em><br/>
+          <em>(From <a href="HasDataSpecification.html">HasDataSpecification</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Capability.html#embeddedDataSpecifications">embeddedDataSpecifications</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
         </li>

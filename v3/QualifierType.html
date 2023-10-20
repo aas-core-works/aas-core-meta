@@ -1033,19 +1033,19 @@
       <ul>
         <li>
           Constraint AASd-130: An attribute with data type &#x27;string&#x27; shall consist of these characters only: ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$.<br/>
-          <em>(From <a href="NonEmptyXmlSerializableString.html">Non_empty_XML_serializable_string</a>)</em><br/>
+          <em>(From <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>)</em><br/>
           <div class='highlight'><pre><span class='nf'><a href='MatchesXmlSerializableString.html'>MatchesXmlSerializableString</a></span><span class='p'>(</span>
     <span class='bp'>self</span>
 <span class='p'>)</span></pre></div>
         </li>
         <li>
           The value must not be empty.<br/>
-          <em>(From <a href="NonEmptyXmlSerializableString.html">Non_empty_XML_serializable_string</a>)</em><br/>
+          <em>(From <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>)</em><br/>
           <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>&gt;=</span> 1</pre></div>
         </li>
         <li>
           Name type shall have a maximum length of 128 characters.<br/>
-          <em>(From <a href="NameType.html">Name_type</a>)</em><br/>
+          <em>(From <a href="NameType.html">NameType</a>)</em><br/>
           <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>&lt;=</span> 128</pre></div>
         </li>
       </ul>
