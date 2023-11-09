@@ -1238,7 +1238,7 @@ class Non_empty_XML_serializable_string(str, DBC):
     :constraint AASd-130:
 
         An attribute with data type "string" shall consist of these characters only:
-        ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u00010000-\u0010FFFF]*$.
+        ``^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u00010000-\u0010FFFF]*$``.
     """
 
 
