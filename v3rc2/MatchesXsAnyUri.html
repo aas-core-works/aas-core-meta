@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>MatchesXsAnyUri</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -429,7 +429,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
+          <a class="nav-item" href="ValidCategoriesForDataElement.html">
             ValidCategoriesForDataElement
           </a>
         </li>
@@ -726,7 +726,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="MatchesXsAnyUri.html">
+          <a class="nav-item active" href="MatchesXsAnyUri.html">
             MatchesXsAnyUri
           </a>
         </li>
@@ -929,23 +929,146 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        MatchesXsAnyUri<a class="aas-anchor-link" href="">🔗</a>
       </h1>
       <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
+        <dt>Type: <span class="aas-type-annotation">Pattern verification</span></dt>
         <dd></dd>
       </du>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          Check that <code>text</code> conforms to the pattern of an <code>xs:anyURI</code>.
         </div>
+        <div class="remarks">
+          See: <a href="https://www.w3.org/TR/xmlschema11-2/#anyURI">https://www.w3.org/TR/xmlschema11-2/#anyURI</a> and
+          <a href="https://datatracker.ietf.org/doc/html/rfc3987">https://datatracker.ietf.org/doc/html/rfc3987</a>
+        </div>
+        <dl class="args-and-return">
+          <dt>
+            <a name="text"></a>text<a class="aas-anchor-link" href="#text">🔗</a>
+          </dt>
+          <dd>
+            Text to be checked
+          </dd>
+          <dt>
+            <a name="return"></a>Return<a class="aas-anchor-link" href="return">🔗</a>
+          </dt>
+          <dd>
+            True if the <code>text</code> conforms to the pattern
+          </dd>
+        </dl>
       </div>
-      <h2>Values</h2>
-      <ul>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-      </ul>
+      <h2>Code</h2>
+      <div class='highlight'><pre><span class='nv'>scheme</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sc'>&#x27;[a-zA-Z][a-zA-Z0-9+\\-.]*&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ucschar</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sc'>&#x27;[\\xa0-\\ud7ff\\uf900-\\ufdcf\\ufdf0-\\uffef\\U00010000-\\U0001fffd\\U00020000-\\U0002fffd\\U00030000-\\U0003fffd\\U00040000-\\U0004fffd\\U00050000-\\U0005fffd\\U00060000-\\U0006fffd\\U00070000-\\U0007fffd\\U00080000-\\U0008fffd\\U00090000-\\U0009fffd\\U000a0000-\\U000afffd\\U000b0000-\\U000bfffd\\U000c0000-\\U000cfffd\\U000d0000-\\U000dfffd\\U000e1000-\\U000efffd]&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>iunreserved</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>([a-zA-Z0-9\\-._~]|</span><span class='si'>{</span><span class='nv'>ucschar</span><span class='si'>}</span><span class='sc'>)</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>pctEncoded</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sc'>&#x27;%[0-9A-Fa-f][0-9A-Fa-f]&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>subDelims</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sc'>&quot;[!$&amp;&#x27;()*+,;=]&quot;</span>
+<span class='p'>)</span>
+<span class='nv'>iuserinfo</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>iunreserved</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>pctEncoded</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>subDelims</span><span class='si'>}</span><span class='sc'>|:)*</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>h16</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sc'>&#x27;[0-9A-Fa-f]{1,4}&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>decOctet</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sc'>&#x27;([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipv4address</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='si'>{</span><span class='nv'>decOctet</span><span class='si'>}</span><span class='sc'>\\.</span><span class='si'>{</span><span class='nv'>decOctet</span><span class='si'>}</span><span class='sc'>\\.</span><span class='si'>{</span><span class='nv'>decOctet</span><span class='si'>}</span><span class='sc'>\\.</span><span class='si'>{</span><span class='nv'>decOctet</span><span class='si'>}</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ls32</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipv4address</span><span class='si'>}</span><span class='sc'>)</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipv6address</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>((</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{6}}</span><span class='si'>{</span><span class='nv'>ls32</span><span class='si'>}</span><span class='sc'>|::(</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{5}}</span><span class='si'>{</span><span class='nv'>ls32</span><span class='si'>}</span><span class='sc'>|(</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>)?::(</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{4}}</span><span class='si'>{</span><span class='nv'>ls32</span><span class='si'>}</span><span class='sc'>|((</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:)?</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>)?::(</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{3}}</span><span class='si'>{</span><span class='nv'>ls32</span><span class='si'>}</span><span class='sc'>|((</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{2}}</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>)?::(</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{2}}</span><span class='si'>{</span><span class='nv'>ls32</span><span class='si'>}</span><span class='sc'>|((</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{3}}</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>)?::</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:</span><span class='si'>{</span><span class='nv'>ls32</span><span class='si'>}</span><span class='sc'>|((</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{4}}</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>)?::</span><span class='si'>{</span><span class='nv'>ls32</span><span class='si'>}</span><span class='sc'>|((</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{5}}</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>)?::</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>|((</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>:){{6}}</span><span class='si'>{</span><span class='nv'>h16</span><span class='si'>}</span><span class='sc'>)?::)</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>unreserved</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sc'>&#x27;[a-zA-Z0-9\\-._~]&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipvfuture</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>[vV][0-9A-Fa-f]+\\.(</span><span class='si'>{</span><span class='nv'>unreserved</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>subDelims</span><span class='si'>}</span><span class='sc'>|:)+</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipLiteral</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>\\[(</span><span class='si'>{</span><span class='nv'>ipv6address</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipvfuture</span><span class='si'>}</span><span class='sc'>)\\]</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>iregName</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>iunreserved</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>pctEncoded</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>subDelims</span><span class='si'>}</span><span class='sc'>)*</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ihost</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>ipLiteral</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipv4address</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>iregName</span><span class='si'>}</span><span class='sc'>)</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>port</span> <span class='o'>=</span> <span class='sc'>&#x27;[0-9]*&#x27;</span>
+<span class='nv'>iauthority</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>iuserinfo</span><span class='si'>}</span><span class='sc'>@)?</span><span class='si'>{</span><span class='nv'>ihost</span><span class='si'>}</span><span class='sc'>(:</span><span class='si'>{</span><span class='nv'>port</span><span class='si'>}</span><span class='sc'>)?</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipchar</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>iunreserved</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>pctEncoded</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>subDelims</span><span class='si'>}</span><span class='sc'>|[:@])</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>isegment</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>ipchar</span><span class='si'>}</span><span class='sc'>)*</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipathAbempty</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(/</span><span class='si'>{</span><span class='nv'>isegment</span><span class='si'>}</span><span class='sc'>)*</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>isegmentNz</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>ipchar</span><span class='si'>}</span><span class='sc'>)+</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipathAbsolute</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>/(</span><span class='si'>{</span><span class='nv'>isegmentNz</span><span class='si'>}</span><span class='sc'>(/</span><span class='si'>{</span><span class='nv'>isegment</span><span class='si'>}</span><span class='sc'>)*)?</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipathRootless</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='si'>{</span><span class='nv'>isegmentNz</span><span class='si'>}</span><span class='sc'>(/</span><span class='si'>{</span><span class='nv'>isegment</span><span class='si'>}</span><span class='sc'>)*</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipathEmpty</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>ipchar</span><span class='si'>}</span><span class='sc'>){{0}}</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ihierPart</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(//</span><span class='si'>{</span><span class='nv'>iauthority</span><span class='si'>}</span><span class='si'>{</span><span class='nv'>ipathAbempty</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipathAbsolute</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipathRootless</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipathEmpty</span><span class='si'>}</span><span class='sc'>)</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>iprivate</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sc'>&#x27;[\\ue000-\\uf8ff\\U000f0000-\\U000ffffd\\U00100000-\\U0010fffd]&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>iquery</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>ipchar</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>iprivate</span><span class='si'>}</span><span class='sc'>|[/?])*</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ifragment</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>ipchar</span><span class='si'>}</span><span class='sc'>|[/?])*</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>isegmentNzNc</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>iunreserved</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>pctEncoded</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>subDelims</span><span class='si'>}</span><span class='sc'>|@)+</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>ipathNoscheme</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='si'>{</span><span class='nv'>isegmentNzNc</span><span class='si'>}</span><span class='sc'>(/</span><span class='si'>{</span><span class='nv'>isegment</span><span class='si'>}</span><span class='sc'>)*</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>irelativePart</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(//</span><span class='si'>{</span><span class='nv'>iauthority</span><span class='si'>}</span><span class='si'>{</span><span class='nv'>ipathAbempty</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipathAbsolute</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipathNoscheme</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>ipathEmpty</span><span class='si'>}</span><span class='sc'>)</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>irelativeRef</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='si'>{</span><span class='nv'>irelativePart</span><span class='si'>}</span><span class='sc'>(\\?</span><span class='si'>{</span><span class='nv'>iquery</span><span class='si'>}</span><span class='sc'>)?(\\#</span><span class='si'>{</span><span class='nv'>ifragment</span><span class='si'>}</span><span class='sc'>)?</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>iri</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='si'>{</span><span class='nv'>scheme</span><span class='si'>}</span><span class='sc'>:</span><span class='si'>{</span><span class='nv'>ihierPart</span><span class='si'>}</span><span class='sc'>(\\?</span><span class='si'>{</span><span class='nv'>iquery</span><span class='si'>}</span><span class='sc'>)?(\\#</span><span class='si'>{</span><span class='nv'>ifragment</span><span class='si'>}</span><span class='sc'>)?</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>iriReference</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(</span><span class='si'>{</span><span class='nv'>iri</span><span class='si'>}</span><span class='sc'>|</span><span class='si'>{</span><span class='nv'>irelativeRef</span><span class='si'>}</span><span class='sc'>)</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='nv'>pattern</span> <span class='o'>=</span> <span class='p'>(</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>^</span><span class='si'>{</span><span class='nv'>iriReference</span><span class='si'>}</span><span class='sc'>$</span><span class='s1'>&#x27;</span>
+<span class='p'>)</span>
+<span class='k'>return</span> <span class='nb'>match</span><span class='p'>(</span>
+    <span class='nv'>pattern</span>,
+    <span class='nv'>text</span>
+<span class='p'>)</span> <span class='ow'>is not</span> <span class='kc'>None</span></pre></div>
     </div>
   </div>
 </div>
