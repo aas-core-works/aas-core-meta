@@ -5428,7 +5428,7 @@ These data types imply that the unit is defined in the data specification.""",
 
 @invariant(
     lambda self: len(self.text) <= 255,
-    "String shall have a maximum length of 1023 characters.",
+    "String shall have a maximum length of 255 characters.",
 )
 class Lang_string_preferred_name_type_IEC_61360(Abstract_lang_string, DBC):
     """
@@ -5448,7 +5448,7 @@ class Lang_string_preferred_name_type_IEC_61360(Abstract_lang_string, DBC):
 
 @invariant(
     lambda self: len(self.text) <= 18,
-    "String shall have a maximum length of 1023 characters.",
+    "String shall have a maximum length of 18 characters.",
 )
 class Lang_string_short_name_type_IEC_61360(Abstract_lang_string, DBC):
     """
