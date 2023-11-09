@@ -1229,11 +1229,34 @@ def _generate_page_for_verification_function(
         )
     ]  # type: List[Stripped]
 
+    environment = base_environment
+
     func_type = None  # type: Optional[str]
     if isinstance(verification, intermediate.ImplementationSpecificVerification):
         func_type = "Implementation specific"
     elif isinstance(verification, intermediate.PatternVerification):
         func_type = "Pattern verification"
+
+        environment = intermediate_type_inference.MutableEnvironment(
+            parent=base_environment
+        )
+
+        # NOTE (mristin, 2023-11-09):
+        # We add the ``match`` function here since that is completely htmlgen specific,
+        # and is not used for any other code generator.
+
+        environment.set(
+            identifier=Identifier("match"),
+            type_annotation=intermediate_type_inference.BuiltinFunctionTypeAnnotation(
+                func=intermediate_type_inference.BuiltinFunction(
+                    name=Identifier("match"),
+                    returns=intermediate_type_inference.PrimitiveTypeAnnotation(
+                        intermediate_type_inference.PrimitiveType.BOOL
+                    ),
+                )
+            )
+        )
+
     elif isinstance(verification, intermediate.TranspilableVerification):
         func_type = "Transpilable verification function"
     else:
@@ -1278,7 +1301,7 @@ def _generate_page_for_verification_function(
     code_div, error = htmlgen.transpilation.transpile_body_of_verification(
         verification=verification,
         symbol_table=symbol_table,
-        environment=base_environment,
+        environment=environment,
     )
     if error is not None:
         return None, error
@@ -1400,8 +1423,10 @@ def generate(
         assert home_page is not None
         (target_dir / "index.html").write_text(home_page, encoding="utf-8")
 
-    base_environment = intermediate_type_inference.populate_base_environment(
-        symbol_table=symbol_table
+    base_environment = intermediate_type_inference.MutableEnvironment(
+        parent = intermediate_type_inference.populate_base_environment(
+            symbol_table=symbol_table
+        )
     )
 
     for something in itertools.chain(
@@ -1468,8 +1493,7 @@ def generate(
         else:
             assert page is not None
 
-            (target_dir / f"{htmlgen.naming.of(something)}.html").write_text(
-                page, encoding="utf-8"
-            )
+            target_pth = target_dir / f"{htmlgen.naming.of(something)}.html"
+            target_pth.write_text(page, encoding="utf-8")
 
     return errors
