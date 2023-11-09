@@ -7,6 +7,7 @@ import pathlib
 import sys
 from typing import Tuple, Optional, List
 
+import aas_core_codegen.common
 import aas_core_codegen.parse
 import aas_core_codegen.run
 import asttokens
@@ -208,9 +209,19 @@ def main() -> int:
 
         target_dir = html_dir / model_path.stem
         target_dir.mkdir(exist_ok=True)
-        htmlgen.for_metamodel.generate(
+        errors = htmlgen.for_metamodel.generate(
             symbol_table=symbol_table, atok=atok, target_dir=target_dir
         )
+
+        if len(errors) > 0:
+            lineno_columner = aas_core_codegen.common.LinenoColumner(atok=atok)
+
+            aas_core_codegen.run.write_error_report(
+                message=f"Failed to generate the documentation for {model_path}",
+                errors=[lineno_columner.error_message(error) for error in errors],
+                stderr=sys.stderr,
+            )
+            return 1
 
         names_paths.append(
             (

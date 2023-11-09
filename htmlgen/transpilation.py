@@ -472,12 +472,22 @@ class _Transpiler(
                     Stripped(f"<span class='nb'>len</span>{LPAREN}{args[0]}{RPAREN}"),
                     None,
                 )
+            elif func_type.func.name == "match":
+                joined_args = ",\n".join(args)
 
+                return (
+                    Stripped(
+                        f"<span class='nb'>match</span>{LPAREN}\n"
+                        f"{I}{indent_but_first_line(joined_args, I)}\n"
+                        f"{RPAREN}"
+                    ),
+                    None,
+                )
             else:
                 return None, Error(
                     node.original_node,
-                    f"The handling of the built-in function {node.name!r} has not "
-                    f"been implemented",
+                    f"The handling of the built-in function {node.name.identifier!r} "
+                    f"has not been implemented",
                 )
         else:
             assert_never(func_type)
