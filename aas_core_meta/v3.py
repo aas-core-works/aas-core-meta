@@ -2738,6 +2738,11 @@ class Submodel_element_list(Submodel_element):
         specify a :attr:`Has_semantics.semantic_ID` then the value is assumed to be
         identical to :attr:`Submodel_element_list.semantic_ID_list_element`.
 
+    :constraint AASd-120:
+
+        The :attr:`ID_short` of a :class:`Submodel_element` being a direct child of a
+        :class:`Submodel_element_list` shall not be specified.
+
     :constraint AASd-108:
 
         All first level child elements in a :class:`Submodel_element_list` shall have
