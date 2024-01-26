@@ -1296,7 +1296,7 @@
 <span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="MultiLanguageProperty.html#description">description</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
         </li>
         <li>
-          Description specifies no duplicate languages.<br/>
+          Description must specify unique languages.<br/>
           <em>(From <a href="Referable.html">Referable</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="MultiLanguageProperty.html#description">description</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
@@ -1310,7 +1310,7 @@
 <span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="MultiLanguageProperty.html#displayName">displayName</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
         </li>
         <li>
-          Display name specifies no duplicate languages.<br/>
+          Display name must specify unique languages.<br/>
           <em>(From <a href="Referable.html">Referable</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="MultiLanguageProperty.html#displayName">displayName</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
@@ -1356,7 +1356,7 @@
 <span class='ow'>or</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="MultiLanguageProperty.html#category">category</a> <span class='ow'>in</span> <span class='no'><a href='ValidCategoriesForDataElement.html'>ValidCategoriesForDataElement</a></span><span class='p'>)</span></pre></div>
         </li>
         <li>
-          Value specifies no duplicate languages.<br/>
+          Value must specify unique languages.<br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="MultiLanguageProperty.html#value">value</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
     <span class='bp'>self</span><span class='o'>.</span><a href="MultiLanguageProperty.html#value">value</a>
