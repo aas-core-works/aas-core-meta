@@ -1402,7 +1402,7 @@ Observed literals: {sorted(literal_set)!r}"""
                 # fmt: on
 
                 expected_description = (
-                    f"{human_readable_prop_name} specifies no duplicate languages."
+                    f"{human_readable_prop_name} must specify unique languages."
                 )
 
                 if invariant.description is None:

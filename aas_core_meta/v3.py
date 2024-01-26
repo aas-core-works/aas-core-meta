@@ -1611,7 +1611,7 @@ class Has_extensions(DBC):
     lambda self:
     not (self.display_name is not None)
     or lang_strings_have_unique_languages(self.display_name),
-    "Display name specifies no duplicate languages."
+    "Display name must specify unique languages."
 )
 @invariant(
     lambda self:
@@ -1623,7 +1623,7 @@ class Has_extensions(DBC):
     lambda self:
     not (self.description is not None)
     or lang_strings_have_unique_languages(self.description),
-    "Description specifies no duplicate languages."
+    "Description must specify unique languages."
 )
 @invariant(
     lambda self:
@@ -3062,7 +3062,7 @@ class Property(Data_element):
     lambda self:
     not (self.value is not None)
     or lang_strings_have_unique_languages(self.value),
-    "Value specifies no duplicate languages."
+    "Value must specify unique languages."
 )
 # fmt: on
 class Multi_language_property(Data_element):
@@ -5501,7 +5501,7 @@ def is_BCP_47_for_english(text: str) -> bool:
 @invariant(
     lambda self:
     lang_strings_have_unique_languages(self.preferred_name),
-    "Preferred name specifies no duplicate languages."
+    "Preferred name must specify unique languages."
 )
 @invariant(
     lambda self:
@@ -5512,7 +5512,7 @@ def is_BCP_47_for_english(text: str) -> bool:
     lambda self:
     not (self.short_name is not None)
     or lang_strings_have_unique_languages(self.short_name),
-    "Short name specifies no duplicate languages."
+    "Short name must specify unique languages."
 )
 @invariant(
     lambda self:
@@ -5524,7 +5524,7 @@ def is_BCP_47_for_english(text: str) -> bool:
     lambda self:
     not (self.definition is not None)
     or lang_strings_have_unique_languages(self.definition),
-    "Definition specifies no duplicate languages."
+    "Definition must specify unique languages."
 )
 @invariant(
     lambda self:
