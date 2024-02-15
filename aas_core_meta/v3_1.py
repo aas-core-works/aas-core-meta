@@ -3435,7 +3435,8 @@ class Annotated_relationship_element(Relationship_element):
 )
 @invariant(
     lambda self:
-    (
+    not (self.entity_type is not None)
+    or (
         self.entity_type == Entity_type.Self_managed_entity
         and (
             (
@@ -3447,14 +3448,9 @@ class Annotated_relationship_element(Relationship_element):
                     and len(self.specific_asset_IDs) >= 1
             )
         )
-    ) or (
-            self.entity_type != Entity_type.Self_managed_entity
-            and self.global_asset_ID is None
-            and self.specific_asset_IDs is None
     ),
     "Constraint AASd-014: Either the attribute global asset ID or "
-    "specific asset ID must be set if entity type is set to self-managed entity. "
-    "They are not existing otherwise."
+    "specific asset ID must be set if Entity/entityType is set to :attr:`Entity_type.Self_managed_entity`."
 )
 @invariant(
     lambda self:
@@ -3481,8 +3477,7 @@ class Entity(Submodel_element):
     :constraint AASd-014:
 
         Either the attribute :attr:`global_asset_ID` or :attr:`specific_asset_IDs`
-        of an :class:`Entity` must be set if :attr:`entity_type` is set to
-        :attr:`Entity_type.Self_managed_entity`. They are not existing otherwise.
+        of an :class:`Entity` must be set if Entity/entityType is set to :attr:`Entity_type.Self_managed_entity`.
     """
 
     statements: Optional[List["Submodel_element"]]
@@ -3491,7 +3486,7 @@ class Entity(Submodel_element):
     typically with a qualified value.
     """
 
-    entity_type: "Entity_type"
+    entity_type: Optional["Entity_type"]
     """
     Describes whether the entity is a co-managed entity or a self-managed entity.
     """
@@ -3513,7 +3508,7 @@ class Entity(Submodel_element):
 
     def __init__(
         self,
-        entity_type: "Entity_type",
+        entity_type: Optional["Entity_type"],
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
