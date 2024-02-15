@@ -2338,6 +2338,11 @@ class Asset_kind(Enum):
     Instance asset
     """
 
+    Role = "Role"
+    """
+    Role asset
+    """
+
     Not_applicable = "NotApplicable"
     """
     Neither a type asset nor an instance asset
