@@ -17,7 +17,9 @@ import tests.common
 
 class Test_matches_XML_serializable_string(unittest.TestCase):
     def test_free_form_text(self) -> None:
-        assert v3_1.matches_XML_serializable_string("some free & <free> \u1984 form text")
+        assert v3_1.matches_XML_serializable_string(
+            "some free & <free> \u1984 form text"
+        )
 
     def test_fffe(self) -> None:
         assert not v3_1.matches_XML_serializable_string("\uFFFE")
@@ -60,7 +62,9 @@ class Test_matches_xs_date_time_utc(unittest.TestCase):
         assert not v3_1.matches_xs_date_time_UTC("2022-04-01T01Z")
 
     def test_date_time_with_UTC_and_suffix(self) -> None:
-        assert not v3_1.matches_xs_date_time_UTC("2022-04-01T01:02:03Z-unexpected-suffix")
+        assert not v3_1.matches_xs_date_time_UTC(
+            "2022-04-01T01:02:03Z-unexpected-suffix"
+        )
 
 
 class Test_matches_MIME_type(unittest.TestCase):
