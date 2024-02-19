@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>ConceptDescription</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.1</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -263,7 +263,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="ConceptDescription.html">
+          <a class="nav-item active" href="ConceptDescription.html">
             ConceptDescription
           </a>
         </li>
@@ -479,7 +479,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
+          <a class="nav-item" href="ValidCategoriesForDataElement.html">
             ValidCategoriesForDataElement
           </a>
         </li>
@@ -1004,23 +1004,459 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        ConceptDescription<a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          The semantics of a property or other elements that may have a semantic description
+          is defined by a concept description.
         </div>
+        <div class="remarks">
+          The description of the concept should follow a standardized schema (realized as
+          data specification template).
+        </div>
+        <dl class="constraints">
+          <dt>
+            <a name="constraint-AASc-3a-004"></a>Constraint AASc-3a-004<a class="aas-anchor-link" href="#constraint-AASc-3a-004">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="ConceptDescription.html">ConceptDescription</a> with <a href="ConceptDescription.html#category">ConceptDescription.category</a> <code>PROPERTY</code> or
+              <code>VALUE</code> using data specification IEC61360,
+              the <a href="DataSpecificationIec61360.html#dataType">DataSpecificationIec61360.dataType</a> is mandatory and shall be
+              one of: <code>DATE</code>, <code>STRING</code>, <code>STRING_TRANSLATABLE</code>, <code>INTEGER_MEASURE</code>,
+              <code>INTEGER_COUNT</code>, <code>INTEGER_CURRENCY</code>, <code>REAL_MEASURE</code>, <code>REAL_COUNT</code>,
+              <code>REAL_CURRENCY</code>, <code>BOOLEAN</code>, <code>RATIONAL</code>, <code>RATIONAL_MEASURE</code>,
+              <code>TIME</code>, <code>TIMESTAMP</code>.
+            </p>
+            <div class="alert alert-info">
+              Note: categories are deprecated since V3.0 of Part 1a of the document series
+              &quot;Details of the Asset Administration Shell&quot;.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-005"></a>Constraint AASc-3a-005<a class="aas-anchor-link" href="#constraint-AASc-3a-005">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="ConceptDescription.html">ConceptDescription</a> with <a href="ConceptDescription.html#category">ConceptDescription.category</a> <code>REFERENCE</code>
+              using data specification template IEC61360,
+              the <a href="DataSpecificationIec61360.html#dataType">DataSpecificationIec61360.dataType</a> shall be
+              one of: <code>STRING</code>, <code>IRI</code>, <code>IRDI</code>.
+            </p>
+            <div class="alert alert-info">
+              Note: categories are deprecated since V3.0 of Part 1a of the document series
+              &quot;Details of the Asset Administration Shell&quot;.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-006"></a>Constraint AASc-3a-006<a class="aas-anchor-link" href="#constraint-AASc-3a-006">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="ConceptDescription.html">ConceptDescription</a> with <a href="ConceptDescription.html#category">ConceptDescription.category</a> <code>DOCUMENT</code>
+              using data specification IEC61360,
+              the <a href="DataSpecificationIec61360.html#dataType">DataSpecificationIec61360.dataType</a> shall be one of <code>FILE</code>,
+              <code>BLOB</code>, <code>HTML</code>
+            </p>
+            <div class="alert alert-info">
+              Categories are deprecated since V3.0 of Part 1a of the document series
+              &quot;Details of the Asset Administration Shell&quot;.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-007"></a>Constraint AASc-3a-007<a class="aas-anchor-link" href="#constraint-AASc-3a-007">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="ConceptDescription.html">ConceptDescription</a> with <a href="ConceptDescription.html#category">ConceptDescription.category</a> <code>QUALIFIER_TYPE</code>
+              using data specification IEC61360,
+              the <a href="DataSpecificationIec61360.html#dataType">DataSpecificationIec61360.dataType</a> is mandatory and shall be
+              defined.
+            </p>
+            <div class="alert alert-info">
+              Categories are deprecated since V3.0 of Part 1a of the document series
+              &quot;Details of the Asset Administration Shell&quot;.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-008"></a>Constraint AASc-3a-008<a class="aas-anchor-link" href="#constraint-AASc-3a-008">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              For a <a href="ConceptDescription.html">ConceptDescription</a> using data specification template IEC61360,
+              <a href="DataSpecificationIec61360.html#definition">DataSpecificationIec61360.definition</a> is mandatory and shall be
+              defined at least in English.
+            </p>
+            <p>
+              Exception: The concept description describes a value, i.e.
+              <a href="DataSpecificationIec61360.html#value">DataSpecificationIec61360.value</a> is defined.
+            </p>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-003"></a>Constraint AASc-3a-003<a class="aas-anchor-link" href="#constraint-AASc-3a-003">🔗</a>
+          </dt>
+          <dd>
+            For a <a href="ConceptDescription.html">ConceptDescription</a> using data specification template IEC61360,
+            referenced via <a href="DataSpecificationIec61360.html#valueList">DataSpecificationIec61360.valueList</a>
+            <a href="ValueReferencePair.html#valueId">ValueReferencePair.valueId</a>
+            the <a href="DataSpecificationIec61360.html#value">DataSpecificationIec61360.value</a> shall be set.
+          </dd>
+        </dl>
       </div>
-      <h2>Values</h2>
+      <h2>
+        <a name="inheritances"></a>
+        Inheritances
+        <a class="aas-anchor-link" href="#inheritances">🔗</a>
+      </h2>
       <ul>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
+        <li>
+          <a href="Identifiable.html">Identifiable</a>
+        </li>
+        <li>
+          <a href="HasDataSpecification.html">HasDataSpecification</a>
+        </li>
       </ul>
+      <h2>
+        <a name="properties"></a>
+        Properties
+        <a class="aas-anchor-link" href="#properties">🔗</a>
+      </h2>
+      <dl>
+        <dt>
+          <a name="extensions"></a>
+          extensions: <span class="aas-type-annotation">Optional[List[<a href="Extension.html">Extension</a>]]</span>
+          <a class="aas-anchor-link" href="#extensions">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="HasExtensions.html">HasExtensions</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              An extension of the element.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="category"></a>
+          category: <span class="aas-type-annotation">Optional[<a href="NameType.html">NameType</a>]</span>
+          <a class="aas-anchor-link" href="#category">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Referable.html">Referable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              The category is a value that gives further meta information
+              w.r.t. to the class of the element.
+              It affects the expected existence of attributes and the applicability of
+              constraints.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                The category is not identical to the semantic definition
+                (<a href="HasSemantics.html">HasSemantics</a>) of an element. The category e.g. could denote that
+                the element is a measurement value whereas the semantic definition of
+                the element would denote that it is the measured temperature.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="idShort"></a>
+          idShort: <span class="aas-type-annotation">Optional[<a href="IdShortType.html">IdShortType</a>]</span>
+          <a class="aas-anchor-link" href="#idShort">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Referable.html">Referable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              In case of identifiables this attribute is a short name of the element.
+              In case of referable this ID is an identifying string of the element within
+              its name space.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                In case the element is a property and the property has a semantic definition
+                (<a href="HasSemantics.html#semanticId">HasSemantics.semanticId</a>) conformant to IEC61360
+                the <a href="Referable.html#idShort">Referable.idShort</a> is typically identical to the short name in English.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="displayName"></a>
+          displayName: <span class="aas-type-annotation">Optional[List[<a href="LangStringNameType.html">LangStringNameType</a>]]</span>
+          <a class="aas-anchor-link" href="#displayName">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Referable.html">Referable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Display name. Can be provided in several languages.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="description"></a>
+          description: <span class="aas-type-annotation">Optional[List[<a href="LangStringTextType.html">LangStringTextType</a>]]</span>
+          <a class="aas-anchor-link" href="#description">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Referable.html">Referable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Description or comments on the element.
+            </div>
+            <div class="remarks">
+              <p>
+                The description can be provided in several languages.
+              </p>
+              <p>
+                If no description is defined, then the definition of the concept
+                description that defines the semantics of the element is used.
+              </p>
+              <p>
+                Additional information can be provided, e.g., if the element is
+                qualified and which qualifier types can be expected in which
+                context or which additional data specification templates are
+                provided.
+              </p>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="administration"></a>
+          administration: <span class="aas-type-annotation">Optional[<a href="AdministrativeInformation.html">AdministrativeInformation</a>]</span>
+          <a class="aas-anchor-link" href="#administration">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Identifiable.html">Identifiable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Administrative information of an identifiable element.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                Some of the administrative information like the version number might need to
+                be part of the identification.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="id"></a>
+          id: <span class="aas-type-annotation"><a href="Identifier.html">Identifier</a></span>
+          <a class="aas-anchor-link" href="#id">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Identifiable.html">Identifiable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              The globally unique identification of the element.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="embeddedDataSpecifications"></a>
+          embeddedDataSpecifications: <span class="aas-type-annotation">Optional[List[<a href="EmbeddedDataSpecification.html">EmbeddedDataSpecification</a>]]</span>
+          <a class="aas-anchor-link" href="#embeddedDataSpecifications">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="HasDataSpecification.html">HasDataSpecification</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Embedded data specification.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="isCaseOf"></a>
+          isCaseOf: <span class="aas-type-annotation">Optional[List[<a href="Reference.html">Reference</a>]]</span>
+          <a class="aas-anchor-link" href="#isCaseOf">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Reference to an external definition the concept is compatible to or was derived
+              from.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                It is recommended to use a global reference.
+              </div>
+              <div class="alert alert-info">
+                Compare to is-case-of relationship in ISO 13584-32 &amp; IEC EN 61360
+              </div>
+            </div>
+          </div>
+        </dd>
+      </dl>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          Extensions must be either not set or have at least one item.<br/>
+          <em>(From <a href="HasExtensions.html">HasExtensions</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#extensions">extensions</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#extensions">extensions</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-077: The name of an extension within Has-Extensions needs to be unique.<br/>
+          <em>(From <a href="HasExtensions.html">HasExtensions</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#extensions">extensions</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='ExtensionNamesAreUnique.html'>ExtensionNamesAreUnique</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#extensions">extensions</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Description must be either not set or have at least one item.<br/>
+          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#description">description</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#description">description</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Description must specify unique languages.<br/>
+          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#description">description</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#description">description</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Display name must be either not set or have at least one item.<br/>
+          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#displayName">displayName</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#displayName">displayName</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Display name must specify unique languages.<br/>
+          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#displayName">displayName</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#displayName">displayName</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Embedded data specifications must be either not set or have at least one item.<br/>
+          <em>(From <a href="HasDataSpecification.html">HasDataSpecification</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Is-case-of must be either not set or have at least one item.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#isCaseOf">isCaseOf</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#isCaseOf">isCaseOf</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASc-3a-008: For a concept description using data specification template IEC 61360, the definition is mandatory and shall be defined at least in English. Exception: The concept description describes a value.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='nf'><a href='DataSpecificationIec61360sHaveDefinitionAtLeastInEnglish.html'>DataSpecificationIec61360sHaveDefinitionAtLeastInEnglish</a></span><span class='p'>(</span>
+            <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a>
+        <span class='p'>)</span>
+        <span class='ow'>or</span> <span class='nf'><a href='DataSpecificationIec61360sHaveValue.html'>DataSpecificationIec61360sHaveValue</a></span><span class='p'>(</span>
+            <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a>
+        <span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASc-3a-007: For a concept description with category QUALIFIER_TYPE using data specification IEC 61360, the data type of the data specification is mandatory and shall be defined.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>and</span> <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='o'>==</span> <span class='sc'>&#x27;QUALIFIER_TYPE&#x27;</span>
+        <span class='ow'>and</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='DataSpecificationIec61360sHaveDataType.html'>DataSpecificationIec61360sHaveDataType</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASc-3a-006: For a concept description with category DOCUMENT using data specification IEC 61360, the data type of the data specification shall be one of: FILE, BLOB, HTML.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>and</span> <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='o'>==</span> <span class='sc'>&#x27;DOCUMENT&#x27;</span>
+        <span class='ow'>and</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='DataSpecificationIec61360sForDocumentHaveAppropriateDataType.html'>DataSpecificationIec61360sForDocumentHaveAppropriateDataType</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASc-3a-005: For a concept description with category REFERENCE using data specification IEC 61360, the data type of the data specification shall be one of: STRING, IRI, IRDI.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>and</span> <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='o'>==</span> <span class='sc'>&#x27;REFERENCE&#x27;</span>
+        <span class='ow'>and</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='DataSpecificationIec61360sForReferenceHaveAppropriateDataType.html'>DataSpecificationIec61360sForReferenceHaveAppropriateDataType</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASc-3a-004: For a concept description with category PROPERTY or VALUE using data specification IEC 61360, the data type of the data specification is mandatory and shall be one of: DATE, STRING, STRING_TRANSLATABLE, INTEGER_MEASURE, INTEGER_COUNT, INTEGER_CURRENCY, REAL_MEASURE, REAL_COUNT, REAL_CURRENCY, BOOLEAN, RATIONAL, RATIONAL_MEASURE, TIME, TIMESTAMP.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>and</span> <span class='p'>(</span>
+            <span class='p'>(</span>
+                <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='o'>==</span> <span class='sc'>&#x27;PROPERTY&#x27;</span>
+                <span class='ow'>or</span> <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#category">category</a> <span class='o'>==</span> <span class='sc'>&#x27;VALUE&#x27;</span>
+            <span class='p'>)</span>
+        <span class='p'>)</span>
+        <span class='ow'>and</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='DataSpecificationIec61360sForPropertyOrValueHaveAppropriateDataType.html'>DataSpecificationIec61360sForPropertyOrValueHaveAppropriateDataType</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="ConceptDescription.html#embeddedDataSpecifications">embeddedDataSpecifications</a>
+<span class='p'>)</span></pre></div>
+        </li>
+      </ul>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="Environment.html">Environment</a>
+          </td>
+          <td>
+            <a href="Environment.html#conceptDescriptions">Environment.conceptDescriptions</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>

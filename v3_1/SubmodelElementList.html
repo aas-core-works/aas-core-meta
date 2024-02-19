@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>SubmodelElementList</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.1</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -403,7 +403,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html">
+          <a class="nav-item active" href="SubmodelElementList.html">
             SubmodelElementList
           </a>
         </li>
@@ -479,7 +479,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
+          <a class="nav-item" href="ValidCategoriesForDataElement.html">
             ValidCategoriesForDataElement
           </a>
         </li>
@@ -1004,22 +1004,517 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        SubmodelElementList<a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          A submodel element list is an ordered list of submodel elements.
         </div>
+        <div class="remarks">
+          The numbering starts with zero (0).
+        </div>
+        <dl class="constraints">
+          <dt>
+            <a name="constraint-AASd-107"></a>Constraint AASd-107<a class="aas-anchor-link" href="#constraint-AASd-107">🔗</a>
+          </dt>
+          <dd>
+            If a first level child element in a <a href="SubmodelElementList.html">SubmodelElementList</a> has
+            a <a href="HasSemantics.html#semanticId">HasSemantics.semanticId</a> it
+            shall be identical to <a href="SubmodelElementList.html#semanticIdListElement">SubmodelElementList.semanticIdListElement</a>.
+          </dd>
+          <dt>
+            <a name="constraint-AASd-114"></a>Constraint AASd-114<a class="aas-anchor-link" href="#constraint-AASd-114">🔗</a>
+          </dt>
+          <dd>
+            If two first level child elements in a <a href="SubmodelElementList.html">SubmodelElementList</a> have
+            a <a href="HasSemantics.html#semanticId">HasSemantics.semanticId</a> then they shall be identical.
+          </dd>
+          <dt>
+            <a name="constraint-AASd-115"></a>Constraint AASd-115<a class="aas-anchor-link" href="#constraint-AASd-115">🔗</a>
+          </dt>
+          <dd>
+            If a first level child element in a <a href="SubmodelElementList.html">SubmodelElementList</a> does not
+            specify a <a href="HasSemantics.html#semanticId">HasSemantics.semanticId</a> then the value is assumed to be
+            identical to <a href="SubmodelElementList.html#semanticIdListElement">SubmodelElementList.semanticIdListElement</a>.
+          </dd>
+          <dt>
+            <a name="constraint-AASd-120"></a>Constraint AASd-120<a class="aas-anchor-link" href="#constraint-AASd-120">🔗</a>
+          </dt>
+          <dd>
+            The <a href="SubmodelElementList.html#idShort">SubmodelElementList.idShort</a> of a <a href="SubmodelElement.html">SubmodelElement</a> being a direct child of a
+            <a href="SubmodelElementList.html">SubmodelElementList</a> shall not be specified.
+          </dd>
+          <dt>
+            <a name="constraint-AASd-108"></a>Constraint AASd-108<a class="aas-anchor-link" href="#constraint-AASd-108">🔗</a>
+          </dt>
+          <dd>
+            All first level child elements in a <a href="SubmodelElementList.html">SubmodelElementList</a> shall have
+            the same submodel element type as specified in <a href="SubmodelElementList.html#typeValueListElement">SubmodelElementList.typeValueListElement</a>.
+          </dd>
+          <dt>
+            <a name="constraint-AASd-109"></a>Constraint AASd-109<a class="aas-anchor-link" href="#constraint-AASd-109">🔗</a>
+          </dt>
+          <dd>
+            If <a href="SubmodelElementList.html#typeValueListElement">SubmodelElementList.typeValueListElement</a> is equal to
+            <a href="AasSubmodelElements.html#Property">AasSubmodelElements.Property</a> or
+            <a href="AasSubmodelElements.html#Range">AasSubmodelElements.Range</a>
+            <a href="SubmodelElementList.html#valueTypeListElement">SubmodelElementList.valueTypeListElement</a> shall be set and all first
+            level child elements in the <a href="SubmodelElementList.html">SubmodelElementList</a> shall have
+            the value type as specified in <a href="SubmodelElementList.html#valueTypeListElement">SubmodelElementList.valueTypeListElement</a>.
+          </dd>
+        </dl>
       </div>
-      <h2>Values</h2>
+      <h2>
+        <a name="inheritances"></a>
+        Inheritances
+        <a class="aas-anchor-link" href="#inheritances">🔗</a>
+      </h2>
       <ul>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
+        <li>
+          <a href="SubmodelElement.html">SubmodelElement</a>
+        </li>
+      </ul>
+      <h2>
+        <a name="properties"></a>
+        Properties
+        <a class="aas-anchor-link" href="#properties">🔗</a>
+      </h2>
+      <dl>
+        <dt>
+          <a name="extensions"></a>
+          extensions: <span class="aas-type-annotation">Optional[List[<a href="Extension.html">Extension</a>]]</span>
+          <a class="aas-anchor-link" href="#extensions">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="HasExtensions.html">HasExtensions</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              An extension of the element.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="category"></a>
+          category: <span class="aas-type-annotation">Optional[<a href="NameType.html">NameType</a>]</span>
+          <a class="aas-anchor-link" href="#category">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Referable.html">Referable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              The category is a value that gives further meta information
+              w.r.t. to the class of the element.
+              It affects the expected existence of attributes and the applicability of
+              constraints.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                The category is not identical to the semantic definition
+                (<a href="HasSemantics.html">HasSemantics</a>) of an element. The category e.g. could denote that
+                the element is a measurement value whereas the semantic definition of
+                the element would denote that it is the measured temperature.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="idShort"></a>
+          idShort: <span class="aas-type-annotation">Optional[<a href="IdShortType.html">IdShortType</a>]</span>
+          <a class="aas-anchor-link" href="#idShort">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Referable.html">Referable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              In case of identifiables this attribute is a short name of the element.
+              In case of referable this ID is an identifying string of the element within
+              its name space.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                In case the element is a property and the property has a semantic definition
+                (<a href="HasSemantics.html#semanticId">HasSemantics.semanticId</a>) conformant to IEC61360
+                the <a href="Referable.html#idShort">Referable.idShort</a> is typically identical to the short name in English.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="displayName"></a>
+          displayName: <span class="aas-type-annotation">Optional[List[<a href="LangStringNameType.html">LangStringNameType</a>]]</span>
+          <a class="aas-anchor-link" href="#displayName">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Referable.html">Referable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Display name. Can be provided in several languages.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="description"></a>
+          description: <span class="aas-type-annotation">Optional[List[<a href="LangStringTextType.html">LangStringTextType</a>]]</span>
+          <a class="aas-anchor-link" href="#description">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Referable.html">Referable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Description or comments on the element.
+            </div>
+            <div class="remarks">
+              <p>
+                The description can be provided in several languages.
+              </p>
+              <p>
+                If no description is defined, then the definition of the concept
+                description that defines the semantics of the element is used.
+              </p>
+              <p>
+                Additional information can be provided, e.g., if the element is
+                qualified and which qualifier types can be expected in which
+                context or which additional data specification templates are
+                provided.
+              </p>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="semanticId"></a>
+          semanticId: <span class="aas-type-annotation">Optional[<a href="Reference.html">Reference</a>]</span>
+          <a class="aas-anchor-link" href="#semanticId">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="HasSemantics.html">HasSemantics</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Identifier of the semantic definition of the element. It is called semantic ID
+              of the element or also main semantic ID of the element.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                It is recommended to use a global reference.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="supplementalSemanticIds"></a>
+          supplementalSemanticIds: <span class="aas-type-annotation">Optional[List[<a href="Reference.html">Reference</a>]]</span>
+          <a class="aas-anchor-link" href="#supplementalSemanticIds">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="HasSemantics.html">HasSemantics</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Identifier of a supplemental semantic definition of the element.
+              It is called supplemental semantic ID of the element.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                It is recommended to use a global reference.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="qualifiers"></a>
+          qualifiers: <span class="aas-type-annotation">Optional[List[<a href="Qualifier.html">Qualifier</a>]]</span>
+          <a class="aas-anchor-link" href="#qualifiers">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="Qualifiable.html">Qualifiable</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Additional qualification of a qualifiable element.
+            </div>
+            <dl class="constraints">
+              <dt>
+                <a name="constraint-AASd-021"></a>Constraint AASd-021<a class="aas-anchor-link" href="#constraint-AASd-021">🔗</a>
+              </dt>
+              <dd>
+                Every qualifiable can only have one qualifier with the same
+                <a href="Qualifier.html#type">Qualifier.type</a>.
+              </dd>
+            </dl>
+          </div>
+        </dd>
+        <dt>
+          <a name="embeddedDataSpecifications"></a>
+          embeddedDataSpecifications: <span class="aas-type-annotation">Optional[List[<a href="EmbeddedDataSpecification.html">EmbeddedDataSpecification</a>]]</span>
+          <a class="aas-anchor-link" href="#embeddedDataSpecifications">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="HasDataSpecification.html">HasDataSpecification</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Embedded data specification.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="orderRelevant"></a>
+          orderRelevant: <span class="aas-type-annotation">Optional[bool]</span>
+          <a class="aas-anchor-link" href="#orderRelevant">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Defines whether order in list is relevant. If <a href="SubmodelElementList.html#orderRelevant">SubmodelElementList.orderRelevant</a> = <code>False</code>
+              then the list is representing a set or a bag.
+            </div>
+            <div class="remarks">
+              Default: <code>True</code>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="semanticIdListElement"></a>
+          semanticIdListElement: <span class="aas-type-annotation">Optional[<a href="Reference.html">Reference</a>]</span>
+          <a class="aas-anchor-link" href="#semanticIdListElement">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Semantic ID the submodel elements contained in the list match to.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                It is recommended to use a global reference.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="typeValueListElement"></a>
+          typeValueListElement: <span class="aas-type-annotation"><a href="AasSubmodelElements.html">AasSubmodelElements</a></span>
+          <a class="aas-anchor-link" href="#typeValueListElement">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              The submodel element type of the submodel elements contained in the list.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="valueTypeListElement"></a>
+          valueTypeListElement: <span class="aas-type-annotation">Optional[<a href="DataTypeDefXsd.html">DataTypeDefXsd</a>]</span>
+          <a class="aas-anchor-link" href="#valueTypeListElement">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              The value type of the submodel element contained in the list.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="value"></a>
+          value: <span class="aas-type-annotation">Optional[List[<a href="SubmodelElement.html">SubmodelElement</a>]]</span>
+          <a class="aas-anchor-link" href="#value">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Submodel element contained in the list.
+            </div>
+            <div class="remarks">
+              The list is ordered.
+            </div>
+          </div>
+        </dd>
+      </dl>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          Extensions must be either not set or have at least one item.<br/>
+          <em>(From <a href="HasExtensions.html">HasExtensions</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#extensions">extensions</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#extensions">extensions</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-077: The name of an extension within Has-Extensions needs to be unique.<br/>
+          <em>(From <a href="HasExtensions.html">HasExtensions</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#extensions">extensions</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='ExtensionNamesAreUnique.html'>ExtensionNamesAreUnique</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#extensions">extensions</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Description must be either not set or have at least one item.<br/>
+          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#description">description</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#description">description</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Description must specify unique languages.<br/>
+          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#description">description</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#description">description</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Display name must be either not set or have at least one item.<br/>
+          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#displayName">displayName</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#displayName">displayName</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Display name must specify unique languages.<br/>
+          <em>(From <a href="Referable.html">Referable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#displayName">displayName</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#displayName">displayName</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Supplemental semantic IDs must be either not set or have at least one item.<br/>
+          <em>(From <a href="HasSemantics.html">HasSemantics</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#supplementalSemanticIds">supplementalSemanticIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#supplementalSemanticIds">supplementalSemanticIds</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-118: If there are supplemental semantic IDs defined then there shall be also a main semantic ID.<br/>
+          <em>(From <a href="HasSemantics.html">HasSemantics</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#supplementalSemanticIds">supplementalSemanticIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#semanticId">semanticId</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Qualifiers must be either not set or have at least one item.<br/>
+          <em>(From <a href="Qualifiable.html">Qualifiable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#qualifiers">qualifiers</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#qualifiers">qualifiers</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-021: Every qualifiable can only have one qualifier with the same type.<br/>
+          <em>(From <a href="Qualifiable.html">Qualifiable</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#qualifiers">qualifiers</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='QualifierTypesAreUnique.html'>QualifierTypesAreUnique</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#qualifiers">qualifiers</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Embedded data specifications must be either not set or have at least one item.<br/>
+          <em>(From <a href="HasDataSpecification.html">HasDataSpecification</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#embeddedDataSpecifications">embeddedDataSpecifications</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Value must be either not set or have at least one item.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-107: If a first level child element has a semantic ID it shall be identical to semantic ID list element.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>and</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#semanticIdListElement">semanticIdListElement</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span>
+    <span class='nb'>all</span><span class='p'>(</span>
+        <span class='ow'>not</span> <span class='p'>(</span><span class='nv'>child</span><span class='o'>.</span><a href="SubmodelElement.html#semanticId">semanticId</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>or</span> <span class='nf'><a href='ReferenceKeyValuesEqual.html'>ReferenceKeyValuesEqual</a></span><span class='p'>(</span>
+            <span class='nv'>child</span><span class='o'>.</span><a href="SubmodelElement.html#semanticId">semanticId</a>,
+            <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#semanticIdListElement">semanticIdListElement</a>
+        <span class='p'>)</span>
+        <span class='k'>for</span> <span class='nv'>child</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a>
+    <span class='p'>)</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-114: If two first level child elements have a semantic ID then they shall be identical.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='SubmodelElementsHaveIdenticalSemanticIds.html'>SubmodelElementsHaveIdenticalSemanticIds</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-108: All first level child elements shall have the same submodel element type as specified in type value list element.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span>
+    <span class='nb'>all</span><span class='p'>(</span>
+        <span class='nf'><a href='SubmodelElementIsOfType.html'>SubmodelElementIsOfType</a></span><span class='p'>(</span>
+            <span class='nv'>element</span>,
+            <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#typeValueListElement">typeValueListElement</a>
+        <span class='p'>)</span>
+        <span class='k'>for</span> <span class='nv'>element</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a>
+    <span class='p'>)</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-109: If type value list element is equal to Property or Range value type list element shall be set and all first level child elements shall have the value type as specified in value type list element.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>and</span> <span class='p'>(</span>
+            <span class='p'>(</span>
+                <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#typeValueListElement">typeValueListElement</a> <span class='o'>==</span> <span class='nc'><a href='AasSubmodelElements.html'>AasSubmodelElements</a></span><span class='o'>.</span><a href="AasSubmodelElements.html#Property">Property</a>
+                <span class='ow'>or</span> <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#typeValueListElement">typeValueListElement</a> <span class='o'>==</span> <span class='nc'><a href='AasSubmodelElements.html'>AasSubmodelElements</a></span><span class='o'>.</span><a href="AasSubmodelElements.html#Range">Range</a>
+            <span class='p'>)</span>
+        <span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#valueTypeListElement">valueTypeListElement</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>and</span> <span class='nf'><a href='PropertiesOrRangesHaveValueType.html'>PropertiesOrRangesHaveValueType</a></span><span class='p'>(</span>
+            <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a>,
+            <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#valueTypeListElement">valueTypeListElement</a>
+        <span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-120: ID-short of submodel elements being a direct child of a  Submodel element list shall not be specified.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span>
+    <span class='nb'>all</span><span class='p'>(</span>
+        <span class='nv'>element</span><span class='o'>.</span><a href="SubmodelElement.html#idShort">idShort</a> <span class='ow'>is</span> <span class='kc'>None</span>
+        <span class='k'>for</span> <span class='nv'>element</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><a href="SubmodelElementList.html#value">value</a>
+    <span class='p'>)</span>
+<span class='p'>)</span></pre></div>
+        </li>
       </ul>
     </div>
   </div>
