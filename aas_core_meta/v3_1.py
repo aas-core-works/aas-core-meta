@@ -1267,8 +1267,8 @@ class Blob_type(bytearray, DBC):
 
 
 @invariant(
-    lambda self: len(self) <= 2000,
-    "Identifier shall have a maximum length of 2000 characters.",
+    lambda self: len(self) <= 2024,
+    "Identifier shall have a maximum length of 2024 characters.",
 )
 class Identifier(Non_empty_XML_serializable_string, DBC):
     """
