@@ -1425,8 +1425,8 @@ class ID_short_type(Name_type, DBC):
     :constraint AASd-002:
 
         ID-short of :class:`Referable`'s shall only feature letters, digits,
-        underscore (``_``); starting mandatory with a letter.
-        *I.e.* ``[a-zA-Z][a-zA-Z0-9_]*``.
+        hyphen (``-``) and underscore (``_``); starting mandatory with a letter,
+        and not ending with a hyphen, *I.e.* ``^[a-zA-Z][a-zA-Z0-9_-]*[a-zA-Z0-9_]+$``.
 
     :constraint AASd-117:
 
