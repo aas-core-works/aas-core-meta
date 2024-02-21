@@ -1777,7 +1777,7 @@ class Has_kind(DBC):
 
     kind: Optional["Modelling_kind"]
     """
-    Kind of the element: either type or instance.
+    Kind of the element: either template or instance.
 
     Default: :attr:`Modelling_kind.Instance`
     """
