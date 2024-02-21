@@ -1025,10 +1025,11 @@
           </dt>
           <dd>
             ID-short of <a href="Referable.html">Referable</a>&#x27;s shall only feature letters, digits,
-            underscore (<code>_</code>); starting mandatory with a letter.
+            hyphen (<code>-</code>) and underscore (<code>_</code>); starting mandatory with a letter,
+            and not ending with a hyphen, 
             <em>
               I.e.
-            </em> <code>[a-zA-Z][a-zA-Z0-9_]*</code>.
+            </em> <code>^[a-zA-Z][a-zA-Z0-9_-]*[a-zA-Z0-9_]+$</code>.
           </dd>
           <dt>
             <a name="constraint-AASd-117"></a>Constraint AASd-117<a class="aas-anchor-link" href="#constraint-AASd-117">🔗</a>
