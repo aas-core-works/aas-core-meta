@@ -2345,7 +2345,7 @@ class Asset_kind(Enum):
 
     Not_applicable = "NotApplicable"
     """
-    Neither a type asset nor an instance asset
+    Neither a type asset nor an instance asset nor a role asset
     """
 
 
