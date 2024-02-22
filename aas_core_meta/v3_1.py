@@ -1385,8 +1385,8 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
 
 
 @invariant(
-    lambda self: matches_RFC_8089_path(self),
-    "The value must represent a valid file URI scheme according to RFC 8089.",
+    lambda self: matches_xs_any_URI(self),
+    "The value must represent a valid URI scheme.",
 )
 class Path_type(Identifier, DBC):
     """
@@ -1394,8 +1394,11 @@ class Path_type(Identifier, DBC):
 
     .. note::
 
-        Any string conformant to RFC8089 , the “file” URI scheme (for
-        relative and absolute file paths)
+        [anyURI](https://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/datatypes.html#anyURI) supports a wide range of
+        internationalized resource identifiers can be specified when an anyURI is called for,
+        and still be understood as URIs per
+        [RFC 3986](https://www.w3.org/TR/2012/REC-xmlschema11-2-20120405/datatypes.html#RFC3986)
+        and its successor(s).
     """
 
     pass
