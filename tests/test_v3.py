@@ -198,6 +198,9 @@ class Test_matches_xs_date(unittest.TestCase):
     def test_date_with_unexpected_suffix(self) -> None:
         assert not v3.matches_xs_date("2022-04-01unexpected")
 
+    def test_with_unexpected_concatenated_time_zone(self) -> None:
+        assert not v3.matches_xs_date("0705-04-1014:00")
+
 
 class Test_matches_xs_date_time(unittest.TestCase):
     def test_empty(self) -> None:

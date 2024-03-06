@@ -507,7 +507,7 @@ def matches_xs_date(text: str) -> bool:
     month_frag = f"((0[1-9])|(1[0-2]))"
     day_frag = f"((0[1-9])|([12]{digit})|(3[01]))"
     minute_frag = f"[0-5]{digit}"
-    timezone_frag = rf"(Z|(\+|-)(0{digit}|1[0-3]):{minute_frag}|14:00)"
+    timezone_frag = rf"(Z|(\+|-)((0{digit}|1[0-3]):{minute_frag}|14:00))"
     date_lexical_rep = f"{year_frag}-{month_frag}-{day_frag}{timezone_frag}?"
 
     pattern = f"^{date_lexical_rep}$"
