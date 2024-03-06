@@ -1047,7 +1047,7 @@
     <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>[0-5]</span><span class='si'>{</span><span class='nv'>digit</span><span class='si'>}</span><span class='s1'>&#x27;</span>
 <span class='p'>)</span>
 <span class='nv'>timezoneFrag</span> <span class='o'>=</span> <span class='p'>(</span>
-    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(Z|(\\+|-)(0</span><span class='si'>{</span><span class='nv'>digit</span><span class='si'>}</span><span class='sc'>|1[0-3]):</span><span class='si'>{</span><span class='nv'>minuteFrag</span><span class='si'>}</span><span class='sc'>|14:00)</span><span class='s1'>&#x27;</span>
+    <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='sc'>(Z|(\\+|-)((0</span><span class='si'>{</span><span class='nv'>digit</span><span class='si'>}</span><span class='sc'>|1[0-3]):</span><span class='si'>{</span><span class='nv'>minuteFrag</span><span class='si'>}</span><span class='sc'>|14:00))</span><span class='s1'>&#x27;</span>
 <span class='p'>)</span>
 <span class='nv'>dateLexicalRep</span> <span class='o'>=</span> <span class='p'>(</span>
     <span class='sa'>f</span><span class='s1'>&#x27;</span><span class='si'>{</span><span class='nv'>yearFrag</span><span class='si'>}</span><span class='sc'>-</span><span class='si'>{</span><span class='nv'>monthFrag</span><span class='si'>}</span><span class='sc'>-</span><span class='si'>{</span><span class='nv'>dayFrag</span><span class='si'>}</span><span class='si'>{</span><span class='nv'>timezoneFrag</span><span class='si'>}</span><span class='sc'>?</span><span class='s1'>&#x27;</span>
