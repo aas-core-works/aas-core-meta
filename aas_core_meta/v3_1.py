@@ -1239,6 +1239,10 @@ class Non_empty_XML_serializable_string(str, DBC):
 
         An attribute with data type "string" shall consist of these characters only:
         ``^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u00010000-\u0010FFFF]*$``.
+        
+        Constraint AASd-130 ensures that encoding and interoperability between 
+        different serializations is possible. 
+        It corresponds to the restrictions as defined for the XML Schema 1.0.
     """
 
 
@@ -1385,7 +1389,7 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
 
 
 @invariant(
-    lambda self: matches_RFC_8089_path(self),
+    lambda self: matches_xs_any_URI(self),
     "The value must represent a valid file URI scheme according to RFC 8089.",
 )
 class Path_type(Identifier, DBC):
@@ -1394,8 +1398,8 @@ class Path_type(Identifier, DBC):
 
     .. note::
 
-        Any string conformant to RFC8089 , the “file” URI scheme (for
-        relative and absolute file paths)
+        Any string conformant to RFC 2396 and amended by RFC 2732, the “file” URI scheme
+        for XSL Schema 1.0 relative and absolute file paths
     """
 
     pass
