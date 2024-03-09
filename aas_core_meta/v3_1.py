@@ -224,52 +224,6 @@ def matches_MIME_type(text: str) -> bool:
 
     return match(media_type, text) is not None
 
-
-# noinspection SpellCheckingInspection
-@verification
-def matches_RFC_8089_path(text: str) -> bool:
-    """
-    Check that :paramref:`text` is a path conforming to the pattern of RFC 8089.
-
-    The definition has been taken from:
-    https://datatracker.ietf.org/doc/html/rfc8089
-
-    :param text: Text to be checked
-    :returns: True if the :paramref:`text` conforms to the pattern
-
-    """
-    h16 = "[0-9A-Fa-f]{1,4}"
-    dec_octet = "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-    ipv4address = f"{dec_octet}\\.{dec_octet}\\.{dec_octet}\\.{dec_octet}"
-    ls32 = f"({h16}:{h16}|{ipv4address})"
-    ipv6address = (
-        f"(({h16}:){{6}}{ls32}|::({h16}:){{5}}{ls32}|({h16})?::({h16}:){{4}}"
-        f"{ls32}|(({h16}:)?{h16})?::({h16}:){{3}}{ls32}|(({h16}:){{2}}{h16})?::"
-        f"({h16}:){{2}}{ls32}|(({h16}:){{3}}{h16})?::{h16}:{ls32}|(({h16}:){{4}}"
-        f"{h16})?::{ls32}|(({h16}:){{5}}{h16})?::{h16}|(({h16}:){{6}}{h16})?::)"
-    )
-    unreserved = "[a-zA-Z0-9\\-._~]"
-    sub_delims = "[!$&'()*+,;=]"
-    ipvfuture = f"[vV][0-9A-Fa-f]+\\.({unreserved}|{sub_delims}|:)+"
-    ip_literal = f"\\[({ipv6address}|{ipvfuture})\\]"
-    pct_encoded = "%[0-9A-Fa-f][0-9A-Fa-f]"
-    reg_name = f"({unreserved}|{pct_encoded}|{sub_delims})*"
-    host = f"({ip_literal}|{ipv4address}|{reg_name})"
-    file_auth = f"(localhost|{host})"
-    pchar = f"({unreserved}|{pct_encoded}|{sub_delims}|[:@])"
-    segment_nz = f"({pchar})+"
-    segment = f"({pchar})*"
-    path_absolute = f"/({segment_nz}(/{segment})*)?"
-    auth_path = f"({file_auth})?{path_absolute}"
-    local_path = f"{path_absolute}"
-    file_hier_part = f"(//{auth_path}|{local_path})"
-    file_scheme = "file"
-    file_uri = f"{file_scheme}:{file_hier_part}"
-
-    pattern = f"^{file_uri}$"
-    return match(pattern, text) is not None
-
-
 # noinspection SpellCheckingInspection
 @verification
 def matches_BCP_47(text: str) -> bool:
@@ -1239,6 +1193,10 @@ class Non_empty_XML_serializable_string(str, DBC):
 
         An attribute with data type "string" shall consist of these characters only:
         ``^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u00010000-\u0010FFFF]*$``.
+        
+        Constraint AASd-130 ensures that encoding and interoperability between 
+        different serializations is possible. 
+        It corresponds to the restrictions as defined for the XML Schema 1.0.
     """
 
 
@@ -1385,7 +1343,7 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
 
 
 @invariant(
-    lambda self: matches_RFC_8089_path(self),
+    lambda self: matches_xs_any_URI(self),
     "The value must represent a valid file URI scheme according to RFC 8089.",
 )
 class Path_type(Identifier, DBC):
@@ -1394,8 +1352,8 @@ class Path_type(Identifier, DBC):
 
     .. note::
 
-        Any string conformant to RFC8089 , the “file” URI scheme (for
-        relative and absolute file paths)
+        Any string conformant to RFC 2396 and amended by RFC 2732, the “file” URI scheme
+        for XSL Schema 1.0 relative and absolute file paths
     """
 
     pass
