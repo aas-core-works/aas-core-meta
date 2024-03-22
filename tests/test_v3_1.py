@@ -122,7 +122,7 @@ class Test_matches_BCP_47(unittest.TestCase):
         assert not v3_1.matches_BCP_47("some free form text")
 
     def test_valid(self) -> None:
-        for text in ["de", "de-CH"]:
+        for text in ["de", "de-CH", "zh-cmn-Hans-CN"]:
             self.assertTrue(v3_1.matches_BCP_47(text), text)
 
 
