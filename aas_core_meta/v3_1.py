@@ -1,4 +1,5 @@
 """
+--- WORK IN PROGRESS ---
 Provide an implementation of the Asset Administration Shell (AAS) V3.1.
 
 The presented version of the Metamodel is related to the work of
