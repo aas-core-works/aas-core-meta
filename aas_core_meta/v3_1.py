@@ -5110,13 +5110,13 @@ class Embedded_data_specification:
     data_specification_content: Data_specification_content
     """Actual content of the data specification"""
 
-    data_specification: Optional[Reference]
+    data_specification: Reference
     """Reference to the data specification"""
 
     def __init__(
         self,
         data_specification_content: Data_specification_content,
-        data_specification: Optional[Reference] = None,
+        data_specification: Reference,
     ) -> None:
         self.data_specification_content = data_specification_content
         self.data_specification = data_specification
