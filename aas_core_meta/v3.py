@@ -1386,10 +1386,6 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
     """
 
 
-@invariant(
-    lambda self: matches_RFC_8089_path(self),
-    "The value must represent a valid file URI scheme according to RFC 8089.",
-)
 class Path_type(Identifier, DBC):
     """
     Identifier
