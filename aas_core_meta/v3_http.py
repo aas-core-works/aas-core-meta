@@ -1,5 +1,5 @@
 """
-Handle data structures for the Asset Administration Shell (AAS) V3.0 over HTTP.
+Handle data structures for the HTTP API of the Asset Administration Shell (AAS) V3.0.
 
 Specifically, we provide additional data structures required for AAS API over HTTP.
 
@@ -4630,7 +4630,7 @@ class Key_types(Enum):
     """Enumeration of different key value types within a key."""
 
     Annotated_relationship_element = "AnnotatedRelationshipElement"
-    Asset_administration_shell = "Asset_administration_shell"
+    Asset_administration_shell = "AssetAdministrationShell"
     Basic_event_element = "BasicEventElement"
     Blob = "Blob"
     Capability = "Capability"
@@ -5591,6 +5591,9 @@ class Paged_result_paging_metadata:
         self.cursor = cursor
 
 
+# TODO (mristin, 2024-06-21): update the docstrings to match the book!
+
+
 @serialization(with_model_type=False)
 class Paged_result:
     """Represent an answer from the server split across pages."""
@@ -5600,15 +5603,16 @@ class Paged_result:
     def __init__(self, paging_metadata: Paged_result_paging_metadata) -> None:
         self.paging_metadata = paging_metadata
 
-class Get_shell_result(Paged_result):
+
+class Get_asset_administration_shell_result(Paged_result):
     """Represent the listing of asset administration shells."""
 
     result: List[Asset_administration_shell]
 
     def __init__(
-            self,
-            paging_metadata: Paged_result_paging_metadata,
-            result: List[Asset_administration_shell]
+        self,
+        paging_metadata: Paged_result_paging_metadata,
+        result: List[Asset_administration_shell],
     ) -> None:
         Paged_result.__init__(self, paging_metadata)
 
@@ -5621,10 +5625,80 @@ class Get_submodel_result(Paged_result):
     result: List[Submodel]
 
     def __init__(
-            self,
-            paging_metadata: Paged_result_paging_metadata,
-            result: List[Submodel]
+        self, paging_metadata: Paged_result_paging_metadata, result: List[Submodel]
     ) -> None:
         Paged_result.__init__(self, paging_metadata)
 
         self.result = result
+
+
+class MessageType(Enum):
+    """Enumerate the type of error messages."""
+
+    Undefined = "Undefined"
+    Info = "Info"
+    Warning = "Warning"
+    Error = "Error"
+    Exception = "Exception"
+
+
+@invariant(
+    lambda self: is_xs_date_time(self),
+    "The value must represent a valid xs:dateTime.",
+)
+@invariant(
+    lambda self: matches_xs_date_time_UTC(self),
+    "The value must match the pattern of xs:dateTime.",
+)
+class Date_time(str, DBC):
+    """Represent an ``xs:dateTime``."""
+
+
+# fmt: off
+@invariant(
+    lambda self: 1 <= len(self.code) and len(self.code) <= 32,
+    "Code must be between 1 and 32 characters long."
+)
+@invariant(
+    lambda self: 1 <= len(self.correlation_ID) and len(self.correlation_ID) <= 128,
+    "Correlation ID must be between 1 and 128 characters long."
+)
+# fmt: on
+class Message:
+    """Capture the error message returned by the server."""
+
+    code: str
+
+    correlation_ID: str
+
+    message_type: MessageType
+
+    text: str
+
+    timestamp: Date_time
+
+    def __init__(
+        self,
+        code: str,
+        correlation_ID: str,
+        message_type: MessageType,
+        text: str,
+        timestamp: Date_time,
+    ) -> None:
+        self.code = code
+        self.correlation_ID = correlation_ID
+        self.message_type = message_type
+        self.text = text
+        self.timestamp = timestamp
+
+
+@invariant(
+    lambda self: len(self.messages) >= 1, "At least one message must be specified."
+)
+class Result:
+    """Capture the server response in case of errors."""
+
+    messages: List[Message]
+
+    def __init__(self, messages: List[Message]) -> None:
+        self.messages = messages

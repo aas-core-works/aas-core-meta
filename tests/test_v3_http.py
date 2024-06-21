@@ -1,11 +1,14 @@
 import ast
+import difflib
+import itertools
 import pathlib
 import unittest
 from types import ModuleType
-from typing import MutableMapping, Union
+from typing import MutableMapping, Union, Optional
 
 import asttokens
 from aas_core_codegen.common import Identifier
+from icontract import ensure
 
 import aas_core_meta.v3
 import aas_core_meta.v3_http
@@ -13,47 +16,24 @@ import aas_core_meta.v3_http
 import tests.common
 
 
-# TODO (mristin, 2024-06-21): remove
-# def module_from_ast(atok: asttokens.ASTTokens) -> ast.Module:
-#     """Retrieve the underlying module from the given Abstract Syntax Tree."""
-#     root = atok.tree
-#     assert isinstance(root, ast.Module)
-#     return root
-#
-# def map_symbols_to_ast_nodes(
-#         a_module: ast.Module
-# ) -> MutableMapping[str, Union[ast.FunctionDef, ast.ClassDef, ast.Assign]]:
-#     """Map each symbol in the module to its corresponding name."""
-#     mapping: MutableMapping[
-#         str,
-#         Union[ast.FunctionDef, ast.ClassDef, ast.Assign]
-#     ] = dict()
-#
-#     for i, stmt in enumerate(a_module.body):
-#         if (
-#                 i == 0 and isinstance(stmt, ast.Expr)
-#                 and isinstance(stmt.value, ast.Constant)
-#                 and isinstance(stmt.value.value, str)
-#         ):
-#             # NOTE (mristin):
-#             # We skip the docstring of the module.
-#             continue
-#         elif isinstance(stmt, (ast.ImportFrom, ast.Import)):
-#             # NOTE (mristin):
-#             # The imports refer to the markers and types, so we skip them. They do not
-#             # introduce any symbols by definition of our domain-specific language.
-#             continue
-#         elif isinstance(stmt, (ast.ClassDef, ast.FunctionDef)):
-#             mapping[stmt.name] = stmt
-#         elif isinstance(stmt, ast.Assign):
-#             print(f"ast.dump(stmt) is {ast.dump(stmt)!r}")  # TODO: debug
-#         else:
-#             assert_never(stmt)
-#
-#     return mapping
+@ensure(lambda result: not (result is not None) or len(result) > 0)
+def compute_diff_text(text: str, other: str) -> Optional[str]:
+    r"""
+    Compute a diff on two texts.
+
+    >>> compute_diff_text('hello\nworld\n!', 'hello\n!')
+    '  hello\n- world\n  !'
+
+    >>> compute_diff_text('hello!', 'hello!')
+    """
+    if text == other:
+        return None
+
+    return "\n".join(difflib.ndiff(text.splitlines(), other.splitlines()))
+
 
 class TestAssertions(unittest.TestCase):
-    def test_inheritance(self) -> None:
+    def test_module_inheritance(self) -> None:
         """
         Test that all the definitions are inherited from the original meta-model.
 
@@ -71,6 +51,32 @@ class TestAssertions(unittest.TestCase):
             f"The class ``Environment`` should not be defined "
             f"in {aas_core_meta.v3_http.__file__}, but it was."
         )
+
+        for our_type in v3.symbol_table.our_types:
+            if our_type.name == "Environment":
+                continue
+
+            other_our_type = v3_http.symbol_table.find_our_type(our_type.name)
+            if other_our_type is None:
+                raise AssertionError(
+                    f"Our type {our_type.name!r} is missing "
+                    f"in {aas_core_meta.v3_http.__file__}, "
+                    f"but defined in {aas_core_meta.v3.__file__}"
+                )
+
+            # noinspection PyTypeChecker
+            diff = compute_diff_text(
+                text=v3.atok.get_text(our_type.parsed.node),
+                other=v3_http.atok.get_text(other_our_type.parsed.node),
+            )
+
+            if diff is not None:
+                raise AssertionError(
+                    f"The text for our type {our_type.name!r} differs "
+                    f"between {aas_core_meta.v3.__file__} and "
+                    f"{aas_core_meta.v3_http.__file__}. Diff:\n"
+                    f"{diff}"
+                )
 
 
 if __name__ == "__main__":
