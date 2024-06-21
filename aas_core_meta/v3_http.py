@@ -5604,7 +5604,7 @@ class Paged_result:
         self.paging_metadata = paging_metadata
 
 
-class Get_asset_administration_shell_result(Paged_result):
+class Get_asset_administration_shells_result(Paged_result):
     """Represent the listing of asset administration shells."""
 
     result: List[Asset_administration_shell]
