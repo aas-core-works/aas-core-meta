@@ -6395,128 +6395,151 @@ class Execution_state(Enum):
     """The operation is running"""
     Running = "Running"
 
-    
+    """The operation is completed"""
+    Completed = "Completed"
 
-    # TODO (mristin, 2024-06-28): uncomment/fix
-# class Paged_result_paging_metadata:
-#     """Provide paging data for the client to continue the retrieval."""
-#
-#     cursor: str
-#
-#     def __init__(self, cursor: str) -> None:
-#         self.cursor = cursor
-#
-#
-# # TODO (mristin, 2024-06-21): update the docstrings to match the book!
-#
-#
-# @serialization(with_model_type=False)
-# class Paged_result:
-#     """Represent an answer from the server split across pages."""
-#
-#     paging_metadata: Paged_result_paging_metadata
-#
-#     def __init__(self, paging_metadata: Paged_result_paging_metadata) -> None:
-#         self.paging_metadata = paging_metadata
-#
-#
-# class Get_asset_administration_shells_result(Paged_result):
-#     """Represent the listing of asset administration shells."""
-#
-#     result: List[Asset_administration_shell]
-#
-#     def __init__(
-#         self,
-#         paging_metadata: Paged_result_paging_metadata,
-#         result: List[Asset_administration_shell],
-#     ) -> None:
-#         Paged_result.__init__(self, paging_metadata)
-#
-#         self.result = result
-#
-#
-# class Get_submodel_result(Paged_result):
-#     """Represent the listing of submodels."""
-#
-#     result: List[Submodel]
-#
-#     def __init__(
-#         self, paging_metadata: Paged_result_paging_metadata, result: List[Submodel]
-#     ) -> None:
-#         Paged_result.__init__(self, paging_metadata)
-#
-#         self.result = result
-#
-#
-# class MessageType(Enum):
-#     """Enumerate the type of error messages."""
-#
-#     Undefined = "Undefined"
-#     Info = "Info"
-#     Warning = "Warning"
-#     Error = "Error"
-#     Exception = "Exception"
-#
-#
-# @invariant(
-#     lambda self: is_xs_date_time(self),
-#     "The value must represent a valid xs:dateTime.",
-# )
-# @invariant(
-#     lambda self: matches_xs_date_time_UTC(self),
-#     "The value must match the pattern of xs:dateTime.",
-# )
-# class Date_time(str, DBC):
-#     """Represent an ``xs:dateTime``."""
-#
-#
-# # fmt: off
-# @invariant(
-#     lambda self: 1 <= len(self.code) and len(self.code) <= 32,
-#     "Code must be between 1 and 32 characters long."
-# )
-# @invariant(
-#     lambda self: 1 <= len(self.correlation_ID) and len(self.correlation_ID) <= 128,
-#     "Correlation ID must be between 1 and 128 characters long."
-# )
-# # fmt: on
-# class Message:
-#     """Capture the error message returned by the server."""
-#
-#     code: str
-#
-#     correlation_ID: str
-#
-#     message_type: MessageType
-#
-#     text: str
-#
-#     timestamp: Date_time
-#
-#     def __init__(
-#         self,
-#         code: str,
-#         correlation_ID: str,
-#         message_type: MessageType,
-#         text: str,
-#         timestamp: Date_time,
-#     ) -> None:
-#         self.code = code
-#         self.correlation_ID = correlation_ID
-#         self.message_type = message_type
-#         self.text = text
-#         self.timestamp = timestamp
-#
-#
-# @invariant(
-#     lambda self: len(self.messages) >= 1, "At least one message must be specified."
-# )
-# class Result:
-#     """Capture the server response in case of errors."""
-#
-#     messages: List[Message]
-#
-#     def __init__(self, messages: List[Message]) -> None:
-#         self.messages = messages
+    """The operation was cancelled externally"""
+    Canceled = "Canceled"
+
+    """The operation failed"""
+    Failed = "Failed"
+
+    """The operation has timed out due to given client or server timeout"""
+    Timeout = "Timeout"
+
+class Operation_handle(DBC):
+    """
+    The returned handle of an operation's asynchronous invocation used to request the
+    current state of the operation's execution
+    """
+
+    """Handle ID"""
+    handle_ID: Short_ID_type
+
+class Serialization_modifier_level(Enum):
+    """
+    This enumeration indicates the depth of the structure of the response or input
+    content.
+    """
+    """
+    All elements of a requested hierarchy level and all children on all sublevels are 
+    returned. Children in this sense are :class:`SubmodelElement`'s which are contained
+    at the :attr:`Submodel.submodelElements` field of :class:`Submodel`'s, the 
+    :attr:`SubmodelElementCollection.value` or :attr:`SubmodelElementList.value` field
+    of :class:`SubmodelElementCollection`'s or :class:`SubmodelElementList`'s,
+    the :attr:`Entity.statements` field of :class:`Entity`'s, or 
+    the :attr:`AnnotatedRelationshipElement.annotations` field of
+    :class:`AnnotatedRelationshipElement`'s.
+    """
+    Deep = "Deep"
+
+    """
+    Only elements of a requested hierarchy level as well as direct children are
+    returned. By this, a client can iterate the hierarchy step by step.
+    """
+    Core = "Core"
+
+
+class Serialization_modifier_content(Enum):
+    """
+    This enumeration indicates the kind of serialization of the response or input
+    content.
+
+    For Content equal to ``Value`` see Clause 11.4.2 for details.
+    """
+    """
+    The standard serialization of the model element or child elements is applied.
+    """
+    Normal = "Normal"
+
+    """
+    Only metadata of an element or child elements is returned; the value is not.
+    """
+    Metadata = "Metadata"
+
+    """
+    Only the raw value of the model element or child elements is returned; it is
+    commonly referred to as *ValueOnly*-serialization.
+    """
+    Value = "Value"
+
+    """
+    Only applicable to :class:`Referable`'s. Only the reference to the found element is
+    returned; potential child elements are ignored.
+    """
+    Reference = "Reference"
+
+    """
+    Returns the :attr:`Referable.ID_short` of the requested element and a list of 
+    ID-short paths to child elements if the requested element is a :class:`Submodel`,
+    a :class:`SubmodelElementCollection`, a :class:`SubmodelElementList`,
+    a :class:`AnnotatedRelationshipElement`, or an :class:`Entity`.    
+    """
+    Path = "Path"
+
+class Serialization_modifier_extent(Enum):
+    """
+    This enumeration  indicates to which extent the response or input content is being
+    serialized. At this stage, the listed values could also be represented as binary
+    values on BLOB-elements. They are, however, kept as generic extent values for
+    the sake of extension.
+    """
+    """Only applicable to :class:`Blob` elements; the BLOB content is not returned."""
+    Without_BLOB_value = "WithoutBLOBValue"
+
+    """
+    Only applicable to :class:`Blob` elements; the BLOB content is returned as
+    base64-encoded string.
+    """
+    With_BLOB_value = "WithBLOBValue"
+
+# TODO (mristin, 2024-06-28): include XxxMetadata, see:
+#  https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf#page=118
+
+
+
+class Paged_result_paging_metadata:
+    """Provide paging data for the client to continue the retrieval."""
+
+    cursor: str
+
+    def __init__(self, cursor: str) -> None:
+        self.cursor = cursor
+
+
+@serialization(with_model_type=False)
+class Paged_result:
+    """Represent an answer from the server split across pages."""
+
+    paging_metadata: Paged_result_paging_metadata
+
+    def __init__(self, paging_metadata: Paged_result_paging_metadata) -> None:
+        self.paging_metadata = paging_metadata
+
+class Get_asset_administration_shells_result(Paged_result):
+    """Represent the listing of asset administration shells."""
+
+    result: List[Asset_administration_shell]
+
+    def __init__(
+        self,
+        paging_metadata: Paged_result_paging_metadata,
+        result: List[Asset_administration_shell],
+    ) -> None:
+        Paged_result.__init__(self, paging_metadata)
+
+        self.result = result
+
+class Get_submodel_result(Paged_result):
+    """Represent the listing of submodels."""
+
+    result: List[Submodel]
+
+    def __init__(
+        self, paging_metadata: Paged_result_paging_metadata, result: List[Submodel]
+    ) -> None:
+        Paged_result.__init__(self, paging_metadata)
+
+        self.result = result
 
 # endregion HTTP API part

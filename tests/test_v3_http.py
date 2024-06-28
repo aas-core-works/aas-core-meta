@@ -1,18 +1,15 @@
-import ast
 import difflib
-import itertools
 import pathlib
 import unittest
-from types import ModuleType
-from typing import MutableMapping, Union, Optional
+from typing import Optional, List
 
-import asttokens
+import aas_core_codegen
+from aas_core_codegen import intermediate
 from aas_core_codegen.common import Identifier
 from icontract import ensure
 
 import aas_core_meta.v3
 import aas_core_meta.v3_http
-
 import tests.common
 
 
@@ -32,7 +29,12 @@ def compute_diff_text(text: str, other: str) -> Optional[str]:
     return "\n".join(difflib.ndiff(text.splitlines(), other.splitlines()))
 
 
-class TestAssertions(unittest.TestCase):
+_META_MODEL: tests.common.MetaModel = tests.common.load_meta_model(
+    pathlib.Path(aas_core_meta.v3_http.__file__)
+)
+
+
+class Test_assertions(unittest.TestCase):
     def test_module_inheritance(self) -> None:
         """
         Test that all the definitions are inherited from the original meta-model.
@@ -43,11 +45,7 @@ class TestAssertions(unittest.TestCase):
             model_path=pathlib.Path(aas_core_meta.v3.__file__)
         )
 
-        v3_http = tests.common.load_meta_model(
-            model_path=pathlib.Path(aas_core_meta.v3_http.__file__)
-        )
-
-        assert v3_http.symbol_table.find_our_type(Identifier('Environment')) is None, (
+        assert _META_MODEL.symbol_table.find_our_type(Identifier('Environment')) is None, (
             f"The class ``Environment`` should not be defined "
             f"in {aas_core_meta.v3_http.__file__}, but it was."
         )
@@ -56,7 +54,7 @@ class TestAssertions(unittest.TestCase):
             if our_type.name == "Environment":
                 continue
 
-            other_our_type = v3_http.symbol_table.find_our_type(our_type.name)
+            other_our_type = _META_MODEL.symbol_table.find_our_type(our_type.name)
             if other_our_type is None:
                 raise AssertionError(
                     f"Our type {our_type.name!r} is missing "
@@ -67,7 +65,7 @@ class TestAssertions(unittest.TestCase):
             # noinspection PyTypeChecker
             diff = compute_diff_text(
                 text=v3.atok.get_text(our_type.parsed.node),
-                other=v3_http.atok.get_text(other_our_type.parsed.node),
+                other=_META_MODEL.atok.get_text(other_our_type.parsed.node),
             )
 
             if diff is not None:
@@ -78,6 +76,285 @@ class TestAssertions(unittest.TestCase):
                     f"{diff}"
                 )
 
+    # NOTE (mristin, 2023-01-25):
+    # We do not state "ID" as an abbreviation (which might imply "Identity Document"),
+    # but rather expect "Id" or "id", short for "identifier".
+    #
+    # See: https://english.stackexchange.com/questions/101248/how-should-the-abbreviation-for-identifier-be-capitalized
+    LOWER_TO_ABBREVIATION = {
+        "aas": "AAS",
+        "bcp": "BCP",
+        "din": "DIN",
+        "ece": "ECE",
+        "html": "HTML",
+        "id": "ID",
+        "ids": "IDs",
+        "iec": "IEC",
+        "irdi": "IRDI",
+        "iri": "IRI",
+        "mime": "MIME",
+        "nist": "NIST",
+        "rfc": "RFC",
+        "si": "SI",
+        "uri": "URI",
+        "url": "URL",
+        "utc": "UTC",
+        "xml": "XML",
+        "xsd": "XSD",
+    }
+
+    ABBREVIATIONS = set(LOWER_TO_ABBREVIATION.values())
+
+    @staticmethod
+    def check_class_name(name: aas_core_codegen.common.Identifier) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        if parts[0] not in Test_assertions.ABBREVIATIONS:
+            if parts[0] != parts[0].capitalize():
+                errors.append(
+                    f"Expected first part of a class name "
+                    f"to be capitalized ({parts[0].capitalize()!r}), "
+                    f"but it was not ({parts[0]!r}) for class {name!r}"
+                )
+
+        for part in parts:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
+                errors.append(
+                    f"Expected a part of a class name "
+                    f"to be {expected_part!r} "
+                    f"since it denotes an abbreviation, "
+                    f"but got {part!r} for the class {name!r}"
+                )
+
+        for part in parts[1:]:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a non-first part of a class name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for class {name!r}"
+                    )
+
+        return errors
+
+    @staticmethod
+    def check_enum_literal_name(name: aas_core_codegen.common.Identifier) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        if parts[0] not in Test_assertions.ABBREVIATIONS:
+            if parts[0] != parts[0].capitalize():
+                errors.append(
+                    f"Expected first part of an enumeration literal name "
+                    f"to be capitalized ({parts[0].capitalize()!r}), "
+                    f"but it was not ({parts[0]!r}) for enumeration literal {name!r}"
+                )
+
+        for part in parts:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
+                errors.append(
+                    f"Expected a part of an enumeration literal name "
+                    f"to be {expected_part!r} since it denotes an abbreviation, "
+                    f"but got {part!r} for enumeration literal {name!r}"
+                )
+
+        for part in parts[1:]:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a non-first part of an enumeration literal name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for enumeration literal {name!r}"
+                    )
+
+        return errors
+
+    @staticmethod
+    def check_property_name(name: aas_core_codegen.common.Identifier) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        for part in parts:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
+                errors.append(
+                    f"Expected a part of a property name "
+                    f"to be {expected_part!r} "
+                    f"since it denotes an abbreviation, "
+                    f"but got {part!r} for the property {name!r}"
+                )
+
+        for part in parts:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a part of a property name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for the property {name!r}"
+                    )
+
+        return errors
+
+    @staticmethod
+    def check_method_name(name: aas_core_codegen.common.Identifier) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        for part in parts:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
+                errors.append(
+                    f"Expected a part of a method name "
+                    f"to be {expected_part!r} "
+                    f"since it denotes an abbreviation, "
+                    f"but got {part!r} for the method {name!r}"
+                )
+
+        for part in parts:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a part of a method name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for the method {name!r}"
+                    )
+
+        return errors
+
+    @staticmethod
+    def check_function_name(name: aas_core_codegen.common.Identifier) -> List[str]:
+        errors = []  # type: List[str]
+
+        parts = name.split("_")  # type: List[str]
+
+        for part in parts:
+            expected_part = Test_assertions.LOWER_TO_ABBREVIATION.get(
+                part.lower(), None
+            )
+
+            if expected_part is not None and part != expected_part:
+                errors.append(
+                    f"Expected a part of a function name "
+                    f"to be {expected_part!r} "
+                    f"since it denotes an abbreviation, "
+                    f"but got {part!r} for the function {name!r}"
+                )
+
+        for part in parts:
+            if part not in Test_assertions.ABBREVIATIONS:
+                if part.lower() != part:
+                    errors.append(
+                        f"Expected a part of a function name "
+                        f"to be lower-case ({part.lower()}) "
+                        f"since it was not registered as an abbreviation, "
+                        f"but it was not ({part!r}) "
+                        f"for the function {name!r}"
+                    )
+
+        return errors
+
+    @staticmethod
+    def needs_plural(type_annotation: intermediate.TypeAnnotationUnion) -> bool:
+        lang_string_cls = _META_MODEL.symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Abstract_lang_string")
+        )
+
+        type_anno = intermediate.beneath_optional(type_annotation)
+
+        return isinstance(type_anno, intermediate.ListTypeAnnotation) and not (
+                isinstance(type_anno.items, intermediate.OurTypeAnnotation)
+                and type_anno.items.our_type.is_subclass_of(lang_string_cls)
+        )
+
+    def test_naming(self) -> None:
+        errors = []  # type: List[str]
+
+        hard_wired_plural_exceptions = {
+            "Concept_description.is_case_of",
+            "Submodel_element_collection.value",
+            "Submodel_element_list.value",
+            "Extension.refers_to",
+        }
+
+        symbol_table = _META_MODEL.symbol_table
+
+        for our_type in symbol_table.our_types:
+            errors.extend(Test_assertions.check_class_name(name=our_type.name))
+
+            # We descend and check literals, properties *etc.*
+
+            if isinstance(our_type, intermediate.Enumeration):
+                for literal in our_type.literals:
+                    errors.extend(
+                        Test_assertions.check_enum_literal_name(name=literal.name)
+                    )
+
+            elif isinstance(our_type, intermediate.ConstrainedPrimitive):
+                # NOTE (mristin, 2022-08-19):
+                # There are no names to be checked beneath the constrained primitive.
+                pass
+
+            elif isinstance(
+                    our_type,
+                    (intermediate.AbstractClass, intermediate.ConcreteClass)
+            ):
+                for prop in our_type.properties:
+                    errors.extend(Test_assertions.check_property_name(prop.name))
+
+                    qualified_name = f"{our_type.name}.{prop.name}"
+
+                    if (
+                            Test_assertions.needs_plural(prop.type_annotation)
+                            and qualified_name not in hard_wired_plural_exceptions
+                            and not prop.name.endswith("s")
+                    ):
+                        errors.append(
+                            f"Expected the property to have a suffix '-s', "
+                            f"but it does not: {qualified_name}"
+                        )
+
+                for method in our_type.methods:
+                    errors.extend(Test_assertions.check_method_name(method.name))
+
+            else:
+                aas_core_codegen.common.assert_never(our_type)
+
+        for func in symbol_table.verification_functions:
+            errors.extend(Test_assertions.check_function_name(func.name))
+
+        if len(errors) != 0:
+            raise AssertionError("\n".join(f"* {error}" for error in errors))
+
+    def test_meta_data_classes_properly_defined(self) -> None:
+        # TODO (mristin, 2024-06-28): impl
+        pass
 
 if __name__ == "__main__":
     unittest.main()
