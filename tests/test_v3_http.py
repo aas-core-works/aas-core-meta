@@ -75,13 +75,18 @@ def _assert_meta_data_class_valid(
                 f"{this_type_anno} != {that_type_anno}"
             )
 
-        if prop.description is not None:
+        if prop.specified_for is meta_data_class and prop.description is not None:
             raise AssertionError(
                 f"Unexpected description about the property {prop.name!r} "
                 f"in the meta-data class {meta_data_class.name!r}. We forbid "
                 f"duplicating descriptions to avoid confusing copy/pastes."
             )
 
+    # TODO (mristin, 2024-06-28):
+    #  check for equal methods except for expected missing methods
+
+    # TODO (mristin, 2024-06-28): check for missing invariants somehow, e.g.,
+    #   check that only the listed invariants are missing.
 
 def _assert_asset_administration_shell_metadata_class_valid(
         symbol_table: intermediate.SymbolTable
@@ -173,6 +178,11 @@ class Test_assertions(unittest.TestCase):
         "utc": "UTC",
         "xml": "XML",
         "xsd": "XSD",
+        "w3c": "W3C",
+        "did": "DID",
+        "ssp": "SSP",
+        "aasx": "AASX",
+        "tlsa": "TLSA"
     }
 
     ABBREVIATIONS = set(LOWER_TO_ABBREVIATION.values())
@@ -373,6 +383,8 @@ class Test_assertions(unittest.TestCase):
             "Submodel_element_collection.value",
             "Submodel_element_list.value",
             "Extension.refers_to",
+            "Get_asset_administration_shells_result.result",
+            "Get_submodel_result.result",
         }
 
         symbol_table = _META_MODEL.symbol_table
@@ -434,14 +446,16 @@ class Test_assertions(unittest.TestCase):
         ) in [
             ("Asset_administration_shell", ["asset_information", "submodels"]),
             ("Submodel", ["submodel_elements"]),
+            ("Submodel_element", []),
             ("Submodel_element_collection", ["value"]),
             ("Submodel_element_list", ["value"]),
             ("Entity", ["statements", "global_asset_ID", "specific_asset_ID"]),
+            ("Event_element", []),
             ("Basic_event_element", ["observed"]),
             ("Capability", []),
             ("Operation", []),
             ("Property", ["value", "value_ID"]),
-            ("Multilanguage_property", ["value", "value_ID"]),
+            ("Multi_language_property", ["value", "value_ID"]),
             ("Range", ["min", "max"]),
             ("Reference_element", ["value"]),
             ("Relationship_element", ["first", "second"]),

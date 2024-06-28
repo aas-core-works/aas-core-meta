@@ -239,7 +239,7 @@ def matches_BCP_47(text: str) -> bool:
 @verification
 @implementation_specific
 def lang_strings_have_unique_languages(
-        lang_strings: List["Abstract_lang_string"],
+    lang_strings: List["Abstract_lang_string"],
 ) -> bool:
     """
     Check that the :paramref:`lang_strings` do not have overlapping
@@ -1028,9 +1028,9 @@ def ID_shorts_are_unique(referables: List["Referable"]) -> bool:
 @verification
 @implementation_specific
 def ID_shorts_of_variables_are_unique(
-        input_variables: Optional[List["Operation_variable"]],
-        output_variables: Optional[List["Operation_variable"]],
-        inoutput_variables: Optional[List["Operation_variable"]],
+    input_variables: Optional[List["Operation_variable"]],
+    output_variables: Optional[List["Operation_variable"]],
+    inoutput_variables: Optional[List["Operation_variable"]],
 ) -> bool:
     """
     Check that the :attr:`Referable.ID_short`'s among all the
@@ -1082,7 +1082,7 @@ def extension_names_are_unique(extensions: List["Extension"]) -> bool:
 @verification
 @implementation_specific
 def submodel_elements_have_identical_semantic_IDs(
-        elements: List["Submodel_element"],
+    elements: List["Submodel_element"],
 ) -> bool:
     """Check that all semantic IDs are identical, if specified."""
     # NOTE (mristin, 2022-04-7):
@@ -1102,7 +1102,7 @@ def submodel_elements_have_identical_semantic_IDs(
 @verification
 @implementation_specific
 def submodel_element_is_of_type(
-        element: "Submodel_element", element_type: "AAS_submodel_elements"
+    element: "Submodel_element", element_type: "AAS_submodel_elements"
 ) -> bool:
     """
     Check that the run-time type of the :paramref:`element` coincides with
@@ -1114,7 +1114,7 @@ def submodel_element_is_of_type(
 @verification
 @implementation_specific
 def properties_or_ranges_have_value_type(
-        elements: List["Submodel_element"], value_type: "Data_type_def_XSD"
+    elements: List["Submodel_element"], value_type: "Data_type_def_XSD"
 ) -> bool:
     """Check that all the :paramref:`elements` have the :paramref:`value_type`."""
     # NOTE (mristin, 2022-04-7):
@@ -1416,9 +1416,9 @@ class Has_semantics(DBC):
     """
 
     def __init__(
-            self,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        self,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
     ) -> None:
         self.semantic_ID = semantic_ID
         self.supplemental_semantic_IDs = supplemental_semantic_IDs
@@ -1482,13 +1482,13 @@ class Extension(Has_semantics):
     """
 
     def __init__(
-            self,
-            name: "Name_type",
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            value_type: Optional["Data_type_def_XSD"] = None,
-            value: Optional["Value_data_type"] = None,
-            refers_to: Optional[List["Reference"]] = None,
+        self,
+        name: "Name_type",
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        value_type: Optional["Data_type_def_XSD"] = None,
+        value: Optional["Value_data_type"] = None,
+        refers_to: Optional[List["Reference"]] = None,
     ) -> None:
         Has_semantics.__init__(
             self,
@@ -1625,12 +1625,12 @@ class Referable(Has_extensions):
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional["ID_short_type"] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional["ID_short_type"] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
     ) -> None:
         Has_extensions.__init__(self, extensions=extensions)
 
@@ -1658,14 +1658,14 @@ class Identifiable(Referable):
     """The globally unique identification of the element."""
 
     def __init__(
-            self,
-            ID: "Identifier",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            administration: Optional["Administrative_information"] = None,
+        self,
+        ID: "Identifier",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        administration: Optional["Administrative_information"] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -1745,10 +1745,10 @@ class Has_data_specification(DBC):
     """Embedded data specification."""
 
     def __init__(
-            self,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
+        self,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         self.embedded_data_specifications = embedded_data_specifications
 
@@ -1804,14 +1804,14 @@ class Administrative_information(Has_data_specification):
     """
 
     def __init__(
-            self,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            version: Optional[Version_type] = None,
-            revision: Optional[Revision_type] = None,
-            creator: Optional["Reference"] = None,
-            template_ID: Optional["Identifier"] = None,
+        self,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        version: Optional[Version_type] = None,
+        revision: Optional[Revision_type] = None,
+        creator: Optional["Reference"] = None,
+        template_ID: Optional["Identifier"] = None,
     ) -> None:
         Has_data_specification.__init__(
             self, embedded_data_specifications=embedded_data_specifications
@@ -1972,14 +1972,14 @@ class Qualifier(Has_semantics):
     """
 
     def __init__(
-            self,
-            type: "Qualifier_type",
-            value_type: "Data_type_def_XSD",
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            kind: Optional["Qualifier_kind"] = None,
-            value: Optional["Value_data_type"] = None,
-            value_ID: Optional["Reference"] = None,
+        self,
+        type: "Qualifier_type",
+        value_type: "Data_type_def_XSD",
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        kind: Optional["Qualifier_kind"] = None,
+        value: Optional["Value_data_type"] = None,
+        value_ID: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(
             self,
@@ -2045,20 +2045,20 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     """
 
     def __init__(
-            self,
-            ID: Identifier,
-            asset_information: "Asset_information",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            administration: Optional["Administrative_information"] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            derived_from: Optional["Reference"] = None,
-            submodels: Optional[List["Reference"]] = None,
+        self,
+        ID: Identifier,
+        asset_information: "Asset_information",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        administration: Optional["Administrative_information"] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        derived_from: Optional["Reference"] = None,
+        submodels: Optional[List["Reference"]] = None,
     ) -> None:
         Identifiable.__init__(
             self,
@@ -2210,12 +2210,12 @@ class Asset_information(DBC):
     """
 
     def __init__(
-            self,
-            asset_kind: "Asset_kind",
-            global_asset_ID: Optional["Identifier"] = None,
-            specific_asset_IDs: Optional[List["Specific_asset_ID"]] = None,
-            asset_type: Optional["Identifier"] = None,
-            default_thumbnail: Optional["Resource"] = None,
+        self,
+        asset_kind: "Asset_kind",
+        global_asset_ID: Optional["Identifier"] = None,
+        specific_asset_IDs: Optional[List["Specific_asset_ID"]] = None,
+        asset_type: Optional["Identifier"] = None,
+        default_thumbnail: Optional["Resource"] = None,
     ) -> None:
         self.asset_kind = asset_kind
         self.global_asset_ID = global_asset_ID
@@ -2245,9 +2245,9 @@ class Resource(DBC):
     """
 
     def __init__(
-            self,
-            path: "Path_type",
-            content_type: Optional["Content_type"] = None,
+        self,
+        path: "Path_type",
+        content_type: Optional["Content_type"] = None,
     ) -> None:
         self.path = path
         self.content_type = content_type
@@ -2276,8 +2276,7 @@ class Asset_kind(Enum):
 
 @invariant(
     lambda self: not (self.external_subject_ID is not None)
-                 or (
-                         self.external_subject_ID.type == Reference_types.External_reference),
+    or (self.external_subject_ID.type == Reference_types.External_reference),
     "Constraint AASd-133: External subject ID shall be an external reference.",
 )
 class Specific_asset_ID(Has_semantics):
@@ -2309,12 +2308,12 @@ class Specific_asset_ID(Has_semantics):
     """
 
     def __init__(
-            self,
-            name: Label_type,
-            value: Identifier,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            external_subject_ID: Optional["Reference"] = None,
+        self,
+        name: Label_type,
+        value: Identifier,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        external_subject_ID: Optional["Reference"] = None,
     ) -> None:
         Has_semantics.__init__(
             self,
@@ -2405,22 +2404,22 @@ class Submodel(
     """A submodel consists of zero or more submodel elements."""
 
     def __init__(
-            self,
-            ID: Identifier,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            administration: Optional["Administrative_information"] = None,
-            kind: Optional["Modelling_kind"] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List["Qualifier"]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            submodel_elements: Optional[List["Submodel_element"]] = None,
+        self,
+        ID: Identifier,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        administration: Optional["Administrative_information"] = None,
+        kind: Optional["Modelling_kind"] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        submodel_elements: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Identifiable.__init__(
             self,
@@ -2468,18 +2467,18 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List["Qualifier"]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Referable.__init__(
             self,
@@ -2520,20 +2519,20 @@ class Relationship_element(Submodel_element):
     """
 
     def __init__(
-            self,
-            first: "Reference",
-            second: "Reference",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List["Qualifier"]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
+        self,
+        first: "Reference",
+        second: "Reference",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2731,23 +2730,23 @@ class Submodel_element_list(Submodel_element):
     """
 
     def __init__(
-            self,
-            type_value_list_element: "AAS_submodel_elements",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List["Qualifier"]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            order_relevant: Optional["bool"] = None,
-            semantic_ID_list_element: Optional["Reference"] = None,
-            value_type_list_element: Optional["Data_type_def_XSD"] = None,
-            value: Optional[List["Submodel_element"]] = None,
+        self,
+        type_value_list_element: "AAS_submodel_elements",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        order_relevant: Optional["bool"] = None,
+        semantic_ID_list_element: Optional["Reference"] = None,
+        value_type_list_element: Optional["Data_type_def_XSD"] = None,
+        value: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2806,19 +2805,19 @@ class Submodel_element_collection(Submodel_element):
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List["Qualifier"]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            value: Optional[List["Submodel_element"]] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        value: Optional[List["Submodel_element"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2874,18 +2873,18 @@ class Data_element(Submodel_element):
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2948,21 +2947,21 @@ class Property(Data_element):
     """
 
     def __init__(
-            self,
-            value_type: "Data_type_def_XSD",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            value: Optional["Value_data_type"] = None,
-            value_ID: Optional["Reference"] = None,
+        self,
+        value_type: "Data_type_def_XSD",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        value: Optional["Value_data_type"] = None,
+        value_ID: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3021,20 +3020,20 @@ class Multi_language_property(Data_element):
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            value: Optional[List["Lang_string_text_type"]] = None,
-            value_ID: Optional["Reference"] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        value: Optional[List["Lang_string_text_type"]] = None,
+        value_ID: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3092,21 +3091,21 @@ class Range(Data_element):
     """
 
     def __init__(
-            self,
-            value_type: "Data_type_def_XSD",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            min: Optional["Value_data_type"] = None,
-            max: Optional["Value_data_type"] = None,
+        self,
+        value_type: "Data_type_def_XSD",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        min: Optional["Value_data_type"] = None,
+        max: Optional["Value_data_type"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3141,19 +3140,19 @@ class Reference_element(Data_element):
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            value: Optional["Reference"] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        value: Optional["Reference"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3200,20 +3199,20 @@ class Blob(Data_element):
     """
 
     def __init__(
-            self,
-            content_type: Content_type,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            value: Optional["Blob_type"] = None,
+        self,
+        content_type: Content_type,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        value: Optional["Blob_type"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3254,20 +3253,20 @@ class File(Data_element):
     """
 
     def __init__(
-            self,
-            content_type: "Content_type",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            value: Optional["Path_type"] = None,
+        self,
+        content_type: "Content_type",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        value: Optional["Path_type"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3318,21 +3317,21 @@ class Annotated_relationship_element(Relationship_element):
     """
 
     def __init__(
-            self,
-            first: "Reference",
-            second: "Reference",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            annotations: Optional[List[Data_element]] = None,
+        self,
+        first: "Reference",
+        second: "Reference",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        annotations: Optional[List[Data_element]] = None,
     ) -> None:
         Relationship_element.__init__(
             self,
@@ -3438,22 +3437,22 @@ class Entity(Submodel_element):
     """
 
     def __init__(
-            self,
-            entity_type: "Entity_type",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List["Qualifier"]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            statements: Optional[List["Submodel_element"]] = None,
-            global_asset_ID: Optional["Identifier"] = None,
-            specific_asset_IDs: Optional[List["Specific_asset_ID"]] = None,
+        self,
+        entity_type: "Entity_type",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        statements: Optional[List["Submodel_element"]] = None,
+        global_asset_ID: Optional["Identifier"] = None,
+        specific_asset_IDs: Optional[List["Specific_asset_ID"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3622,15 +3621,15 @@ class Event_payload(DBC):
     """
 
     def __init__(
-            self,
-            source: "Reference",
-            observable_reference: "Reference",
-            time_stamp: "Date_time_UTC",
-            source_semantic_ID: Optional["Reference"] = None,
-            observable_semantic_ID: Optional["Reference"] = None,
-            topic: Optional["Message_topic_type"] = None,
-            subject_ID: Optional["Reference"] = None,
-            payload: Optional["Blob_type"] = None,
+        self,
+        source: "Reference",
+        observable_reference: "Reference",
+        time_stamp: "Date_time_UTC",
+        source_semantic_ID: Optional["Reference"] = None,
+        observable_semantic_ID: Optional["Reference"] = None,
+        topic: Optional["Message_topic_type"] = None,
+        subject_ID: Optional["Reference"] = None,
+        payload: Optional["Blob_type"] = None,
     ) -> None:
         self.source = source
         self.observable_reference = observable_reference
@@ -3654,18 +3653,18 @@ class Event_element(Submodel_element):
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3783,26 +3782,26 @@ class Basic_event_element(Event_element):
     """
 
     def __init__(
-            self,
-            observed: "Reference",
-            direction: "Direction",
-            state: "State_of_event",
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List[Qualifier]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            message_topic: Optional["Message_topic_type"] = None,
-            message_broker: Optional["Reference"] = None,
-            last_update: Optional["Date_time_UTC"] = None,
-            min_interval: Optional["Duration"] = None,
-            max_interval: Optional["Duration"] = None,
+        self,
+        observed: "Reference",
+        direction: "Direction",
+        state: "State_of_event",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        message_topic: Optional["Message_topic_type"] = None,
+        message_broker: Optional["Reference"] = None,
+        last_update: Optional["Date_time_UTC"] = None,
+        min_interval: Optional["Duration"] = None,
+        max_interval: Optional["Duration"] = None,
     ) -> None:
         Event_element.__init__(
             self,
@@ -3884,21 +3883,21 @@ class Operation(Submodel_element):
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List["Qualifier"]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            input_variables: Optional[List["Operation_variable"]] = None,
-            output_variables: Optional[List["Operation_variable"]] = None,
-            inoutput_variables: Optional[List["Operation_variable"]] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        input_variables: Optional[List["Operation_variable"]] = None,
+        output_variables: Optional[List["Operation_variable"]] = None,
+        inoutput_variables: Optional[List["Operation_variable"]] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3954,18 +3953,18 @@ class Capability(Submodel_element):
     """
 
     def __init__(
-            self,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            semantic_ID: Optional["Reference"] = None,
-            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
-            qualifiers: Optional[List["Qualifier"]] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3996,7 +3995,7 @@ class Capability(Submodel_element):
 @verification
 @implementation_specific
 def data_specification_IEC_61360s_for_property_or_value_have_appropriate_data_type(
-        embedded_data_specifications: List["Embedded_data_specification"],
+    embedded_data_specifications: List["Embedded_data_specification"],
 ) -> bool:
     """
     Check that the :attr:`Data_specification_IEC_61360.data_type` is defined
@@ -4012,11 +4011,11 @@ def data_specification_IEC_61360s_for_property_or_value_have_appropriate_data_ty
             )
         )
         or (
-                data_specification.data_specification_content.data_type is not None
-                and (
-                        data_specification.data_specification_content.data_type
-                        in Data_type_IEC_61360_for_property_or_value
-                )
+            data_specification.data_specification_content.data_type is not None
+            and (
+                data_specification.data_specification_content.data_type
+                in Data_type_IEC_61360_for_property_or_value
+            )
         )
         for data_specification in embedded_data_specifications
     )
@@ -4025,7 +4024,7 @@ def data_specification_IEC_61360s_for_property_or_value_have_appropriate_data_ty
 @verification
 @implementation_specific
 def data_specification_IEC_61360s_for_reference_have_appropriate_data_type(
-        embedded_data_specifications: List["Embedded_data_specification"],
+    embedded_data_specifications: List["Embedded_data_specification"],
 ) -> bool:
     """
     Check that the :attr:`Data_specification_IEC_61360.data_type` is defined
@@ -4041,11 +4040,11 @@ def data_specification_IEC_61360s_for_reference_have_appropriate_data_type(
             )
         )
         or (
-                data_specification.data_specification_content.data_type is not None
-                and (
-                        data_specification.data_specification_content.data_type
-                        in Data_type_IEC_61360_for_reference
-                )
+            data_specification.data_specification_content.data_type is not None
+            and (
+                data_specification.data_specification_content.data_type
+                in Data_type_IEC_61360_for_reference
+            )
         )
         for data_specification in embedded_data_specifications
     )
@@ -4054,7 +4053,7 @@ def data_specification_IEC_61360s_for_reference_have_appropriate_data_type(
 @verification
 @implementation_specific
 def data_specification_IEC_61360s_for_document_have_appropriate_data_type(
-        embedded_data_specifications: List["Embedded_data_specification"],
+    embedded_data_specifications: List["Embedded_data_specification"],
 ) -> bool:
     """
     Check that the :attr:`Data_specification_IEC_61360.data_type` is defined
@@ -4070,11 +4069,11 @@ def data_specification_IEC_61360s_for_document_have_appropriate_data_type(
             )
         )
         or (
-                data_specification.data_specification_content.data_type is not None
-                and (
-                        data_specification.data_specification_content.data_type
-                        in Data_type_IEC_61360_for_document
-                )
+            data_specification.data_specification_content.data_type is not None
+            and (
+                data_specification.data_specification_content.data_type
+                in Data_type_IEC_61360_for_document
+            )
         )
         for data_specification in embedded_data_specifications
     )
@@ -4083,7 +4082,7 @@ def data_specification_IEC_61360s_for_document_have_appropriate_data_type(
 @verification
 @implementation_specific
 def data_specification_IEC_61360s_have_data_type(
-        embedded_data_specifications: List["Embedded_data_specification"],
+    embedded_data_specifications: List["Embedded_data_specification"],
 ) -> bool:
     """
     Check that the :attr:`Data_specification_IEC_61360.data_type` is defined for all
@@ -4106,7 +4105,7 @@ def data_specification_IEC_61360s_have_data_type(
 @verification
 @implementation_specific
 def data_specification_IEC_61360s_have_value(
-        embedded_data_specifications: List["Embedded_data_specification"],
+    embedded_data_specifications: List["Embedded_data_specification"],
 ) -> bool:
     """
     Check that the :attr:`Data_specification_IEC_61360.value` is defined
@@ -4129,7 +4128,7 @@ def data_specification_IEC_61360s_have_value(
 @verification
 @implementation_specific
 def data_specification_IEC_61360s_have_definition_at_least_in_english(
-        embedded_data_specifications: List["Embedded_data_specification"],
+    embedded_data_specifications: List["Embedded_data_specification"],
 ) -> bool:
     """
     Check that the :attr:`Data_specification_IEC_61360.definition` is defined
@@ -4140,8 +4139,7 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
 
     for data_specification in embedded_data_specifications:
         if not isinstance(
-                data_specification.data_specification_content,
-                Data_specification_IEC_61360
+            data_specification.data_specification_content, Data_specification_IEC_61360
         ):
             continue
 
@@ -4149,10 +4147,10 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
             return False
 
         if not any(
-                is_BCP_47_for_english(lang_string.language)
-                for lang_string in (
-                        data_specification.data_specification_content.definition
-                )
+            is_BCP_47_for_english(lang_string.language)
+            for lang_string in (
+                data_specification.data_specification_content.definition
+            )
         ):
             return False
 
@@ -4329,18 +4327,18 @@ class Concept_description(Identifiable, Has_data_specification):
     """
 
     def __init__(
-            self,
-            ID: Identifier,
-            extensions: Optional[List["Extension"]] = None,
-            category: Optional[Name_type] = None,
-            ID_short: Optional[ID_short_type] = None,
-            display_name: Optional[List["Lang_string_name_type"]] = None,
-            description: Optional[List["Lang_string_text_type"]] = None,
-            administration: Optional["Administrative_information"] = None,
-            embedded_data_specifications: Optional[
-                List["Embedded_data_specification"]
-            ] = None,
-            is_case_of: Optional[List["Reference"]] = None,
+        self,
+        ID: Identifier,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        administration: Optional["Administrative_information"] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        is_case_of: Optional[List["Reference"]] = None,
     ) -> None:
         Identifiable.__init__(
             self,
@@ -4597,10 +4595,10 @@ class Reference(DBC):
     """
 
     def __init__(
-            self,
-            type: Reference_types,
-            keys: List["Key"],
-            referred_semantic_ID: Optional["Reference"] = None,
+        self,
+        type: Reference_types,
+        keys: List["Key"],
+        referred_semantic_ID: Optional["Reference"] = None,
     ) -> None:
         self.type = type
         self.keys = keys
@@ -4827,9 +4825,9 @@ AAS_referables: Set[Key_types] = constant_set(
         Key_types.Submodel_element_list,
     ],
     description="Enumeration of referables. "
-                "We need this to check that model references refer to a Referable. "
-                "For example, the observed attribute of the "
-                "Basic Event Element object must be a model reference to a Referable.",
+    "We need this to check that model references refer to a Referable. "
+    "For example, the observed attribute of the "
+    "Basic Event Element object must be a model reference to a Referable.",
     superset_of=[AAS_referable_non_identifiables, AAS_identifiables],
 )
 
@@ -4920,7 +4918,7 @@ class Abstract_lang_string(DBC):
     """Text in the :attr:`language`"""
 
     def __init__(
-            self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
         self.language = language
         self.text = text
@@ -4934,7 +4932,7 @@ class Lang_string_name_type(Abstract_lang_string, DBC):
     """String with length 128 maximum and minimum 1 characters and with language tags"""
 
     def __init__(
-            self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
         Abstract_lang_string.__init__(self, language=language, text=text)
 
@@ -4949,7 +4947,7 @@ class Lang_string_text_type(Abstract_lang_string, DBC):
     """
 
     def __init__(
-            self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
         Abstract_lang_string.__init__(self, language=language, text=text)
 
@@ -4986,9 +4984,9 @@ class Embedded_data_specification:
     """Reference to the data specification"""
 
     def __init__(
-            self,
-            data_specification_content: Data_specification_content,
-            data_specification: Optional[Reference] = None,
+        self,
+        data_specification_content: Data_specification_content,
+        data_specification: Optional[Reference] = None,
     ) -> None:
         self.data_specification_content = data_specification_content
         self.data_specification = data_specification
@@ -5233,11 +5231,11 @@ class Level_type(DBC):
     """Maximum of the value"""
 
     def __init__(
-            self,
-            min: "bool",
-            nom: "bool",
-            typ: "bool",
-            max: "bool",
+        self,
+        min: "bool",
+        nom: "bool",
+        typ: "bool",
+        max: "bool",
     ) -> None:
         self.min = min
         self.nom = nom
@@ -5321,7 +5319,7 @@ class Lang_string_preferred_name_type_IEC_61360(Abstract_lang_string, DBC):
     """
 
     def __init__(
-            self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
         Abstract_lang_string.__init__(self, language=language, text=text)
 
@@ -5336,7 +5334,7 @@ class Lang_string_short_name_type_IEC_61360(Abstract_lang_string, DBC):
     """
 
     def __init__(
-            self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
         Abstract_lang_string.__init__(self, language=language, text=text)
 
@@ -5351,7 +5349,7 @@ class Lang_string_definition_type_IEC_61360(Abstract_lang_string, DBC):
     """
 
     def __init__(
-            self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
+        self, language: BCP_47_language_tag, text: Non_empty_XML_serializable_string
     ) -> None:
         Abstract_lang_string.__init__(self, language=language, text=text)
 
@@ -5561,19 +5559,19 @@ class Data_specification_IEC_61360(Data_specification_content):
     """
 
     def __init__(
-            self,
-            preferred_name: List["Lang_string_preferred_name_type_IEC_61360"],
-            short_name: Optional[List["Lang_string_short_name_type_IEC_61360"]] = None,
-            unit: Optional[Non_empty_XML_serializable_string] = None,
-            unit_ID: Optional["Reference"] = None,
-            source_of_definition: Optional[Non_empty_XML_serializable_string] = None,
-            symbol: Optional[Non_empty_XML_serializable_string] = None,
-            data_type: Optional["Data_type_IEC_61360"] = None,
-            definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
-            value_format: Optional[Non_empty_XML_serializable_string] = None,
-            value_list: Optional["Value_list"] = None,
-            value: Optional[Value_type_IEC_61360] = None,
-            level_type: Optional["Level_type"] = None,
+        self,
+        preferred_name: List["Lang_string_preferred_name_type_IEC_61360"],
+        short_name: Optional[List["Lang_string_short_name_type_IEC_61360"]] = None,
+        unit: Optional[Non_empty_XML_serializable_string] = None,
+        unit_ID: Optional["Reference"] = None,
+        source_of_definition: Optional[Non_empty_XML_serializable_string] = None,
+        symbol: Optional[Non_empty_XML_serializable_string] = None,
+        data_type: Optional["Data_type_IEC_61360"] = None,
+        definition: Optional[List["Lang_string_definition_type_IEC_61360"]] = None,
+        value_format: Optional[Non_empty_XML_serializable_string] = None,
+        value_list: Optional["Value_list"] = None,
+        value: Optional[Value_type_IEC_61360] = None,
+        level_type: Optional["Level_type"] = None,
     ) -> None:
         self.preferred_name = preferred_name
         self.short_name = short_name
@@ -5610,6 +5608,7 @@ class Data_specification_IEC_61360(Data_specification_content):
     or lang_strings_have_unique_languages(self.description),
     "Description must specify unique languages."
 )
+@serialization(with_model_type=True)
 # fmt: on
 class Descriptor(DBC):
     """
@@ -5655,7 +5654,7 @@ class Descriptor(DBC):
     "Submodel descriptors must be either not set or have at least one item."
 )
 # fmt: off
-class AssetAdministrationShellDescriptor(Descriptor):
+class Asset_administration_shell_descriptor(Descriptor):
     """Descriptor of an Asset Administration Shell"""
 
     administration: Optional[Administrative_information]
@@ -6247,8 +6246,9 @@ class Short_ID_type(Name_type):
     or len(self.messages) >= 1,
     "Messages must be either not set or have at least one item."
 )
+@serialization(with_model_type=True)
 # fmt: on
-class Result:
+class Result(DBC):
     """The result object"""
 
     messages: Optional[List["Message"]]
@@ -6368,7 +6368,7 @@ class Operation_request(DBC):
     "The value must represent a valid ``xs:boolean``."
 )
 # fmt: on
-class XS_boolean(str, DBC):
+class Xs_boolean(str, DBC):
     """Represent an ``xs::boolean``."""
 
 # fmt: off
@@ -6398,7 +6398,7 @@ class Operation_result(Result):
     execution_state: "Execution_state"
     """Execution state"""
 
-    success: XS_boolean
+    success: Xs_boolean
     """
     Flag indicating whether the business operation behind the operation was
     successful (true) or not (false)
@@ -6410,7 +6410,7 @@ class Operation_result(Result):
             messages: Optional[List["Message"]] = None,
             output_arguments: Optional[List[Operation_variable]] = None,
             inoutput_arguments: Optional[List[Operation_variable]] = None,
-            success: XS_boolean = None
+            success: Xs_boolean = None
     ) -> None:
         Result.__init__(self, messages)
         self.execution_state = execution_state
@@ -6523,10 +6523,10 @@ class Serialization_modifier_extent(Enum):
     values on BLOB-elements. They are, however, kept as generic extent values for
     the sake of extension.
     """
-    Without_BLOB_value = "WithoutBLOBValue"
+    Without_blob_value = "WithoutBLOBValue"
     """Only applicable to :class:`Blob` elements; the BLOB content is not returned."""
 
-    With_BLOB_value = "WithBLOBValue"
+    With_blob_value = "WithBLOBValue"
     """
     Only applicable to :class:`Blob` elements; the BLOB content is returned as
     base64-encoded string.
@@ -6534,7 +6534,6 @@ class Serialization_modifier_extent(Enum):
 
 # TODO (mristin, 2024-06-28): include XxxMetadata, see:
 #  https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf#page=118
-
 
 
 class Paged_result_paging_metadata:
@@ -6546,7 +6545,7 @@ class Paged_result_paging_metadata:
         self.cursor = cursor
 
 
-@serialization(with_model_type=False)
+@serialization(with_model_type=True)
 class Paged_result:
     """Represent an answer from the server split across pages."""
 
@@ -6654,28 +6653,6 @@ class Asset_administration_shell_meta_data(Identifiable, Has_data_specification)
     "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
     "equal to template qualifier and the qualified element has kind then the qualified "
     "element shall be of kind template."
-)
-@invariant(
-    lambda self:
-    not (self.submodel_elements is not None)
-    or (
-        not (self.kind_or_default() != Modelling_kind.Template)
-        or (
-            all(
-                not (submodel_element.qualifiers is not None)
-                or all(
-                    qualifier.kind_or_default() != Qualifier_kind.Template_qualifier
-                    for qualifier in submodel_element.qualifiers
-                )
-                for submodel_element in self.submodel_elements
-            )
-        )
-    ),
-    "Constraint AASd-129: If any qualifier kind value of a Submodel element qualifier "
-    "(attribute qualifier inherited via Qualifiable) is equal to Template Qualifier "
-    "then the submodel element shall be part of a submodel template, i.e. a Submodel "
-    "with submodel kind (attribute kind inherited via Has-Kind) value is equal to "
-    "Template."
 )
 # fmt: on
 class Submodel_meta_data(
@@ -6842,6 +6819,515 @@ class Submodel_element_list_meta_data(Submodel_element_meta_data):
         self.semantic_ID_list_element = semantic_ID_list_element
         self.value_type_list_element = value_type_list_element
 
+class Entity_meta_data(Submodel_element_meta_data):
+    entity_type: "Entity_type"
+
+    def __init__(
+        self,
+        entity_type: "Entity_type",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None
+    ) -> None:
+        Submodel_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.entity_type = entity_type
+
+@abstract
+class Event_element_meta_data(Submodel_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.message_broker is not None)
+    or is_model_reference_to_referable(self.message_broker),
+    "Message broker must be a model reference to a referable."
+)
+@invariant(
+    lambda self:
+    is_model_reference_to_referable(self.observed),
+    "Observed must be a model reference to a referable."
+)
+@invariant(
+    lambda self:
+    not (self.direction == Direction.Input)
+    or self.max_interval is None,
+    "Max. interval is not applicable for input direction."
+)
+# fmt: on
+class Basic_event_element_meta_data(Event_element_meta_data):
+    direction: "Direction"
+    state: "State_of_event"
+    message_topic: Optional["Message_topic_type"]
+    message_broker: Optional["Reference"]
+    last_update: Optional["Date_time_UTC"]
+    min_interval: Optional["Duration"]
+    max_interval: Optional["Duration"]
+
+    def __init__(
+        self,
+        direction: "Direction",
+        state: "State_of_event",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        message_topic: Optional["Message_topic_type"] = None,
+        message_broker: Optional["Reference"] = None,
+        last_update: Optional["Date_time_UTC"] = None,
+        min_interval: Optional["Duration"] = None,
+        max_interval: Optional["Duration"] = None,
+    ) -> None:
+        Event_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.direction = direction
+        self.state = state
+        self.message_topic = message_topic
+        self.message_broker = message_broker
+        self.last_update = last_update
+        self.min_interval = min_interval
+        self.max_interval = max_interval
+
+class Capability_meta_data(Submodel_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.inoutput_variables is not None)
+    or len(self.inoutput_variables) >= 1,
+    "Inoutput variables must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.output_variables is not None)
+    or len(self.output_variables) >= 1,
+    "Output variables must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.input_variables is not None)
+    or len(self.input_variables) >= 1,
+    "Input variables must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    ID_shorts_of_variables_are_unique(
+        self.input_variables,
+        self.output_variables,
+        self.inoutput_variables
+    ),
+    "Constraint AASd-134: For an Operation the ID-short of all values of "
+    "input, output and in/output variables."
+)
+# fmt: on
+class Operation_meta_data(Submodel_element_meta_data):
+    input_variables: Optional[List["Operation_variable"]]
+    output_variables: Optional[List["Operation_variable"]]
+    inoutput_variables: Optional[List["Operation_variable"]]
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        input_variables: Optional[List["Operation_variable"]] = None,
+        output_variables: Optional[List["Operation_variable"]] = None,
+        inoutput_variables: Optional[List["Operation_variable"]] = None,
+    ) -> None:
+        Submodel_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.input_variables = input_variables
+        self.output_variables = output_variables
+        self.inoutput_variables = inoutput_variables
+
+# fmt: off
+@abstract
+@invariant(
+    lambda self:
+    not (self.category is not None)
+    or self.category in Valid_categories_for_data_element,
+    "Constraint AASd-090: For data elements category shall be one "
+    "of the following values: CONSTANT, PARAMETER or VARIABLE.",
+)
+# fmt: on
+class Data_element_meta_data(Submodel_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+    @implementation_specific
+    @non_mutating
+    @ensure(lambda result: result in Valid_categories_for_data_element)
+    def category_or_default(self) -> str:
+        # NOTE (mristin, 2022-04-7):
+        # This implementation will not be transpiled, but is given here as reference.
+        return self.category if self.category is not None else "VARIABLE"
+
+class Property_meta_data(Data_element_meta_data):
+    value_type: "Data_type_def_XSD"
+
+    def __init__(
+            self,
+            value_type: "Data_type_def_XSD",
+            extensions: Optional[List["Extension"]] = None,
+            category: Optional[Name_type] = None,
+            ID_short: Optional[ID_short_type] = None,
+            display_name: Optional[List["Lang_string_name_type"]] = None,
+            description: Optional[List["Lang_string_text_type"]] = None,
+            semantic_ID: Optional["Reference"] = None,
+            supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+            qualifiers: Optional[List[Qualifier]] = None,
+            embedded_data_specifications: Optional[
+                List["Embedded_data_specification"]
+            ] = None
+    ) -> None:
+        Data_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.value_type = value_type
+
+class Multi_language_property_meta_data(Data_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Data_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+class Range_meta_data(Data_element_meta_data):
+    value_type: "Data_type_def_XSD"
+
+    def __init__(
+        self,
+        value_type: "Data_type_def_XSD",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None
+    ) -> None:
+        Data_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.value_type = value_type
+
+class Reference_element_meta_data(Data_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None
+    ) -> None:
+        Data_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+class Relationship_element_meta_data(Submodel_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+class Annotated_relationship_element_meta_data(Relationship_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Relationship_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+class Blob_meta_data(Data_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None
+    ) -> None:
+        Data_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+class File_meta_data(Data_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List[Qualifier]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None
+    ) -> None:
+        Data_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
 
 
 # endregion HTTP API part
