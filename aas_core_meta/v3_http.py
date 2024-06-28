@@ -2,11 +2,11 @@
 Handle data structures for the HTTP API of the Asset Administration Shell (AAS) V3.0.
 
 Specifically, we provide additional data structures required for AAS API over HTTP.
-The original specification resides at:
-https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf
+The original specification resides here:
+``https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf``
 
 In particular, we focus on the data structures defined in this chapter:
-https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf#page=79
+``https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API.pdf#page=79``
 
 The presented version of the meta-model is related to the work of
 aas-core-works, which can be found here: https://github.com/aas-core-works.
@@ -5617,24 +5617,25 @@ class Descriptor(DBC):
     the metamodel.
     """
 
+    description: Optional[List[Lang_string_text_type]]
     """
     Description or comments on the element
 
     The description can be provided in several languages.
     """
-    description: Optional[List[Lang_string_text_type]]
 
-    """Display name; can be provided in several languages"""
     display_name: Optional[List[Lang_string_name_type]]
+    """Display name; can be provided in several languages"""
 
     extensions: Optional[List[Extension]]
+    """An extension of an element"""
 
     def __init__(
             self,
             description: Optional[List[Lang_string_text_type]] = None,
             display_name: Optional[List[Lang_string_name_type]] = None,
             extensions: Optional[List[Extension]] = None
-    ):
+    ) -> None:
         self.description = description
         self.display_name = display_name
         self.extensions = extensions
@@ -5657,38 +5658,38 @@ class Descriptor(DBC):
 class AssetAdministrationShellDescriptor(Descriptor):
     """Descriptor of an Asset Administration Shell"""
 
-    """Administrative information of the Asset Administration Shell"""
     administration: Optional[Administrative_information]
+    """Administrative information of the Asset Administration Shell"""
 
+    asset_kind: Optional[Asset_kind]
     """
     Denotes whether the asset of the described Asset Administration Shell 
     is of kind "Type" or "Instance"
     """
-    asset_kind: Optional[Asset_kind]
 
+    asset_type: Optional[Identifier]
     """
     The type of the asset described by the Asset Administration Shell of this
     Descriptor. See :attr:`Asset_information.asset_type` for further information.
     """
-    asset_type: Optional[Identifier]
 
-    """Endpoint of the network resource"""
     endpoints: Optional[List["Endpoint"]]
+    """Endpoint of the network resource"""
 
-    """Global reference to the asset the AAS is representing"""
     global_asset_ID: Optional[Identifier]
+    """Global reference to the asset the AAS is representing"""
 
-    """Short name of the Asset Administration Shell"""
     ID_short: Optional[Name_type]
+    """Short name of the Asset Administration Shell"""
 
-    """Globally unique identification of the Asset Administration Shell"""
     ID: Identifier
+    """Globally unique identification of the Asset Administration Shell"""
 
-    """Specific asset identifier"""
     specific_asset_IDs: Optional[List[Specific_asset_ID]]
+    """Specific asset identifier"""
 
-    """Descriptor of a submodel of the Asset Administration Shell"""
     submodel_descriptors: Optional[List["Submodel_descriptor"]]
+    """Descriptor of a submodel of the Asset Administration Shell"""
 
     def __init__(
             self,
@@ -5704,7 +5705,7 @@ class AssetAdministrationShellDescriptor(Descriptor):
             ID_short: Optional[Name_type] = None,
             specific_asset_IDs: Optional[List[Specific_asset_ID]] = None,
             submodel_descriptors: Optional[List["Submodel_descriptor"]] = None
-    ):
+    ) -> None:
         Descriptor.__init__(
             self,
             description=description,
@@ -5739,26 +5740,26 @@ class AssetAdministrationShellDescriptor(Descriptor):
 class Submodel_descriptor(Descriptor):
     """A descriptor of a submodel"""
 
-    """Administrative information of the Submodel"""
     administration: Optional[Administrative_information]
+    """Administrative information of the Submodel"""
 
-    """Endpoint of the network resource"""
     endpoints: Optional[List["Endpoint"]]
+    """Endpoint of the network resource"""
 
-    """Short name of the Submodel"""
     ID_short: Optional[Name_type]
+    """Short name of the Submodel"""
 
-    """Globally unique identification of the Submodel"""
     ID: Identifier
+    """Globally unique identification of the Submodel"""
 
-    """Identifier of the semantic definition of the Submodel"""
     semantic_ID: Optional[Reference]
+    """Identifier of the semantic definition of the Submodel"""
 
+    supplemental_semantic_IDs: Optional[List[Reference]]
     """
     Identifier of a supplemental semantic definition of the element called
     supplemental semantic ID of the element
     """
-    supplemental_semantic_IDs: Optional[List[Reference]]
 
     def __init__(
             self,
@@ -5786,7 +5787,7 @@ class Submodel_descriptor(Descriptor):
         self.supplemental_semantic_IDs = supplemental_semantic_IDs
 
 
-# TODO (mristin, 2024-06-28): continue here
+@verification
 def matches_interface_name(text: str) -> bool:
     """
     Check that :paramref:`text` matches ``{interface short name}-{interface version}``.
@@ -5826,20 +5827,25 @@ class Endpoint(DBC):
     The endpoint description of a network resource. This class is not part of
     the metamodel.
     """
-    """Protocol information of the network resource endpoint"""
     protocol_information: "Protocol_information"
+    """Protocol information of the network resource endpoint"""
 
+    interface_name: "Short_ID_type"
     """Name of the offered interface at the endpoint"""
-    interface: "Short_ID_type"
 
     def __init__(
             self,
             protocol_information: "Protocol_information",
-            interface: "Short_ID_type"
-    ):
+            interface_name: "Short_ID_type"
+    ) -> None:
         self.protocol_information = protocol_information
-        self.interface = interface
+        self.interface_name = interface_name
 
+class Endpoint_protocol_version(DBC):
+    version: "Short_ID_type"
+
+    def __init__(self, version: "Short_ID_type") -> None:
+        self.version = version
 
 # fmt: off
 @invariant(
@@ -5875,65 +5881,64 @@ class Protocol_information(DBC):
     changes need to be made by the related DIN working group.
     """
 
-    """The endpoint address as an URL"""
     href: str
+    """The endpoint address as an URL"""
 
+    endpoint_protocol: Optional["Short_ID_type"]
     """
     Either scheme of endpoint address or scheme + further information. Scheme denotes
     the highest level of doubtless transmission
     """
-    endpoint_protocol: Optional["Short_ID_type"]
 
+    endpoint_protocol_versions: Optional[List[Endpoint_protocol_version]]
     """
     Array of strings, each entry represents one supported version at this very endpoint,
     the entry shall be formatted according to the regulations of the protocol specified
     in the href
     """
-    endpoint_protocol_versions: Optional[List["Short_ID_type"]]
 
+    subprotocol: Optional["Short_ID_type"]
     """
     Allows for referencing sub-protocols that may be used in the context of
     that endpoint
     """
-    subprotocol: Optional["Short_ID_type"]
 
+    subprotocol_body: Optional["Short_ID_type"]
     """
     If the sub-protocol field is present, a subprotocol body might be given to hold
     extra information
     """
-    subprotocol_body: Optional["Short_ID_type"]
 
     subprotocol_body_encoding: Optional["Short_ID_type"]
 
+    security_attributes: List["Security_attribute_object"]
     """
     Array of securityAttribute objects, each attribute has 3 properties:
 
-    **type** = Enum security type or standard:
-        
-        * 'NONE',
-        * 'RFC_TLSA' - TLSA according to rfc6698
-        * 'W3C_DID' - W3C DID document,
+    *type* = Enum security type or standard:
 
-    **key** = security attribute key according to standard definitions of
+    * 'NONE',
+    * 'RFC_TLSA' - TLSA according to rfc6698
+    * 'W3C_DID' - W3C DID document
+
+    *key* = security attribute key according to standard definitions of
     the security type,
 
-    **value** = security attribute value e.g. DANE TLSA Ressource Record
-    
-    
+    *value* = security attribute value e.g. DANE TLSA Ressource Record
+
     The securityAttribute objects are treated as possible alternatives (logical "or").
     """
-    security_attributes: List["Security_attribute_object"]
 
     def __init__(
             self,
             href: str,
             security_attributes: List["Security_attribute_object"],
             endpoint_protocol: Optional["Short_ID_type"] = None,
-            endpoint_protocol_versions: Optional[List["Short_ID_type"]] = None,
+            endpoint_protocol_versions: Optional[List[Endpoint_protocol_version]] = None,
             subprotocol: Optional["Short_ID_type"] = None,
             subprotocol_body: Optional["Short_ID_type"] = None,
             subprotocol_body_encoding: Optional["Short_ID_type"] = None
-    ):
+    ) -> None:
         self.href = href
         self.security_attributes = security_attributes
         self.endpoint_protocol = endpoint_protocol
@@ -5954,14 +5959,14 @@ class Security_attribute_object(DBC):
     The information in this table is derived from DIN SPEC 16593-2. Required changes
     need to be made by the related DIN working group.
     """
-    """Enum security type or standard"""
     type: "Security_type_enum"
+    """Enum security type or standard"""
 
-    """Security attribute key according to standard definitions of the security type"""
     key: str
+    """Security attribute key according to standard definitions of the security type"""
 
-    """Security attribute value e.g. DANE TLSA Resource Record"""
     value: str
+    """Security attribute value e.g. DANE TLSA Resource Record"""
 
     def __init__(
             self,
@@ -5986,15 +5991,20 @@ class Security_type_enum(Enum):
     # NOTE (mristin):
     # We have to call this enumeration literal ``Nothing`` since ``None`` is a Python
     # keyword.
-    """No predefined security type available"""
     Nothing = "NONE"
+    """No predefined security type available"""
 
-    """TLSA according to RFC 6698"""
     RFC_TLSA = "RFC_TLSA"
+    """TLSA according to RFC 6698"""
 
-    """Decentralized Identifiers according to the W3C Recommendation"""
     W3C_DID = "W3C_DID"
+    """Decentralized Identifiers according to the W3C Recommendation"""
 
+class Service_specification_profile(DBC):
+    profile: "Service_specification_profile_enum"
+
+    def __init__(self, profile: "Service_specification_profile_enum") -> None:
+        self.profile = profile
 
 # fmt: off
 @invariant(
@@ -6013,11 +6023,14 @@ class Service_description(DBC):
 
     This class is not part of the metamodel.
     """
-    profiles: List["Service_specification_profile_enum"]
+    profiles: List[Service_specification_profile]
+    """
+    List of implemented server specification profiles.
+    """
 
     def __init__(
             self,
-            profiles: List["Service_specification_profile_enum"]
+            profiles: List["Service_specification_profile"]
     ) -> None:
         self.profiles = profiles
 
@@ -6028,167 +6041,168 @@ class Service_specification_profile_enum(Enum):
 
     See also clause 12.12 for further details.
     """
-    """
-    Indicates that the server implemented all features of the Asset Administration Shell
-    Service Specification Full Profile in version 3.0.
-    """
     Asset_administration_shell_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "AssetAdministrationShellServiceSpecification/SSP-001"
     )
-
     """
     Indicates that the server implemented all features of the Asset Administration Shell
-    Service Specification Read Profile in version 3.0.
+    Service Specification Full Profile in version 3.0.
     """
+
     Asset_administration_shell_service_specification_002 = (
         "https://admin-shell.io/aas/API/3/0/"
         "AssetAdministrationShellServiceSpecification/SSP-002"
     )
+    """
+    Indicates that the server implemented all features of the Asset Administration Shell
+    Service Specification Read Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all features of the Submodel Service
-    Specification Full Profile in version 3.0.
-    """
+
     Submodel_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelServiceSpecification/SSP-001"
     )
-
     """
     Indicates that the server implemented all features of the Submodel Service
-    Specification Value Profile in version 3.0.
+    Specification Full Profile in version 3.0.
     """
+
     Submodel_service_specification_SSP_002 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelServiceSpecification/SSP-002"
     )
-
     """
     Indicates that the server implemented all features of the Submodel Service
-    Specification Read Profile in version 3.0.
+    Specification Value Profile in version 3.0.
     """
+
     Submodel_service_specification_SSP_003 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelServiceSpecification/SSP-003"
     )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Read Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all details of the AASX File Server Service
-    Specification Full Profile in version 3.0.
-    """
     AASX_file_server_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "AasxFileServerServiceSpecification/SSP-001"
     )
+    """
+    Indicates that the server implemented all details of the AASX File Server Service
+    Specification Full Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all details of the Asset Administration Shell
-    Registry Service Specification Full Profile in version 3.0.
-    """
     Asset_administration_shell_registry_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "AssetAdministrationShellRegistryServiceSpecification/SSP-001"
     )
-
     """
     Indicates that the server implemented all details of the Asset Administration Shell
-    Registry Service Specification Read Profile in version 3.0.
+    Registry Service Specification Full Profile in version 3.0.
     """
+
     Asset_administration_shell_registry_service_specification_SSP_002 = (
         "https://admin-shell.io/aas/API/3/0/"
         "AssetAdministrationShellRegistryServiceSpecification/SSP-002"
     )
+    """
+    Indicates that the server implemented all details of the Asset Administration Shell
+    Registry Service Specification Read Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all details of the Submodel Registry Service
-    Specification Full Profile in version 3.0.
-    """
     Submodel_registry_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelRegistryServiceSpecification/SSP-001"
     )
-
     """
     Indicates that the server implemented all details of the Submodel Registry Service
-    Specification Read Profile in version 3.0.
+    Specification Full Profile in version 3.0.
     """
+
     Submodel_registry_service_specification_SSP_002 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelRegistryServiceSpecification/SSP-002"
     )
+    """
+    Indicates that the server implemented all details of the Submodel Registry Service
+    Specification Read Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all details of the Discovery Service
-    Specification Full Profile in version 3.0.
-    """
     Discovery_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "DiscoveryServiceSpecification/SSP-001"
     )
+    """
+    Indicates that the server implemented all details of the Discovery Service
+    Specification Full Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all details of the Asset Administration Shell
-    Repository Service Specification Full Profile in version 3.0.
-    """
     Asset_administration_shell_repository_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "AssetAdministrationShellRepositoryServiceSpecification/SSP-001"
     )
-
     """
     Indicates that the server implemented all details of the Asset Administration Shell
-    Repository Service Specification Read Profile in version 3.0.
+    Repository Service Specification Full Profile in version 3.0.
     """
+
     Asset_administration_shell_repository_service_specification_SSP_002 = (
         "https://admin-shell.io/aas/API/3/0/"
         "AssetAdministrationShellRepositoryServiceSpecification/SSP-002"
     )
+    """
+    Indicates that the server implemented all details of the Asset Administration Shell
+    Repository Service Specification Read Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all details of the Submodel Service Specification
-    Full Profile in version 3.0.
-    """
     Submodel_repository_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelRepositoryServiceSpecification/SSP-001"
     )
+    """
+    Indicates that the server implemented all details of the Submodel Service Specification
+    Full Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all details of the Submodel Service
-    Specification Read Profile in version 3.0.
-    """
     Submodel_repository_service_specification_SSP_002 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelRepositoryServiceSpecification/SSP-002"
     )
-
     """
     Indicates that the server implemented all details of the Submodel Service
-    Specification Template Profile in version 3.0.
+    Specification Read Profile in version 3.0.
     """
+
     Submodel_repository_service_specification_SSP_003 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelRepositoryServiceSpecification/SSP-003"
     )
-
     """
     Indicates that the server implemented all details of the Submodel Service
-    Specification Template Read Profile in version 3.0.
+    Specification Template Profile in version 3.0.
     """
+
     Submodel_repository_service_specification_SSP_004 = (
         "https://admin-shell.io/aas/API/3/0/"
         "SubmodelRepositoryServiceSpecification/SSP-004"
     )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Specification Template Read Profile in version 3.0.
+    """
 
-    """
-    Indicates that the server implemented all details of the Concept Description
-    Service Specification Read Template Profile in version 3.0.
-    """
     Concept_description_service_specification_SSP_001 = (
         "https://admin-shell.io/aas/API/3/0/"
         "ConceptDescriptionServiceSpecification/SSP-001"
     )
+    """
+    Indicates that the server implemented all details of the Concept Description
+    Service Specification Read Template Profile in version 3.0.
+    """
 
 
 # fmt: off
@@ -6237,8 +6251,8 @@ class Short_ID_type(Name_type):
 class Result:
     """The result object"""
 
-    """Additional message containing information for the requester"""
     messages: Optional[List["Message"]]
+    """Additional message containing information for the requester"""
 
     def __init__(
             self,
@@ -6256,47 +6270,54 @@ class Result:
 class Date_time(str, DBC):
     """Represent an ``xs:dateTime``."""
 
-class Message:
+class Message(DBC):
     """
     A message containing more information for the requester about a certain happening in
     the backend
     """
-    """The message type"""
     message_type: "Message_type_enum"
+    """The message type"""
 
-    """The message text"""
     text: str
+    """The message text"""
 
-    """Technology-dependent status or error code"""
     code: Optional["Code_type"]
+    """Technology-dependent status or error code"""
 
-    """Identifier to relate several result messages throughout several systems"""
     correlation_ID: Optional[Short_ID_type]
+    """Identifier to relate several result messages throughout several systems"""
 
     timestamp: Optional[Date_time]
+    """Timestamp of the message"""
+
+    def __init__(
+            self,
+            message_type: "Message_type_enum",
+            text: str,
+            code: Optional["Code_type"] = None,
+            correlation_ID: Optional[Short_ID_type] = None,
+            timestamp: Optional[Date_time] = None
+    ) -> None:
+        self.message_type = message_type
+        self.text = text
+        self.code = code
+        self.correlation_ID = correlation_ID
+        self.timestamp = timestamp
+
 
 class Message_type_enum(Enum):
     """The message type"""
-    """Used to inform the user about a certain fact"""
     Info = "Info"
+    """Used to inform the user about a certain fact"""
 
-    """Used for warnings; warnings may lead to errors in the subsequent execution"""
     Warning = "Warning"
+    """Used for warnings; warnings may lead to errors in the subsequent execution"""
 
-    """Used for handling errors"""
     Error = "Error"
+    """Used for handling errors"""
 
-    """Used in case of an internal and/or unhandled exception"""
     Exception = "Exception"
-
-# fmt: off
-@invariant(
-    lambda self: matches_xs_duration(self),
-    "The value must represent a valid xs:duration.",
-)
-# fmt: on
-class Duration(str, DBC):
-    """Represent an ``xs:duration``."""
+    """Used in case of an internal and/or unhandled exception"""
 
 
 # fmt: off
@@ -6318,13 +6339,17 @@ class Operation_request(DBC):
     The operation request object
     """
 
-    """Input arguments"""
     input_arguments: Optional[List[Operation_variable]]
+    """Input arguments"""
 
-    """In/output argument"""
     inoutput_arguments: Optional[List[Operation_variable]]
+    """In/output argument"""
 
     client_timeout_duration: Optional[Duration]
+    """
+    Duration indicating when the client expects the server to have finished execution
+    of the invoked operation
+    """
 
     def __init__(
             self,
@@ -6336,8 +6361,14 @@ class Operation_request(DBC):
         self.inoutput_arguments = inoutput_arguments
         self.client_timeout_duration = client_timeout_duration
 
-@invariant(lambda self: matches_xs_boolean(self))
-class Boolean(str, DBC):
+# fmt: off
+@invariant(
+    lambda self:
+    matches_xs_boolean(self),
+    "The value must represent a valid ``xs:boolean``."
+)
+# fmt: on
+class XS_boolean(str, DBC):
     """Represent an ``xs::boolean``."""
 
 # fmt: off
@@ -6358,19 +6389,20 @@ class Operation_result(Result):
     """
     The operation's invocation result object
     """
-    """Output arguments"""
     output_arguments: Optional[List[Operation_variable]]
+    """Output arguments"""
 
-    """In/output arguments"""
     inoutput_arguments: Optional[List[Operation_variable]]
+    """In/output arguments"""
 
-    """Execution state"""
     execution_state: "Execution_state"
+    """Execution state"""
 
+    success: XS_boolean
     """
     Flag indicating whether the business operation behind the operation was
-    successful (true) or not (false)"""
-    success: Boolean
+    successful (true) or not (false)
+    """
 
     def __init__(
             self,
@@ -6378,7 +6410,7 @@ class Operation_result(Result):
             messages: Optional[List["Message"]] = None,
             output_arguments: Optional[List[Operation_variable]] = None,
             inoutput_arguments: Optional[List[Operation_variable]] = None,
-            success: Boolean = None
+            success: XS_boolean = None
     ) -> None:
         Result.__init__(self, messages)
         self.execution_state = execution_state
@@ -6389,23 +6421,23 @@ class Operation_result(Result):
 class Execution_state(Enum):
     """The operation’s invocation result state"""
 
-    """The operation is ready to be executed (initial state)"""
     Initiated = "Initiated"
+    """The operation is ready to be executed (initial state)"""
 
-    """The operation is running"""
     Running = "Running"
+    """The operation is running"""
 
-    """The operation is completed"""
     Completed = "Completed"
+    """The operation is completed"""
 
-    """The operation was cancelled externally"""
     Canceled = "Canceled"
+    """The operation was cancelled externally"""
 
-    """The operation failed"""
     Failed = "Failed"
+    """The operation failed"""
 
-    """The operation has timed out due to given client or server timeout"""
     Timeout = "Timeout"
+    """The operation has timed out due to given client or server timeout"""
 
 class Operation_handle(DBC):
     """
@@ -6413,32 +6445,39 @@ class Operation_handle(DBC):
     current state of the operation's execution
     """
 
-    """Handle ID"""
     handle_ID: Short_ID_type
+    """Handle ID"""
+
+    def __init__(
+            self,
+            handle_ID: Short_ID_type
+    ) -> None:
+        self.handle_ID = handle_ID
+
 
 class Serialization_modifier_level(Enum):
     """
     This enumeration indicates the depth of the structure of the response or input
     content.
     """
+    Deep = "Deep"
     """
     All elements of a requested hierarchy level and all children on all sublevels are 
-    returned. Children in this sense are :class:`SubmodelElement`'s which are contained
-    at the :attr:`Submodel.submodelElements` field of :class:`Submodel`'s, the 
-    :attr:`SubmodelElementCollection.value` or :attr:`SubmodelElementList.value` field
-    of :class:`SubmodelElementCollection`'s or :class:`SubmodelElementList`'s,
+    returned. Children in this sense are :class:`Submodel_element`'s which are contained
+    at the :attr:`Submodel.submodel_elements` field of :class:`Submodel`'s, the 
+    :attr:`Submodel_element_collection.value`
+    or :attr:`Submodel_element_list.value` field 
+    of :class:`Submodel_element_collection`'s or :class:`Submodel_element_list`'s,
     the :attr:`Entity.statements` field of :class:`Entity`'s, or 
-    the :attr:`AnnotatedRelationshipElement.annotations` field of
-    :class:`AnnotatedRelationshipElement`'s.
+    the :attr:`Annotated_relationship_element.annotations` field of
+    :class:`Annotated_relationship_element`'s.
     """
-    Deep = "Deep"
 
+    Core = "Core"
     """
     Only elements of a requested hierarchy level as well as direct children are
     returned. By this, a client can iterate the hierarchy step by step.
     """
-    Core = "Core"
-
 
 class Serialization_modifier_content(Enum):
     """
@@ -6447,35 +6486,35 @@ class Serialization_modifier_content(Enum):
 
     For Content equal to ``Value`` see Clause 11.4.2 for details.
     """
+    Normal = "Normal"
     """
     The standard serialization of the model element or child elements is applied.
     """
-    Normal = "Normal"
 
+    Metadata = "Metadata"
     """
     Only metadata of an element or child elements is returned; the value is not.
     """
-    Metadata = "Metadata"
 
+    Value = "Value"
     """
     Only the raw value of the model element or child elements is returned; it is
     commonly referred to as *ValueOnly*-serialization.
     """
-    Value = "Value"
 
+    Reference = "Reference"
     """
     Only applicable to :class:`Referable`'s. Only the reference to the found element is
     returned; potential child elements are ignored.
     """
-    Reference = "Reference"
 
+    Path = "Path"
     """
     Returns the :attr:`Referable.ID_short` of the requested element and a list of 
     ID-short paths to child elements if the requested element is a :class:`Submodel`,
-    a :class:`SubmodelElementCollection`, a :class:`SubmodelElementList`,
-    a :class:`AnnotatedRelationshipElement`, or an :class:`Entity`.    
+    a :class:`Submodel_element_collection`, a :class:`Submodel_element_list`,
+    a :class:`Annotated_relationship_element`, or an :class:`Entity`.    
     """
-    Path = "Path"
 
 class Serialization_modifier_extent(Enum):
     """
@@ -6484,14 +6523,14 @@ class Serialization_modifier_extent(Enum):
     values on BLOB-elements. They are, however, kept as generic extent values for
     the sake of extension.
     """
-    """Only applicable to :class:`Blob` elements; the BLOB content is not returned."""
     Without_BLOB_value = "WithoutBLOBValue"
+    """Only applicable to :class:`Blob` elements; the BLOB content is not returned."""
 
+    With_BLOB_value = "WithBLOBValue"
     """
     Only applicable to :class:`Blob` elements; the BLOB content is returned as
     base64-encoded string.
     """
-    With_BLOB_value = "WithBLOBValue"
 
 # TODO (mristin, 2024-06-28): include XxxMetadata, see:
 #  https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf#page=118
@@ -6541,5 +6580,268 @@ class Get_submodel_result(Paged_result):
         Paged_result.__init__(self, paging_metadata)
 
         self.result = result
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.submodels is not None)
+    or (
+        all(
+            is_model_reference_to(reference, Key_types.Submodel)
+            for reference in self.submodels
+        )
+    ),
+    "All submodels must be model references to a submodel."
+)
+@invariant(
+    lambda self:
+    not (self.derived_from is not None)
+    or (
+        is_model_reference_to(
+            self.derived_from,
+            Key_types.Asset_administration_shell
+        )
+    ),
+    "Derived-from must be a model reference to an asset administration shell."
+)
+# fmt: on
+class Asset_administration_shell_meta_data(Identifiable, Has_data_specification):
+    derived_from: Optional["Reference"]
+
+    def __init__(
+            self,
+            ID: Identifier,
+            extensions: Optional[List["Extension"]] = None,
+            category: Optional[Name_type] = None,
+            ID_short: Optional[ID_short_type] = None,
+            display_name: Optional[List["Lang_string_name_type"]] = None,
+            description: Optional[List["Lang_string_text_type"]] = None,
+            administration: Optional["Administrative_information"] = None,
+            embedded_data_specifications: Optional[
+                List["Embedded_data_specification"]
+            ] = None,
+            derived_from: Optional["Reference"] = None,
+    ) -> None:
+        Identifiable.__init__(
+            self,
+            ID=ID,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            administration=administration,
+        )
+
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
+
+        self.derived_from = derived_from
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.qualifiers is not None)
+    or (
+        not any(
+            qualifier.kind_or_default() == Qualifier_kind.Template_qualifier
+            for qualifier in self.qualifiers
+        ) or (
+            self.kind_or_default() == Modelling_kind.Template
+        )
+    ),
+    "Constraint AASd-119: If any qualifier kind value of a qualifiable qualifier is "
+    "equal to template qualifier and the qualified element has kind then the qualified "
+    "element shall be of kind template."
+)
+@invariant(
+    lambda self:
+    not (self.submodel_elements is not None)
+    or (
+        not (self.kind_or_default() != Modelling_kind.Template)
+        or (
+            all(
+                not (submodel_element.qualifiers is not None)
+                or all(
+                    qualifier.kind_or_default() != Qualifier_kind.Template_qualifier
+                    for qualifier in submodel_element.qualifiers
+                )
+                for submodel_element in self.submodel_elements
+            )
+        )
+    ),
+    "Constraint AASd-129: If any qualifier kind value of a Submodel element qualifier "
+    "(attribute qualifier inherited via Qualifiable) is equal to Template Qualifier "
+    "then the submodel element shall be part of a submodel template, i.e. a Submodel "
+    "with submodel kind (attribute kind inherited via Has-Kind) value is equal to "
+    "Template."
+)
+# fmt: on
+class Submodel_meta_data(
+    Identifiable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
+):
+    def __init__(
+        self,
+        ID: Identifier,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        administration: Optional["Administrative_information"] = None,
+        kind: Optional["Modelling_kind"] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None
+    ) -> None:
+        Identifiable.__init__(
+            self,
+            ID=ID,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            administration=administration,
+        )
+
+        Has_kind.__init__(self, kind=kind)
+
+        Has_semantics.__init__(
+            self,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+        )
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
+
+@abstract
+class Submodel_element_meta_data(Referable, Has_semantics, Qualifiable, Has_data_specification):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Referable.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+        )
+
+        Has_semantics.__init__(
+            self,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+        )
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
+
+
+class Submodel_element_collection_meta_data(Submodel_element_meta_data):
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None
+    ) -> None:
+        Submodel_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Submodel_element_list_meta_data(Submodel_element_meta_data):
+    order_relevant: Optional["bool"]
+
+    @implementation_specific
+    @non_mutating
+    def order_relevant_or_default(self) -> bool:
+        # NOTE (mristin, 2022-04-7):
+        # This implementation will not be transpiled, but is given here as reference.
+        return self.order_relevant if self.order_relevant is not None else True
+
+    semantic_ID_list_element: Optional["Reference"]
+
+    type_value_list_element: "AAS_submodel_elements"
+
+    value_type_list_element: Optional["Data_type_def_XSD"]
+
+    def __init__(
+        self,
+        type_value_list_element: "AAS_submodel_elements",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        order_relevant: Optional["bool"] = None,
+        semantic_ID_list_element: Optional["Reference"] = None,
+        value_type_list_element: Optional["Data_type_def_XSD"] = None,
+    ) -> None:
+        Submodel_element_meta_data.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.type_value_list_element = type_value_list_element
+        self.order_relevant = order_relevant
+        self.semantic_ID_list_element = semantic_ID_list_element
+        self.value_type_list_element = value_type_list_element
+
+
 
 # endregion HTTP API part

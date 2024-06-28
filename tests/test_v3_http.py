@@ -1,7 +1,8 @@
 import difflib
 import pathlib
+import sys
 import unittest
-from typing import Optional, List
+from typing import Optional, List, Sequence
 
 import aas_core_codegen
 from aas_core_codegen import intermediate
@@ -34,6 +35,76 @@ _META_MODEL: tests.common.MetaModel = tests.common.load_meta_model(
 )
 
 
+def _assert_meta_data_class_valid(
+        original_class: intermediate.ConcreteClass,
+        meta_data_class: intermediate.ConcreteClass,
+        names_of_expected_missing_properties: Sequence[Identifier]
+) -> None:
+    """Assert that the properties are either identical or expectedly missing."""
+    if meta_data_class.description is not None:
+        raise AssertionError(
+            f"Unexpected description in the meta-data class {meta_data_class.name!r}. "
+            f"We forbid descriptions to avoid confusing copy/pastes."
+        )
+
+    for prop_name in names_of_expected_missing_properties:
+        if prop_name in meta_data_class.properties_by_name:
+            raise AssertionError(
+                f"Unexpected property {prop_name!r} "
+                f"in the class {meta_data_class.name!r}"
+            )
+
+    for prop in meta_data_class.properties:
+        if prop.name not in original_class.properties_by_name:
+            raise AssertionError(
+                f"Unexpected property {prop.name} present "
+                f"in the meta-data class {meta_data_class.name!r}, "
+                f"but missing in the original class {original_class.name!r}"
+            )
+
+        this_type_anno = prop.type_annotation
+        that_type_anno = original_class.properties_by_name[prop.name].type_annotation
+        if not intermediate.type_annotations_equal(
+                this_type_anno,
+                that_type_anno
+        ):
+            raise AssertionError(
+                f"Mismatching type annotations for the property {prop.name!r} in "
+                f"the meta-data class {meta_data_class.name!r} "
+                f"and the original class {original_class.name!r}: "
+                f"{this_type_anno} != {that_type_anno}"
+            )
+
+        if prop.description is not None:
+            raise AssertionError(
+                f"Unexpected description about the property {prop.name!r} "
+                f"in the meta-data class {meta_data_class.name!r}. We forbid "
+                f"duplicating descriptions to avoid confusing copy/pastes."
+            )
+
+
+def _assert_asset_administration_shell_metadata_class_valid(
+        symbol_table: intermediate.SymbolTable
+) -> None:
+    """Assert that the meta-data class exists and check the properties."""
+    expected_missing_properties = [
+        "asset_information",
+        "submodels"
+    ]
+
+    original_cls = symbol_table.must_find_concrete_class(
+        Identifier("Asset_administration_shell")
+    )
+
+    meta_data_cls = symbol_table.must_find_concrete_class(
+        Identifier("Asset_administration_shell_meta_data")
+    )
+
+    for prop_name in expected_missing_properties:
+        if prop_name in meta_data_cls.properties_by_name:
+            raise AssertionError(f"Unexpected property {prop_name!r} ")
+
+
 class Test_assertions(unittest.TestCase):
     def test_module_inheritance(self) -> None:
         """
@@ -45,7 +116,8 @@ class Test_assertions(unittest.TestCase):
             model_path=pathlib.Path(aas_core_meta.v3.__file__)
         )
 
-        assert _META_MODEL.symbol_table.find_our_type(Identifier('Environment')) is None, (
+        assert _META_MODEL.symbol_table.find_our_type(
+            Identifier('Environment')) is None, (
             f"The class ``Environment`` should not be defined "
             f"in {aas_core_meta.v3_http.__file__}, but it was."
         )
@@ -353,8 +425,49 @@ class Test_assertions(unittest.TestCase):
             raise AssertionError("\n".join(f"* {error}" for error in errors))
 
     def test_meta_data_classes_properly_defined(self) -> None:
-        # TODO (mristin, 2024-06-28): impl
-        pass
+        # NOTE (mristin):
+        # Listed from:
+        # https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf#page=118
+        for (
+                original_cls_name,
+                names_of_expected_missing_property
+        ) in [
+            ("Asset_administration_shell", ["asset_information", "submodels"]),
+            ("Submodel", ["submodel_elements"]),
+            ("Submodel_element_collection", ["value"]),
+            ("Submodel_element_list", ["value"]),
+            ("Entity", ["statements", "global_asset_ID", "specific_asset_ID"]),
+            ("Basic_event_element", ["observed"]),
+            ("Capability", []),
+            ("Operation", []),
+            ("Property", ["value", "value_ID"]),
+            ("Multilanguage_property", ["value", "value_ID"]),
+            ("Range", ["min", "max"]),
+            ("Reference_element", ["value"]),
+            ("Relationship_element", ["first", "second"]),
+            ("Annotated_relationship_element", ["first", "second", "annotations"]),
+            ("Blob", ["value", "content_type"]),
+            ("File", ["value", "content_type"])
+        ]:
+            original_cls = _META_MODEL.symbol_table.find_our_type(
+                Identifier(original_cls_name)
+            )
+            if original_cls is None:
+                raise AssertionError(f"Missing original class: {original_cls_name!r}")
+
+            meta_data_cls_name = Identifier(original_cls_name + "_meta_data")
+            meta_data_cls = _META_MODEL.symbol_table.find_our_type(
+                meta_data_cls_name
+            )
+            if meta_data_cls is None:
+                raise AssertionError(f"Missing meta-data class: {meta_data_cls_name!r}")
+
+            _assert_meta_data_class_valid(
+                original_class=original_cls,
+                meta_data_class=meta_data_cls,
+                names_of_expected_missing_properties=names_of_expected_missing_property
+            )
+
 
 if __name__ == "__main__":
     unittest.main()
