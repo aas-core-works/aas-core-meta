@@ -6321,12 +6321,81 @@ class Operation_request(DBC):
     """Input arguments"""
     input_arguments: Optional[List[Operation_variable]]
 
-    """InOutput argument"""
+    """In/output argument"""
     inoutput_arguments: Optional[List[Operation_variable]]
 
     client_timeout_duration: Optional[Duration]
 
+    def __init__(
+            self,
+            input_arguments: Optional[List[Operation_variable]] = None,
+            inoutput_arguments: Optional[List[Operation_variable]] = None,
+            client_timeout_duration: Optional[Duration] = None
+    ) -> None:
+        self.input_arguments = input_arguments
+        self.inoutput_arguments = inoutput_arguments
+        self.client_timeout_duration = client_timeout_duration
 
+@invariant(lambda self: matches_xs_boolean(self))
+class Boolean(str, DBC):
+    """Represent an ``xs::boolean``."""
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.output_arguments is not None)
+    or len(self.output_arguments) >= 1,
+    "Output arguments must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.inoutput_arguments is not None)
+    or len(self.inoutput_arguments) >= 1,
+    "In/output arguments must be either not set or have at least one item."
+)
+# fmt: on
+class Operation_result(Result):
+    """
+    The operation's invocation result object
+    """
+    """Output arguments"""
+    output_arguments: Optional[List[Operation_variable]]
+
+    """In/output arguments"""
+    inoutput_arguments: Optional[List[Operation_variable]]
+
+    """Execution state"""
+    execution_state: "Execution_state"
+
+    """
+    Flag indicating whether the business operation behind the operation was
+    successful (true) or not (false)"""
+    success: Boolean
+
+    def __init__(
+            self,
+            execution_state: "Execution_state",
+            messages: Optional[List["Message"]] = None,
+            output_arguments: Optional[List[Operation_variable]] = None,
+            inoutput_arguments: Optional[List[Operation_variable]] = None,
+            success: Boolean = None
+    ) -> None:
+        Result.__init__(self, messages)
+        self.execution_state = execution_state
+        self.output_arguments = output_arguments
+        self.inoutput_arguments = inoutput_arguments
+        self.success = success
+
+class Execution_state(Enum):
+    """The operation’s invocation result state"""
+
+    """The operation is ready to be executed (initial state)"""
+    Initiated = "Initiated"
+
+    """The operation is running"""
+    Running = "Running"
+
+    
 
     # TODO (mristin, 2024-06-28): uncomment/fix
 # class Paged_result_paging_metadata:
