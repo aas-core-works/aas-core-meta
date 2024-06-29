@@ -6532,9 +6532,23 @@ class Serialization_modifier_extent(Enum):
     base64-encoded string.
     """
 
-# TODO (mristin, 2024-06-28): include XxxMetadata, see:
-#  https://industrialdigitaltwin.org/wp-content/uploads/2023/06/IDTA-01002-3-0_SpecificationAssetAdministrationShell_Part2_API_.pdf#page=118
+# TODO (mristin, 2024-06-29): make result abstract?
 
+# TODO (mristin, 2024-06-29): make Result and Get_*_result without model type
+#  🠒 double-check @serialization(with_model_type) settings!
+
+# TODO (mristin, 2024-06-29): fix aas-core-codegen not to enforce the model type
+#  on inheritance
+
+# TODO (mristin, 2024-06-29): make normal classes inherit from *_meta_data classes
+# TODO (mristin, 2024-06-29): assert that all properties, sorted invariants and
+#  methods coincide between v3 and v3_http on normal classes (and all the other classes)
+
+# TODO (mristin, 2024-06-29): include Get_asset_administration_shell_meta_data_result
+#  and the ilks?
+
+# TODO (mristin, 2024-06-29): what about the retrieval of referable meta-data?
+#  Always return a Submodel_element_meta_data?
 
 class Paged_result_paging_metadata:
     """Provide paging data for the client to continue the retrieval."""
