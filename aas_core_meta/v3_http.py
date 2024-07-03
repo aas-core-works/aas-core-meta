@@ -5817,7 +5817,7 @@ def matches_interface_name(text: str) -> bool:
 # fmt: off
 @invariant(
     lambda self:
-    matches_interface_name(self.interface),
+    matches_interface_name(self.interface_name),
     "Interface should match ``{interface short name}-{interface version}.",
 )
 # fmt: on
@@ -6597,17 +6597,6 @@ class Get_submodel_result(Paged_result):
 # fmt: off
 @invariant(
     lambda self:
-    not (self.submodels is not None)
-    or (
-        all(
-            is_model_reference_to(reference, Key_types.Submodel)
-            for reference in self.submodels
-        )
-    ),
-    "All submodels must be model references to a submodel."
-)
-@invariant(
-    lambda self:
     not (self.derived_from is not None)
     or (
         is_model_reference_to(
@@ -6902,11 +6891,6 @@ class Event_element_meta_data(Submodel_element_meta_data):
     not (self.message_broker is not None)
     or is_model_reference_to_referable(self.message_broker),
     "Message broker must be a model reference to a referable."
-)
-@invariant(
-    lambda self:
-    is_model_reference_to_referable(self.observed),
-    "Observed must be a model reference to a referable."
 )
 @invariant(
     lambda self:
