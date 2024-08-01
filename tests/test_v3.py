@@ -1194,16 +1194,7 @@ class Test_assertions(unittest.TestCase):
             ):
                 continue
 
-            # NOTE (mristin):
-            # There seems to be a bug in the specification. Originally, we skipped
-            # the class `Referable` here as it can not be part of
-            # `AAS_referable_non_identifiables` as all identifiables *are* referables.
-            #
-            # See: https://github.com/aas-core-works/aas-core3.0-python/issues/37
-            #
-            # We decided to simply follow the book, even though the constant set
-            # `AAS_referable_non_identifiables` is thus broken.
-            if our_type is identifiable_cls:
+            if our_type in (referable_cls, identifiable_cls):
                 continue
 
             if our_type.is_subclass_of(referable_cls) and not our_type.is_subclass_of(
