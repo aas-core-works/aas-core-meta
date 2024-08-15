@@ -5494,7 +5494,7 @@ def is_BCP_47_for_english(text: str) -> bool:
         is_BCP_47_for_english(lang_string.language)
         for lang_string in self.preferred_name
     ),
-    "Constraint AASc-002: preferred name shall be provided at least in English."
+    "Constraint AASc-3a-002: preferred name shall be provided at least in English."
 )
 @invariant(
     lambda self:
