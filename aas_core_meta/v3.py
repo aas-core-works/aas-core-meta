@@ -1386,10 +1386,6 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
     """
 
 
-@invariant(
-    lambda self: matches_RFC_8089_path(self),
-    "The value must represent a valid file URI scheme according to RFC 8089.",
-)
 class Path_type(Identifier, DBC):
     """
     Identifier
@@ -5109,13 +5105,13 @@ class Embedded_data_specification:
     data_specification_content: Data_specification_content
     """Actual content of the data specification"""
 
-    data_specification: Optional[Reference]
+    data_specification: Reference
     """Reference to the data specification"""
 
     def __init__(
         self,
         data_specification_content: Data_specification_content,
-        data_specification: Optional[Reference] = None,
+        data_specification: Reference,
     ) -> None:
         self.data_specification_content = data_specification_content
         self.data_specification = data_specification
