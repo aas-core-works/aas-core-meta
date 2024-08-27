@@ -2655,16 +2655,19 @@ class AAS_submodel_elements(Enum):
 @invariant(
     lambda self:
     not (
-            self.value is not None
-            and (
-                    self.type_value_list_element == AAS_submodel_elements.Property
-                    or self.type_value_list_element == AAS_submodel_elements.Range
-            )
+        self.type_value_list_element is not None
+        and (
+            self.type_value_list_element == AAS_submodel_elements.Property
+            or self.type_value_list_element == AAS_submodel_elements.Range
+        )
     ) or (
         self.value_type_list_element is not None
-        and properties_or_ranges_have_value_type(
-            self.value,
-            self.value_type_list_element
+        and (
+            (self.value is None)
+            or properties_or_ranges_have_value_type(
+                self.value,
+                self.value_type_list_element
+            )
         )
     ),
     "Constraint AASd-109: If type value list element is equal to "
