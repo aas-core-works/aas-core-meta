@@ -1301,7 +1301,7 @@ def _generate_page_for_verification_function(
     code_div, error = htmlgen.transpilation.transpile_body_of_verification(
         verification=verification,
         symbol_table=symbol_table,
-        environment=environment,
+        base_environment=environment,
     )
     if error is not None:
         return None, error

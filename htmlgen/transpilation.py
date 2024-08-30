@@ -10,6 +10,7 @@ from typing import (
     Union,
     Set,
     Sequence,
+    cast,
 )
 
 from aas_core_codegen import intermediate
@@ -1074,10 +1075,7 @@ class _TranspilableVerificationTranspiler(_Transpiler):
         ],
         environment: intermediate_type_inference.Environment,
         symbol_table: intermediate.SymbolTable,
-        verification: Union[
-            intermediate.TranspilableVerification,
-            intermediate.PatternVerification,
-        ],
+        verification: intermediate.TranspilableVerification,
     ) -> None:
         """Initialize with the given values."""
         htmlgen.transpilation._Transpiler.__init__(
@@ -1132,7 +1130,7 @@ def transpile_body_of_verification(
         intermediate.ImplementationSpecificVerification,
     ],
     symbol_table: intermediate.SymbolTable,
-    environment: intermediate_type_inference.Environment,
+    base_environment: intermediate_type_inference.Environment,
 ) -> Tuple[Optional[Stripped], Optional[Error]]:
     """Transpile a verification function to HTML."""
     parsed_body = None  # type: Optional[Sequence[parse_tree.Node]]
@@ -1152,50 +1150,62 @@ def transpile_body_of_verification(
             ),
             None,
         )
-
     else:
         assert_never(verification)
 
     assert parsed_body is not None
     assert not isinstance(verification, intermediate.ImplementationSpecificVerification)
 
-    canonicalizer = intermediate_type_inference.Canonicalizer()
-    for node in parsed_body:
-        _ = canonicalizer.transform(node)
-
-    environment_with_args = intermediate_type_inference.MutableEnvironment(
-        parent=environment
+    environment = intermediate_type_inference.MutableEnvironment(
+        parent=base_environment
     )
-    for arg in verification.arguments:
-        environment_with_args.set(
-            identifier=arg.name,
-            type_annotation=intermediate_type_inference.convert_type_annotation(
-                arg.type_annotation
+    if isinstance(verification, intermediate.PatternVerification):
+        # NOTE (mristin):
+        # This type is wrong for the ``re.match`` function. However, we just populate
+        # it here so that we do not have to re-implement the code highlighting for
+        # pattern verification.
+        environment.set(
+            Identifier("match"),
+            intermediate_type_inference.BuiltinFunctionTypeAnnotation(
+                intermediate_type_inference.BuiltinFunction(
+                    name=Identifier("match"),
+                    returns=intermediate_type_inference.OptionalTypeAnnotation(
+                        value=intermediate_type_inference.PrimitiveTypeAnnotation(
+                            a_type=intermediate_type_inference.PrimitiveType.BOOL
+                        )
+                    ),
+                )
             ),
         )
 
-    type_inferrer = intermediate_type_inference.Inferrer(
-        symbol_table=symbol_table,
-        environment=environment_with_args,
-        representation_map=canonicalizer.representation_map,
-    )
-
-    for node in verification.parsed.body:
-        _ = type_inferrer.transform(node)
-
-    if len(type_inferrer.errors):
-        return None, Error(
-            verification.parsed.node,
-            f"Failed to infer the types "
-            f"in the verification function {verification.name!r}",
-            type_inferrer.errors,
+        transpilable_verification = cast(
+            intermediate.TranspilableVerification, verification
         )
+    elif isinstance(verification, intermediate.TranspilableVerification):
+        transpilable_verification = verification
+    else:
+        assert_never(verification)
+        raise AssertionError("Unexpected execution path")
+
+    # fmt: off
+    type_inference, error = (
+        intermediate_type_inference.infer_for_verification(
+            verification=transpilable_verification,
+            base_environment=environment
+        )
+    )
+    # fmt: on
+
+    if error is not None:
+        return None, error
+
+    assert type_inference is not None
 
     transpiler = _TranspilableVerificationTranspiler(
-        type_map=type_inferrer.type_map,
-        environment=environment_with_args,
+        type_map=type_inference.type_map,
+        environment=type_inference.environment_with_args,
         symbol_table=symbol_table,
-        verification=verification,
+        verification=transpilable_verification,
     )
 
     body = []  # type: List[Stripped]
@@ -1283,26 +1293,22 @@ def transpile_invariant(
     environment: intermediate_type_inference.Environment,
 ) -> Tuple[Optional[Stripped], Optional[Error]]:
     """Translate the invariant from the meta-model into HTML."""
-    canonicalizer = intermediate_type_inference.Canonicalizer()
-    _ = canonicalizer.transform(invariant.body)
-
-    type_inferrer = intermediate_type_inference.Inferrer(
-        symbol_table=symbol_table,
-        environment=environment,
-        representation_map=canonicalizer.representation_map,
-    )
-
-    _ = type_inferrer.transform(invariant.body)
-
-    if len(type_inferrer.errors):
-        return None, Error(
-            invariant.parsed.node,
-            "Failed to infer the types in the invariant",
-            type_inferrer.errors,
+    # fmt: off
+    type_map, inference_error = (
+        intermediate_type_inference.infer_for_invariant(
+            invariant=invariant,
+            environment=environment
         )
+    )
+    # fmt: on
+
+    if inference_error is not None:
+        return None, inference_error
+
+    assert type_map is not None
 
     transpiler = _InvariantTranspiler(
-        type_map=type_inferrer.type_map,
+        type_map=type_map,
         environment=environment,
         symbol_table=symbol_table,
     )
