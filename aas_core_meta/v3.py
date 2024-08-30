@@ -2655,11 +2655,8 @@ class AAS_submodel_elements(Enum):
 @invariant(
     lambda self:
     not (
-        self.type_value_list_element is not None
-        and (
-            self.type_value_list_element == AAS_submodel_elements.Property
-            or self.type_value_list_element == AAS_submodel_elements.Range
-        )
+        self.type_value_list_element == AAS_submodel_elements.Property
+        or self.type_value_list_element == AAS_submodel_elements.Range
     ) or (
         self.value_type_list_element is not None
         and (
