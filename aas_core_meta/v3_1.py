@@ -3264,7 +3264,7 @@ class Blob(Data_element):
         in the :class:`Blob` data element.
     """
 
-    content_type: Content_type
+    content_type: Optional[Content_type]
     """
     Content type of the content of the :class:`Blob`.
 
@@ -3278,7 +3278,6 @@ class Blob(Data_element):
 
     def __init__(
         self,
-        content_type: Content_type,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -3291,6 +3290,7 @@ class Blob(Data_element):
             List["Embedded_data_specification"]
         ] = None,
         value: Optional["Blob_type"] = None,
+        content_type: Optional[Content_type] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3323,7 +3323,7 @@ class File(Data_element):
     The path can be absolute or relative.
     """
 
-    content_type: "Content_type"
+    content_type: Optional["Content_type"]
     """
     Content type of the content of the file.
 
@@ -3332,7 +3332,6 @@ class File(Data_element):
 
     def __init__(
         self,
-        content_type: "Content_type",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -3345,6 +3344,7 @@ class File(Data_element):
             List["Embedded_data_specification"]
         ] = None,
         value: Optional["Path_type"] = None,
+        content_type: Optional["Content_type"] = None,
     ) -> None:
         Data_element.__init__(
             self,
