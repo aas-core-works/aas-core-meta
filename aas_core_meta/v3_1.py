@@ -378,63 +378,57 @@ def matches_xs_any_URI(text: str) -> bool:
     :returns: True if the :paramref:`text` conforms to the pattern
     """
     scheme = "[a-zA-Z][a-zA-Z0-9+\\-.]*"
-    ucschar = (
-        "[\\xa0-\\ud7ff\\uf900-\\ufdcf\\ufdf0-\\uffef"
-        "\\U00010000-\\U0001fffd\\U00020000-\\U0002fffd"
-        "\\U00030000-\\U0003fffd\\U00040000-\\U0004fffd"
-        "\\U00050000-\\U0005fffd\\U00060000-\\U0006fffd"
-        "\\U00070000-\\U0007fffd\\U00080000-\\U0008fffd"
-        "\\U00090000-\\U0009fffd\\U000a0000-\\U000afffd"
-        "\\U000b0000-\\U000bfffd\\U000c0000-\\U000cfffd"
-        "\\U000d0000-\\U000dfffd\\U000e1000-\\U000efffd]"
-    )
-    iunreserved = f"([a-zA-Z0-9\\-._~]|{ucschar})"
+    unreserved = "[a-zA-Z0-9\\-._~]"
     pct_encoded = "%[0-9A-Fa-f][0-9A-Fa-f]"
     sub_delims = "[!$&'()*+,;=]"
-    iuserinfo = f"({iunreserved}|{pct_encoded}|{sub_delims}|:)*"
+    userinfo = f"({unreserved}|{pct_encoded}|{sub_delims}|:)*"
     h16 = "[0-9A-Fa-f]{1,4}"
     dec_octet = "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
     ipv4address = f"{dec_octet}\\.{dec_octet}\\.{dec_octet}\\.{dec_octet}"
     ls32 = f"({h16}:{h16}|{ipv4address})"
     ipv6address = (
         f"(({h16}:){{6}}{ls32}|::({h16}:){{5}}{ls32}|({h16})?::({h16}:){{4}}"
-        f"{ls32}|(({h16}:)?{h16})?::({h16}:){{3}}{ls32}|(({h16}:){{2}}{h16})?::"
-        f"({h16}:){{2}}{ls32}|(({h16}:){{3}}{h16})?::{h16}:{ls32}|(({h16}:){{4}}"
-        f"{h16})?::{ls32}|(({h16}:){{5}}{h16})?::{h16}|(({h16}:){{6}}{h16})?::)"
+        f"{ls32}|(({h16}:)?{h16})?::({h16}:){{3}}{ls32}|(({h16}:){{,2}}{h16})?::"
+        f"({h16}:){{2}}{ls32}|(({h16}:){{,3}}{h16})?::{h16}:{ls32}|(({h16}:){{,4}}"
+        f"{h16})?::{ls32}|(({h16}:){{,5}}{h16})?::{h16}|(({h16}:){{,6}}{h16})?"
+        "::)"
     )
-    unreserved = "[a-zA-Z0-9\\-._~]"
     ipvfuture = f"[vV][0-9A-Fa-f]+\\.({unreserved}|{sub_delims}|:)+"
     ip_literal = f"\\[({ipv6address}|{ipvfuture})\\]"
-    ireg_name = f"({iunreserved}|{pct_encoded}|{sub_delims})*"
-    ihost = f"({ip_literal}|{ipv4address}|{ireg_name})"
+    reg_name = f"({unreserved}|{pct_encoded}|{sub_delims})*"
+    host = f"({ip_literal}|{ipv4address}|{reg_name})"
     port = "[0-9]*"
-    iauthority = f"({iuserinfo}@)?{ihost}(:{port})?"
-    ipchar = f"({iunreserved}|{pct_encoded}|{sub_delims}|[:@])"
-    isegment = f"({ipchar})*"
-    ipath_abempty = f"(/{isegment})*"
-    isegment_nz = f"({ipchar})+"
-    ipath_absolute = f"/({isegment_nz}(/{isegment})*)?"
-    ipath_rootless = f"{isegment_nz}(/{isegment})*"
-    ipath_empty = f"({ipchar}){{0}}"
-    ihier_part = (
-        f"(//{iauthority}{ipath_abempty}|{ipath_absolute}|"
-        f"{ipath_rootless}|{ipath_empty})"
+    authority = f"({userinfo}@)?{host}(:{port})?"
+    pchar = f"({unreserved}|{pct_encoded}|{sub_delims}|[:@])"
+    segment = f"({pchar})*"
+    path_abempty = f"(/{segment})*"
+    segment_nz = f"({pchar})+"
+    path_absolute = f"/({segment_nz}(/{segment})*)?"
+    path_rootless = f"{segment_nz}(/{segment})*"
+    path_empty = f"({pchar}){{0}}"
+    hier_part = (
+        f"(//{authority}{path_abempty}|{path_absolute}|{path_rootless}|"
+        f"{path_empty})"
     )
-    iprivate = "[\\ue000-\\uf8ff\\U000f0000-\\U000ffffd\\U00100000-\\U0010fffd]"
-    iquery = f"({ipchar}|{iprivate}|[/?])*"
-    ifragment = f"({ipchar}|[/?])*"
-    isegment_nz_nc = f"({iunreserved}|{pct_encoded}|{sub_delims}|@)+"
-    ipath_noscheme = f"{isegment_nz_nc}(/{isegment})*"
-    irelative_part = (
-        f"(//{iauthority}{ipath_abempty}|{ipath_absolute}|"
-        f"{ipath_noscheme}|{ipath_empty})"
+    query = f"({pchar}|[/?])*"
+    absolute_uri = f"{scheme}:{hier_part}(\\?{query})?"
+    fragment = f"({pchar}|[/?])*"
+    gen_delims = "[:/?#\\[\\]@]"
+    segment_nz_nc = f"({unreserved}|{pct_encoded}|{sub_delims}|@)+"
+    path_noscheme = f"{segment_nz_nc}(/{segment})*"
+    path = (
+        f"({path_abempty}|{path_absolute}|{path_noscheme}|{path_rootless}|"
+        f"{path_empty})"
     )
-    irelative_ref = f"{irelative_part}(\\?{iquery})?(\\#{ifragment})?"
-    iri = f"{scheme}:{ihier_part}(\\?{iquery})?(\\#{ifragment})?"
-    iri_reference = f"({iri}|{irelative_ref})"
-
-    pattern = f"^{iri_reference}$"
-    return match(pattern, text) is not None
+    relative_part = (
+        f"(//{authority}{path_abempty}|{path_absolute}|"
+        f"{path_noscheme}|{path_empty})"
+    )
+    relative_ref = f"{relative_part}(\\?{query})?(\\#{fragment})?"
+    reserved = f"({gen_delims}|{sub_delims})"
+    uri = f"{scheme}:{hier_part}(\\?{query})?(\\#{fragment})?"
+    uri_reference = f"({uri}|{relative_ref})"
+    return match(uri_reference, text) is not None
 
 
 # noinspection SpellCheckingInspection
