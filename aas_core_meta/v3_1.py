@@ -1280,8 +1280,8 @@ class Identifier(Non_empty_XML_serializable_string, DBC):
 
 
 @invariant(
-    lambda self: len(self) <= 2000,
-    "Value type IEC 61360 shall have a maximum length of 2000 characters.",
+    lambda self: len(self) <= 2048,
+    "Value type IEC 61360 shall have a maximum length of 2048 characters.",
 )
 class Value_type_IEC_61360(Non_empty_XML_serializable_string):
     """
