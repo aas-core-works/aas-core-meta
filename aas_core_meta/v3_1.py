@@ -2586,20 +2586,18 @@ class Relationship_element(Submodel_element):
     being either referable (model reference) or external (global reference).
     """
 
-    first: "Reference"
+    first: Optional["Reference"]
     """
     Reference to the first element in the relationship taking the role of the subject.
     """
 
-    second: "Reference"
+    second: Optional["Reference"]
     """
     Reference to the second element in the relationship taking the role of the object.
     """
 
     def __init__(
         self,
-        first: "Reference",
-        second: "Reference",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -2611,6 +2609,8 @@ class Relationship_element(Submodel_element):
         embedded_data_specifications: Optional[
             List["Embedded_data_specification"]
         ] = None,
+        first: Optional["Reference"] = None,
+        second: Optional["Reference"] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -3396,8 +3396,6 @@ class Annotated_relationship_element(Relationship_element):
 
     def __init__(
         self,
-        first: "Reference",
-        second: "Reference",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -3409,6 +3407,8 @@ class Annotated_relationship_element(Relationship_element):
         embedded_data_specifications: Optional[
             List["Embedded_data_specification"]
         ] = None,
+        first: Optional["Reference"] = None,
+        second: Optional["Reference"] = None,
         annotations: Optional[List[Data_element]] = None,
     ) -> None:
         Relationship_element.__init__(
