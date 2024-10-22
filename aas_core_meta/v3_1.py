@@ -226,6 +226,59 @@ def matches_MIME_type(text: str) -> bool:
     return match(media_type, text) is not None
 
 
+@verification
+def matches_RFC_2396(text: str) -> bool:
+    """
+    Check that :paramref:`text` matches to the URI pattern defined in RFC 2396
+
+    The definition has been taken from:
+    https://datatracker.ietf.org/doc/html/rfc2396
+
+    Note that RFX 2396 alone is not enough for specifying ``xs:anyURI`` for
+    XSD version 1.0, as that specifies URI together with the amendment of
+    RFC 2732.
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    alphanum = "[a-zA-Z0-9]"
+    mark = "[\\-_.!~*'()]"
+    unreserved = f"({alphanum}|{mark})"
+    hex = "([0-9]|[aA]|[bB]|[cC]|[dD]|[eE]|[fF]|[aA]|[bB]|[cC]|[dD]|[eE]|[fF])"
+    escaped = f"%{hex}{hex}"
+    pchar = f"({unreserved}|{escaped}|[:@&=+$,])"
+    param = f"({pchar})*"
+    segment = f"({pchar})*(;{param})*"
+    path_segments = f"{segment}(/{segment})*"
+    abs_path = f"/{path_segments}"
+    scheme = "[a-zA-Z][a-zA-Z0-9+\\-.]*"
+    userinfo = f"({unreserved}|{escaped}|[;:&=+$,])*"
+    domainlabel = f"({alphanum}|{alphanum}({alphanum}|-)*{alphanum})"
+    toplabel = f"([a-zA-Z]|[a-zA-Z]({alphanum}|-)*{alphanum})"
+    hostname = f"({domainlabel}\\.)*{toplabel}(\\.)?"
+    ipv4address = "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+"
+    host = f"({hostname}|{ipv4address})"
+    port = "[0-9]*"
+    hostport = f"{host}(:{port})?"
+    server = f"(({userinfo}@)?{hostport})?"
+    reg_name = f"({unreserved}|{escaped}|[$,;:@&=+])+"
+    authority = f"({server}|{reg_name})"
+    net_path = f"//{authority}({abs_path})?"
+    reserved = "[;/?:@&=+$,]"
+    uric = f"({reserved}|{unreserved}|{escaped})"
+    query = f"({uric})*"
+    hier_part = f"({net_path}|{abs_path})(\\?{query})?"
+    uric_no_slash = f"({unreserved}|{escaped}|[;?:@&=+$,])"
+    opaque_part = f"{uric_no_slash}({uric})*"
+    absoluteuri = f"{scheme}:({hier_part}|{opaque_part})"
+    fragment = f"({uric})*"
+    rel_segment = f"({unreserved}|{escaped}|[;@&=+$,])+"
+    rel_path = f"{rel_segment}({abs_path})?"
+    relativeuri = f"({net_path}|{abs_path}|{rel_path})(\\?{query})?"
+    uri_reference = f"^({absoluteuri}|{relativeuri})?(\\#{fragment})?$"
+    return match(uri_reference, text) is not None
+
+
 # noinspection SpellCheckingInspection
 @verification
 def matches_RFC_8089_path(text: str) -> bool:
@@ -1388,8 +1441,8 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
 
 
 @invariant(
-    lambda self: matches_RFC_8089_path(self),
-    "The value must represent a valid file URI scheme according to RFC 8089.",
+    lambda self: matches_RFC_2396(self),
+    "String with max 2048 and min 1 characters conformant to a URI as per RFC 2396.",
 )
 class Path_type(Identifier, DBC):
     """
@@ -1397,8 +1450,7 @@ class Path_type(Identifier, DBC):
 
     .. note::
 
-        Any string conformant to RFC8089 , the “file” URI scheme (for
-        relative and absolute file paths)
+        String with max 2048 and min 1 characters conformant to a URI as per RFC 2396.
     """
 
     pass
