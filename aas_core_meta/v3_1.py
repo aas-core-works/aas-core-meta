@@ -427,70 +427,59 @@ def matches_xs_any_URI(text: str) -> bool:
     Check that :paramref:`text` conforms to the pattern of an ``xs:anyURI``.
 
     See: https://www.w3.org/TR/xmlschema-2/#anyURI and
-    https://datatracker.ietf.org/doc/html/rfc3987
+    https://datatracker.ietf.org/doc/html/rfc2396 and
+    https://datatracker.ietf.org/doc/html/rfc2732
+
+    Note, that version 1.0 of the XSD specification defines ``xs:anyURI`` as
+    "defined by RFC 2396, as amended by RFC 2732". Therefore, we use a
+    pattern here that implements the amendments of RFC 2732. This should not
+    be confused with ``matches_RFC_2396``, which does not include those
+    amendments and is used in different parts of the specification.
 
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
+    alphanum = "[a-zA-Z0-9]"
+    mark = "[\\-_.!~*'()]"
+    unreserved = f"({alphanum}|{mark})"
+    hex = "([0-9]|[aA]|[bB]|[cC]|[dD]|[eE]|[fF]|[aA]|[bB]|[cC]|[dD]|[eE]|[fF])"
+    escaped = f"%{hex}{hex}"
+    pchar = f"({unreserved}|{escaped}|[:@&=+$,])"
+    param = f"({pchar})*"
+    segment = f"({pchar})*(;{param})*"
+    path_segments = f"{segment}(/{segment})*"
+    abs_path = f"/{path_segments}"
     scheme = "[a-zA-Z][a-zA-Z0-9+\\-.]*"
-    ucschar = (
-        "[\\xa0-\\ud7ff\\uf900-\\ufdcf\\ufdf0-\\uffef"
-        "\\U00010000-\\U0001fffd\\U00020000-\\U0002fffd"
-        "\\U00030000-\\U0003fffd\\U00040000-\\U0004fffd"
-        "\\U00050000-\\U0005fffd\\U00060000-\\U0006fffd"
-        "\\U00070000-\\U0007fffd\\U00080000-\\U0008fffd"
-        "\\U00090000-\\U0009fffd\\U000a0000-\\U000afffd"
-        "\\U000b0000-\\U000bfffd\\U000c0000-\\U000cfffd"
-        "\\U000d0000-\\U000dfffd\\U000e1000-\\U000efffd]"
-    )
-    iunreserved = f"([a-zA-Z0-9\\-._~]|{ucschar})"
-    pct_encoded = "%[0-9A-Fa-f][0-9A-Fa-f]"
-    sub_delims = "[!$&'()*+,;=]"
-    iuserinfo = f"({iunreserved}|{pct_encoded}|{sub_delims}|:)*"
-    h16 = "[0-9A-Fa-f]{1,4}"
-    dec_octet = "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-    ipv4address = f"{dec_octet}\\.{dec_octet}\\.{dec_octet}\\.{dec_octet}"
-    ls32 = f"({h16}:{h16}|{ipv4address})"
-    ipv6address = (
-        f"(({h16}:){{6}}{ls32}|::({h16}:){{5}}{ls32}|({h16})?::({h16}:){{4}}"
-        f"{ls32}|(({h16}:)?{h16})?::({h16}:){{3}}{ls32}|(({h16}:){{,2}}{h16})?::"
-        f"({h16}:){{2}}{ls32}|(({h16}:){{,3}}{h16})?::{h16}:{ls32}|(({h16}:){{,4}}"
-        f"{h16})?::{ls32}|(({h16}:){{,5}}{h16})?::{h16}|(({h16}:){{,6}}{h16})?"
-        "::)"
-    )
-    unreserved = "[a-zA-Z0-9\\-._~]"
-    ipvfuture = f"[vV][0-9A-Fa-f]+\\.({unreserved}|{sub_delims}|:)+"
-    ip_literal = f"\\[({ipv6address}|{ipvfuture})\\]"
-    ireg_name = f"({iunreserved}|{pct_encoded}|{sub_delims})*"
-    ihost = f"({ip_literal}|{ipv4address}|{ireg_name})"
+    userinfo = f"({unreserved}|{escaped}|[;:&=+$,])*"
+    domainlabel = f"({alphanum}|{alphanum}({alphanum}|-)*{alphanum})"
+    toplabel = f"([a-zA-Z]|[a-zA-Z]({alphanum}|-)*{alphanum})"
+    hostname = f"({domainlabel}\\.)*{toplabel}(\\.)?"
+    ipv4address = "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}"
+    hex4 = "[0-9A-Fa-f]{1,4}"
+    hexseq = f"{hex4}(:{hex4})*"
+    hexpart = f"({hexseq}|{hexseq}::({hexseq})?|::({hexseq})?)"
+    ipv6address = f"{hexpart}(:{ipv4address})?"
+    ipv6reference = f"\\[{ipv6address}\\]"
+    host = f"({hostname}|{ipv4address}|{ipv6reference})"
     port = "[0-9]*"
-    iauthority = f"({iuserinfo}@)?{ihost}(:{port})?"
-    ipchar = f"({iunreserved}|{pct_encoded}|{sub_delims}|[:@])"
-    isegment = f"({ipchar})*"
-    ipath_abempty = f"(/{isegment})*"
-    isegment_nz = f"({ipchar})+"
-    ipath_absolute = f"/({isegment_nz}(/{isegment})*)?"
-    ipath_rootless = f"{isegment_nz}(/{isegment})*"
-    ipath_empty = f"({ipchar}){{0}}"
-    ihier_part = (
-        f"(//{iauthority}{ipath_abempty}|{ipath_absolute}|"
-        f"{ipath_rootless}|{ipath_empty})"
-    )
-    iprivate = "[\\ue000-\\uf8ff\\U000f0000-\\U000ffffd\\U00100000-\\U0010fffd]"
-    iquery = f"({ipchar}|{iprivate}|[/?])*"
-    ifragment = f"({ipchar}|[/?])*"
-    isegment_nz_nc = f"({iunreserved}|{pct_encoded}|{sub_delims}|@)+"
-    ipath_noscheme = f"{isegment_nz_nc}(/{isegment})*"
-    irelative_part = (
-        f"(//{iauthority}{ipath_abempty}|{ipath_absolute}|"
-        f"{ipath_noscheme}|{ipath_empty})"
-    )
-    irelative_ref = f"{irelative_part}(\\?{iquery})?(\\#{ifragment})?"
-    iri = f"{scheme}:{ihier_part}(\\?{iquery})?(\\#{ifragment})?"
-    iri_reference = f"({iri}|{irelative_ref})"
-
-    pattern = f"^{iri_reference}$"
-    return match(pattern, text) is not None
+    hostport = f"{host}(:{port})?"
+    server = f"(({userinfo}@)?{hostport})?"
+    reg_name = f"({unreserved}|{escaped}|[$,;:@&=+])+"
+    authority = f"({server}|{reg_name})"
+    net_path = f"//{authority}({abs_path})?"
+    reserved = "[;/?:@&=+$,\\[\\]]"
+    uric = f"({reserved}|{unreserved}|{escaped})"
+    query = f"({uric})*"
+    hier_part = f"({net_path}|{abs_path})(\\?{query})?"
+    uric_no_slash = f"({unreserved}|{escaped}|[;?:@&=+$,])"
+    opaque_part = f"{uric_no_slash}({uric})*"
+    absoluteuri = f"{scheme}:({hier_part}|{opaque_part})"
+    fragment = f"({uric})*"
+    rel_segment = f"({unreserved}|{escaped}|[;@&=+$,])+"
+    rel_path = f"{rel_segment}({abs_path})?"
+    relativeuri = f"({net_path}|{abs_path}|{rel_path})(\\?{query})?"
+    uri_reference = f"^({absoluteuri}|{relativeuri})?(\\#{fragment})?$"
+    return match(uri_reference, text) is not None
 
 
 # noinspection SpellCheckingInspection
