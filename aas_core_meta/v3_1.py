@@ -2621,6 +2621,41 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
         )
 
 
+@abstract
+class Container_element(Submodel_element):
+    """
+    A container element is a submodel element that is composed of
+    other submodel elements.
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two elements
@@ -2688,6 +2723,7 @@ class AAS_submodel_elements(Enum):
     Reference_element = "ReferenceElement"
     Relationship_element = "RelationshipElement"
     Submodel_element = "SubmodelElement"
+    Container_element = "ContainerElement"
     Submodel_element_list = "SubmodelElementList"
     Submodel_element_collection = "SubmodelElementCollection"
 
@@ -2764,7 +2800,7 @@ class AAS_submodel_elements(Enum):
     "Value must be either not set or have at least one item."
 )
 # fmt: on
-class Submodel_element_list(Submodel_element):
+class Submodel_element_list(Container_element):
     """
     A submodel element list is an ordered list of submodel elements.
 
@@ -2867,7 +2903,7 @@ class Submodel_element_list(Submodel_element):
         value_type_list_element: Optional["Data_type_def_XSD"] = None,
         value: Optional[List["Submodel_element"]] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Container_element.__init__(
             self,
             extensions=extensions,
             category=category,
@@ -2912,7 +2948,7 @@ class Submodel_element_list(Submodel_element):
     "Value must be either not set or have at least one item."
 )
 # fmt: on
-class Submodel_element_collection(Submodel_element):
+class Submodel_element_collection(Container_element):
     """
     A submodel element collection is a kind of struct, i.e. a a logical encapsulation
     of multiple named values. It has a fixed number of submodel elements.
@@ -2938,7 +2974,7 @@ class Submodel_element_collection(Submodel_element):
         ] = None,
         value: Optional[List["Submodel_element"]] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Container_element.__init__(
             self,
             extensions=extensions,
             category=category,
@@ -3423,7 +3459,7 @@ class File(Data_element):
     "Annotations must be either not set or have at least one item."
 )
 # fmt: on
-class Annotated_relationship_element(Relationship_element):
+class Annotated_relationship_element(Relationship_element, Container_element):
     """
     An annotated relationship element is a relationship element that can be annotated
     with additional data elements.
@@ -3514,7 +3550,7 @@ class Annotated_relationship_element(Relationship_element):
     "Statements must be either not set or have at least one item."
 )
 # fmt: on
-class Entity(Submodel_element):
+class Entity(Container_element):
     """
     An entity is a submodel element that is used to model entities.
 
@@ -3568,7 +3604,7 @@ class Entity(Submodel_element):
         global_asset_ID: Optional["Identifier"] = None,
         specific_asset_IDs: Optional[List["Specific_asset_ID"]] = None,
     ) -> None:
-        Submodel_element.__init__(
+        Container_element.__init__(
             self,
             extensions=extensions,
             category=category,
@@ -4754,6 +4790,7 @@ class Key_types(Enum):
     Blob = "Blob"
     Capability = "Capability"
     Concept_description = "ConceptDescription"
+    Container_element = "ContainerElement"
 
     Data_element = "DataElement"
     """
@@ -4871,6 +4908,7 @@ AAS_submodel_elements_as_keys: Set[Key_types] = constant_set(
         Key_types.Basic_event_element,
         Key_types.Blob,
         Key_types.Capability,
+        Key_types.Container_element,
         Key_types.Data_element,
         Key_types.Entity,
         Key_types.Event_element,
@@ -4895,6 +4933,7 @@ AAS_referable_non_identifiables: Set[Key_types] = constant_set(
         Key_types.Basic_event_element,
         Key_types.Blob,
         Key_types.Capability,
+        Key_types.Container_element,
         Key_types.Data_element,
         Key_types.Entity,
         Key_types.Event_element,
@@ -4935,6 +4974,7 @@ AAS_referables: Set[Key_types] = constant_set(
         Key_types.Referable,
         Key_types.Relationship_element,
         Key_types.Submodel_element,
+        Key_types.Container_element,
         Key_types.Submodel_element_collection,
         Key_types.Submodel_element_list,
     ],
@@ -4964,6 +5004,7 @@ Fragment_keys: Set[Key_types] = constant_set(
         Key_types.Basic_event_element,
         Key_types.Blob,
         Key_types.Capability,
+        Key_types.Container_element,
         Key_types.Data_element,
         Key_types.Entity,
         Key_types.Event_element,
