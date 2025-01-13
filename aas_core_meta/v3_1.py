@@ -2949,26 +2949,8 @@ class Submodel_element_collection(Submodel_element):
         self.value = value
 
 
-Valid_categories_for_data_element: Set[str] = constant_set(
-    values=[
-        "CONSTANT",
-        "PARAMETER",
-        "VARIABLE",
-    ],
-    description="""\
-Categories for :class:`Data_element` as defined in :constraintref:`AASd-090`""",
-)
-
-
 # fmt: off
 @abstract
-@invariant(
-    lambda self:
-    not (self.category is not None)
-    or self.category in Valid_categories_for_data_element,
-    "Constraint AASd-090: For data elements category shall be one "
-    "of the following values: CONSTANT, PARAMETER or VARIABLE.",
-)
 # fmt: on
 class Data_element(Submodel_element):
     """
@@ -2977,13 +2959,6 @@ class Data_element(Submodel_element):
 
     A data element is a submodel element that has a value. The type of value differs
     for different subtypes of data elements.
-
-    :constraint AASd-090:
-
-        For data elements :attr:`category` shall be one of the following
-        values: ``CONSTANT``, ``PARAMETER`` or ``VARIABLE``.
-
-        Default: ``VARIABLE``
     """
 
     def __init__(
@@ -3012,14 +2987,6 @@ class Data_element(Submodel_element):
             qualifiers=qualifiers,
             embedded_data_specifications=embedded_data_specifications,
         )
-
-    @implementation_specific
-    @non_mutating
-    @ensure(lambda result: result in Valid_categories_for_data_element)
-    def category_or_default(self) -> str:
-        # NOTE (mristin, 2022-04-7):
-        # This implementation will not be transpiled, but is given here as reference.
-        return self.category if self.category is not None else "VARIABLE"
 
 
 # fmt: off
