@@ -23,6 +23,11 @@ de-referencing of :class:`Reference` objects:
 * :constraintref:`AASd-007`
 * :constraintref:`AASc-3a-003`
 
+We could not implement the following constraints, as they depend on de-referencing
+:class:`Identifiable` parent objects from their :class:`Referable` children:
+
+* :constraintref:`AASd-120`
+
 Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
@@ -2695,16 +2700,6 @@ class AAS_submodel_elements(Enum):
 # fmt: off
 @invariant(
     lambda self:
-    not (self.value is not None)
-    or all(
-        element.ID_short is None
-        for element in self.value
-    ),
-    "Constraint AASd-120: ID-short of submodel elements being a direct child of a  "
-    "Submodel element list shall not be specified."
-)
-@invariant(
-    lambda self:
     not (
             self.value is not None
             and (
@@ -2789,8 +2784,9 @@ class Submodel_element_list(Submodel_element):
 
     :constraint AASd-120:
 
-        The :attr:`ID_short` of a :class:`Submodel_element` being a direct child of a
-        :class:`Submodel_element_list` shall not be specified.
+        idShort of submodel elements being a direct child of a
+        :class:`Submodel_element_list` shall not be specified within
+        :class:`Submodel` s with :attr:`Modelling_kind.Instance`.
 
     :constraint AASd-108:
 
