@@ -2253,9 +2253,8 @@ class Asset_information(DBC):
 
     :constraint AASd-116:
 
-        ``globalAssetId`` is a reserved key. If used as value for
-        :attr:`Specific_asset_ID.name` then :attr:`Specific_asset_ID.value` shall be
-        identical to :attr:`global_asset_ID`.
+        ``globalAssetId`` is a reserved key for :attr:`Specific_asset_ID.name` with the
+        semantics as defined in :attr:`global_asset_ID`.
 
         .. note::
 
