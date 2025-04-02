@@ -23,11 +23,6 @@ de-referencing of :class:`Reference` objects:
 * :constraintref:`AASd-007`
 * :constraintref:`AASc-3a-003`
 
-We could not implement the following constraints, as they depend on de-referencing
-:class:`Identifiable` parent objects from their :class:`Referable` children:
-
-* :constraintref:`AASd-120`
-
 Some constraints are not enforceable as they depend on the wider context
 such as language understanding, so we could not formalize them:
 
@@ -2780,12 +2775,6 @@ class Submodel_element_list(Submodel_element):
         If a first level child element in a :class:`Submodel_element_list` does not
         specify a :attr:`Has_semantics.semantic_ID` then the value is assumed to be
         identical to :attr:`Submodel_element_list.semantic_ID_list_element`.
-
-    :constraint AASd-120:
-
-        idShort of submodel elements being a direct child of a
-        :class:`Submodel_element_list` shall not be specified within
-        :class:`Submodel` s with :attr:`Modelling_kind.Instance`.
 
     :constraint AASd-108:
 
