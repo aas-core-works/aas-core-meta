@@ -1412,12 +1412,12 @@ class BCP_47_language_tag(str, DBC):
     "The value must represent a valid content MIME type according to RFC 2046.",
 )
 @invariant(
-    lambda self: len(self) <= 100,
-    "Content type shall have a maximum length of 100 characters.",
+    lambda self: len(self) <= 128,
+    "Content type shall have a maximum length of 128 characters.",
 )
 class Content_type(Non_empty_XML_serializable_string, DBC):
     """
-    String with length 100 maximum and minimum 1 characters
+    String with length 128 maximum and minimum 1 characters
 
     .. note::
 
