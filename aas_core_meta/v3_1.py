@@ -5376,7 +5376,7 @@ class Value_reference_pair(DBC):
     The value of the referenced concept definition of the value in :attr:`value_ID`.
     """
 
-    value_ID: "Reference"
+    value_ID: Optional["Reference"]
     """
     Global unique id of the value.
 
@@ -5386,7 +5386,9 @@ class Value_reference_pair(DBC):
 
     """
 
-    def __init__(self, value: Value_type_IEC_61360, value_ID: "Reference") -> None:
+    def __init__(
+        self, value: Value_type_IEC_61360, value_ID: Optional["Reference"]
+    ) -> None:
         self.value = value
         self.value_ID = value_ID
 
