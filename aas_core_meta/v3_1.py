@@ -1125,7 +1125,7 @@ def is_model_reference_to_referable(reference: "Reference") -> bool:
 def ID_shorts_are_unique(referables: List["Referable"]) -> bool:
     """
     Check that the :attr:`Referable.ID_short`'s among the :paramref:`referables` are
-    unique.
+    unique in their namespace.
     """
     # NOTE (mristin, 2022-04-7):
     # This implementation will not be transpiled, but is given here as reference.
