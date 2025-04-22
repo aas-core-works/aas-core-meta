@@ -226,6 +226,59 @@ def matches_MIME_type(text: str) -> bool:
     return match(media_type, text) is not None
 
 
+@verification
+def matches_RFC_2396(text: str) -> bool:
+    """
+    Check that :paramref:`text` matches to the URI pattern defined in RFC 2396
+
+    The definition has been taken from:
+    https://datatracker.ietf.org/doc/html/rfc2396
+
+    Note that RFX 2396 alone is not enough for specifying ``xs:anyURI`` for
+    XSD version 1.0, as that specifies URI together with the amendment of
+    RFC 2732.
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` conforms to the pattern
+    """
+    alphanum = "[a-zA-Z0-9]"
+    mark = "[\\-_.!~*'()]"
+    unreserved = f"({alphanum}|{mark})"
+    hex = "([0-9]|[aA]|[bB]|[cC]|[dD]|[eE]|[fF]|[aA]|[bB]|[cC]|[dD]|[eE]|[fF])"
+    escaped = f"%{hex}{hex}"
+    pchar = f"({unreserved}|{escaped}|[:@&=+$,])"
+    param = f"({pchar})*"
+    segment = f"({pchar})*(;{param})*"
+    path_segments = f"{segment}(/{segment})*"
+    abs_path = f"/{path_segments}"
+    scheme = "[a-zA-Z][a-zA-Z0-9+\\-.]*"
+    userinfo = f"({unreserved}|{escaped}|[;:&=+$,])*"
+    domainlabel = f"({alphanum}|{alphanum}({alphanum}|-)*{alphanum})"
+    toplabel = f"([a-zA-Z]|[a-zA-Z]({alphanum}|-)*{alphanum})"
+    hostname = f"({domainlabel}\\.)*{toplabel}(\\.)?"
+    ipv4address = "[0-9]+\\.[0-9]+\\.[0-9]+\\.[0-9]+"
+    host = f"({hostname}|{ipv4address})"
+    port = "[0-9]*"
+    hostport = f"{host}(:{port})?"
+    server = f"(({userinfo}@)?{hostport})?"
+    reg_name = f"({unreserved}|{escaped}|[$,;:@&=+])+"
+    authority = f"({server}|{reg_name})"
+    net_path = f"//{authority}({abs_path})?"
+    reserved = "[;/?:@&=+$,]"
+    uric = f"({reserved}|{unreserved}|{escaped})"
+    query = f"({uric})*"
+    hier_part = f"({net_path}|{abs_path})(\\?{query})?"
+    uric_no_slash = f"({unreserved}|{escaped}|[;?:@&=+$,])"
+    opaque_part = f"{uric_no_slash}({uric})*"
+    absoluteuri = f"{scheme}:({hier_part}|{opaque_part})"
+    fragment = f"({uric})*"
+    rel_segment = f"({unreserved}|{escaped}|[;@&=+$,])+"
+    rel_path = f"{rel_segment}({abs_path})?"
+    relativeuri = f"({net_path}|{abs_path}|{rel_path})(\\?{query})?"
+    uri_reference = f"^({absoluteuri}|{relativeuri})?(\\#{fragment})?$"
+    return match(uri_reference, text) is not None
+
+
 # noinspection SpellCheckingInspection
 @verification
 def matches_RFC_8089_path(text: str) -> bool:
@@ -374,70 +427,59 @@ def matches_xs_any_URI(text: str) -> bool:
     Check that :paramref:`text` conforms to the pattern of an ``xs:anyURI``.
 
     See: https://www.w3.org/TR/xmlschema-2/#anyURI and
-    https://datatracker.ietf.org/doc/html/rfc3987
+    https://datatracker.ietf.org/doc/html/rfc2396 and
+    https://datatracker.ietf.org/doc/html/rfc2732
+
+    Note, that version 1.0 of the XSD specification defines ``xs:anyURI`` as
+    "defined by RFC 2396, as amended by RFC 2732". Therefore, we use a
+    pattern here that implements the amendments of RFC 2732. This should not
+    be confused with ``matches_RFC_2396``, which does not include those
+    amendments and is used in different parts of the specification.
 
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
+    alphanum = "[a-zA-Z0-9]"
+    mark = "[\\-_.!~*'()]"
+    unreserved = f"({alphanum}|{mark})"
+    hex = "([0-9]|[aA]|[bB]|[cC]|[dD]|[eE]|[fF]|[aA]|[bB]|[cC]|[dD]|[eE]|[fF])"
+    escaped = f"%{hex}{hex}"
+    pchar = f"({unreserved}|{escaped}|[:@&=+$,])"
+    param = f"({pchar})*"
+    segment = f"({pchar})*(;{param})*"
+    path_segments = f"{segment}(/{segment})*"
+    abs_path = f"/{path_segments}"
     scheme = "[a-zA-Z][a-zA-Z0-9+\\-.]*"
-    ucschar = (
-        "[\\xa0-\\ud7ff\\uf900-\\ufdcf\\ufdf0-\\uffef"
-        "\\U00010000-\\U0001fffd\\U00020000-\\U0002fffd"
-        "\\U00030000-\\U0003fffd\\U00040000-\\U0004fffd"
-        "\\U00050000-\\U0005fffd\\U00060000-\\U0006fffd"
-        "\\U00070000-\\U0007fffd\\U00080000-\\U0008fffd"
-        "\\U00090000-\\U0009fffd\\U000a0000-\\U000afffd"
-        "\\U000b0000-\\U000bfffd\\U000c0000-\\U000cfffd"
-        "\\U000d0000-\\U000dfffd\\U000e1000-\\U000efffd]"
-    )
-    iunreserved = f"([a-zA-Z0-9\\-._~]|{ucschar})"
-    pct_encoded = "%[0-9A-Fa-f][0-9A-Fa-f]"
-    sub_delims = "[!$&'()*+,;=]"
-    iuserinfo = f"({iunreserved}|{pct_encoded}|{sub_delims}|:)*"
-    h16 = "[0-9A-Fa-f]{1,4}"
-    dec_octet = "([0-9]|[1-9][0-9]|1[0-9]{2}|2[0-4][0-9]|25[0-5])"
-    ipv4address = f"{dec_octet}\\.{dec_octet}\\.{dec_octet}\\.{dec_octet}"
-    ls32 = f"({h16}:{h16}|{ipv4address})"
-    ipv6address = (
-        f"(({h16}:){{6}}{ls32}|::({h16}:){{5}}{ls32}|({h16})?::({h16}:){{4}}"
-        f"{ls32}|(({h16}:)?{h16})?::({h16}:){{3}}{ls32}|(({h16}:){{,2}}{h16})?::"
-        f"({h16}:){{2}}{ls32}|(({h16}:){{,3}}{h16})?::{h16}:{ls32}|(({h16}:){{,4}}"
-        f"{h16})?::{ls32}|(({h16}:){{,5}}{h16})?::{h16}|(({h16}:){{,6}}{h16})?"
-        "::)"
-    )
-    unreserved = "[a-zA-Z0-9\\-._~]"
-    ipvfuture = f"[vV][0-9A-Fa-f]+\\.({unreserved}|{sub_delims}|:)+"
-    ip_literal = f"\\[({ipv6address}|{ipvfuture})\\]"
-    ireg_name = f"({iunreserved}|{pct_encoded}|{sub_delims})*"
-    ihost = f"({ip_literal}|{ipv4address}|{ireg_name})"
+    userinfo = f"({unreserved}|{escaped}|[;:&=+$,])*"
+    domainlabel = f"({alphanum}|{alphanum}({alphanum}|-)*{alphanum})"
+    toplabel = f"([a-zA-Z]|[a-zA-Z]({alphanum}|-)*{alphanum})"
+    hostname = f"({domainlabel}\\.)*{toplabel}(\\.)?"
+    ipv4address = "[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}\\.[0-9]{1,3}"
+    hex4 = "[0-9A-Fa-f]{1,4}"
+    hexseq = f"{hex4}(:{hex4})*"
+    hexpart = f"({hexseq}|{hexseq}::({hexseq})?|::({hexseq})?)"
+    ipv6address = f"{hexpart}(:{ipv4address})?"
+    ipv6reference = f"\\[{ipv6address}\\]"
+    host = f"({hostname}|{ipv4address}|{ipv6reference})"
     port = "[0-9]*"
-    iauthority = f"({iuserinfo}@)?{ihost}(:{port})?"
-    ipchar = f"({iunreserved}|{pct_encoded}|{sub_delims}|[:@])"
-    isegment = f"({ipchar})*"
-    ipath_abempty = f"(/{isegment})*"
-    isegment_nz = f"({ipchar})+"
-    ipath_absolute = f"/({isegment_nz}(/{isegment})*)?"
-    ipath_rootless = f"{isegment_nz}(/{isegment})*"
-    ipath_empty = f"({ipchar}){{0}}"
-    ihier_part = (
-        f"(//{iauthority}{ipath_abempty}|{ipath_absolute}|"
-        f"{ipath_rootless}|{ipath_empty})"
-    )
-    iprivate = "[\\ue000-\\uf8ff\\U000f0000-\\U000ffffd\\U00100000-\\U0010fffd]"
-    iquery = f"({ipchar}|{iprivate}|[/?])*"
-    ifragment = f"({ipchar}|[/?])*"
-    isegment_nz_nc = f"({iunreserved}|{pct_encoded}|{sub_delims}|@)+"
-    ipath_noscheme = f"{isegment_nz_nc}(/{isegment})*"
-    irelative_part = (
-        f"(//{iauthority}{ipath_abempty}|{ipath_absolute}|"
-        f"{ipath_noscheme}|{ipath_empty})"
-    )
-    irelative_ref = f"{irelative_part}(\\?{iquery})?(\\#{ifragment})?"
-    iri = f"{scheme}:{ihier_part}(\\?{iquery})?(\\#{ifragment})?"
-    iri_reference = f"({iri}|{irelative_ref})"
-
-    pattern = f"^{iri_reference}$"
-    return match(pattern, text) is not None
+    hostport = f"{host}(:{port})?"
+    server = f"(({userinfo}@)?{hostport})?"
+    reg_name = f"({unreserved}|{escaped}|[$,;:@&=+])+"
+    authority = f"({server}|{reg_name})"
+    net_path = f"//{authority}({abs_path})?"
+    reserved = "[;/?:@&=+$,\\[\\]]"
+    uric = f"({reserved}|{unreserved}|{escaped})"
+    query = f"({uric})*"
+    hier_part = f"({net_path}|{abs_path})(\\?{query})?"
+    uric_no_slash = f"({unreserved}|{escaped}|[;?:@&=+$,])"
+    opaque_part = f"{uric_no_slash}({uric})*"
+    absoluteuri = f"{scheme}:({hier_part}|{opaque_part})"
+    fragment = f"({uric})*"
+    rel_segment = f"({unreserved}|{escaped}|[;@&=+$,])+"
+    rel_path = f"{rel_segment}({abs_path})?"
+    relativeuri = f"({net_path}|{abs_path}|{rel_path})(\\?{query})?"
+    uri_reference = f"^({absoluteuri}|{relativeuri})?(\\#{fragment})?$"
+    return match(uri_reference, text) is not None
 
 
 # noinspection SpellCheckingInspection
@@ -1083,7 +1125,7 @@ def is_model_reference_to_referable(reference: "Reference") -> bool:
 def ID_shorts_are_unique(referables: List["Referable"]) -> bool:
     """
     Check that the :attr:`Referable.ID_short`'s among the :paramref:`referables` are
-    unique.
+    unique in their namespace.
     """
     # NOTE (mristin, 2022-04-7):
     # This implementation will not be transpiled, but is given here as reference.
@@ -1270,8 +1312,8 @@ class Blob_type(bytearray, DBC):
 
 
 @invariant(
-    lambda self: len(self) <= 2024,
-    "Identifier shall have a maximum length of 2024 characters.",
+    lambda self: len(self) <= 2048,
+    "Identifier shall have a maximum length of 2048 characters.",
 )
 class Identifier(Non_empty_XML_serializable_string, DBC):
     """
@@ -1280,8 +1322,8 @@ class Identifier(Non_empty_XML_serializable_string, DBC):
 
 
 @invariant(
-    lambda self: len(self) <= 2000,
-    "Value type IEC 61360 shall have a maximum length of 2000 characters.",
+    lambda self: len(self) <= 2048,
+    "Value type IEC 61360 shall have a maximum length of 2048 characters.",
 )
 class Value_type_IEC_61360(Non_empty_XML_serializable_string):
     """
@@ -1365,12 +1407,12 @@ class BCP_47_language_tag(str, DBC):
     "The value must represent a valid content MIME type according to RFC 2046.",
 )
 @invariant(
-    lambda self: len(self) <= 100,
-    "Content type shall have a maximum length of 100 characters.",
+    lambda self: len(self) <= 128,
+    "Content type shall have a maximum length of 128 characters.",
 )
 class Content_type(Non_empty_XML_serializable_string, DBC):
     """
-    String with length 100 maximum and minimum 1 characters
+    String with length 128 maximum and minimum 1 characters
 
     .. note::
 
@@ -1388,8 +1430,8 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
 
 
 @invariant(
-    lambda self: matches_RFC_8089_path(self),
-    "The value must represent a valid file URI scheme according to RFC 8089.",
+    lambda self: matches_RFC_2396(self),
+    "String with max 2048 and min 1 characters conformant to a URI as per RFC 2396.",
 )
 class Path_type(Identifier, DBC):
     """
@@ -1397,8 +1439,7 @@ class Path_type(Identifier, DBC):
 
     .. note::
 
-        Any string conformant to RFC8089 , the “file” URI scheme (for
-        relative and absolute file paths)
+        String with max 2048 and min 1 characters conformant to a URI as per RFC 2396.
     """
 
     pass
@@ -2207,9 +2248,8 @@ class Asset_information(DBC):
 
     :constraint AASd-116:
 
-        ``globalAssetId`` is a reserved key. If used as value for
-        :attr:`Specific_asset_ID.name` then :attr:`Specific_asset_ID.value` shall be
-        identical to :attr:`global_asset_ID`.
+        ``globalAssetId`` is a reserved key for :attr:`Specific_asset_ID.name` with the
+        semantics as defined in :attr:`global_asset_ID`.
 
         .. note::
 
@@ -2586,20 +2626,18 @@ class Relationship_element(Submodel_element):
     being either referable (model reference) or external (global reference).
     """
 
-    first: "Reference"
+    first: Optional["Reference"]
     """
     Reference to the first element in the relationship taking the role of the subject.
     """
 
-    second: "Reference"
+    second: Optional["Reference"]
     """
     Reference to the second element in the relationship taking the role of the object.
     """
 
     def __init__(
         self,
-        first: "Reference",
-        second: "Reference",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -2611,6 +2649,8 @@ class Relationship_element(Submodel_element):
         embedded_data_specifications: Optional[
             List["Embedded_data_specification"]
         ] = None,
+        first: Optional["Reference"] = None,
+        second: Optional["Reference"] = None,
     ) -> None:
         Submodel_element.__init__(
             self,
@@ -2652,16 +2692,6 @@ class AAS_submodel_elements(Enum):
 
 
 # fmt: off
-@invariant(
-    lambda self:
-    not (self.value is not None)
-    or all(
-        element.ID_short is None
-        for element in self.value
-    ),
-    "Constraint AASd-120: ID-short of submodel elements being a direct child of a  "
-    "Submodel element list shall not be specified."
-)
 @invariant(
     lambda self:
     not (
@@ -2745,11 +2775,6 @@ class Submodel_element_list(Submodel_element):
         If a first level child element in a :class:`Submodel_element_list` does not
         specify a :attr:`Has_semantics.semantic_ID` then the value is assumed to be
         identical to :attr:`Submodel_element_list.semantic_ID_list_element`.
-
-    :constraint AASd-120:
-
-        The :attr:`ID_short` of a :class:`Submodel_element` being a direct child of a
-        :class:`Submodel_element_list` shall not be specified.
 
     :constraint AASd-108:
 
@@ -2913,26 +2938,8 @@ class Submodel_element_collection(Submodel_element):
         self.value = value
 
 
-Valid_categories_for_data_element: Set[str] = constant_set(
-    values=[
-        "CONSTANT",
-        "PARAMETER",
-        "VARIABLE",
-    ],
-    description="""\
-Categories for :class:`Data_element` as defined in :constraintref:`AASd-090`""",
-)
-
-
 # fmt: off
 @abstract
-@invariant(
-    lambda self:
-    not (self.category is not None)
-    or self.category in Valid_categories_for_data_element,
-    "Constraint AASd-090: For data elements category shall be one "
-    "of the following values: CONSTANT, PARAMETER or VARIABLE.",
-)
 # fmt: on
 class Data_element(Submodel_element):
     """
@@ -2941,13 +2948,6 @@ class Data_element(Submodel_element):
 
     A data element is a submodel element that has a value. The type of value differs
     for different subtypes of data elements.
-
-    :constraint AASd-090:
-
-        For data elements :attr:`category` shall be one of the following
-        values: ``CONSTANT``, ``PARAMETER`` or ``VARIABLE``.
-
-        Default: ``VARIABLE``
     """
 
     def __init__(
@@ -2976,14 +2976,6 @@ class Data_element(Submodel_element):
             qualifiers=qualifiers,
             embedded_data_specifications=embedded_data_specifications,
         )
-
-    @implementation_specific
-    @non_mutating
-    @ensure(lambda result: result in Valid_categories_for_data_element)
-    def category_or_default(self) -> str:
-        # NOTE (mristin, 2022-04-7):
-        # This implementation will not be transpiled, but is given here as reference.
-        return self.category if self.category is not None else "VARIABLE"
 
 
 # fmt: off
@@ -3264,7 +3256,7 @@ class Blob(Data_element):
         in the :class:`Blob` data element.
     """
 
-    content_type: Content_type
+    content_type: Optional[Content_type]
     """
     Content type of the content of the :class:`Blob`.
 
@@ -3278,7 +3270,6 @@ class Blob(Data_element):
 
     def __init__(
         self,
-        content_type: Content_type,
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -3291,6 +3282,7 @@ class Blob(Data_element):
             List["Embedded_data_specification"]
         ] = None,
         value: Optional["Blob_type"] = None,
+        content_type: Optional[Content_type] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3323,7 +3315,7 @@ class File(Data_element):
     The path can be absolute or relative.
     """
 
-    content_type: "Content_type"
+    content_type: Optional["Content_type"]
     """
     Content type of the content of the file.
 
@@ -3332,7 +3324,6 @@ class File(Data_element):
 
     def __init__(
         self,
-        content_type: "Content_type",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -3345,6 +3336,7 @@ class File(Data_element):
             List["Embedded_data_specification"]
         ] = None,
         value: Optional["Path_type"] = None,
+        content_type: Optional["Content_type"] = None,
     ) -> None:
         Data_element.__init__(
             self,
@@ -3396,8 +3388,6 @@ class Annotated_relationship_element(Relationship_element):
 
     def __init__(
         self,
-        first: "Reference",
-        second: "Reference",
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -3409,6 +3399,8 @@ class Annotated_relationship_element(Relationship_element):
         embedded_data_specifications: Optional[
             List["Embedded_data_specification"]
         ] = None,
+        first: Optional["Reference"] = None,
+        second: Optional["Reference"] = None,
         annotations: Optional[List[Data_element]] = None,
     ) -> None:
         Relationship_element.__init__(
@@ -5384,7 +5376,7 @@ class Value_reference_pair(DBC):
     The value of the referenced concept definition of the value in :attr:`value_ID`.
     """
 
-    value_ID: "Reference"
+    value_ID: Optional["Reference"]
     """
     Global unique id of the value.
 
@@ -5394,7 +5386,9 @@ class Value_reference_pair(DBC):
 
     """
 
-    def __init__(self, value: Value_type_IEC_61360, value_ID: "Reference") -> None:
+    def __init__(
+        self, value: Value_type_IEC_61360, value_ID: Optional["Reference"]
+    ) -> None:
         self.value = value
         self.value_ID = value_ID
 
