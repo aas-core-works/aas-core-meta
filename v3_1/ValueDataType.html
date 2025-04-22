@@ -1010,6 +1010,35 @@
           any XSD simple type as specified via <a href="DataTypeDefXsd.html">DataTypeDefXsd</a>
         </div>
       </div>
+      <h2>
+        <a name="inheritances"></a>
+        Inheritances
+        <a class="aas-anchor-link" href="#inheritances">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>
+        </li>
+      </ul>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          Constraint AASd-130: An attribute with data type &#x27;string&#x27; shall consist of these characters only: ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$.<br/>
+          <em>(From <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>)</em><br/>
+          <div class='highlight'><pre><span class='nf'><a href='MatchesXmlSerializableString.html'>MatchesXmlSerializableString</a></span><span class='p'>(</span>
+    <span class='bp'>self</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          The value must not be empty.<br/>
+          <em>(From <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>)</em><br/>
+          <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>&gt;=</span> 1</pre></div>
+        </li>
+      </ul>
       <h2>Usages</h2>
       <table class="table">
         <tr>
