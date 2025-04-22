@@ -1451,7 +1451,7 @@ class Qualifier_type(Name_type, DBC):
     """
 
 
-class Value_data_type(str, DBC):
+class Value_data_type(Non_empty_XML_serializable_string, DBC):
     """
     any XSD simple type as specified via :class:`Data_type_def_XSD`
     """
