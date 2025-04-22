@@ -478,11 +478,6 @@
             Iec61360DataTypesWithUnit
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-item" href="ValidCategoriesForDataElement.html">
-            ValidCategoriesForDataElement
-          </a>
-        </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
           <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
@@ -585,11 +580,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
-            AASd-090
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
             AASd-107
           </a>
@@ -632,11 +622,6 @@
         <li class="nav-item">
           <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
             AASd-119
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
-            AASd-120
           </a>
         </li>
         <li class="nav-item">
@@ -798,6 +783,11 @@
         <li class="nav-item">
           <a class="nav-item" href="MatchesRevisionType.html">
             MatchesRevisionType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesRfc2396.html">
+            MatchesRfc2396
           </a>
         </li>
         <li class="nav-item">
@@ -1248,7 +1238,7 @@
         </dd>
         <dt>
           <a name="contentType"></a>
-          contentType: <span class="aas-type-annotation"><a href="ContentType.html">ContentType</a></span>
+          contentType: <span class="aas-type-annotation">Optional[<a href="ContentType.html">ContentType</a>]</span>
           <a class="aas-anchor-link" href="#contentType">🔗</a>
         </dt>
 
@@ -1342,12 +1332,6 @@
           <em>(From <a href="HasDataSpecification.html">HasDataSpecification</a>)</em><br/>
           <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="File.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
 <span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="File.html#embeddedDataSpecifications">embeddedDataSpecifications</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
-        </li>
-        <li>
-          Constraint AASd-090: For data elements category shall be one of the following values: CONSTANT, PARAMETER or VARIABLE.<br/>
-          <em>(From <a href="DataElement.html">DataElement</a>)</em><br/>
-          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="File.html#category">category</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
-<span class='ow'>or</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="File.html#category">category</a> <span class='ow'>in</span> <span class='no'><a href='ValidCategoriesForDataElement.html'>ValidCategoriesForDataElement</a></span><span class='p'>)</span></pre></div>
         </li>
       </ul>
     </div>
