@@ -3503,7 +3503,6 @@ class Entity(Submodel_element):
 
     def __init__(
         self,
-        entity_type: Optional["Entity_type"],
         extensions: Optional[List["Extension"]] = None,
         category: Optional[Name_type] = None,
         ID_short: Optional[ID_short_type] = None,
@@ -3516,6 +3515,7 @@ class Entity(Submodel_element):
             List["Embedded_data_specification"]
         ] = None,
         statements: Optional[List["Submodel_element"]] = None,
+        entity_type: Optional["Entity_type"] = None,
         global_asset_ID: Optional["Identifier"] = None,
         specific_asset_IDs: Optional[List["Specific_asset_ID"]] = None,
     ) -> None:
@@ -5387,7 +5387,9 @@ class Value_reference_pair(DBC):
     """
 
     def __init__(
-        self, value: Value_type_IEC_61360, value_ID: Optional["Reference"]
+        self,
+        value: Value_type_IEC_61360,
+        value_ID: Optional["Reference"] = None,
     ) -> None:
         self.value = value
         self.value_ID = value_ID
