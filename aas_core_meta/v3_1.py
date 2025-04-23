@@ -3432,17 +3432,17 @@ class Annotated_relationship_element(Relationship_element):
     lambda self:
     not (self.entity_type is not None)
     or (
-        self.entity_type == Entity_type.Self_managed_entity
-        and (
-            (
-                    self.global_asset_ID is not None
-                    and self.specific_asset_IDs is None
-            ) or (
-                    self.global_asset_ID is None
-                    and self.specific_asset_IDs is not None
-                    and len(self.specific_asset_IDs) >= 1
+            not (self.entity_type == Entity_type.Self_managed_entity)
+            or (
+                    (
+                            self.global_asset_ID is not None
+                            and self.specific_asset_IDs is None
+                    ) or (
+                            self.global_asset_ID is None
+                            and self.specific_asset_IDs is not None
+                            and len(self.specific_asset_IDs) >= 1
+                    )
             )
-        )
     ),
     "Constraint AASd-014: Either the attribute global asset ID or "
     "specific asset ID must be set if Entity/entityType is set to :attr:`Entity_type.Self_managed_entity`."
