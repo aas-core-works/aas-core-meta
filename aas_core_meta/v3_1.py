@@ -1261,30 +1261,31 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 # endregion
 
 
-# fmt: off
-@invariant(
-    lambda self: len(self) >= 1,
-    "The value must not be empty."
-)
 @invariant(
     lambda self: matches_XML_serializable_string(self),
     "Constraint AASd-130: An attribute with data type 'string' shall consist "
     "of these characters only: "
-    r"^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$."
+    r"^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$.",
 )
-# fmt: on
-class Non_empty_XML_serializable_string(str, DBC):
+class XML_serializable_string(str, DBC):
     r"""
-    Represent a string with at least one character.
-
-    The string should also be serializable to XML, which is the background for
-    the following constraint.
+    Represent a string which must be serializable to XML.
 
     :constraint AASd-130:
 
         An attribute with data type "string" shall consist of these characters only:
         ``^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u00010000-\u0010FFFF]*$``.
     """
+
+
+# fmt: off
+@invariant(
+    lambda self: len(self) >= 1,
+    "The value must not be empty."
+)
+# fmt: on
+class Non_empty_XML_serializable_string(XML_serializable_string, DBC):
+    """Represent an XML-serializable string with at least one character."""
 
 
 @invariant(
@@ -1451,7 +1452,7 @@ class Qualifier_type(Name_type, DBC):
     """
 
 
-class Value_data_type(Non_empty_XML_serializable_string, DBC):
+class Value_data_type(XML_serializable_string, DBC):
     """
     any XSD simple type as specified via :class:`Data_type_def_XSD`
     """
