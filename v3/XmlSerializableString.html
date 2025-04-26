@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValueTypeIec61360</title>
+  <title>XmlSerializableString</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -156,7 +156,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item active" href="ValueTypeIec61360.html">
+          <a class="nav-item" href="ValueTypeIec61360.html">
             ValueTypeIec61360
           </a>
         </li>
@@ -166,7 +166,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="XmlSerializableString.html">
+          <a class="nav-item active" href="XmlSerializableString.html">
             XmlSerializableString
           </a>
         </li>
@@ -1009,7 +1009,7 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValueTypeIec61360
+        XmlSerializableString
         <a class="aas-anchor-link" href="">🔗</a>
       </h1>
       <dl>
@@ -1022,19 +1022,18 @@
       </dl>
       <div class="aas-description">
         <div class="summary">
-          string
+          Represent a string which must be serializable to XML.
         </div>
+        <dl class="constraints">
+          <dt>
+            <a name="constraint-AASd-130"></a>Constraint AASd-130<a class="aas-anchor-link" href="#constraint-AASd-130">🔗</a>
+          </dt>
+          <dd>
+            An attribute with data type &quot;string&quot; shall consist of these characters only:
+            <code>^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\u00010000-\u0010FFFF]*$</code>.
+          </dd>
+        </dl>
       </div>
-      <h2>
-        <a name="inheritances"></a>
-        Inheritances
-        <a class="aas-anchor-link" href="#inheritances">🔗</a>
-      </h2>
-      <ul>
-        <li>
-          <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>
-        </li>
-      </ul>
       <h2>
         <a name="invariants"></a>
         Invariants
@@ -1043,40 +1042,11 @@
       <ul>
         <li>
           Constraint AASd-130: An attribute with data type &#x27;string&#x27; shall consist of these characters only: ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$.<br/>
-          <em>(From <a href="XmlSerializableString.html">XmlSerializableString</a>)</em><br/>
           <div class='highlight'><pre><span class='nf'><a href='MatchesXmlSerializableString.html'>MatchesXmlSerializableString</a></span><span class='p'>(</span>
     <span class='bp'>self</span>
 <span class='p'>)</span></pre></div>
         </li>
-        <li>
-          The value must not be empty.<br/>
-          <em>(From <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>)</em><br/>
-          <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>&gt;=</span> 1</pre></div>
-        </li>
-        <li>
-          Value type IEC 61360 shall have a maximum length of 2000 characters.<br/>
-          <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>&lt;=</span> 2000</pre></div>
-        </li>
       </ul>
-      <h2>Usages</h2>
-      <table class="table">
-        <tr>
-          <td>
-            <a href="ValueReferencePair.html">ValueReferencePair</a>
-          </td>
-          <td>
-            <a href="ValueReferencePair.html#value">ValueReferencePair.value</a>
-          </td>
-        </tr>
-        <tr>
-          <td>
-            <a href="DataSpecificationIec61360.html">DataSpecificationIec61360</a>
-          </td>
-          <td>
-            <a href="DataSpecificationIec61360.html#value">DataSpecificationIec61360.value</a>
-          </td>
-        </tr>
-      </table>
     </div>
   </div>
 </div>
