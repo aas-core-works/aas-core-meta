@@ -4453,7 +4453,7 @@ class Reference_types(Enum):
     ) or (
         all(
             not (self.keys[i].type == Key_types.Submodel_element_list)
-            or matches_xs_positive_integer(self.keys[i + 1].value)
+            or matches_xs_non_negative_integer(self.keys[i + 1].value)
             for i in range(0, len(self.keys) - 1)
         )
     ),
