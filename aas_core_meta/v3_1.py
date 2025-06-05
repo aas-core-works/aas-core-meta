@@ -5100,19 +5100,19 @@ class Data_specification_content:
 class Embedded_data_specification:
     """Embed the content of a data specification."""
 
-    data_specification_content: Data_specification_content
-    """Actual content of the data specification"""
-
     data_specification: Reference
     """Reference to the data specification"""
 
+    data_specification_content: Data_specification_content
+    """Actual content of the data specification"""
+
     def __init__(
         self,
-        data_specification_content: Data_specification_content,
         data_specification: Reference,
+        data_specification_content: Data_specification_content,
     ) -> None:
-        self.data_specification_content = data_specification_content
         self.data_specification = data_specification
+        self.data_specification_content = data_specification_content
 
 
 class Data_type_IEC_61360(Enum):
