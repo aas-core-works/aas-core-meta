@@ -1211,7 +1211,7 @@
 <span class='ow'>or</span> <span class='p'>(</span>
     <span class='nb'>all</span><span class='p'>(</span>
         <span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="Reference.html#keys">keys</a>[<span class='nv'>i</span>]<span class='o'>.</span><a href="Key.html#type">type</a> <span class='o'>==</span> <span class='nc'><a href='KeyTypes.html'>KeyTypes</a></span><span class='o'>.</span><a href="KeyTypes.html#SubmodelElementList">SubmodelElementList</a><span class='p'>)</span>
-        <span class='ow'>or</span> <span class='nf'><a href='MatchesXsPositiveInteger.html'>MatchesXsPositiveInteger</a></span><span class='p'>(</span>
+        <span class='ow'>or</span> <span class='nf'><a href='MatchesXsNonNegativeInteger.html'>MatchesXsNonNegativeInteger</a></span><span class='p'>(</span>
             <span class='bp'>self</span><span class='o'>.</span><a href="Reference.html#keys">keys</a>[<span class='nv'>i</span> <span class='o'>+</span> 1]<span class='o'>.</span><a href="Key.html#value">value</a>
         <span class='p'>)</span>
         <span class='k'>for</span> <span class='nv'>i</span> <span class='ow'>in</span> <span class='nb'>range</span><span class='p'>(</span>
