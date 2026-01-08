@@ -2651,6 +2651,12 @@ class AAS_submodel_elements(Enum):
 # fmt: off
 @invariant(
     lambda self:
+    not (self.value is not None)
+    or ID_shorts_are_unique(self.value),
+    "ID-shorts of the value must be unique."
+)
+@invariant(
+    lambda self:
     not (
             self.value is not None
             and (
