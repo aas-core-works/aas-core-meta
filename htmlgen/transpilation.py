@@ -739,7 +739,6 @@ class _Transpiler(
             return Stripped(f"{left} {minus} {right}"), None
         else:
             assert_never(node)
-            raise AssertionError("Unexpected execution path")
 
     def transform_add(
         self, node: parse_tree.Add
@@ -1185,7 +1184,6 @@ def transpile_body_of_verification(
         transpilable_verification = verification
     else:
         assert_never(verification)
-        raise AssertionError("Unexpected execution path")
 
     # fmt: off
     type_inference, error = (

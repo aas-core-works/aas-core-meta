@@ -41,7 +41,7 @@ setup(
         "dev": [
             "black==22.3.0",
             "mypy==0.910",
-            "pylint==2.17.0",
+            "pylint==3.3.8",
             "asttokens>=2.0.8,<3",
             "aas-core-codegen@git+https://github.com/aas-core-works/aas-core-codegen@6df5c9e8#egg=aas-core-codegen",
             "astpretty==3.0.0",
