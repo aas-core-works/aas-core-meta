@@ -297,6 +297,7 @@ def _generate_page(
 ) -> str:
     """Generate a HTML page."""
     # noinspection SpellCheckingInspection
+    # pylint: disable=line-too-long
     page = f"""\
 <!DOCTYPE html>
 <html>
@@ -330,6 +331,7 @@ def _generate_page(
 </body>
 </html>
 """
+    # pylint: enable=line-too-long
 
     # NOTE (mristin, 2023-01-18):
     # We have to de-dent source code so that the formatting in ``<pre>`` remains
