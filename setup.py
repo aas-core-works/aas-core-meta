@@ -29,10 +29,10 @@ setup(
     author_email="rist@zhaw.ch",
     classifiers=[
         "Development Status :: 3 - Alpha",
-        "License :: OSI Approved :: MIT License",
         "Programming Language :: Python :: 3.8",
     ],
-    license="License :: OSI Approved :: MIT License",
+    license="MIT",
+    license_files=["LICENSE"],
     keywords="asset administration shell,design-by-contract,meta-model",
     packages=find_packages(exclude=["tests"]),
     install_requires=install_requires,
