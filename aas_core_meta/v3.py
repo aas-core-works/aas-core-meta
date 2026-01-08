@@ -3930,7 +3930,7 @@ class Basic_event_element(Event_element):
         self.inoutput_variables
     ),
     "Constraint AASd-134: For an Operation the ID-short of all values of "
-    "input, output and in/output variables."
+    "input, output and in/output variables shall be unique."
 )
 # fmt: on
 class Operation(Submodel_element):
