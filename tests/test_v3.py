@@ -86,28 +86,39 @@ class Test_matches_MIME_type(unittest.TestCase):
         assert v3.matches_MIME_type("audio/3gpp2")
 
 
-class Test_matches_RFC_8089_path(unittest.TestCase):
+class Test_matches_RFC_2396_path(unittest.TestCase):
     def test_empty(self) -> None:
-        assert not v3.matches_RFC_8089_path("")
+        assert v3.matches_RFC_2396("")
 
     def test_integer(self) -> None:
-        assert not v3.matches_RFC_8089_path("1234")
+        assert v3.matches_RFC_2396("1234")
 
-    def test_absolute_path_without_scheme(self) -> None:
-        assert not v3.matches_RFC_8089_path("/path/to/somewhere")
+    def test_absolute_without_scheme(self) -> None:
+        assert v3.matches_RFC_2396("/path/to/somewhere")
 
-    def test_relative_path_without_scheme(self) -> None:
-        assert not v3.matches_RFC_8089_path("path/to/somewhere")
+    def test_relative_without_scheme(self) -> None:
+        assert v3.matches_RFC_2396("path/to/somewhere")
 
-    def test_local_absolute_path_with_scheme(self) -> None:
-        assert v3.matches_RFC_8089_path("file:/path/to/somewhere")
-
-    def test_non_local_file_with_an_explicit_authority(self) -> None:
-        # See https://datatracker.ietf.org/doc/html/rfc8089#appendix-B
-        assert v3.matches_RFC_8089_path("file://host.example.com/path/to/file")
+    def test_local_absolute_with_scheme(self) -> None:
+        assert v3.matches_RFC_2396("file:/path/to/somewhere")
 
     def test_local_relative_path_with_scheme(self) -> None:
-        assert not v3.matches_RFC_8089_path("file:path/to/somewhere")
+        assert v3.matches_RFC_2396("file:path/to/somewhere")
+
+    def test_absolute_path_without_scheme(self) -> None:
+        assert v3.matches_RFC_2396("/path/to/somewhere")
+
+    def test_relative_path_without_scheme(self) -> None:
+        assert v3.matches_RFC_2396("path/to/somewhere")
+
+    def test_URI(self) -> None:
+        assert v3.matches_RFC_2396("https://github.com/aas-core-works/aas-core-codegen")
+
+    def test_too_many_fragments(self) -> None:
+        assert not v3.matches_RFC_2396("http://datypic.com#frag1#frag2")
+
+    def test_percentage_followed_by_non_two_hexadecimal_digits(self) -> None:
+        assert not v3.matches_RFC_2396("http://datypic.com#f% rag")
 
 
 class Test_matches_BCP_47(unittest.TestCase):
