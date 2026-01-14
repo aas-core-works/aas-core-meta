@@ -1064,8 +1064,9 @@
         <dd>
           <div>
             <div class="summary">
-              Denotes whether the Asset is of kind <a href="AssetKind.html#Type">AssetKind.Type</a> or
-              <a href="AssetKind.html#Instance">AssetKind.Instance</a>.
+              Denotes whether the Asset is of kind <a href="AssetKind.html#Type">AssetKind.Type</a>,
+              <a href="AssetKind.html#Instance">AssetKind.Instance</a>, <a href="AssetKind.html#Role">AssetKind.Role</a>, or
+              <a href="AssetKind.html#NotApplicable">AssetKind.NotApplicable</a>.
             </div>
           </div>
         </dd>
@@ -1116,13 +1117,13 @@
         <dd>
           <div>
             <div class="summary">
-              In case <a href="AssetInformation.html#assetKind">AssetInformation.assetKind</a> is applicable the <a href="AssetInformation.html#assetType">AssetInformation.assetType</a> is the asset ID
-              of the type asset of the asset under consideration
-              as identified by <a href="AssetInformation.html#globalAssetId">AssetInformation.globalAssetId</a>.
+              In case <a href="AssetInformation.html#assetKind">AssetInformation.assetKind</a> is <a href="AssetKind.html#NotApplicable">AssetKind.NotApplicable</a> the
+              <a href="AssetInformation.html#assetType">AssetInformation.assetType</a> is the asset ID of the type asset of the asset under
+              consideration as identified by <a href="AssetInformation.html#globalAssetId">AssetInformation.globalAssetId</a>.
             </div>
             <div class="remarks">
               <div class="alert alert-info">
-                In case <a href="AssetInformation.html#assetKind">AssetInformation.assetKind</a> is &quot;Instance&quot; than the <a href="AssetInformation.html#assetType">AssetInformation.assetType</a> denotes
+                In case <a href="AssetInformation.html#assetKind">AssetInformation.assetKind</a> is &quot;Instance&quot; then the <a href="AssetInformation.html#assetType">AssetInformation.assetType</a> denotes
                 which &quot;Type&quot; the asset is of. But it is also possible
                 to have an <a href="AssetInformation.html#assetType">AssetInformation.assetType</a> of an asset of kind &quot;Type&quot;.
               </div>
