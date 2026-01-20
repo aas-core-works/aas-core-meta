@@ -26,4 +26,4 @@ jobs:
 
       - name: Generate HTML
         run: |
-          python3 htmlgen/htmlgen/main.py --html_dir html
+          python3 htmlgen/htmlgen/main.py --aas_core_meta_dir aas_core_meta --html_dir html
