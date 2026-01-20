@@ -1,0 +1,32 @@
+[build-system]
+requires = ["setuptools>=45", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aas-core-meta"
+version = "2022.6.21"
+description = "Provide meta-models for Asset Administration Shell information model."
+readme = "README.rst"
+license = {text = "MIT"}
+authors = [
+    { name = "Marko Ristin", email = "rist@zhaw.ch" }
+]
+keywords = ["asset administration shell", "design-by-contract", "meta-model"]
+classifiers = [
+    "Development Status :: 5 - Production/Stable",
+    "License :: OSI Approved :: MIT License",
+    "Programming Language :: Python :: 3.9",
+]
+dependencies = [
+    "icontract>=2.5.1,<3",
+]
+requires-python = ">=3.9"
+
+[project.urls]
+Homepage = "https://github.com/aas-core-works/aas-core-meta"
+
+[tool.setuptools.packages.find]
+exclude = ["dev"]
+
+[tool.setuptools.package-data]
+"aas_core_meta" = ["py.typed"]

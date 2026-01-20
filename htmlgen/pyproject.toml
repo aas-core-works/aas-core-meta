@@ -1,0 +1,21 @@
+[build-system]
+requires = ["setuptools>=61", "wheel"]
+build-backend = "setuptools.build_meta"
+
+[project]
+name = "aas-core-meta-htmlgen"
+version = "0.0.1"
+description = "Generate HTML documentation from aas-core-meta."
+requires-python = ">=3.9"
+
+dependencies = [
+    "asttokens>=2.0.8,<3",
+    "aas-core-codegen==0.0.16",
+    "astpretty==3.0.0",
+    "pygments>=2,<3",
+]
+
+[tool.setuptools]
+packages = [
+    "htmlgen",
+]

@@ -17,7 +17,7 @@ class Step(enum.Enum):
     RUN = "run"
     AAS_CORE_CODEGEN_SMOKE = "aas-core-codegen-smoke"
     TEST = "test"
-    CHECK_INIT_AND_SETUP_COINCIDE = "check-init-and-setup-coincide"
+    CHECK_INIT_AND_PYPROJECT_CONSISTENT = "check-init-and-pyproject-consistent"
     PYLINT = "pylint"
 
 
@@ -107,65 +107,18 @@ def main() -> int:
     )
     skips = [Step(value) for value in args.skip] if args.skip is not None else []
 
-    repo_root = pathlib.Path(__file__).parent
+    repo_root = pathlib.Path(__file__).parent.parent.parent
 
     if Step.REFORMAT in selects and Step.REFORMAT not in skips:
         print("Re-formatting...")
         # fmt: off
         black_targets = [
             "aas_core_meta",
-            "precommit.py",
-            "setup.py",
-            "check_init_and_setup_coincide.py",
-            "tests",
-            "htmlgen"
+            "dev/continuous_integration",
+            "dev/tests",
+            "htmlgen/htmlgen"
         ]
         # fmt: on
-
-        # region Check or remove trailing whitespace
-        trailing_whitespace_pths = []  # type: List[pathlib.Path]
-
-        for relative_pth in black_targets:
-            pth = repo_root / relative_pth
-            if pth.is_file():
-                trailing_whitespace_pths.append(pth)
-            elif pth.is_dir():
-                trailing_whitespace_pths.extend(pth.glob("**/*.py"))
-            else:
-                raise RuntimeError(
-                    f"Unexpected path to neither a file nor a directory: {pth}"
-                )
-
-        trailing_whitespace_pths.sort()
-
-        offending_lines = []  # type: List[int]
-
-        for pth in trailing_whitespace_pths:
-            text = pth.read_text(encoding="utf-8")
-            lines = text.splitlines()
-            if overwrite:
-                lines = [re.sub(r"[ \t]+$", "", line) for line in lines]
-
-                new_text = "\n".join(lines)
-                if text.endswith("\n") and not new_text.endswith("\n"):
-                    new_text = new_text + "\n"
-
-                pth.write_text(new_text, encoding="utf-8")
-            else:
-                for i, line in enumerate(lines):
-                    if re.match(r"[ \t]+$", line) is not None:
-                        offending_lines.append(i)
-
-            if len(offending_lines) > 0:
-                for i in offending_lines:
-                    print(
-                        f"{pth.relative_to(repo_root)}:{i + 1}: "
-                        f"unexpected trailing whitespace",
-                        file=sys.stderr,
-                    )
-                return 1
-
-        # endregion
 
         if overwrite:
             exit_code = call_and_report(
@@ -186,11 +139,13 @@ def main() -> int:
 
     if Step.MYPY in selects and Step.MYPY not in skips:
         print("Mypy'ing...")
-        mypy_targets = ["aas_core_meta", "htmlgen"]
+        mypy_targets = ["aas_core_meta", "htmlgen/htmlgen"]
+
+        mypy_ini = pathlib.Path("dev/continuous_integration") / "mypy.ini"
 
         exit_code = call_and_report(
             verb="mypy",
-            cmd=["mypy", "--strict", "--config-file", "mypy.ini"] + mypy_targets,
+            cmd=["mypy", "--strict", "--config-file", str(mypy_ini)] + mypy_targets,
             cwd=repo_root,
         )
         if exit_code != 0:
@@ -242,12 +197,7 @@ def main() -> int:
 
         exit_code = call_and_report(
             verb="execute unit tests",
-            cmd=[
-                sys.executable,
-                "-m",
-                "unittest",
-                "discover",
-            ],
+            cmd=[sys.executable, "-m", "unittest", "discover", "-s", "dev/tests"],
             cwd=repo_root,
             env=env,
         )
@@ -255,24 +205,36 @@ def main() -> int:
             return 1
 
     if (
-        Step.CHECK_INIT_AND_SETUP_COINCIDE in selects
-        and Step.CHECK_INIT_AND_SETUP_COINCIDE not in skips
+        Step.CHECK_INIT_AND_PYPROJECT_CONSISTENT in selects
+        and Step.CHECK_INIT_AND_PYPROJECT_CONSISTENT not in skips
     ):
-        print("Checking that aas_core_meta/__init__.py and setup.py coincide...")
+        print(
+            "Checking that aas_core_meta/__init__.py and pyproject.toml "
+            "are consistent..."
+        )
         exit_code = call_and_report(
-            verb="Check that aas_core_meta/__init__.py and setup.py coincide",
-            cmd=[sys.executable, "check_init_and_setup_coincide.py"],
+            verb=(
+                "check that aas_core_meta/__init__.py and pyproject.toml "
+                "are consistent"
+            ),
+            cmd=[
+                sys.executable,
+                "dev/continuous_integration/check_init_and_pyproject_consistent.py",
+            ],
             cwd=repo_root,
         )
         if exit_code != 0:
             return 1
     else:
-        print("Skipped checking that aas_core_meta/__init__.py and setup.py coincide.")
+        print(
+            "Skipped checking that aas_core_meta/__init__.py and "
+            "pyproject.toml are consistent."
+        )
 
     if Step.PYLINT in selects and Step.PYLINT not in skips:
         print("Pylint'ing...")
-        pylint_targets = ["tests", "htmlgen"]
-        rcfile = "pylint.rc"
+        pylint_targets = ["dev/tests", "htmlgen/htmlgen"]
+        rcfile = pathlib.Path("dev/continuous_integration/pylint.rc")
 
         exit_code = call_and_report(
             verb="pylint",
