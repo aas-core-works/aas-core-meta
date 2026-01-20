@@ -1,0 +1,1229 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>DataTypeIec61360</title>
+  <link rel="stylesheet" href="../base.css">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+    crossorigin="anonymous"
+  >
+</head>
+<body>
+<div class="container-fluid px-0 mx-0">
+  <div class="row px-0 mx-0" style="width: 100%;">
+    <div class="col-3 px-2 mx-0 overflow-auto" id="menu">
+      <ul class="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-ul">
+        <li class="nav-item mb-2">
+          <a class="nav-item" href="../index.html">Back</a>
+        </li>
+        <li class="nav-item  mb-2">
+          <a class="nav-item" href="index.html">V3.0RC02</a>
+        </li>
+        <li class="nav-item mt-2">Enumerations</li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasSubmodelElements.html">
+            AasSubmodelElements
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetKind.html">
+            AssetKind
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeDefXsd.html">
+            DataTypeDefXsd
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item active" href="DataTypeIec61360.html">
+            DataTypeIec61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Direction.html">
+            Direction
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="EntityType.html">
+            EntityType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="KeyTypes.html">
+            KeyTypes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LevelType.html">
+            LevelType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ModelingKind.html">
+            ModelingKind
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="QualifierKind.html">
+            QualifierKind
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ReferenceTypes.html">
+            ReferenceTypes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="StateOfEvent.html">
+            StateOfEvent
+          </a>
+        </li>
+        <li class="nav-item mt-2">Constrained Primitives</li>
+        <li class="nav-item">
+          <a class="nav-item" href="Bcp47LanguageTag.html">
+            Bcp47LanguageTag
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="BlobType.html">
+            BlobType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ContentType.html">
+            ContentType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DateTimeStampUtc.html">
+            DateTimeStampUtc
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShort.html">
+            IdShort
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Identifier.html">
+            Identifier
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="NonEmptyString.html">
+            NonEmptyString
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="PathType.html">
+            PathType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="QualifierType.html">
+            QualifierType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueDataType.html">
+            ValueDataType
+          </a>
+        </li>
+        <li class="nav-item mt-2">Abstract Classes</li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataElement.html">
+            DataElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationContent.html">
+            DataSpecificationContent
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="EventElement.html">
+            EventElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasDataSpecification.html">
+            HasDataSpecification
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasExtensions.html">
+            HasExtensions
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasKind.html">
+            HasKind
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasSemantics.html">
+            HasSemantics
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Identifiable.html">
+            Identifiable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifiable.html">
+            Qualifiable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Referable.html">
+            Referable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElement.html">
+            SubmodelElement
+          </a>
+        </li>
+        <li class="nav-item mt-2">Concrete Classes</li>
+        <li class="nav-item">
+          <a class="nav-item" href="AdministrativeInformation.html">
+            AdministrativeInformation
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AnnotatedRelationshipElement.html">
+            AnnotatedRelationshipElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetAdministrationShell.html">
+            AssetAdministrationShell
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetInformation.html">
+            AssetInformation
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="BasicEventElement.html">
+            BasicEventElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Blob.html">
+            Blob
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Capability.html">
+            Capability
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html">
+            ConceptDescription
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360.html">
+            DataSpecificationIec61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationPhysicalUnit.html">
+            DataSpecificationPhysicalUnit
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="EmbeddedDataSpecification.html">
+            EmbeddedDataSpecification
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Entity.html">
+            Entity
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Environment.html">
+            Environment
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="EventPayload.html">
+            EventPayload
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Extension.html">
+            Extension
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="File.html">
+            File
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Key.html">
+            Key
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LangString.html">
+            LangString
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MultiLanguageProperty.html">
+            MultiLanguageProperty
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Operation.html">
+            Operation
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="OperationVariable.html">
+            OperationVariable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Property.html">
+            Property
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifier.html">
+            Qualifier
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Range.html">
+            Range
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html">
+            Reference
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ReferenceElement.html">
+            ReferenceElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="RelationshipElement.html">
+            RelationshipElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Resource.html">
+            Resource
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetId.html">
+            SpecificAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Submodel.html">
+            Submodel
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementCollection.html">
+            SubmodelElementCollection
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html">
+            SubmodelElementList
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueList.html">
+            ValueList
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueReferencePair.html">
+            ValueReferencePair
+          </a>
+        </li>
+        <li class="nav-item mt-2">Constants</li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasIdentifiables.html">
+            AasIdentifiables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasReferableNonIdentifiables.html">
+            AasReferableNonIdentifiables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasReferables.html">
+            AasReferables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasSubmodelElementsAsKeys.html">
+            AasSubmodelElementsAsKeys
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeIec61360ForDocument.html">
+            DataTypeIec61360ForDocument
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeIec61360ForPropertyOrValue.html">
+            DataTypeIec61360ForPropertyOrValue
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeIec61360ForReference.html">
+            DataTypeIec61360ForReference
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="FragmentKeys.html">
+            FragmentKeys
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="GenericFragmentKeys.html">
+            GenericFragmentKeys
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="GenericGloballyIdentifiables.html">
+            GenericGloballyIdentifiables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="GloballyIdentifiables.html">
+            GloballyIdentifiables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Iec61360DataTypesWithUnit.html">
+            Iec61360DataTypesWithUnit
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValidCategoriesForConceptDescription.html">
+            ValidCategoriesForConceptDescription
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValidCategoriesForDataElement.html">
+            ValidCategoriesForDataElement
+          </a>
+        </li>
+        <li class="nav-item">Constraints</li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-002">
+            AASc-002
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-003">
+            AASc-003
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-004">
+            AASc-004
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-005">
+            AASc-005
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-006">
+            AASc-006
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-007">
+            AASc-007
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-008">
+            AASc-008
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-009">
+            AASc-009
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-010">
+            AASc-010
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShort.html#constraint-AASd-002">
+            AASd-002
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="index.html#constraint-AASd-003">
+            AASd-003
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AdministrativeInformation.html#constraint-AASd-005">
+            AASd-005
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifier.html#constraint-AASd-006">
+            AASd-006
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Property.html#constraint-AASd-007">
+            AASd-007
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MultiLanguageProperty.html#constraint-AASd-012">
+            AASd-012
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Entity.html#constraint-AASd-014">
+            AASd-014
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifier.html#constraint-AASd-020">
+            AASd-020
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Capability.html#constraint-AASd-021">
+            AASd-021
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShort.html#constraint-AASd-027">
+            AASd-027
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASd-051">
+            AASd-051
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Extension.html#constraint-AASd-077">
+            AASd-077
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
+            AASd-090
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="NonEmptyString.html#constraint-AASd-100">
+            AASd-100
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
+            AASd-107
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-108">
+            AASd-108
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-109">
+            AASd-109
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-114">
+            AASd-114
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-115">
+            AASd-115
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetInformation.html#constraint-AASd-116">
+            AASd-116
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasSemantics.html#constraint-AASd-118">
+            AASd-118
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
+            AASd-119
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="index.html#constraint-AASd-120">
+            AASd-120
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-121">
+            AASd-121
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-122">
+            AASd-122
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-123">
+            AASd-123
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-124">
+            AASd-124
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-125">
+            AASd-125
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-126">
+            AASd-126
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-127">
+            AASd-127
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-128">
+            AASd-128
+          </a>
+        </li>
+        <li class="nav-item mt-2">Verification Functions</li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sForDocumentHaveAppropriateDataType.html">
+            DataSpecificationIec61360sForDocumentHaveAppropriateDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sForPropertyOrValueHaveAppropriateDataType.html">
+            DataSpecificationIec61360sForPropertyOrValueHaveAppropriateDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sForReferenceHaveAppropriateDataType.html">
+            DataSpecificationIec61360sForReferenceHaveAppropriateDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sHaveDataType.html">
+            DataSpecificationIec61360sHaveDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sHaveDefinitionAtLeastInEnglish.html">
+            DataSpecificationIec61360sHaveDefinitionAtLeastInEnglish
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sHaveValue.html">
+            DataSpecificationIec61360sHaveValue
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ExtensionNamesAreUnique.html">
+            ExtensionNamesAreUnique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShortsAreUnique.html">
+            IdShortsAreUnique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsBcp47ForEnglish.html">
+            IsBcp47ForEnglish
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsModelReferenceTo.html">
+            IsModelReferenceTo
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsModelReferenceToReferable.html">
+            IsModelReferenceToReferable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsXsDateTimeStampUtc.html">
+            IsXsDateTimeStampUtc
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LangStringsHaveUniqueLanguages.html">
+            LangStringsHaveUniqueLanguages
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesBcp47.html">
+            MatchesBcp47
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesGlobalAssetIdLiterally.html">
+            MatchesGlobalAssetIdLiterally
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesIdShort.html">
+            MatchesIdShort
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesMimeType.html">
+            MatchesMimeType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesRfc8089Path.html">
+            MatchesRfc8089Path
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsAnyUri.html">
+            MatchesXsAnyUri
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsBase64Binary.html">
+            MatchesXsBase64Binary
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsBoolean.html">
+            MatchesXsBoolean
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsByte.html">
+            MatchesXsByte
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDate.html">
+            MatchesXsDate
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDateTime.html">
+            MatchesXsDateTime
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDateTimeStamp.html">
+            MatchesXsDateTimeStamp
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDateTimeStampUtc.html">
+            MatchesXsDateTimeStampUtc
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDayTimeDuration.html">
+            MatchesXsDayTimeDuration
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDecimal.html">
+            MatchesXsDecimal
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDouble.html">
+            MatchesXsDouble
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDuration.html">
+            MatchesXsDuration
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsFloat.html">
+            MatchesXsFloat
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGDay.html">
+            MatchesXsGDay
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGMonth.html">
+            MatchesXsGMonth
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGMonthDay.html">
+            MatchesXsGMonthDay
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGYear.html">
+            MatchesXsGYear
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGYearMonth.html">
+            MatchesXsGYearMonth
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsHexBinary.html">
+            MatchesXsHexBinary
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsInt.html">
+            MatchesXsInt
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsInteger.html">
+            MatchesXsInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsLong.html">
+            MatchesXsLong
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsNegativeInteger.html">
+            MatchesXsNegativeInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsNonNegativeInteger.html">
+            MatchesXsNonNegativeInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsNonPositiveInteger.html">
+            MatchesXsNonPositiveInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsPositiveInteger.html">
+            MatchesXsPositiveInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsShort.html">
+            MatchesXsShort
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsString.html">
+            MatchesXsString
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsTime.html">
+            MatchesXsTime
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsUnsignedByte.html">
+            MatchesXsUnsignedByte
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsUnsignedInt.html">
+            MatchesXsUnsignedInt
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsUnsignedLong.html">
+            MatchesXsUnsignedLong
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsUnsignedShort.html">
+            MatchesXsUnsignedShort
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsYearMonthDuration.html">
+            MatchesXsYearMonthDuration
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="PropertiesOrRangesHaveValueType.html">
+            PropertiesOrRangesHaveValueType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="QualifierTypesAreUnique.html">
+            QualifierTypesAreUnique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ReferenceKeyValuesEqual.html">
+            ReferenceKeyValuesEqual
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementIsOfType.html">
+            SubmodelElementIsOfType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
+            SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueConsistentWithXsdType.html">
+            ValueConsistentWithXsdType
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-9 mx-0 overflow-auto" id="content">
+      <h1>
+        DataTypeIec61360
+        <a class="aas-anchor-link" href="">🔗</a>
+      </h1>
+      <h2>Literals</h2>
+      <div>
+        <dl>
+        <dt>
+          <a name="Date" />
+          Date
+          <a class="aas-anchor-link" href="#Date">🔗</a>
+           = <code>&#x27;DATE&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing a calendar date, conformant to ISO 8601:2004 Format yyyy-mm-dd
+            Example from IEC 61360-1:2017: &quot;1999-05-31&quot; is the [DATE] representation of:
+            &quot;31 May 1999&quot;.
+          </div>
+        </dd>
+        <dt>
+          <a name="String" />
+          String
+          <a class="aas-anchor-link" href="#String">🔗</a>
+           = <code>&#x27;STRING&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values consisting of sequence of characters but cannot be translated into other
+            languages
+          </div>
+        </dd>
+        <dt>
+          <a name="StringTranslatable" />
+          StringTranslatable
+          <a class="aas-anchor-link" href="#StringTranslatable">🔗</a>
+           = <code>&#x27;STRING_TRANSLATABLE&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing string but shall be represented as different string in different
+            languages
+          </div>
+        </dd>
+        <dt>
+          <a name="IntegerMeasure" />
+          IntegerMeasure
+          <a class="aas-anchor-link" href="#IntegerMeasure">🔗</a>
+           = <code>&#x27;INTEGER_MEASURE&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing values that are measure of type INTEGER. In addition such a value
+            comes with a physical unit.
+          </div>
+        </dd>
+        <dt>
+          <a name="IntegerCount" />
+          IntegerCount
+          <a class="aas-anchor-link" href="#IntegerCount">🔗</a>
+           = <code>&#x27;INTEGER_COUNT&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing values of type INTEGER but are no currencies or measures
+          </div>
+        </dd>
+        <dt>
+          <a name="IntegerCurrency" />
+          IntegerCurrency
+          <a class="aas-anchor-link" href="#IntegerCurrency">🔗</a>
+           = <code>&#x27;INTEGER_CURRENCY&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing values of type INTEGER that are currencies
+          </div>
+        </dd>
+        <dt>
+          <a name="RealMeasure" />
+          RealMeasure
+          <a class="aas-anchor-link" href="#RealMeasure">🔗</a>
+           = <code>&#x27;REAL_MEASURE&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing values that are measures of type REAL. In addition such a value
+            comes with a physical unit.
+          </div>
+        </dd>
+        <dt>
+          <a name="RealCount" />
+          RealCount
+          <a class="aas-anchor-link" href="#RealCount">🔗</a>
+           = <code>&#x27;REAL_COUNT&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing numbers that can be written as a terminating or non-terminating
+            decimal; a rational or irrational number but are no currencies or measures
+          </div>
+        </dd>
+        <dt>
+          <a name="RealCurrency" />
+          RealCurrency
+          <a class="aas-anchor-link" href="#RealCurrency">🔗</a>
+           = <code>&#x27;REAL_CURRENCY&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing values of type REAL that are currencies
+          </div>
+        </dd>
+        <dt>
+          <a name="Boolean" />
+          Boolean
+          <a class="aas-anchor-link" href="#Boolean">🔗</a>
+           = <code>&#x27;BOOLEAN&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values representing truth of logic or Boolean algebra (TRUE, FALSE)
+          </div>
+        </dd>
+        <dt>
+          <a name="Iri" />
+          Iri
+          <a class="aas-anchor-link" href="#Iri">🔗</a>
+           = <code>&#x27;IRI&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing values of type STRING conformant to Rfc 3987
+          </div>
+          <div class="remarks">
+            <div class="alert alert-info">
+              In IEC61360-1 (2017) only URI is supported.
+              An IRI type allows in particular to express an URL or an URI.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="Irdi" />
+          Irdi
+          <a class="aas-anchor-link" href="#Irdi">🔗</a>
+           = <code>&#x27;IRDI&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values conforming to ISO/IEC 11179 series global identifier sequences
+          </div>
+          <div class="remarks">
+            <p>
+              IRDI can be used instead of the more specific data types ICID or ISO29002_IRDI.
+            </p>
+            <p>
+              ICID values are value conformant to an IRDI, where the delimiter between RAI and ID
+              is “#” while the delimiter between DI and VI is confined to “##”
+            </p>
+            <p>
+              ISO29002_IRDI values are values containing a global identifier that identifies an
+              administrated item in a registry. The structure of this identifier complies with
+              identifier syntax defined in ISO/TS 29002-5. The identifier shall fulfil the
+              requirements specified in ISO/TS 29002-5 for an &quot;international registration data
+              identifier&quot; (IRDI).
+            </p>
+          </div>
+        </dd>
+        <dt>
+          <a name="Rational" />
+          Rational
+          <a class="aas-anchor-link" href="#Rational">🔗</a>
+           = <code>&#x27;RATIONAL&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing values of type rational
+          </div>
+        </dd>
+        <dt>
+          <a name="RationalMeasure" />
+          RationalMeasure
+          <a class="aas-anchor-link" href="#RationalMeasure">🔗</a>
+           = <code>&#x27;RATIONAL_MEASURE&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing values of type rational. In addition such a value comes with a
+            physical unit.
+          </div>
+        </dd>
+        <dt>
+          <a name="Time" />
+          Time
+          <a class="aas-anchor-link" href="#Time">🔗</a>
+           = <code>&#x27;TIME&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing a time, conformant to ISO 8601:2004 but restricted to what is
+            allowed in the corresponding type in xml.
+          </div>
+          <div class="remarks">
+            <p>
+              Format hh:mm (ECLASS)
+            </p>
+            <p>
+              Example from IEC 61360-1:2017: &quot;13:20:00-05:00&quot; is the [TIME] representation of:
+              1.20 p.m. for Eastern Standard Time, which is 5 hours behind Coordinated
+              Universal Time (UTC).
+            </p>
+          </div>
+        </dd>
+        <dt>
+          <a name="Timestamp" />
+          Timestamp
+          <a class="aas-anchor-link" href="#Timestamp">🔗</a>
+           = <code>&#x27;TIMESTAMP&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing a time, conformant to ISO 8601:2004 but restricted to what is
+            allowed in the corresponding type in xml.
+          </div>
+          <div class="remarks">
+            Format yyyy-mm-dd hh:mm (ECLASS)
+          </div>
+        </dd>
+        <dt>
+          <a name="File" />
+          File
+          <a class="aas-anchor-link" href="#File">🔗</a>
+           = <code>&#x27;FILE&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing an address to a file. The values are of type URI and can represent
+            an absolute or relative path.
+          </div>
+          <div class="remarks">
+            <div class="alert alert-info">
+              IEC61360 does not support the file type.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="Html" />
+          Html
+          <a class="aas-anchor-link" href="#Html">🔗</a>
+           = <code>&#x27;HTML&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Values containing string with any sequence of characters, using the syntax of HTML5
+            (see W3C Recommendation 28:2014)
+          </div>
+        </dd>
+        <dt>
+          <a name="Blob" />
+          Blob
+          <a class="aas-anchor-link" href="#Blob">🔗</a>
+           = <code>&#x27;BLOB&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            values containing the content of a file. Values may be binaries.
+          </div>
+          <div class="remarks">
+            <p>
+              HTML conformant to HTML5 is a special blob.
+            </p>
+            <p>
+              In IEC61360 binary is for a sequence of bits, each bit being represented by “0” and
+              “1” only. A binary is a blob but a blob may also contain other source code.
+            </p>
+          </div>
+        </dd>
+        </dl>
+      </div>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="DataSpecificationIec61360.html">DataSpecificationIec61360</a>
+          </td>
+          <td>
+            <a href="DataSpecificationIec61360.html#dataType">DataSpecificationIec61360.dataType</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+<footer class="text-center p-1 text-lg-start bg-light text-muted" id="footer">
+  Automatically generated with htmlgen as part of <a href="https://github.com/aas-core-works/aas-core-meta">aas-core-works/aas-core-meta</a>.
+</footer>
+<script src="../atTheEndOfBody.js"></script>
+</body>
+</html>

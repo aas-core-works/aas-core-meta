@@ -1,0 +1,1126 @@
+<!DOCTYPE html>
+<html>
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1">
+  <title>NonEmptyXmlSerializableString</title>
+  <link rel="stylesheet" href="../base.css">
+  <link
+    href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
+    rel="stylesheet"
+    integrity="sha384-EVSTQN3/azprG1Anm3QDgpJLIm9Nao0Yz1ztcQTwFspd3yD65VohhpuuCOmLASjC"
+    crossorigin="anonymous"
+  >
+</head>
+<body>
+<div class="container-fluid px-0 mx-0">
+  <div class="row px-0 mx-0" style="width: 100%;">
+    <div class="col-3 px-2 mx-0 overflow-auto" id="menu">
+      <ul class="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-ul">
+        <li class="nav-item mb-2">
+          <a class="nav-item" href="../index.html">Back</a>
+        </li>
+        <li class="nav-item  mb-2">
+          <a class="nav-item" href="index.html">V3.0</a>
+        </li>
+        <li class="nav-item mt-2">Enumerations</li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasSubmodelElements.html">
+            AasSubmodelElements
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetKind.html">
+            AssetKind
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeDefXsd.html">
+            DataTypeDefXsd
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeIec61360.html">
+            DataTypeIec61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Direction.html">
+            Direction
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="EntityType.html">
+            EntityType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="KeyTypes.html">
+            KeyTypes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ModellingKind.html">
+            ModellingKind
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="QualifierKind.html">
+            QualifierKind
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ReferenceTypes.html">
+            ReferenceTypes
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="StateOfEvent.html">
+            StateOfEvent
+          </a>
+        </li>
+        <li class="nav-item mt-2">Constrained Primitives</li>
+        <li class="nav-item">
+          <a class="nav-item" href="Bcp47LanguageTag.html">
+            Bcp47LanguageTag
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="BlobType.html">
+            BlobType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ContentType.html">
+            ContentType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DateTimeUtc.html">
+            DateTimeUtc
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Duration.html">
+            Duration
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShortType.html">
+            IdShortType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Identifier.html">
+            Identifier
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LabelType.html">
+            LabelType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MessageTopicType.html">
+            MessageTopicType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="NameType.html">
+            NameType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item active" href="NonEmptyXmlSerializableString.html">
+            NonEmptyXmlSerializableString
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="PathType.html">
+            PathType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="QualifierType.html">
+            QualifierType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="RevisionType.html">
+            RevisionType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueDataType.html">
+            ValueDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueTypeIec61360.html">
+            ValueTypeIec61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="VersionType.html">
+            VersionType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="XmlSerializableString.html">
+            XmlSerializableString
+          </a>
+        </li>
+        <li class="nav-item mt-2">Abstract Classes</li>
+        <li class="nav-item">
+          <a class="nav-item" href="AbstractLangString.html">
+            AbstractLangString
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataElement.html">
+            DataElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationContent.html">
+            DataSpecificationContent
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="EventElement.html">
+            EventElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasDataSpecification.html">
+            HasDataSpecification
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasExtensions.html">
+            HasExtensions
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasKind.html">
+            HasKind
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasSemantics.html">
+            HasSemantics
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Identifiable.html">
+            Identifiable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifiable.html">
+            Qualifiable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Referable.html">
+            Referable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElement.html">
+            SubmodelElement
+          </a>
+        </li>
+        <li class="nav-item mt-2">Concrete Classes</li>
+        <li class="nav-item">
+          <a class="nav-item" href="AdministrativeInformation.html">
+            AdministrativeInformation
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AnnotatedRelationshipElement.html">
+            AnnotatedRelationshipElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetAdministrationShell.html">
+            AssetAdministrationShell
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetInformation.html">
+            AssetInformation
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="BasicEventElement.html">
+            BasicEventElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Blob.html">
+            Blob
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Capability.html">
+            Capability
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html">
+            ConceptDescription
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360.html">
+            DataSpecificationIec61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="EmbeddedDataSpecification.html">
+            EmbeddedDataSpecification
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Entity.html">
+            Entity
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Environment.html">
+            Environment
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="EventPayload.html">
+            EventPayload
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Extension.html">
+            Extension
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="File.html">
+            File
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Key.html">
+            Key
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LangStringDefinitionTypeIec61360.html">
+            LangStringDefinitionTypeIec61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LangStringNameType.html">
+            LangStringNameType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LangStringPreferredNameTypeIec61360.html">
+            LangStringPreferredNameTypeIec61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LangStringShortNameTypeIec61360.html">
+            LangStringShortNameTypeIec61360
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LangStringTextType.html">
+            LangStringTextType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LevelType.html">
+            LevelType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MultiLanguageProperty.html">
+            MultiLanguageProperty
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Operation.html">
+            Operation
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="OperationVariable.html">
+            OperationVariable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Property.html">
+            Property
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifier.html">
+            Qualifier
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Range.html">
+            Range
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html">
+            Reference
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ReferenceElement.html">
+            ReferenceElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="RelationshipElement.html">
+            RelationshipElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Resource.html">
+            Resource
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetId.html">
+            SpecificAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Submodel.html">
+            Submodel
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementCollection.html">
+            SubmodelElementCollection
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html">
+            SubmodelElementList
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueList.html">
+            ValueList
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueReferencePair.html">
+            ValueReferencePair
+          </a>
+        </li>
+        <li class="nav-item mt-2">Constants</li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasIdentifiables.html">
+            AasIdentifiables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasReferableNonIdentifiables.html">
+            AasReferableNonIdentifiables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasReferables.html">
+            AasReferables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AasSubmodelElementsAsKeys.html">
+            AasSubmodelElementsAsKeys
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeIec61360ForDocument.html">
+            DataTypeIec61360ForDocument
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeIec61360ForPropertyOrValue.html">
+            DataTypeIec61360ForPropertyOrValue
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataTypeIec61360ForReference.html">
+            DataTypeIec61360ForReference
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="FragmentKeys.html">
+            FragmentKeys
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="GenericFragmentKeys.html">
+            GenericFragmentKeys
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="GenericGloballyIdentifiables.html">
+            GenericGloballyIdentifiables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="GloballyIdentifiables.html">
+            GloballyIdentifiables
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Iec61360DataTypesWithUnit.html">
+            Iec61360DataTypesWithUnit
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValidCategoriesForDataElement.html">
+            ValidCategoriesForDataElement
+          </a>
+        </li>
+        <li class="nav-item">Constraints</li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
+            AASc-3a-002
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-3a-003">
+            AASc-3a-003
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-3a-004">
+            AASc-3a-004
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-3a-005">
+            AASc-3a-005
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-3a-006">
+            AASc-3a-006
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-3a-007">
+            AASc-3a-007
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ConceptDescription.html#constraint-AASc-3a-008">
+            AASc-3a-008
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-009">
+            AASc-3a-009
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-010">
+            AASc-3a-010
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationContent.html#constraint-AASc-3a-050">
+            AASc-3a-050
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShortType.html#constraint-AASd-002">
+            AASd-002
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AdministrativeInformation.html#constraint-AASd-005">
+            AASd-005
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifier.html#constraint-AASd-006">
+            AASd-006
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Property.html#constraint-AASd-007">
+            AASd-007
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MultiLanguageProperty.html#constraint-AASd-012">
+            AASd-012
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Entity.html#constraint-AASd-014">
+            AASd-014
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifier.html#constraint-AASd-020">
+            AASd-020
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Capability.html#constraint-AASd-021">
+            AASd-021
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Referable.html#constraint-AASd-022">
+            AASd-022
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Extension.html#constraint-AASd-077">
+            AASd-077
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
+            AASd-090
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
+            AASd-107
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-108">
+            AASd-108
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-109">
+            AASd-109
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-114">
+            AASd-114
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-115">
+            AASd-115
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetInformation.html#constraint-AASd-116">
+            AASd-116
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShortType.html#constraint-AASd-117">
+            AASd-117
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="HasSemantics.html#constraint-AASd-118">
+            AASd-118
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
+            AASd-119
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
+            AASd-120
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-121">
+            AASd-121
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-122">
+            AASd-122
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-123">
+            AASd-123
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-124">
+            AASd-124
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-125">
+            AASd-125
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-126">
+            AASd-126
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-127">
+            AASd-127
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-128">
+            AASd-128
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElement.html#constraint-AASd-129">
+            AASd-129
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="XmlSerializableString.html#constraint-AASd-130">
+            AASd-130
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="AssetInformation.html#constraint-AASd-131">
+            AASd-131
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetId.html#constraint-AASd-133">
+            AASd-133
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Operation.html#constraint-AASd-134">
+            AASd-134
+          </a>
+        </li>
+        <li class="nav-item mt-2">Verification Functions</li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sForDocumentHaveAppropriateDataType.html">
+            DataSpecificationIec61360sForDocumentHaveAppropriateDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sForPropertyOrValueHaveAppropriateDataType.html">
+            DataSpecificationIec61360sForPropertyOrValueHaveAppropriateDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sForReferenceHaveAppropriateDataType.html">
+            DataSpecificationIec61360sForReferenceHaveAppropriateDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sHaveDataType.html">
+            DataSpecificationIec61360sHaveDataType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sHaveDefinitionAtLeastInEnglish.html">
+            DataSpecificationIec61360sHaveDefinitionAtLeastInEnglish
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="DataSpecificationIec61360sHaveValue.html">
+            DataSpecificationIec61360sHaveValue
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ExtensionNamesAreUnique.html">
+            ExtensionNamesAreUnique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShortsAreUnique.html">
+            IdShortsAreUnique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IdShortsOfVariablesAreUnique.html">
+            IdShortsOfVariablesAreUnique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsBcp47ForEnglish.html">
+            IsBcp47ForEnglish
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsModelReferenceTo.html">
+            IsModelReferenceTo
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsModelReferenceToReferable.html">
+            IsModelReferenceToReferable
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsXsDateTime.html">
+            IsXsDateTime
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="IsXsDateTimeUtc.html">
+            IsXsDateTimeUtc
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="LangStringsHaveUniqueLanguages.html">
+            LangStringsHaveUniqueLanguages
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesBcp47.html">
+            MatchesBcp47
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesIdShort.html">
+            MatchesIdShort
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesMimeType.html">
+            MatchesMimeType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesRevisionType.html">
+            MatchesRevisionType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesRfc2396.html">
+            MatchesRfc2396
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesVersionType.html">
+            MatchesVersionType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXmlSerializableString.html">
+            MatchesXmlSerializableString
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsAnyUri.html">
+            MatchesXsAnyUri
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsBase64Binary.html">
+            MatchesXsBase64Binary
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsBoolean.html">
+            MatchesXsBoolean
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsByte.html">
+            MatchesXsByte
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDate.html">
+            MatchesXsDate
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDateTime.html">
+            MatchesXsDateTime
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDateTimeUtc.html">
+            MatchesXsDateTimeUtc
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDecimal.html">
+            MatchesXsDecimal
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDouble.html">
+            MatchesXsDouble
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsDuration.html">
+            MatchesXsDuration
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsFloat.html">
+            MatchesXsFloat
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGDay.html">
+            MatchesXsGDay
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGMonth.html">
+            MatchesXsGMonth
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGMonthDay.html">
+            MatchesXsGMonthDay
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGYear.html">
+            MatchesXsGYear
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsGYearMonth.html">
+            MatchesXsGYearMonth
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsHexBinary.html">
+            MatchesXsHexBinary
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsInt.html">
+            MatchesXsInt
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsInteger.html">
+            MatchesXsInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsLong.html">
+            MatchesXsLong
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsNegativeInteger.html">
+            MatchesXsNegativeInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsNonNegativeInteger.html">
+            MatchesXsNonNegativeInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsNonPositiveInteger.html">
+            MatchesXsNonPositiveInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsPositiveInteger.html">
+            MatchesXsPositiveInteger
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsShort.html">
+            MatchesXsShort
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsString.html">
+            MatchesXsString
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsTime.html">
+            MatchesXsTime
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsUnsignedByte.html">
+            MatchesXsUnsignedByte
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsUnsignedInt.html">
+            MatchesXsUnsignedInt
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsUnsignedLong.html">
+            MatchesXsUnsignedLong
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="MatchesXsUnsignedShort.html">
+            MatchesXsUnsignedShort
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="PropertiesOrRangesHaveValueType.html">
+            PropertiesOrRangesHaveValueType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="QualifierTypesAreUnique.html">
+            QualifierTypesAreUnique
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ReferenceKeyValuesEqual.html">
+            ReferenceKeyValuesEqual
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementIsOfType.html">
+            SubmodelElementIsOfType
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
+            SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="ValueConsistentWithXsdType.html">
+            ValueConsistentWithXsdType
+          </a>
+        </li>
+      </ul>
+    </div>
+    <div class="col-9 mx-0 overflow-auto" id="content">
+      <h1>
+        NonEmptyXmlSerializableString
+        <a class="aas-anchor-link" href="">🔗</a>
+      </h1>
+      <dl>
+      <dt>
+        <a name="primitive-type"></a>
+        Primitive type: <code>str</code>
+        <a class="aas-anchor-link" href="#primitive-type">🔗</a>
+      </dt>
+      <dd></dd>
+      </dl>
+      <div class="aas-description">
+        <div class="summary">
+          Represent an XML-serializable string with at least one character.
+        </div>
+      </div>
+      <h2>
+        <a name="inheritances"></a>
+        Inheritances
+        <a class="aas-anchor-link" href="#inheritances">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          <a href="XmlSerializableString.html">XmlSerializableString</a>
+        </li>
+      </ul>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          Constraint AASd-130: An attribute with data type &#x27;string&#x27; shall consist of these characters only: ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$.<br/>
+          <em>(From <a href="XmlSerializableString.html">XmlSerializableString</a>)</em><br/>
+          <div class='highlight'><pre><span class='nf'><a href='MatchesXmlSerializableString.html'>MatchesXmlSerializableString</a></span><span class='p'>(</span>
+    <span class='bp'>self</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          The value must not be empty.<br/>
+          <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>&gt;=</span> 1</pre></div>
+        </li>
+      </ul>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="AbstractLangString.html">AbstractLangString</a>
+          </td>
+          <td>
+            <a href="AbstractLangString.html#text">AbstractLangString.text</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringNameType.html">LangStringNameType</a>
+          </td>
+          <td>
+            <a href="LangStringNameType.html#text">LangStringNameType.text</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringTextType.html">LangStringTextType</a>
+          </td>
+          <td>
+            <a href="LangStringTextType.html#text">LangStringTextType.text</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringPreferredNameTypeIec61360.html">LangStringPreferredNameTypeIec61360</a>
+          </td>
+          <td>
+            <a href="LangStringPreferredNameTypeIec61360.html#text">LangStringPreferredNameTypeIec61360.text</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringShortNameTypeIec61360.html">LangStringShortNameTypeIec61360</a>
+          </td>
+          <td>
+            <a href="LangStringShortNameTypeIec61360.html#text">LangStringShortNameTypeIec61360.text</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringDefinitionTypeIec61360.html">LangStringDefinitionTypeIec61360</a>
+          </td>
+          <td>
+            <a href="LangStringDefinitionTypeIec61360.html#text">LangStringDefinitionTypeIec61360.text</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="DataSpecificationIec61360.html">DataSpecificationIec61360</a>
+          </td>
+          <td>
+            <a href="DataSpecificationIec61360.html#unit">DataSpecificationIec61360.unit</a>,
+            <a href="DataSpecificationIec61360.html#sourceOfDefinition">DataSpecificationIec61360.sourceOfDefinition</a>,
+            <a href="DataSpecificationIec61360.html#symbol">DataSpecificationIec61360.symbol</a>,
+            <a href="DataSpecificationIec61360.html#valueFormat">DataSpecificationIec61360.valueFormat</a>
+          </td>
+        </tr>
+      </table>
+    </div>
+  </div>
+</div>
+<footer class="text-center p-1 text-lg-start bg-light text-muted" id="footer">
+  Automatically generated with htmlgen as part of <a href="https://github.com/aas-core-works/aas-core-meta">aas-core-works/aas-core-meta</a>.
+</footer>
+<script src="../atTheEndOfBody.js"></script>
+</body>
+</html>
