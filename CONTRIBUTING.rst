@@ -37,15 +37,16 @@ and on Windows:
 
 .. _virtual environment: https://docs.python.org/3/tutorial/venv.html
 
-Install Development Dependencies
-================================
+Install Dependencies
+====================
 
-Once you activated the virtual environment, you can install the development 
-dependencies using ``pip``:
+Once you activated the virtual environment, you can install the package, the development and documentation dependencies using ``pip``:
 
 .. code-block::
 
-    pip3 install --editable .[dev]
+    pip3 install --editable .
+    pip3 install --editable dev/
+    pip3 install --editable htmlgen/
 
 The `--editable <pip-editable_>`_ option is necessary so that all the changes
 made to the repository are automatically reflected in the virtual environment 
@@ -69,13 +70,13 @@ To run all pre-commit checks, run from the root directory:
 
 .. code-block::
 
-    python precommit.py
+    python dev/continuous_integration/precommit.py
 
 You can automatically re-format the code with:
 
 .. code-block::
 
-    python precommit.py --overwrite
+    python dev/continuous_integration/precommit.py --overwrite
 
 The pre-commit script also runs as part of our continuous integration pipeline.
 

@@ -16,13 +16,14 @@ jobs:
       - name: Set up Python ${{ matrix.python-version }}
         uses: actions/setup-python@v2
         with:
-          python-version: '3.8'
+          python-version: '3.9'
 
       - name: Install dependencies
         run: |
           python3 -m pip install --upgrade pip
-          pip3 install -e .[dev]
+          pip3 install -e .
+          pip3 install -e htmlgen
 
       - name: Generate HTML
         run: |
-          python3 htmlgen/main.py --html_dir html
+          python3 htmlgen/htmlgen/main.py --html_dir html
