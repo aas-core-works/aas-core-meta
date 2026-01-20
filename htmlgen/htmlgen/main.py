@@ -2,7 +2,6 @@
 
 import argparse
 import io
-import os
 import pathlib
 import sys
 from typing import Tuple, Optional, List
@@ -179,22 +178,21 @@ if (activeElement) {{
 
 def main() -> int:
     """Execute the main routine."""
-    this_path = pathlib.Path(os.path.realpath(__file__))
-
     parser = argparse.ArgumentParser(description=__doc__)
     parser.add_argument(
         "--html_dir",
         help="path to where the generated HTML will be saved",
         required=True,
     )
+    parser.add_argument(
+        "--aas_core_meta_dir", help="Path to the meta-models", required=True
+    )
     args = parser.parse_args()
 
     html_dir = pathlib.Path(args.html_dir)
+    aas_core_meta_dir = pathlib.Path(args.aas_core_meta_dir)
+
     html_dir.mkdir(parents=True, exist_ok=True)
-
-    this_path = pathlib.Path(os.path.realpath(__file__))
-
-    aas_core_meta_dir = this_path.parent.parent / "aas_core_meta"
 
     names_paths = []  # type: List[Tuple[str, str]]
 
