@@ -1,4 +1,5 @@
 """Provide common functionalities used across the tests."""
+
 import ast
 import io
 import pathlib
@@ -302,13 +303,11 @@ def assert_subclasses_correspond_to_enumeration_literals(
     literal_set = {literal.name for literal in enumeration_or_set.literals}
 
     if class_name_set != literal_set:
-        errors.append(
-            f"""\
+        errors.append(f"""\
 The sub-classes of {cls.name} do not correspond to {enumeration_or_set.name}.
 
 Observed classes:  {sorted(class_name_set)!r}
-Observed literals: {sorted(literal_set)!r}"""
-        )
+Observed literals: {sorted(literal_set)!r}""")
 
     if len(errors) != 0:
         raise AssertionError("\n".join(f"* {error}" for error in errors))

@@ -19,17 +19,13 @@ class PackageMetadata(Protocol):  # pylint: disable=missing-docstring
         Return all values associated with a possibly multi-valued key.
         """
 
-    def __getitem__(self, key: str) -> Optional[str]:
-        ...  # pragma: no cover
+    def __getitem__(self, key: str) -> Optional[str]: ...  # pragma: no cover
 
-    def __iter__(self) -> Iterator[str]:
-        ...  # pragma: no cover
+    def __iter__(self) -> Iterator[str]: ...  # pragma: no cover
 
-    def __contains__(self, item: str) -> bool:
-        ...  # pragma: no cover
+    def __contains__(self, item: str) -> bool: ...  # pragma: no cover
 
-    def __len__(self) -> int:
-        ...  # pragma: no cover
+    def __len__(self) -> int: ...  # pragma: no cover
 
 
 def _extract_authors(metadata: PackageMetadata) -> List[str]:

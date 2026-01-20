@@ -1,4 +1,5 @@
 """Transpile meta-model Python code to Python code."""
+
 import abc
 import html
 import io
@@ -334,21 +335,17 @@ class _Transpiler(
             # greatly improved by rendering into Python code. However, at this point, we
             # lack time for more sophisticated reformatting approaches.
             if "\n" in consequent:
-                consequent = Stripped(
-                    f"""\
+                consequent = Stripped(f"""\
 {LPAREN}
 {I}{indent_but_first_line(consequent, I)}
-{RPAREN}"""
-                )
+{RPAREN}""")
             else:
                 consequent = Stripped(f"{LPAREN}{consequent}{RPAREN}")
 
         return (
-            Stripped(
-                f"""\
+            Stripped(f"""\
 {not_antecedent}
-<span class='ow'>or</span> {consequent}"""
-            ),
+<span class='ow'>or</span> {consequent}"""),
             None,
         )
 
@@ -384,12 +381,10 @@ class _Transpiler(
         if len(joined_args) > 50:
             joined_args = ",\n".join(args)
             return (
-                Stripped(
-                    f"""\
+                Stripped(f"""\
 {member}{LPAREN}
 {I}{indent_but_first_line(joined_args, I)}
-{RPAREN}"""
-                ),
+{RPAREN}"""),
                 None,
             )
 
@@ -449,12 +444,10 @@ class _Transpiler(
             if len(function_name) + len(joined_args) > 50:
                 joined_args = ",\n".join(args)
                 return (
-                    Stripped(
-                        f"""\
+                    Stripped(f"""\
 {function_name}{LPAREN}
 {I}{indent_but_first_line(joined_args, I)}
-{RPAREN}"""
-                    ),
+{RPAREN}"""),
                     None,
                 )
             else:
@@ -518,12 +511,10 @@ class _Transpiler(
                 return Stripped(literal), None
             else:
                 return (
-                    Stripped(
-                        f"""\
+                    Stripped(f"""\
 {LPAREN}
 {I}{indent_but_first_line(literal, I)}
-{RPAREN}"""
-                    ),
+{RPAREN}"""),
                     None,
                 )
         else:
@@ -632,12 +623,10 @@ class _Transpiler(
                 # be greatly improved by rendering into Python code. However, at this
                 # point, we lack time for more sophisticated reformatting approaches.
                 if "\n" in value:
-                    value = Stripped(
-                        f"""\
+                    value = Stripped(f"""\
 {LPAREN}
 {I}{indent_but_first_line(value, I)}
-{RPAREN}"""
-                    )
+{RPAREN}""")
                 else:
                     value = Stripped(f"{LPAREN}{value}{RPAREN}")
 
@@ -739,7 +728,6 @@ class _Transpiler(
             return Stripped(f"{left} {minus} {right}"), None
         else:
             assert_never(node)
-            raise AssertionError("Unexpected execution path")
 
     def transform_add(
         self, node: parse_tree.Add
@@ -931,13 +919,11 @@ class _Transpiler(
             assert start is not None
             assert end is not None
 
-            source = Stripped(
-                f"""\
+            source = Stripped(f"""\
 <span class='nb'>range</span>{LPAREN}
 {I}{indent_but_first_line(start, I)},
 {I}{indent_but_first_line(end, I)}
-{RPAREN}"""
-            )
+{RPAREN}""")
 
         else:
             assert_never(node.generator)
@@ -948,13 +934,11 @@ class _Transpiler(
         in_html = "<span class='ow'>in</span>"
 
         return (
-            Stripped(
-                f"""\
+            Stripped(f"""\
 {qualifier_function}{LPAREN}
 {I}{indent_but_first_line(condition, I)}
 {I}{for_html} {variable} {in_html} {indent_but_first_line(source, I)}
-{RPAREN}"""
-            ),
+{RPAREN}"""),
             None,
         )
 
@@ -1009,12 +993,10 @@ class _Transpiler(
         # practice.
         if "\n" not in value and len(value) > 50:
             return (
-                Stripped(
-                    f"""\
+                Stripped(f"""\
 {target} {assign_html} {LPAREN}
 {I}{indent_but_first_line(value, I)}
-{RPAREN}"""
-                ),
+{RPAREN}"""),
                 None,
             )
 
@@ -1039,12 +1021,10 @@ class _Transpiler(
         # practice.
         if "\n" not in value and len(value) > 50:
             return (
-                Stripped(
-                    f"""\
+                Stripped(f"""\
 {return_html} {LPAREN}
 {I}{indent_but_first_line(value, I)}
-{RPAREN}"""
-                ),
+{RPAREN}"""),
                 None,
             )
 
@@ -1185,7 +1165,6 @@ def transpile_body_of_verification(
         transpilable_verification = verification
     else:
         assert_never(verification)
-        raise AssertionError("Unexpected execution path")
 
     # fmt: off
     type_inference, error = (

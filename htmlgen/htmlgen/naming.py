@@ -1,4 +1,5 @@
 """Generate HTML identifiers based on the identifiers from the meta-model."""
+
 from typing import Union
 
 import aas_core_codegen.naming
@@ -146,7 +147,7 @@ def of(
         intermediate.Method,
         intermediate.ConstrainedPrimitive,
         intermediate.Constant,
-    ]
+    ],
 ) -> Identifier:
     """Dispatch to the appropriate naming function."""
     if isinstance(something, intermediate.Enumeration):

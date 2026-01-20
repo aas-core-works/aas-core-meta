@@ -1,4 +1,5 @@
 """Define markers for the meta model to mark the functions and data structures."""
+
 from typing import (
     TypeVar,
     Type,
@@ -17,13 +18,11 @@ CallableT = TypeVar("CallableT", bound=Callable[..., Any])
 
 
 @overload
-def implementation_specific(thing: Type[T]) -> Type[T]:
-    ...
+def implementation_specific(thing: Type[T]) -> Type[T]: ...
 
 
 @overload
-def implementation_specific(thing: CallableT) -> CallableT:
-    ...
+def implementation_specific(thing: CallableT) -> CallableT: ...
 
 
 # See https://github.com/python/mypy/issues/9420 for why we use ``Any`` here

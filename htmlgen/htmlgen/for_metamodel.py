@@ -1,4 +1,5 @@
 """Generate HTML for a given meta-model."""
+
 import collections
 import html
 import itertools
@@ -105,21 +106,17 @@ def _generate_nav(
     constraint_href_map: Mapping[str, str],
 ) -> Stripped:
     """Generate the navigation unordered list."""
-    lis = [
-        f"""\
+    lis = [f"""\
 <li class="nav-item mb-2">
 {I}<a class="nav-item" href="../index.html">Back</a>
-</li>"""
-    ]  # type: List[str]
+</li>"""]  # type: List[str]
 
     a_class = "nav-item active" if active_item == "Home" else "nav-item"
 
-    lis.append(
-        f"""\
+    lis.append(f"""\
 <li class="nav-item  mb-2">
 {I}<a class="{a_class}" href="index.html">{symbol_table.meta_model.version}</a>
-</li>"""
-    )
+</li>""")
 
     # region Enumerations
 
@@ -128,14 +125,12 @@ def _generate_nav(
     for enumeration in sorted(symbol_table.enumerations, key=htmlgen.naming.of):
         a_class = "nav-item active" if active_item is enumeration else "nav-item"
 
-        lis.append(
-            f"""\
+        lis.append(f"""\
 <li class="nav-item">
 {I}<a class="{a_class}" href="{htmlgen.naming.of(enumeration)}.html">
 {II}{htmlgen.naming.of(enumeration)}
 {I}</a>
-</li>"""
-        )
+</li>""")
 
     # endregion
 
@@ -150,14 +145,12 @@ def _generate_nav(
             "nav-item active" if active_item is constrained_primitive else "nav-item"
         )
 
-        lis.append(
-            f"""\
+        lis.append(f"""\
 <li class="nav-item">
 {I}<a class="{a_class}" href="{htmlgen.naming.of(constrained_primitive)}.html">
 {II}{htmlgen.naming.of(constrained_primitive)}
 {I}</a>
-</li>"""
-        )
+</li>""")
 
     # endregion
 
@@ -176,14 +169,12 @@ def _generate_nav(
     for abstract_class in abstract_classes:
         a_class = "nav-item active" if active_item is abstract_class else "nav-item"
 
-        lis.append(
-            f"""\
+        lis.append(f"""\
 <li class="nav-item">
 {I}<a class="{a_class}" href="{htmlgen.naming.of(abstract_class)}.html">
 {II}{htmlgen.naming.of(abstract_class)}
 {I}</a>
-</li>"""
-        )
+</li>""")
 
     # endregion
 
@@ -194,14 +185,12 @@ def _generate_nav(
     for concrete_class in sorted(symbol_table.concrete_classes, key=htmlgen.naming.of):
         a_class = "nav-item active" if active_item is concrete_class else "nav-item"
 
-        lis.append(
-            f"""\
+        lis.append(f"""\
 <li class="nav-item">
 {I}<a class="{a_class}" href="{htmlgen.naming.of(concrete_class)}.html">
 {II}{htmlgen.naming.of(concrete_class)}
 {I}</a>
-</li>"""
-        )
+</li>""")
 
     # endregion
 
@@ -212,14 +201,12 @@ def _generate_nav(
     for constant in sorted(symbol_table.constants, key=htmlgen.naming.of):
         a_class = "nav-item active" if active_item is constant else "nav-item"
 
-        lis.append(
-            f"""\
+        lis.append(f"""\
 <li class="nav-item">
 {I}<a class="{a_class}" href="{htmlgen.naming.of(constant)}.html">
 {II}{htmlgen.naming.of(constant)}
 {I}</a>
-</li>"""
-        )
+</li>""")
 
     # endregion
 
@@ -235,14 +222,12 @@ def _generate_nav(
         # NOTE (mristin, 2023-01-13):
         # We do not set active/inactive on constraints as they point to multiple
         # anchors within a single page.
-        lis.append(
-            f"""\
+        lis.append(f"""\
 <li class="nav-item">
 {I}<a class="nav-item" href="{href}">
 {II}{constraint}
 {I}</a>
-</li>"""
-        )
+</li>""")
 
     # endregion
 
@@ -257,24 +242,20 @@ def _generate_nav(
             "nav-item active" if active_item is verification_function else "nav-item"
         )
 
-        lis.append(
-            f"""\
+        lis.append(f"""\
 <li class="nav-item">
 {I}<a class="{a_class}" href="{htmlgen.naming.of(verification_function)}.html">
 {II}{htmlgen.naming.of(verification_function)}
 {I}</a>
-</li>"""
-        )
+</li>""")
 
     # endregion
 
     lis_joined = "\n".join(lis)
-    return Stripped(
-        f"""\
+    return Stripped(f"""\
 <ul class="nav flex-column mb-sm-auto mb-0 align-items-center align-items-sm-start" id="menu-ul">
 {I}{indent_but_first_line(lis_joined, I)}
-</ul>"""
-    )
+</ul>""")
 
 
 STRIPPED_CODE_RE = re.compile(r"\[\[!DEDENT(.*?)DEDENT!]]", flags=re.DOTALL)

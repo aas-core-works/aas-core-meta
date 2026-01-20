@@ -6,12 +6,12 @@ build-backend = "setuptools.build_meta"
 name = "aas-core-meta-dev"
 version = "0.0.1"
 description = "Develop aas-core-meta."
-requires-python = ">=3.9"
+requires-python = ">=3.10"
 
 dependencies = [
-    "black==22.3.0",
-    "mypy==0.910",
-    "pylint==2.17.0",
+    "black==26.1.0",
+    "mypy==1.19.1",
+    "pylint==4.0.4",
     "asttokens>=2.0.8,<3",
     "aas-core-codegen==0.0.16"
 ]

@@ -900,15 +900,15 @@ class Test_matches_xs_string(unittest.TestCase):
         assert v3rc2.matches_xs_string("some free & <free> \u1984 form text")
 
     def test_fffe(self) -> None:
-        assert not v3rc2.matches_xs_string("\uFFFE")
+        assert not v3rc2.matches_xs_string("\ufffe")
 
     def test_ffff(self) -> None:
-        assert not v3rc2.matches_xs_string("\uFFFF")
+        assert not v3rc2.matches_xs_string("\uffff")
 
     # noinspection SpellCheckingInspection
     def test_surrogate_characters(self) -> None:
-        assert not v3rc2.matches_xs_string("\uD800")
-        assert not v3rc2.matches_xs_string("\uDFFF")
+        assert not v3rc2.matches_xs_string("\ud800")
+        assert not v3rc2.matches_xs_string("\udfff")
 
     def test_nul(self) -> None:
         assert not v3rc2.matches_xs_string("\x00")
@@ -1236,13 +1236,11 @@ class Test_assertions(unittest.TestCase):
 
         if class_name_set != literal_set:
             # pylint: disable=line-too-long
-            errors.append(
-                f"""\
+            errors.append(f"""\
 The sub-classes of {referable_cls.name} which are not {identifiable_cls.name} do not correspond to {aas_referable_non_identifiables_set.name}.
 
 Observed classes:  {sorted(class_name_set)!r}
-Observed literals: {sorted(literal_set)!r}"""
-            )
+Observed literals: {sorted(literal_set)!r}""")
             # pylint: enable=line-too-long
 
         if len(errors) != 0:
