@@ -143,7 +143,7 @@ class Test_matches_xs_any_URI(unittest.TestCase):
     # See: http://www.datypic.com/sc/xsd/t-xsd_anyURI.html
 
     def test_empty(self) -> None:
-        # NOTE (mristin, 2022-04-1):
+        # NOTE (mristin):
         # An empty string is a valid ``xs:anyURI``,
         # see https://lists.w3.org/Archives/Public/xml-dist-app/2003Mar/0076.html and
         # https://lists.w3.org/Archives/Public/xml-dist-app/2003Mar/0078.html
@@ -308,7 +308,7 @@ class Test_matches_xs_double(unittest.TestCase):
         assert not v3_1.matches_xs_double("12.34e-5.6")
 
     def test_edge_cases(self) -> None:
-        # NOTE (mristin, 2022-10-30):
+        # NOTE (mristin):
         # See: https://www.oreilly.com/library/view/xml-schema/0596002521/re67.html
         assert not v3_1.matches_xs_double("+INF")
         assert v3_1.matches_xs_double("-INF")
@@ -330,7 +330,7 @@ class Test_matches_xs_duration(unittest.TestCase):
     def test_integer(self) -> None:
         assert not v3_1.matches_xs_duration("1234")
 
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-duration
 
     def test_valid_values(self) -> None:
@@ -392,7 +392,7 @@ class Test_matches_xs_float(unittest.TestCase):
         assert not v3_1.matches_xs_float("12.34e-5.6")
 
     def test_edge_cases(self) -> None:
-        # NOTE (mristin, 2022-10-30):
+        # NOTE (mristin):
         # See: https://www.oreilly.com/library/view/xml-schema/0596002521/re67.html
         assert not v3_1.matches_xs_float("+INF")
         assert v3_1.matches_xs_float("-INF")
@@ -411,7 +411,7 @@ class Test_matches_xs_g_day(unittest.TestCase):
     def test_free_form_text(self) -> None:
         assert not v3_1.matches_xs_g_day("some free form text")
 
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-gday
 
     def test_valid_values(self) -> None:
@@ -438,7 +438,7 @@ class Test_matches_xs_g_month(unittest.TestCase):
     def test_free_form_text(self) -> None:
         assert not v3_1.matches_xs_g_month("some free form text")
 
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-gmonth
 
     def test_valid_values(self) -> None:
@@ -465,7 +465,7 @@ class Test_matches_xs_g_month_day(unittest.TestCase):
     def test_free_form_text(self) -> None:
         assert not v3_1.matches_xs_g_month_day("some free form text")
 
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-gmonthday
 
     def test_valid_values(self) -> None:
@@ -499,7 +499,7 @@ class Test_matches_xs_g_year(unittest.TestCase):
     def test_free_form_text(self) -> None:
         assert not v3_1.matches_xs_g_year("some free form text")
 
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-gyear
 
     def test_valid_values(self) -> None:
@@ -520,7 +520,7 @@ class Test_matches_xs_g_year_month(unittest.TestCase):
     def test_free_form_text(self) -> None:
         assert not v3_1.matches_xs_g_year_month("some free form text")
 
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-gyearmonth
 
     def test_valid_values(self) -> None:
@@ -551,7 +551,7 @@ class Test_matches_xs_hex_binary(unittest.TestCase):
     def test_free_form_text(self) -> None:
         assert not v3_1.matches_xs_hex_binary("some free form text")
 
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-hexbinary
 
     def test_valid_values(self) -> None:
@@ -575,7 +575,7 @@ class Test_matches_xs_time(unittest.TestCase):
     def test_free_form_text(self) -> None:
         assert not v3_1.matches_xs_time("some free form text")
 
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.data2type.de/xml-xslt-xslfo/xml-schema/datentypen-referenz/xs-time
 
     def test_valid_values(self) -> None:
@@ -867,7 +867,7 @@ _META_MODEL: tests.common.MetaModel = tests.common.load_meta_model(
 
 
 class Test_assertions(unittest.TestCase):
-    # NOTE (mristin, 2023-01-25):
+    # NOTE (mristin):
     # We do not state "ID" as an abbreviation (which might imply "Identity Document"),
     # but rather expect "Id" or "id", short for "identifier".
     #
@@ -1108,7 +1108,7 @@ class Test_assertions(unittest.TestCase):
                     )
 
             elif isinstance(our_type, intermediate.ConstrainedPrimitive):
-                # NOTE (mristin, 2022-08-19):
+                # NOTE (mristin):
                 # There are no names to be checked beneath the constrained primitive.
                 pass
 
@@ -1494,31 +1494,31 @@ Observed literals: {sorted(literal_set)!r}""")
             ):
                 continue
 
-            # NOTE (mristin, 2023-03-17):
+            # NOTE (mristin):
             # We can not assert that ID-short is non-None in ``Submodel_element`` as
             # the submodel elements can be in the value of ``Submodel_element_list``.
             if our_type.is_subclass_of(submodel_element_cls):
                 continue
 
-            # NOTE (mristin, 2023-03-17):
+            # NOTE (mristin):
             # We can not assert that ID-short is non-None in this class as
             # ``Submodel_element`` inherits from it, and the submodel elements can be
             # in the value of ``Submodel_element_list``.
             if id(submodel_element_cls) in our_type.descendant_id_set:
                 continue
 
-            # NOTE (mristin, 2023-03-22):
+            # NOTE (mristin):
             # Identifiables are not affected by Constraint-117 so their ID-shorts remain
             # optional.
             if our_type.is_subclass_of(identifiable_cls):
                 continue
 
-            # NOTE (mristin, 2023-03-17):
+            # NOTE (mristin):
             # Constraint AASd-117 considers only the class ``Referable``.
             if not our_type.is_subclass_of(referable_cls):
                 continue
 
-            # NOTE (mristin, 2023-03-21):
+            # NOTE (mristin):
             # We use type strengthening to implement 117.
             if Identifier("ID_short") not in our_type.properties_by_name:
                 errors.append(
@@ -1573,7 +1573,7 @@ Observed literals: {sorted(literal_set)!r}""")
                 ):
                     continue
 
-                # NOTE (mristin, 2023-03-17):
+                # NOTE (mristin):
                 # All Referable classes already have to define the constraint as
                 # their invariant (see the previous test), so we do not have to check
                 # their ID-shorts here.
@@ -1677,7 +1677,7 @@ Observed literals: {sorted(literal_set)!r}""")
                     f"but got: {type_anno.items}"
                 )
 
-                # NOTE (mristin, 2023-03-17):
+                # NOTE (mristin):
                 # All Referable classes already have to define the constraint as
                 # their invariant (see the test above), so we do not have to check
                 # their ID-shorts here.

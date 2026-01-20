@@ -175,7 +175,7 @@ def human_readable_property_name(name: str) -> str:
     >>> human_readable_property_name('URL_to_SaaS')
     'URL to SaaS'
     """
-    # NOTE (mristin, 2023-03-17):
+    # NOTE (mristin):
     # The code related to ``id`` and ``ids`` is necessary for v3rc2.
 
     if name == "id":

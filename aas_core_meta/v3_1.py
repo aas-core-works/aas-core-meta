@@ -325,7 +325,7 @@ def lang_strings_have_unique_languages(
     Check that the :paramref:`lang_strings` do not have overlapping
     :attr:`Abstract_lang_string.language`'s
     """
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     language_set = set()
     for lang_string in lang_strings:
@@ -345,7 +345,7 @@ def qualifier_types_are_unique(qualifiers: List["Qualifier"]) -> bool:
     :param qualifiers: to be checked
     :return: True if all :attr:`Qualifier.type`'s are unique
     """
-    # NOTE (mristin, 2022-04-1):
+    # NOTE (mristin):
     # This implementation is given here only as reference. It needs to be adapted
     # for each implementation separately.
     observed_types = set()
@@ -596,7 +596,7 @@ def matches_xs_double(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See: https://www.w3.org/TR/xmlschema-2/#nt-doubleRep
     double_rep = r"((\+|-)?([0-9]+(\.[0-9]*)?|\.[0-9]+)([Ee](\+|-)?[0-9]+)?|-?INF|NaN)"
 
@@ -614,7 +614,7 @@ def matches_xs_duration(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.w3.org/TR/xmlschema-2/#nt-durationRep
 
     # fmt: off
@@ -670,7 +670,7 @@ def matches_xs_g_day(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.w3.org/TR/xmlschema-2/#nt-gDayRep
     g_day_lexical_rep = (
         r"---(0[1-9]|[12][0-9]|3[01])(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
@@ -690,7 +690,7 @@ def matches_xs_g_month(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.w3.org/TR/xmlschema-2/#nt-gMonthRep
     g_month_lexical_rep = (
         r"--(0[1-9]|1[0-2])(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
@@ -710,7 +710,7 @@ def matches_xs_g_month_day(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.w3.org/TR/xmlschema-2/#nt-gMonthDayRep
     g_month_day_rep = (
         r"--(0[1-9]|1[0-2])-(0[1-9]|[12][0-9]|3[01])"
@@ -731,7 +731,7 @@ def matches_xs_g_year(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.w3.org/TR/xmlschema-2/#nt-gYearRep
     g_year_rep = (
         r"-?([1-9][0-9]{3,}|0[0-9]{3})(Z|(\+|-)((0[0-9]|1[0-3]):[0-5][0-9]|14:00))?"
@@ -751,7 +751,7 @@ def matches_xs_g_year_month(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.w3.org/TR/xmlschema-2/#nt-gYearMonthRep
 
     g_year_month_rep = (
@@ -773,7 +773,7 @@ def matches_xs_hex_binary(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.w3.org/TR/xmlschema-2/#nt-hexBinary
     hex_binary = r"([0-9a-fA-F]{2})*"
 
@@ -791,7 +791,7 @@ def matches_xs_time(text: str) -> bool:
     :param text: Text to be checked
     :returns: True if the :paramref:`text` conforms to the pattern
     """
-    # NOTE (mristin, 2022-04-6):
+    # NOTE (mristin):
     # See https://www.w3.org/TR/xmlschema-2/#nt-timeRep
     time_rep = (
         r"(([01][0-9]|2[0-3]):[0-5][0-9]:[0-5][0-9](\.[0-9]+)?|(24:00:00(\.0+)?))"
@@ -1038,7 +1038,7 @@ def value_consistent_with_XSD_type(value: str, value_type: "Data_type_def_XSD") 
     :param value_type: pre-defined value type
     :return: True if the :paramref:`value` conforms
     """
-    # NOTE (mristin, 2022-04-1):
+    # NOTE (mristin):
     # We specify the pattern-matching functions above, and they should be handy to check
     # for most obvious pattern mismatches.
     #
@@ -1083,7 +1083,7 @@ def ID_shorts_are_unique(referables: List["Referable"]) -> bool:
     Check that the :attr:`Referable.ID_short`'s among the :paramref:`referables` are
     unique in their namespace.
     """
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     id_short_set = set()
     for referable in referables:
@@ -1108,7 +1108,7 @@ def ID_shorts_of_variables_are_unique(
     :paramref:`input_variables`, :paramref:`output_variables`
     and :paramref:`inoutput_variables` are unique.
     """
-    # NOTE (s-heppner, 2023-01-25):
+    # NOTE (s-heppner):
     # This implementation will not be transpiled, but is given here as reference.
     id_short_set = set()
     if input_variables is not None:
@@ -1139,7 +1139,7 @@ def ID_shorts_of_variables_are_unique(
 @implementation_specific
 def extension_names_are_unique(extensions: List["Extension"]) -> bool:
     """Check that the extension names are unique."""
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     name_set = set()
     for extension in extensions:
@@ -1156,7 +1156,7 @@ def submodel_elements_have_identical_semantic_IDs(
     elements: List["Submodel_element"],
 ) -> bool:
     """Check that all semantic IDs are identical, if specified."""
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as a reference.
     semantic_ID = None
     for element in elements:
@@ -1188,7 +1188,7 @@ def properties_or_ranges_have_value_type(
     elements: List["Submodel_element"], value_type: "Data_type_def_XSD"
 ) -> bool:
     """Check that all the :paramref:`elements` have the :paramref:`value_type`."""
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     for element in elements:
         if isinstance(element, (Property, Range)):
@@ -1202,7 +1202,7 @@ def properties_or_ranges_have_value_type(
 @implementation_specific
 def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
     """Check that the two references are equal by comparing their key values."""
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     if len(that.keys) != len(other.keys):
         return False
@@ -1536,7 +1536,7 @@ class Extension(Has_semantics):
     @implementation_specific
     @non_mutating
     def value_type_or_default(self) -> "Data_type_def_XSD":
-        # NOTE (mristin, 2022-04-7):
+        # NOTE (mristin):
         # This implementation will not be transpiled, but is given here as reference.
         return (
             self.value_type if self.value_type is not None else Data_type_def_XSD.String
@@ -1786,7 +1786,7 @@ class Has_kind(DBC):
     @implementation_specific
     @non_mutating
     def kind_or_default(self) -> "Modelling_kind":
-        # NOTE (mristin, 2022-04-7):
+        # NOTE (mristin):
         # This implementation will not be transpiled, but is given here as reference.
         return self.kind if self.kind is not None else Modelling_kind.Instance
 
@@ -2013,7 +2013,7 @@ class Qualifier(Has_semantics):
     @implementation_specific
     @non_mutating
     def kind_or_default(self) -> "Qualifier_kind":
-        # NOTE (mristin, 2022-05-24):
+        # NOTE (mristin):
         # This implementation will not be transpiled, but is given here as reference.
         return self.kind if self.kind is not None else Qualifier_kind.Concept_qualifier
 
@@ -2767,7 +2767,7 @@ class Submodel_element_list(Submodel_element):
     @implementation_specific
     @non_mutating
     def order_relevant_or_default(self) -> bool:
-        # NOTE (mristin, 2022-04-7):
+        # NOTE (mristin):
         # This implementation will not be transpiled, but is given here as reference.
         return self.order_relevant if self.order_relevant is not None else True
 
@@ -4010,7 +4010,7 @@ class Capability(Submodel_element):
         )
 
 
-# NOTE (mristin, 2022-08-19):
+# NOTE (mristin):
 # We make the following verification functions implementation-specific since the casts
 # are very clumsy to formalize and transpile in a readable way across languages.
 # For example, since Python does not have a null-coalescing operator, formalizing
@@ -4031,7 +4031,7 @@ def data_specification_IEC_61360s_for_property_or_value_have_appropriate_data_ty
     Check that the :attr:`Data_specification_IEC_61360.data_type` is defined
     appropriately for all data specifications whose content is given as IEC 61360.
     """
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     return all(
         not (
@@ -4060,7 +4060,7 @@ def data_specification_IEC_61360s_for_reference_have_appropriate_data_type(
     Check that the :attr:`Data_specification_IEC_61360.data_type` is defined
     appropriately for all data specifications whose content is given as IEC 61360.
     """
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     return all(
         not (
@@ -4089,7 +4089,7 @@ def data_specification_IEC_61360s_for_document_have_appropriate_data_type(
     Check that the :attr:`Data_specification_IEC_61360.data_type` is defined
     appropriately for all data specifications whose content is given as IEC 61360.
     """
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     return all(
         not (
@@ -4118,7 +4118,7 @@ def data_specification_IEC_61360s_have_data_type(
     Check that the :attr:`Data_specification_IEC_61360.data_type` is defined for all
     data specifications whose content is given as IEC 61360.
     """
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     return all(
         not (
@@ -4141,7 +4141,7 @@ def data_specification_IEC_61360s_have_value(
     Check that the :attr:`Data_specification_IEC_61360.value` is defined
     for all data specifications whose content is given as IEC 61360.
     """
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
     return all(
         not (
@@ -4164,7 +4164,7 @@ def data_specification_IEC_61360s_have_definition_at_least_in_english(
     Check that the :attr:`Data_specification_IEC_61360.definition` is defined
     for all data specifications whose content is given as IEC 61360 at least in English.
     """
-    # NOTE (mristin, 2022-04-7):
+    # NOTE (mristin):
     # This implementation will not be transpiled, but is given here as reference.
 
     for data_specification in embedded_data_specifications:
@@ -4421,7 +4421,7 @@ class Reference_types(Enum):
     "with type Submodel element list is an integer number denoting the position in "
     "the array of the submodel element list."
 )
-# NOTE (mristin, 2022-07-10):
+# NOTE (mristin):
 # We can write AASd-127 in this simpler form assuming that AASd-126 ensures that
 # only the last key can be a fragment reference.
 @invariant(
