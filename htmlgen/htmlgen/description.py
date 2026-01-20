@@ -1,4 +1,5 @@
 """Render descriptions to HTML."""
+
 import abc
 import collections
 import html

@@ -1,5 +1,6 @@
 #!/usr/bin/env python3
 """Run pre-commit checks on the repository."""
+
 import argparse
 import enum
 import os

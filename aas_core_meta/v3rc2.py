@@ -1060,6 +1060,8 @@ def value_consistent_with_xsd_type(value: str, value_type: "Data_type_def_xsd") 
     # follows the pattern, but also that the day-of-month and leap seconds are taken
     # into account.
 
+    raise NotImplementedError()
+
 
 @verification
 def matches_global_asset_id_literally(text: str) -> bool:
@@ -1203,6 +1205,7 @@ def reference_key_values_equal(that: "Reference", other: "Reference") -> bool:
 
 
 # endregion
+
 
 # fmt: off
 @invariant(

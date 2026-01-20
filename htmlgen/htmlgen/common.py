@@ -1,4 +1,5 @@
 """Provide common elements used between the generators."""
+
 from aas_core_codegen import intermediate
 from aas_core_codegen.common import Stripped, assert_never
 

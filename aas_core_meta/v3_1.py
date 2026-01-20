@@ -1047,6 +1047,8 @@ def value_consistent_with_XSD_type(value: str, value_type: "Data_type_def_XSD") 
     # follows the pattern, but also that the day-of-month and leap seconds are taken
     # into account.
 
+    raise NotImplementedError()
+
 
 @verification
 def is_model_reference_to(reference: "Reference", expected_type: "Key_types") -> bool:
