@@ -1398,6 +1398,10 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
     """
 
 
+@invariant(
+    lambda self: matches_RFC_2396(self),
+    "String with max 2048 and min 1 characters conformant to a URI as per RFC 2396.",
+)
 class Path_type(Identifier, DBC):
     """
     Identifier
