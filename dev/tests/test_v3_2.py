@@ -863,12 +863,23 @@ class Test_matches_xs_string(unittest.TestCase):
         assert not v3_2.matches_xs_string("\x00")
 
 
-class Test_constraint_138_runtime_behavior(unittest.TestCase):
+class Test_v3_2_runtime_behavior(unittest.TestCase):
     @staticmethod
-    def _make_property(id_short: str) -> v3_2.Property:
+    def _make_template_qualifier() -> v3_2.Qualifier:
+        return v3_2.Qualifier(
+            type=v3_2.Qualifier_type("qualifier1"),
+            value_type=v3_2.Data_type_def_XSD.String,
+            kind=v3_2.Qualifier_kind.Template_qualifier,
+        )
+
+    @staticmethod
+    def _make_property(
+        id_short: str, qualifiers: Optional[List[v3_2.Qualifier]] = None
+    ) -> v3_2.Property:
         return v3_2.Property(
             value_type=v3_2.Data_type_def_XSD.String,
             ID_short=v3_2.ID_short_type(id_short),
+            qualifiers=qualifiers,
         )
 
     @staticmethod
@@ -952,6 +963,18 @@ class Test_constraint_138_runtime_behavior(unittest.TestCase):
             )
 
     @mock.patch.object(v3_2, "submodel_element_is_of_type", return_value=True)
+    def test_operation_rejects_variable_list_without_value(
+        self, _mocked: mock.MagicMock
+    ) -> None:
+        bad_list = self._make_list("l1", None)
+
+        with self.assertRaises(icontract.ViolationError):
+            v3_2.Operation(
+                ID_short=v3_2.ID_short_type("op3"),
+                input_variables=[v3_2.Operation_variable(value=bad_list)],
+            )
+
+    @mock.patch.object(v3_2, "submodel_element_is_of_type", return_value=True)
     def test_operation_accepts_nested_singleton_list_variable(
         self, _mocked: mock.MagicMock
     ) -> None:
@@ -965,6 +988,103 @@ class Test_constraint_138_runtime_behavior(unittest.TestCase):
             ID_short=v3_2.ID_short_type("op2"),
             input_variables=[v3_2.Operation_variable(value=top_list)],
         )
+
+    def test_asset_information_rejects_reserved_specific_asset_id_case_insensitive(
+        self,
+    ) -> None:
+        with self.assertRaises(icontract.ViolationError):
+            v3_2.Asset_information(
+                asset_kind=v3_2.Asset_kind.Instance,
+                global_asset_ID=v3_2.Identifier("asset-1"),
+                specific_asset_IDs=[
+                    v3_2.Specific_asset_ID(
+                        name=v3_2.Label_type("globalassetid"),
+                        value=v3_2.Identifier("asset-2"),
+                    )
+                ],
+            )
+
+    def test_asset_information_accepts_reserved_specific_asset_id_if_value_matches(
+        self,
+    ) -> None:
+        v3_2.Asset_information(
+            asset_kind=v3_2.Asset_kind.Instance,
+            global_asset_ID=v3_2.Identifier("asset-1"),
+            specific_asset_IDs=[
+                v3_2.Specific_asset_ID(
+                    name=v3_2.Label_type("GLOBALASSETID"),
+                    value=v3_2.Identifier("asset-1"),
+                )
+            ],
+        )
+
+    def test_instance_submodel_rejects_nested_template_qualifier(self) -> None:
+        prop = self._make_property("p1", qualifiers=[self._make_template_qualifier()])
+        collection = self._make_collection("c1", [prop])
+
+        with self.assertRaises(icontract.ViolationError):
+            v3_2.Submodel(
+                ID=v3_2.Identifier("submodel-4"),
+                ID_short=v3_2.ID_short_type("sm4"),
+                submodel_elements=[collection],
+            )
+
+    def test_operation_variable_allows_template_qualifier_exception(self) -> None:
+        prop = self._make_property("p1", qualifiers=[self._make_template_qualifier()])
+
+        v3_2.Operation(
+            ID_short=v3_2.ID_short_type("op4"),
+            input_variables=[v3_2.Operation_variable(value=prop)],
+        )
+
+    def test_external_reference_rejects_aas_referable_in_inner_key(self) -> None:
+        with self.assertRaises(icontract.ViolationError):
+            v3_2.Reference(
+                type=v3_2.Reference_types.External_reference,
+                keys=[
+                    v3_2.Key(
+                        type=v3_2.Key_types.Global_reference,
+                        value=v3_2.Identifier("urn:source"),
+                    ),
+                    v3_2.Key(
+                        type=v3_2.Key_types.Property,
+                        value=v3_2.Identifier("property1"),
+                    ),
+                    v3_2.Key(
+                        type=v3_2.Key_types.Fragment_reference,
+                        value=v3_2.Identifier("fragment1"),
+                    ),
+                ],
+            )
+
+    def test_external_reference_accepts_generic_global_and_fragment_keys(self) -> None:
+        v3_2.Reference(
+            type=v3_2.Reference_types.External_reference,
+            keys=[
+                v3_2.Key(
+                    type=v3_2.Key_types.Global_reference,
+                    value=v3_2.Identifier("urn:source"),
+                ),
+                v3_2.Key(
+                    type=v3_2.Key_types.Fragment_reference,
+                    value=v3_2.Identifier("fragment1"),
+                ),
+            ],
+        )
+
+    @mock.patch.object(v3_2, "is_xs_date_time_UTC", return_value=True)
+    def test_administrative_information_sets_created_and_updated_at(
+        self, _mocked: mock.MagicMock
+    ) -> None:
+        created_at = v3_2.Date_time_UTC("2022-04-01T01:02:03Z")
+        updated_at = v3_2.Date_time_UTC("2022-04-02T01:02:03Z")
+
+        administration = v3_2.Administrative_information(
+            created_at=created_at, updated_at=updated_at
+        )
+
+        assert administration.created_at == created_at
+        assert administration.updated_at == updated_at
 
 
 _META_MODEL: tests.common.MetaModel = tests.common.load_meta_model(
@@ -1397,6 +1517,18 @@ Observed literals: {sorted(literal_set)!r}""")
             aas_core_codegen.common.Identifier("updated_at")
             in administrative_information_cls.properties_by_name
         )
+
+        for prop_name in ("created_at", "updated_at"):
+            prop = administrative_information_cls.properties_by_name[
+                aas_core_codegen.common.Identifier(prop_name)
+            ]
+
+            assert isinstance(prop.type_annotation, intermediate.OptionalTypeAnnotation)
+            type_anno = intermediate.beneath_optional(prop.type_annotation)
+            assert isinstance(type_anno, intermediate.OurTypeAnnotation)
+            assert type_anno.our_type.name == aas_core_codegen.common.Identifier(
+                "Date_time_UTC"
+            )
 
     def test_asset_kind_includes_batch(self) -> None:
         symbol_table = _META_MODEL.symbol_table

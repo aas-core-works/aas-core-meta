@@ -30,14 +30,6 @@ such as language understanding, so we could not formalize them:
   ``Multi_language_property`` shall have the same meanings in the separate languages.
   This cannot be tested.
 
-* :constraintref:`AASd-116`: In the book, :constraintref:`AASd-116` imposes a
-  case-insensitive equality against ``globalAssetId``. This is culturally-dependent,
-  and depends on the system settings. For example, the case-folding
-  for the letters "i" and "I" is different in Turkish from English.
-
-  We implement the constraint as case-sensitive instead to allow for interoperability
-  across different culture settings.
-
 Furthermore, we diverge from the book in the following points regarding
 the enumerations. We have to implement subsets of enumerations as sets as common
 programming languages do not support inheritance of enumerations. The relationship
@@ -1137,6 +1129,70 @@ def ID_shorts_of_variables_are_unique(
 
 @verification
 @implementation_specific
+def specific_asset_ID_name_matches_global_asset_ID(name: "Label_type") -> bool:
+    """Check whether :paramref:`name` is the reserved global asset ID key."""
+    # NOTE (mristin, aaronzi):
+    # This implementation will not be transpiled, but is given here as reference.
+    return name.lower() == "globalassetid"
+
+
+@verification
+@implementation_specific
+def submodel_element_has_template_qualifier_in_tree(
+    element: "Submodel_element",
+) -> bool:
+    """Check whether :paramref:`element` or its descendants have template qualifiers."""
+    # NOTE (aaronzi):
+    # This implementation will not be transpiled, but is given here as reference.
+    if element.qualifiers is not None and any(
+        qualifier.kind_or_default() == Qualifier_kind.Template_qualifier
+        for qualifier in element.qualifiers
+    ):
+        return True
+
+    if isinstance(element, Submodel_element_list):
+        return element.value is not None and any(
+            submodel_element_has_template_qualifier_in_tree(child)
+            for child in element.value
+        )
+
+    if isinstance(element, Submodel_element_collection):
+        return element.value is not None and any(
+            submodel_element_has_template_qualifier_in_tree(child)
+            for child in element.value
+        )
+
+    if isinstance(element, Entity):
+        return element.statements is not None and any(
+            submodel_element_has_template_qualifier_in_tree(child)
+            for child in element.statements
+        )
+
+    if isinstance(element, Annotated_relationship_element):
+        return element.annotations is not None and any(
+            submodel_element_has_template_qualifier_in_tree(child)
+            for child in element.annotations
+        )
+
+    return False
+
+
+@verification
+@implementation_specific
+def submodel_elements_have_no_template_qualifiers(
+    elements: List["Submodel_element"],
+) -> bool:
+    """Check that :paramref:`elements` have no template qualifiers in their trees."""
+    # NOTE (aaronzi):
+    # This implementation will not be transpiled, but is given here as reference.
+    return all(
+        not submodel_element_has_template_qualifier_in_tree(element)
+        for element in elements
+    )
+
+
+@verification
+@implementation_specific
 def submodel_element_lists_have_exactly_one_element_in_tree(
     element: "Submodel_element",
 ) -> bool:
@@ -1447,18 +1503,10 @@ class Content_type(Non_empty_XML_serializable_string, DBC):
     """
     String with length 128 maximum and minimum 1 characters
 
-    .. note::
+    Any content type as specified in RFC 2046.
 
-        Any content type as in RFC2046.
-
-    A media type (also MIME type and content type) […] is a two-part
-    identifier for file formats and format contents transmitted on
-    the Internet. The Internet Assigned Numbers Authority (IANA) is
-    the official authority for the standardization and publication of
-    these classifications. Media types were originally defined in
-    Request for Comments 2045 in November 1996 as a part of MIME
-    (Multipurpose Internet Mail Extensions) specification, for denoting
-    type of email message content and attachments.
+    The content type should be registered by the Internet Assigned Numbers
+    Authority (IANA) as specified in RFC 2048.
     """
 
 
@@ -1944,6 +1992,10 @@ class Administrative_information(Has_data_specification):
 
     .. note::
 
+       So far, :attr:`template_ID` is only applicable for :class:`Submodel`'s.
+
+    .. note::
+
        In case of a submodel the :attr:`template_ID` is the identifier
        of the submodel template ID that guided the creation of the submodel
 
@@ -2264,16 +2316,17 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     or (
         all(
             (
-                specific_asset_ID.name != "globalAssetId"
+                not specific_asset_ID_name_matches_global_asset_ID(
+                    specific_asset_ID.name
+                )
             ) or (
-             self.global_asset_ID is not None
-             and specific_asset_ID.name == "globalAssetId"
-             and specific_asset_ID.value == self.global_asset_ID
+                self.global_asset_ID is not None
+                and specific_asset_ID.value == self.global_asset_ID
             )
             for specific_asset_ID in self.specific_asset_IDs
         )
     ),
-    "Constraint AASd-116: ``globalAssetId`` is a reserved key. "
+    "Constraint AASd-116: ``globalAssetId`` (case-insensitive) is a reserved key. "
     "If used as value for the name of specific asset ID then the value of specific "
     "asset ID shall be identical to the global asset ID with semantics as defined in "
     "https://admin-shell.io/aas/3/x/AssetInformation/globalAssetId, "
@@ -2295,8 +2348,8 @@ class Asset_information(DBC):
 
     :constraint AASd-116:
 
-        ``globalAssetId`` is a reserved key for :attr:`Specific_asset_ID.name` with the
-        semantics as defined in
+        ``globalAssetId`` is a reserved key (case-insensitive) for
+        :attr:`Specific_asset_ID.name` with the semantics as defined in
         ``https://admin-shell.io/aas/3/x/AssetInformation/globalAssetId``
         where ``x`` is the minor version.
 
@@ -2307,14 +2360,7 @@ class Asset_information(DBC):
 
         .. note::
 
-            In the book, :constraintref:`AASd-116` imposes a
-            case-insensitive equality against ``globalAssetId``. This is
-            culturally-dependent, and depends on the system settings.
-            For example, the case-folding for the letters "i" and "I" is
-            different in Turkish from English.
-
-            We implement the constraint as case-sensitive instead to allow
-            for interoperability across different culture settings.
+            The comparison against ``globalAssetId`` is ASCII case-insensitive.
 
     :constraint AASd-131:
 
@@ -2327,8 +2373,8 @@ class Asset_information(DBC):
     asset_kind: "Asset_kind"
     """
     Denotes whether the Asset is of kind :attr:`Asset_kind.Type`,
-    :attr:`Asset_kind.Instance`, :attr:`Asset_kind.Role`, or
-    :attr:`Asset_kind.Not_applicable`.
+    :attr:`Asset_kind.Instance`, :attr:`Asset_kind.Batch`, :attr:`Asset_kind.Role`,
+    or :attr:`Asset_kind.Not_applicable`.
     """
 
     global_asset_ID: Optional["Identifier"]
@@ -2353,7 +2399,7 @@ class Asset_information(DBC):
 
     asset_type: Optional["Identifier"]
     """
-    In case :attr:`asset_kind` is :attr:`Asset_kind.Not_applicable` the
+    In case :attr:`asset_kind` is not :attr:`Asset_kind.Not_applicable` the
     :attr:`asset_type` is the asset ID of the type asset of the asset under
     consideration as identified by :attr:`global_asset_ID`.
 
@@ -2445,7 +2491,7 @@ class Asset_kind(Enum):
 
     Not_applicable = "NotApplicable"
     """
-    Neither a type asset nor an instance asset nor a role asset
+    Neither a type asset nor an instance asset nor a batch asset nor a role asset
     """
 
 
@@ -2522,13 +2568,8 @@ class Specific_asset_ID(Has_semantics):
     or (
         not (self.kind_or_default() != Modelling_kind.Template)
         or (
-            all(
-                not (submodel_element.qualifiers is not None)
-                or all(
-                    qualifier.kind_or_default() != Qualifier_kind.Template_qualifier
-                    for qualifier in submodel_element.qualifiers
-                )
-                for submodel_element in self.submodel_elements
+            submodel_elements_have_no_template_qualifiers(
+                self.submodel_elements
             )
         )
     ),
