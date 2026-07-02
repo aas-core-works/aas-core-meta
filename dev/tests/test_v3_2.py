@@ -901,6 +901,24 @@ class Test_v3_2_runtime_behavior(unittest.TestCase):
             value=value,
         )
 
+    @staticmethod
+    def _make_entity(
+        id_short: str, statements: List[v3_2.Submodel_element]
+    ) -> v3_2.Entity:
+        return v3_2.Entity(
+            ID_short=v3_2.ID_short_type(id_short),
+            statements=statements,
+        )
+
+    @staticmethod
+    def _make_annotated_relationship(
+        id_short: str, annotations: List[v3_2.Data_element]
+    ) -> v3_2.Annotated_relationship_element:
+        return v3_2.Annotated_relationship_element(
+            ID_short=v3_2.ID_short_type(id_short),
+            annotations=annotations,
+        )
+
     @mock.patch.object(v3_2, "submodel_element_is_of_type", return_value=True)
     def test_template_submodel_accepts_nested_singleton_lists(
         self, _mocked: mock.MagicMock
@@ -989,6 +1007,23 @@ class Test_v3_2_runtime_behavior(unittest.TestCase):
             input_variables=[v3_2.Operation_variable(value=top_list)],
         )
 
+    @mock.patch.object(v3_2, "submodel_element_is_of_type", return_value=True)
+    def test_template_submodel_rejects_list_with_two_elements_in_entity(
+        self, _mocked: mock.MagicMock
+    ) -> None:
+        col1 = self._make_collection("c1", [self._make_property("p1")])
+        col2 = self._make_collection("c2", [self._make_property("p2")])
+        bad_list = self._make_list("l1", [col1, col2])
+        entity = self._make_entity("e1", [bad_list])
+
+        with self.assertRaises(icontract.ViolationError):
+            v3_2.Submodel(
+                ID=v3_2.Identifier("submodel-5"),
+                ID_short=v3_2.ID_short_type("sm5"),
+                kind=v3_2.Modelling_kind.Template,
+                submodel_elements=[entity],
+            )
+
     def test_asset_information_rejects_reserved_specific_asset_id_case_insensitive(
         self,
     ) -> None:
@@ -1018,6 +1053,20 @@ class Test_v3_2_runtime_behavior(unittest.TestCase):
             ],
         )
 
+    def test_asset_information_allows_non_ascii_lookalike_specific_asset_id_name(
+        self,
+    ) -> None:
+        v3_2.Asset_information(
+            asset_kind=v3_2.Asset_kind.Instance,
+            global_asset_ID=v3_2.Identifier("asset-1"),
+            specific_asset_IDs=[
+                v3_2.Specific_asset_ID(
+                    name=v3_2.Label_type("globalAsset\u0130d"),
+                    value=v3_2.Identifier("asset-2"),
+                )
+            ],
+        )
+
     def test_instance_submodel_rejects_nested_template_qualifier(self) -> None:
         prop = self._make_property("p1", qualifiers=[self._make_template_qualifier()])
         collection = self._make_collection("c1", [prop])
@@ -1027,6 +1076,32 @@ class Test_v3_2_runtime_behavior(unittest.TestCase):
                 ID=v3_2.Identifier("submodel-4"),
                 ID_short=v3_2.ID_short_type("sm4"),
                 submodel_elements=[collection],
+            )
+
+    def test_instance_submodel_rejects_template_qualifier_in_entity_statement(
+        self,
+    ) -> None:
+        prop = self._make_property("p1", qualifiers=[self._make_template_qualifier()])
+        entity = self._make_entity("e1", [prop])
+
+        with self.assertRaises(icontract.ViolationError):
+            v3_2.Submodel(
+                ID=v3_2.Identifier("submodel-6"),
+                ID_short=v3_2.ID_short_type("sm6"),
+                submodel_elements=[entity],
+            )
+
+    def test_instance_submodel_rejects_template_qualifier_in_annotation(
+        self,
+    ) -> None:
+        prop = self._make_property("p1", qualifiers=[self._make_template_qualifier()])
+        annotated_relationship = self._make_annotated_relationship("rel1", [prop])
+
+        with self.assertRaises(icontract.ViolationError):
+            v3_2.Submodel(
+                ID=v3_2.Identifier("submodel-7"),
+                ID_short=v3_2.ID_short_type("sm7"),
+                submodel_elements=[annotated_relationship],
             )
 
     def test_operation_variable_allows_template_qualifier_exception(self) -> None:

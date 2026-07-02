@@ -1133,7 +1133,13 @@ def specific_asset_ID_name_matches_global_asset_ID(name: "Label_type") -> bool:
     """Check whether :paramref:`name` is the reserved global asset ID key."""
     # NOTE (mristin, aaronzi):
     # This implementation will not be transpiled, but is given here as reference.
-    return name.lower() == "globalassetid"
+    return (
+        match(
+            "^[gG][lL][oO][bB][aA][lL][aA][sS][sS][eE][tT][iI][dD]$",
+            name,
+        )
+        is not None
+    )
 
 
 @verification
