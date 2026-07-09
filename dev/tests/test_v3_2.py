@@ -1627,8 +1627,8 @@ Observed literals: {sorted(literal_set)!r}""")
     not (self.type == Reference_types.External_reference)
     or (
         all(
-            not (self.keys[i].type in AAS_referables)
-            for i in range(0, len(self.keys))
+            not (key.type in AAS_referables)
+            for key in self.keys
         )
     )
 )"""
@@ -1636,7 +1636,7 @@ Observed literals: {sorted(literal_set)!r}""")
         expected_description = (
             "Constraint AASd-137: For external references, i.e. References with "
             "Reference/type = ExternalReference, the value of Key/type of any key in "
-            "Reference/keys shall not be one of AasReferables."
+            "Reference/keys shall not be one of AAS referables."
         )
 
         assert tests.common.has_invariant(
@@ -1654,16 +1654,20 @@ Observed literals: {sorted(literal_set)!r}""")
 
         expected_condition_str = """\
 (
-    not (self.kind_or_default() == Modelling_kind.Template)
-    or not (self.submodel_elements is not None)
-    or submodel_element_lists_in_submodel_elements_have_exactly_one_element(
-        self.submodel_elements
+    not (
+        self.kind_or_default() == Modelling_kind.Template
+    )
+    or (
+        self.submodel_elements is not None
+        and submodel_element_lists_in_submodel_elements_have_exactly_one_element(
+            self.submodel_elements
+        )
     )
 )"""
 
         expected_description = (
-            "Constraint AASd-138: A SubmodelElementList within a Submodel of "
-            "kind=Template or as part of an OperationVariable shall have exactly one "
+            "Constraint AASd-138: A submodel element list within a submodel of kind "
+            "Template or as part of an operation variable shall have exactly one "
             "element."
         )
 
@@ -1690,8 +1694,8 @@ Observed literals: {sorted(literal_set)!r}""")
 )"""
 
         expected_description = (
-            "Constraint AASd-138: A SubmodelElementList within a Submodel of "
-            "kind=Template or as part of an OperationVariable shall have exactly one "
+            "Constraint AASd-138: A submodel element list within a submodel of kind "
+            "Template or as part of an operation variable shall have exactly one "
             "element."
         )
 
@@ -2030,8 +2034,9 @@ Observed literals: {sorted(literal_set)!r}""")
 
                 expected_description = (
                     f"{prop_name_readable} must have the ID-short specified according "
-                    f"to Constraint AASd-117 (ID-short of Referables not being "
-                    f"a direct child of a Submodel element list shall be specified)."
+                    f"to Constraint AASd-117 (ID-short of non-identifiable Referables "
+                    f"not being a direct child of a Submodel element list shall be "
+                    f"specified)."
                 )
 
                 if not tests.common.has_invariant(
@@ -2136,8 +2141,8 @@ Observed literals: {sorted(literal_set)!r}""")
                 expected_description = (
                     f"ID-shorts need to be defined for all the items of "
                     f"{prop_name_readable} according to AASd-117 (ID-short of "
-                    f"Referables not being a direct child of a Submodel element list "
-                    f"shall be specified)."
+                    f"non-identifiable Referables not being a direct child of a "
+                    f"Submodel element list shall be specified)."
                 )
 
                 if not tests.common.has_invariant(
