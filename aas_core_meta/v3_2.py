@@ -1133,13 +1133,9 @@ def specific_asset_ID_name_matches_global_asset_ID(name: "Label_type") -> bool:
     """Check whether :paramref:`name` is the reserved global asset ID key."""
     # NOTE (mristin, aaronzi):
     # This implementation will not be transpiled, but is given here as reference.
-    return (
-        match(
-            "^[gG][lL][oO][bB][aA][lL][aA][sS][sS][eE][tT][iI][dD]$",
-            name,
-        )
-        is not None
-    )
+    # Notably, we want to avoid problems with Turkish-İ-style locale folding where
+    # case-insensitivity is not well-defined and is strongly locale-dependent.
+    return name.lower() == "globalassetid"
 
 
 @verification
@@ -1413,6 +1409,14 @@ class Blob_type(bytearray, DBC):
 class Identifier(Non_empty_XML_serializable_string, DBC):
     """
     string
+
+    .. note::
+
+        It is recommended to use existing standards, for example ID-Link
+        (IEC 61406) may be used for :attr:`Asset_information.global_asset_ID`.
+
+        Typically, identifier strings do not contain blanks, emoticons or
+        carriage returns because they are not representable in existing systems.
     """
 
 
@@ -1998,7 +2002,8 @@ class Administrative_information(Has_data_specification):
 
     .. note::
 
-       So far, :attr:`template_ID` is only applicable for :class:`Submodel`'s.
+       So far, :attr:`template_ID` is only applicable for :class:`Submodel`'s,
+       since template specifications are standardized for Submodels only.
 
     .. note::
 
@@ -2354,7 +2359,7 @@ class Asset_information(DBC):
 
     :constraint AASd-116:
 
-        ``globalAssetId`` is a reserved key (case-insensitive) for
+        ``globalAssetId`` (case-insensitive) is a reserved key for
         :attr:`Specific_asset_ID.name` with the semantics as defined in
         ``https://admin-shell.io/aas/3/x/AssetInformation/globalAssetId``
         where ``x`` is the minor version.
@@ -2579,20 +2584,23 @@ class Specific_asset_ID(Has_semantics):
             )
         )
     ),
-    "Constraint AASd-129: If any Qualifier/kind value of a SubmodelElement/qualifier "
-    "(attribute qualifier inherited via Qualifiable) is equal to TemplateQualifier "
-    "then the SubmodelElement shall be part of a Submodel with Submodel/kind = "
-    "Template. Exception: the SubmodelElement is part of an OperationVariable."
+    "Constraint AASd-129: If any kind value of a qualifier "
+    "(attribute qualifier inherited via Qualifiable) is equal to Template Qualifier, "
+    "the submodel element shall be part of a submodel template, i.e. a submodel with "
+    "kind (attribute kind inherited via Has-Kind) value equal to Template. "
+    "Exception: the submodel element is part of an operation variable."
 )
 @invariant(
     lambda self:
-    not (self.kind_or_default() == Modelling_kind.Template)
-    or not (self.submodel_elements is not None)
+    not (
+            self.kind_or_default() == Modelling_kind.Template
+            and self.submodel_elements is not None
+    )
     or submodel_element_lists_in_submodel_elements_have_exactly_one_element(
         self.submodel_elements
     ),
-    "Constraint AASd-138: A SubmodelElementList within a Submodel of kind=Template "
-    "or as part of an OperationVariable shall have exactly one element."
+    "Constraint AASd-138: A submodel element list within a submodel of kind Template "
+    "or as part of an operation variable shall have exactly one element."
 )
 @invariant(
     lambda self:
@@ -2691,10 +2699,10 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
     :constraint AASd-129:
 
         If any :attr:`Qualifier.kind` value of :attr:`qualifiers` (attribute qualifier
-        inherited via Qualifiable) is equal to :attr:`Qualifier_kind.Template_qualifier`
-        then the submodel element shall be part of a submodel template, i.e.
-        a Submodel with :attr:`Submodel.kind` (attribute kind inherited via
-        :class:`Has_kind`) value is equal to :attr:`Modelling_kind.Template`.
+        inherited via Qualifiable) is equal to :attr:`Qualifier_kind.Template_qualifier`,
+        the submodel element shall be part of a submodel template, i.e.
+        a submodel with :attr:`Submodel.kind` (attribute kind inherited via
+        :class:`Has_kind`) value equal to :attr:`Modelling_kind.Template`.
         Exception: the submodel element is part of an :class:`Operation_variable`.
     """
 
@@ -2909,6 +2917,16 @@ class Submodel_element_list(Submodel_element):
         :attr:`value_type_list_element` shall be set and all first
         level child elements in the :class:`Submodel_element_list` shall have
         the value type as specified in :attr:`value_type_list_element`.
+
+    :constraint AASd-138:
+
+        A :class:`Submodel_element_list` within a :class:`Submodel` of
+        :attr:`Has_kind.kind` = :attr:`Modelling_kind.Template` or as part of
+        an :class:`Operation_variable` shall have exactly one element.
+
+        .. note::
+
+            This constraint is checked at :class:`Submodel` and :class:`Operation`.
     """
 
     order_relevant: Optional["bool"]
@@ -3263,7 +3281,7 @@ class Range(Data_element):
 
     value_type: "Data_type_def_XSD"
     """
-    Data type of the min und max
+    Data type of the :attr:`min` und :attr:`max` attributes
     """
 
     min: Optional["Value_data_type"]
@@ -4043,8 +4061,8 @@ class Basic_event_element(Event_element):
         self.output_variables,
         self.inoutput_variables,
     ),
-    "Constraint AASd-138: A SubmodelElementList within a Submodel of kind=Template "
-    "or as part of an OperationVariable shall have exactly one element."
+    "Constraint AASd-138: A submodel element list within a submodel of kind Template "
+    "or as part of an operation variable shall have exactly one element."
 )
 # fmt: on
 class Operation(Submodel_element):
@@ -4121,6 +4139,23 @@ class Operation_variable(DBC):
     """
     The value of an operation variable is a submodel element that is used as input
     and/or output variable of an operation.
+
+    Specification of operations in a :class:`Submodel` with
+    :attr:`Has_kind.kind` = :attr:`Modelling_kind.Instance` are handled
+    identical to operations in Submodel templates (:class:`Submodel` with
+    :attr:`Has_kind.kind` = :attr:`Modelling_kind.Template`).
+
+    .. note::
+
+        An operation can be invoked via an API call (``InvokeOperationSync``
+        and ``InvokeOperationAsync``). For further explanation see Part 2
+        (IDTA-01002).
+
+    .. note::
+
+        :class:`Operation_variable` is introduced as a separate class to
+        enable future extensions, *e.g.* for adding a default value or
+        cardinality (optional/mandatory).
     """
 
     value: "Submodel_element"
@@ -4648,13 +4683,13 @@ class Reference_types(Enum):
     not (self.type == Reference_types.External_reference)
     or (
         all(
-            not (self.keys[i].type in AAS_referables)
-            for i in range(0, len(self.keys))
+            not (key.type in AAS_referables)
+            for key in self.keys
         )
     ),
     "Constraint AASd-137: For external references, i.e. References with "
     "Reference/type = ExternalReference, the value of Key/type of any key in "
-    "Reference/keys shall not be one of AasReferables."
+    "Reference/keys shall not be one of AAS referables."
 )
 @invariant(
     lambda self:
@@ -5084,6 +5119,31 @@ Fragment_keys: Set[Key_types] = constant_set(
 class Data_type_def_XSD(Enum):
     """
     Enumeration listing all XSD anySimpleTypes
+
+    .. note::
+
+        RDF uses XML Schema Built-in data types from Version 1.1 but recommends
+        to use only a subset of XSD data types. That is why they are excluded
+        from the allowed data types in :class:`Data_type_def_XSD`.
+
+        * XSD BuildIn List types are not supported (``ENTITIES``, ``IDREFS``
+          and ``NMTOKENS``).
+        * XSD string BuildIn types are not supported (``normalizedString``,
+          ``token``, ``language``, ``NCName``, ``ENTITY``, ``ID``, ``IDREF``).
+        * The following XSD primitive types are not supported: ``NOTATION``,
+          ``QName``.
+
+    .. note::
+
+        Additionally, the following RDF types are not supported in
+        :class:`Data_type_def_XSD`: ``HTML`` and ``XMLLiteral``.
+
+    .. note::
+
+        Numeric data types in XML Schema are based on the definitions of
+        IEEE 754 with slight adoptions. For instance, :attr:`Float` and
+        :attr:`Double` use different exponent ranges. In any case, solely
+        the XML Schema data type definitions are applicable for AAS values.
     """
 
     Any_URI = "xs:anyURI"
