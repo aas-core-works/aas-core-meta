@@ -1128,15 +1128,10 @@ def ID_shorts_of_variables_are_unique(
 
 
 @verification
-def specific_asset_ID_name_matches_global_asset_ID(name: "Label_type") -> bool:
+def specific_asset_ID_name_matches_global_asset_ID(name: str) -> bool:
     """Check whether :paramref:`name` is the reserved global asset ID key."""
-    return (
-        match(
-            "^[gG][lL][oO][bB][aA][lL][aA][sS][sS][eE][tT][iI][dD]$",
-            name,
-        )
-        is not None
-    )
+    pattern = "^[gG][lL][oO][bB][aA][lL][aA][sS][sS][eE][tT][iI][dD]$"
+    return match(pattern, name) is not None
 
 
 @verification
