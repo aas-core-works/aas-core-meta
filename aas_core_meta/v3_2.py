@@ -1128,14 +1128,15 @@ def ID_shorts_of_variables_are_unique(
 
 
 @verification
-@implementation_specific
 def specific_asset_ID_name_matches_global_asset_ID(name: "Label_type") -> bool:
     """Check whether :paramref:`name` is the reserved global asset ID key."""
-    # NOTE (mristin, aaronzi):
-    # This implementation will not be transpiled, but is given here as reference.
-    # Notably, we want to avoid problems with Turkish-İ-style locale folding where
-    # case-insensitivity is not well-defined and is strongly locale-dependent.
-    return name.lower() == "globalassetid"
+    return (
+        match(
+            "^[gG][lL][oO][bB][aA][lL][aA][sS][sS][eE][tT][iI][dD]$",
+            name,
+        )
+        is not None
+    )
 
 
 @verification
@@ -2326,8 +2327,8 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
     not (self.specific_asset_IDs is not None)
     or (
         all(
-            (
-                not specific_asset_ID_name_matches_global_asset_ID(
+            not (
+                specific_asset_ID_name_matches_global_asset_ID(
                     specific_asset_ID.name
                 )
             ) or (
@@ -2585,7 +2586,7 @@ class Specific_asset_ID(Has_semantics):
         )
     ),
     "Constraint AASd-129: If any kind value of a qualifier "
-    "(attribute qualifier inherited via Qualifiable) is equal to Template Qualifier, "
+    "(attribute qualifier inherited via Qualifiable) is equal to TemplateQualifier, "
     "the submodel element shall be part of a submodel template, i.e. a submodel with "
     "kind (attribute kind inherited via Has-Kind) value equal to Template. "
     "Exception: the submodel element is part of an operation variable."
@@ -2594,13 +2595,15 @@ class Specific_asset_ID(Has_semantics):
     lambda self:
     not (
             self.kind_or_default() == Modelling_kind.Template
-            and self.submodel_elements is not None
     )
-    or submodel_element_lists_in_submodel_elements_have_exactly_one_element(
-        self.submodel_elements
+    or (
+            self.submodel_elements is not None
+            and submodel_element_lists_in_submodel_elements_have_exactly_one_element(
+                self.submodel_elements
+            )
     ),
-    "Constraint AASd-138: A submodel element list within a submodel of kind Template "
-    "or as part of an operation variable shall have exactly one element."
+    "Constraint AASd-138: A submodel element list within a submodel of kind "
+    "Template or as part of an operation variable shall have exactly one element."
 )
 @invariant(
     lambda self:
