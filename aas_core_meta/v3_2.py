@@ -1446,7 +1446,8 @@ class Name_type(Non_empty_XML_serializable_string, DBC):
 )
 class Version_type(Non_empty_XML_serializable_string):
     """
-    string with length 4 maximum and 1 minimum
+    string with max 4 and min 1 characters
+    following the following regular expression: ``^([0-9]|[1-9][0-9]*)$``
     """
 
 
@@ -1460,7 +1461,8 @@ class Version_type(Non_empty_XML_serializable_string):
 )
 class Revision_type(Non_empty_XML_serializable_string):
     """
-    string with length 4 maximum and 1 minimum
+    string with max 4 and min 1 characters
+    following the following regular expression: ``^([0-9]|[1-9][0-9]*)$``
     """
 
 
@@ -1470,7 +1472,7 @@ class Revision_type(Non_empty_XML_serializable_string):
 )
 class Label_type(Non_empty_XML_serializable_string, DBC):
     """
-    string with length 64 maximum and 1 minimum characters
+    string with max 64 and min 1 characters
     """
 
 
@@ -1480,7 +1482,7 @@ class Label_type(Non_empty_XML_serializable_string, DBC):
 )
 class Message_topic_type(Non_empty_XML_serializable_string, DBC):
     """
-    string with length 255 maximum and minimum 1 characters
+    string with max 255 and min 1 characters
     """
 
 
@@ -1507,12 +1509,12 @@ class BCP_47_language_tag(str, DBC):
 )
 class Content_type(Non_empty_XML_serializable_string, DBC):
     """
-    String with length 128 maximum and minimum 1 characters
+    string with max 128 and min 1 characters
 
-    Any content type as specified in RFC 2046.
+    Any content type as specified in RFC2046.
 
     The content type should be registered by the Internet Assigned Numbers
-    Authority (IANA) as specified in RFC 2048.
+    Authority (IANA) as specified in RFC2048.
     """
 
 
@@ -1524,9 +1526,20 @@ class Path_type(Identifier, DBC):
     """
     Identifier
 
+    string with max 2048 and min 1 characters
+
+    conformant to a URI as per RFC 2396
+
     .. note::
 
-        String with max 2048 and min 1 characters conformant to a URI as per RFC 2396.
+        Values with this restriction are also conformant to the xsd datatype
+        anyURI.
+
+        "A wide range of internationalized resource identifiers can be
+        specified when an anyURI is called for, and still be understood as
+        URIs per RFC 2396 and its successor(s)."
+
+        Source: W3C XML Schema Definition Language (XSD) 1.0 Part 2: Datatypes
     """
 
     pass
@@ -1534,21 +1547,22 @@ class Path_type(Identifier, DBC):
 
 class Qualifier_type(Name_type, DBC):
     """
-    string
+    NameType
     """
 
 
 class Value_data_type(XML_serializable_string, DBC):
     """
-    any XSD simple type as specified via :class:`Data_type_def_XSD`
+    any XSD atomic type as specified via :class:`Data_type_def_XSD`
     """
 
 
 @invariant(
     lambda self: matches_ID_short(self),
-    "ID-short of Referables shall consist of at least two characters and shall only feature letters, "
-    "digits, hyphen (``-``) and underscore (``_``); "
-    "starting mandatory with a letter, and not ending with a hyphen, *I.e.* ``^[a-zA-Z][a-zA-Z0-9_-]*[a-zA-Z0-9_]+$``.",
+    "AASd-002: ID-short of Referables shall consist of at least two characters "
+    "and shall only feature letters, digits, hyphen (``-``) and underscore (``_``); "
+    "starting mandatory with a letter, and not ending with a hyphen, "
+    "*I.e.* ``^[a-zA-Z][a-zA-Z0-9_-]*[a-zA-Z0-9_]+$``.",
 )
 class ID_short_type(Name_type, DBC):
     """
@@ -1563,9 +1577,9 @@ class ID_short_type(Name_type, DBC):
 
     :constraint AASd-117:
 
-        Constraint AASd-117: :attr:`Referable.ID_short` of
-        non-identifiable :class:`Referable` not being a direct child of
-        a :class:`Submodel_element_list` shall be specified.
+        :attr:`Referable.ID_short` of non-identifiable :class:`Referable`'s
+        not being a direct child of a :class:`Submodel_element_list` shall
+        be specified.
     """
 
 
@@ -1602,20 +1616,12 @@ class Has_semantics(DBC):
     """
     Identifier of the semantic definition of the element. It is called semantic ID
     of the element or also main semantic ID of the element.
-
-    .. note::
-
-        It is recommended to use a global reference.
     """
 
     supplemental_semantic_IDs: Optional[List["Reference"]]
     """
     Identifier of a supplemental semantic definition of the element.
     It is called supplemental semantic ID of the element.
-
-    .. note::
-
-        It is recommended to use a global reference.
     """
 
     def __init__(
@@ -1660,7 +1666,7 @@ class Extension(Has_semantics):
 
     value_type: Optional["Data_type_def_XSD"]
     """
-    Type of the value of the extension.
+    Data type of the :attr:`value` attribute of the extension.
 
     Default: :attr:`Data_type_def_XSD.String`
     """
@@ -1768,7 +1774,7 @@ class Has_extensions(DBC):
 # fmt: on
 class Referable(Has_extensions):
     """
-    An element that is referable by its :attr:`ID_short`.
+    Element that is referable by its :attr:`ID_short`.
 
     This ID is not globally unique.
     This ID is unique within the name space of the element.
@@ -1782,29 +1788,34 @@ class Referable(Has_extensions):
     category: Optional[Name_type]
     """
     The category is a value that gives further meta information
-    w.r.t. to the class of the element.
+    w.r.t. the class of the element.
     It affects the expected existence of attributes and the applicability of
     constraints.
 
     .. note::
 
         The category is not identical to the semantic definition
-        (:class:`Has_semantics`) of an element. The category e.g. could denote that
-        the element is a measurement value whereas the semantic definition of
+        (:class:`Has_semantics`) of an element. The category could e.g. denote that
+        the element is a measurement value, whereas the semantic definition of
         the element would denote that it is the measured temperature.
+
+    .. note::
+
+        Deprecated.
     """
 
     ID_short: Optional["ID_short_type"]
     """
-    In case of identifiables this attribute is a short name of the element.
-    In case of referable this ID is an identifying string of the element within
+    In case of identifiables, this attribute is a short name of the element.
+    In case of a referable, this ID is an identifying string of the element within
     its name space.
 
     .. note::
 
         In case the element is a property and the property has a semantic definition
         (:attr:`Has_semantics.semantic_ID`) conformant to IEC61360
-        the :attr:`ID_short` is typically identical to the short name in English.
+        the :attr:`ID_short` is typically identical to the short name in English,
+        if available.
     """
 
     display_name: Optional[List["Lang_string_name_type"]]
@@ -1818,13 +1829,12 @@ class Referable(Has_extensions):
 
     The description can be provided in several languages.
 
-    If no description is defined, then the definition of the concept
+    If no description is defined, the definition of the concept
     description that defines the semantics of the element is used.
 
     Additional information can be provided, e.g., if the element is
     qualified and which qualifier types can be expected in which
-    context or which additional data specification templates are
-    provided.
+    context or which additional data specification templates.
     """
 
     def __init__(
@@ -1889,7 +1899,7 @@ class Modelling_kind(Enum):
     Template = "Template"
     """
     Specification of the common features of a structured element in sufficient detail
-    that such a instance can be instantiated using it
+    that such an instance can be instantiated using it
     """
 
     Instance = "Instance"
@@ -1960,21 +1970,20 @@ class Has_data_specification(DBC):
 @invariant(
     lambda self:
     not (self.revision is not None) or self.version is not None,
-    "Constraint AASd-005: If version is not specified then also revision shall "
-    "be unspecified. This means, a revision requires a version. If there is "
-    "no version there is no revision either. Revision is optional."
+    "Constraint AASd-005: If version is not specified, revision shall also be "
+    "unspecified. This means that a revision requires a version. If there is "
+    "no version, there is no revision. Revision is optional."
 )
 # fmt: on
 class Administrative_information(Has_data_specification):
     """
-    Administrative meta-information for an element like version
-    information.
+    Administrative metainformation for an element.
 
     :constraint AASd-005:
 
-        If :attr:`version` is not specified then also :attr:`revision` shall be
-        unspecified. This means, a revision requires a version. If there is no version
-        there is no revision neither. Revision is optional.
+        If :attr:`version` is not specified, :attr:`revision` shall also be
+        unspecified. This means that a revision requires a version. If there is
+        no version, there is no revision. Revision is optional.
     """
 
     version: Optional[Version_type]
@@ -2003,8 +2012,8 @@ class Administrative_information(Has_data_specification):
 
     .. note::
 
-       In case of a submodel the :attr:`template_ID` is the identifier
-       of the submodel template ID that guided the creation of the submodel
+       In case of a submodel, the :attr:`template_ID` is the identifier
+       of the submodel template that guided the creation of the submodel
 
     .. note::
 
@@ -2047,7 +2056,7 @@ class Administrative_information(Has_data_specification):
     lambda self:
     not (self.qualifiers is not None)
     or qualifier_types_are_unique(self.qualifiers),
-    "Constraint AASd-021: Every qualifiable can only have one qualifier with "
+    "Constraint AASd-021: Every qualifiable shall only have one qualifier with "
     "the same type."
 )
 @invariant(
@@ -2060,7 +2069,7 @@ class Administrative_information(Has_data_specification):
 # fmt: on
 class Qualifiable(DBC):
     """
-    The value of a qualifiable element may be further qualified by one or more
+    A qualifiable element may be further qualified by one or more
     qualifiers.
 
     :constraint AASd-119:
@@ -2081,7 +2090,7 @@ class Qualifiable(DBC):
 
     :constraint AASd-021:
 
-        Every qualifiable can only have one qualifier with the same
+        Every qualifiable shall only have one qualifier with the same
         :attr:`Qualifier.type`.
     """
 
@@ -2101,7 +2110,8 @@ class Qualifier_kind(Enum):
 
     Value_qualifier = "ValueQualifier"
     """
-    qualifies the value of the element and can change during run-time.
+    qualifies the value of the element; the corresponding qualifier value can
+    change over time.
 
     Value qualifiers are only applicable to elements with kind
     :attr:`Modelling_kind.Instance`.
@@ -2109,13 +2119,14 @@ class Qualifier_kind(Enum):
 
     Concept_qualifier = "ConceptQualifier"
     """
-    qualifies the semantic definition the element is referring to
-    (:attr:`Has_semantics.semantic_ID`)
+    qualifies the semantic definition (:attr:`Has_semantics.semantic_ID`) the
+    element is referring to; the corresponding qualifier value is static.
     """
 
     Template_qualifier = "TemplateQualifier"
     """
-    qualifies the elements within a specific submodel on concept level.
+    qualifies the elements within a specific submodel on concept level; the
+    corresponding qualifier value is static.
 
     Template qualifiers are only applicable to elements with kind
     :attr:`Modelling_kind.Template`.
@@ -2127,14 +2138,18 @@ class Qualifier_kind(Enum):
     lambda self:
     not (self.value is not None)
     or value_consistent_with_XSD_type(self.value, self.value_type),
-    "Constraint AASd-020: The value shall be consistent to the data type as defined "
+    "Constraint AASd-020: The value shall be consistent with the data type as defined "
     "in value type.",
 )
 # fmt: on
 class Qualifier(Has_semantics):
     """
-    A qualifier is a type-value-pair that makes additional statements w.r.t. the value
-    of the element.
+    A qualifier is essentially a type-value-pair. Depending on the kind of
+    qualifier, it makes additional statements:
+
+    * w.r.t. the value of the qualified element,
+    * w.r.t. the concept, i.e. semantic definition of the qualified element,
+    * w.r.t. existence and other meta information of the qualified element type.
 
     :constraint AASd-006:
 
@@ -2145,13 +2160,13 @@ class Qualifier(Has_semantics):
 
     :constraint AASd-020:
 
-        The value of :attr:`value` shall be consistent to the data type as
+        The value of :attr:`value` shall be consistent with the data type as
         defined in :attr:`value_type`.
     """
 
     kind: Optional["Qualifier_kind"]
     """
-    The qualifier kind describes the kind of the qualifier that is applied to the
+    The qualifier kind describes the kind of qualifier that is applied to the
     element.
 
     Default: :attr:`Qualifier_kind.Concept_qualifier`
@@ -2166,7 +2181,7 @@ class Qualifier(Has_semantics):
 
     type: "Qualifier_type"
     """
-    The qualifier *type* describes the type of the qualifier that is applied to
+    The qualifier *type* describes the type of qualifier that is applied to
     the element.
     """
 
@@ -2183,10 +2198,6 @@ class Qualifier(Has_semantics):
     value_ID: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
-
-    .. note::
-
-        It is recommended to use a global reference.
     """
 
     def __init__(
@@ -2243,23 +2254,31 @@ class Qualifier(Has_semantics):
 )
 # fmt: on
 class Asset_administration_shell(Identifiable, Has_data_specification):
-    """An asset administration shell."""
+    """An Asset Administration Shell."""
 
     derived_from: Optional["Reference"]
-    """The reference to the AAS the AAS was derived from."""
+    """
+    The reference to the Asset Administration Shell, which the Asset
+    Administration Shell was derived from.
+    """
 
     asset_information: "Asset_information"
-    """Meta-information about the asset the AAS is representing."""
+    """
+    Meta information about the asset, the Asset Administration Shell is
+    representing.
+    """
 
     submodels: Optional[List["Reference"]]
     """
-    References to submodels of the AAS.
+    References to submodels of the Asset Administration Shell.
 
-    A submodel is a description of an aspect of the asset the AAS is representing.
+    A submodel is a description of an aspect of the asset, the Asset
+    Administration Shell is representing.
 
-    The asset of an AAS is typically described by one or more submodels.
+    The asset of an Asset Administration Shell is typically described by one or
+    more submodels.
 
-    Temporarily no submodel might be assigned to the AAS.
+    Temporarily, no submodel might be assigned to the Asset Administration Shell.
     """
 
     def __init__(
@@ -2342,16 +2361,16 @@ class Asset_administration_shell(Identifiable, Has_data_specification):
 # fmt: on
 class Asset_information(DBC):
     """
-    In :class:`Asset_information` identifying meta data of the asset that is
-    represented by an AAS is defined.
+    In :class:`Asset_information` identifying metadata of the asset that is
+    represented by an Asset Administration Shell is defined.
 
-    The asset may either represent an asset type or an asset instance.
+    The asset may either represent a type asset or an instance asset.
 
-    The asset has a globally unique identifier plus – if needed – additional domain
-    specific (proprietary) identifiers. However, to support the corner case of very
-    first phase of lifecycle where a stabilised/constant_set global asset identifier
-    does not already exist, the corresponding attribute :attr:`global_asset_ID` is
-    optional.
+    The asset has a globally unique identifier, plus – if needed – additional
+    domain-specific (proprietary) identifiers. However, to support the corner case
+    of very first phase of life cycle where a stabilized/constant global asset
+    identifier does not already exist, the corresponding attribute
+    :attr:`global_asset_ID` is optional.
 
     :constraint AASd-116:
 
@@ -2363,7 +2382,10 @@ class Asset_information(DBC):
         .. note::
 
             :constraintref:`AASd-116` is important to enable a generic search across
-            global and specific asset IDs.
+            global and specific asset IDs (e.g. in IDTA-01002-3-0 discovery
+            operations like GetAllAssetLinksById). In the future the constraint
+            might become more strict in stating that the name ``globalAssetId``
+            shall not be used as :attr:`Specific_asset_ID.name`.
 
         .. note::
 
@@ -2386,22 +2408,19 @@ class Asset_information(DBC):
 
     global_asset_ID: Optional["Identifier"]
     """
-    Global identifier of the asset the AAS is representing.
+    Identifier of the asset, the Asset Administration Shell is representing.
 
-    This attribute is required as soon as the AAS is exchanged via partners in the life
-    cycle of the asset. In a first phase of the life cycle the asset might not yet have
-    a global ID but already an internal identifier. The internal identifier would be
-    modelled via :attr:`specific_asset_IDs`.
-
-    .. note::
-
-        This is a global reference.
+    This attribute is required as soon as the Asset Administration Shell is
+    exchanged via partners in the life cycle of the asset. In a first phase of the
+    life cycle, the asset might not yet have a global asset ID but already an
+    internal identifier. The internal identifier would be modelled via
+    :attr:`specific_asset_IDs`.
     """
 
     specific_asset_IDs: Optional[List["Specific_asset_ID"]]
     """
     Additional domain-specific, typically proprietary identifier for the asset like
-    e.g., serial number etc.
+    serial number, manufacturer part ID, customer part IDs, etc.
     """
 
     asset_type: Optional["Identifier"]
@@ -2442,8 +2461,8 @@ class Asset_information(DBC):
 
 class Resource(DBC):
     """
-    Resource represents an address to a file (a locator). The value is an URI that
-    can represent an absolute or relative path
+    Resource represents an address to a file (a locator). The value is a URI that
+    can represent an absolute or relative path.
     """
 
     path: "Path_type"
@@ -2521,18 +2540,19 @@ class Specific_asset_ID(Has_semantics):
     """
 
     name: Label_type
-    """Name of the identifier"""
+    """Name of the asset identifier."""
 
     value: Identifier
     """The value of the specific asset identifier with the corresponding name."""
 
     external_subject_ID: Optional["Reference"]
     """
-    The (external) subject the key belongs to or has meaning to.
+    The unique ID of the (external) subject the specific asset ID value belongs
+    to or has meaning to.
 
     .. note::
 
-        This is a global reference.
+        This is an external reference.
     """
 
     def __init__(
@@ -2615,7 +2635,7 @@ class Specific_asset_ID(Has_semantics):
         for item in self.submodel_elements
     ),
     "ID-shorts need to be defined for all the items of submodel elements according to "
-    "AASd-117 (ID-short of Referables not being a direct child of "
+    "AASd-117 (ID-short of non-identifiable Referables not being a direct child of "
     "a Submodel element list shall be specified)."
 )
 @invariant(
@@ -2629,16 +2649,17 @@ class Submodel(
     Identifiable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
 ):
     """
-    A submodel defines a specific aspect of the asset represented by the AAS.
+    A submodel defines a specific aspect of the asset represented by the Asset
+    Administration Shell.
 
     A submodel is used to structure the digital representation and technical
     functionality of an Administration Shell into distinguishable parts. Each submodel
-    refers to a well-defined domain or subject matter. Submodels can become
-    standardized and, thus, become submodels templates.
+    refers to a well-defined domain or subject. Submodels can become standardized
+    and, in turn, submodel templates.
     """
 
     submodel_elements: Optional[List["Submodel_element"]]
-    """A submodel consists of zero or more submodel elements."""
+    """Submodel elements contained in the submodel."""
 
     def __init__(
         self,
@@ -2743,7 +2764,7 @@ class Submodel_element(Referable, Has_semantics, Qualifiable, Has_data_specifica
 class Relationship_element(Submodel_element):
     """
     A relationship element is used to define a relationship between two elements
-    being either referable (model reference) or external (global reference).
+    being either referable (model reference) or external (external reference).
     """
 
     first: Optional["Reference"]
@@ -2790,25 +2811,76 @@ class Relationship_element(Submodel_element):
 
 
 class AAS_submodel_elements(Enum):
-    """Enumeration of all possible elements of a :class:`Submodel_element_list`."""
+    """
+    Enumeration of Submodel Element types including abstract Submodel Element types.
+    """
 
     Annotated_relationship_element = "AnnotatedRelationshipElement"
     Basic_event_element = "BasicEventElement"
     Blob = "Blob"
     Capability = "Capability"
+
     Data_element = "DataElement"
+    """
+    Data element.
+
+    .. note::
+
+        Data Element is abstract, *i.e.* if a key uses :attr:`Data_element`
+        the reference may be a :class:`Property`, a :class:`File` etc.
+    """
+
     Entity = "Entity"
+
     Event_element = "EventElement"
+    """
+    Event.
+
+    .. note::
+
+        :class:`Event_element` is abstract.
+    """
+
     File = "File"
+
     Multi_language_property = "MultiLanguageProperty"
+    """Property with a value that can be provided in multiple languages"""
+
     Operation = "Operation"
     Property = "Property"
+
     Range = "Range"
+    """Range with min and max"""
+
     Reference_element = "ReferenceElement"
+    """
+    Reference
+    """
+
     Relationship_element = "RelationshipElement"
+    """
+    Relationship
+    """
+
     Submodel_element = "SubmodelElement"
+    """
+    Submodel Element
+
+    .. note::
+
+        Submodel Element is abstract, *i.e.* if a key uses :attr:`Submodel_element`
+        the reference may be a :class:`Property`, an :class:`Operation` etc.
+    """
+
     Submodel_element_list = "SubmodelElementList"
+    """
+    List of Submodel Elements
+    """
+
     Submodel_element_collection = "SubmodelElementCollection"
+    """
+    Struct of Submodel Elements
+    """
 
 
 # fmt: off
@@ -2883,6 +2955,11 @@ class Submodel_element_list(Submodel_element):
     """
     A submodel element list is an ordered list of submodel elements.
 
+    .. note::
+
+        The list is ordered although the ordering might not be relevant
+        (see :attr:`order_relevant`).
+
     The numbering starts with zero (0).
 
     :constraint AASd-107:
@@ -2945,10 +3022,6 @@ class Submodel_element_list(Submodel_element):
     semantic_ID_list_element: Optional["Reference"]
     """
     Semantic ID the submodel elements contained in the list match to.
-
-    .. note::
-
-        It is recommended to use a global reference.
     """
 
     type_value_list_element: "AAS_submodel_elements"
@@ -2964,8 +3037,6 @@ class Submodel_element_list(Submodel_element):
     value: Optional[List["Submodel_element"]]
     """
     Submodel element contained in the list.
-
-    The list is ordered.
     """
 
     def __init__(
@@ -3022,8 +3093,8 @@ class Submodel_element_list(Submodel_element):
         for item in self.value
     ),
     "ID-shorts need to be defined for all the items of value according to AASd-117 "
-    "(ID-short of Referables not being a direct child of a Submodel element list "
-    "shall be specified)."
+    "(ID-short of non-identifiable Referables not being a direct child of a Submodel "
+    "element list shall be specified)."
 )
 @invariant(
     lambda self:
@@ -3034,8 +3105,8 @@ class Submodel_element_list(Submodel_element):
 # fmt: on
 class Submodel_element_collection(Submodel_element):
     """
-    A submodel element collection is a kind of struct, i.e. a a logical encapsulation
-    of multiple named values. It has a fixed number of submodel elements.
+    A submodel element collection is a kind of struct, i.e. a logical encapsulation
+    of multiple named values.
     """
 
     value: Optional[List["Submodel_element"]]
@@ -3079,11 +3150,15 @@ class Submodel_element_collection(Submodel_element):
 # fmt: on
 class Data_element(Submodel_element):
     """
-    A data element is a submodel element that is not further composed out of
+    A data element is a submodel element that is not further composed of
     other submodel elements.
 
     A data element is a submodel element that has a value. The type of value differs
     for different subtypes of data elements.
+
+    .. note::
+
+        Categories are deprecated and should no longer be used.
     """
 
     def __init__(
@@ -3135,7 +3210,7 @@ class Property(Data_element):
 
     value_type: "Data_type_def_XSD"
     """
-    Data type of the value
+    Data type of the :attr:`value` attribute.
     """
 
     value: Optional["Value_data_type"]
@@ -3149,7 +3224,8 @@ class Property(Data_element):
 
     .. note::
 
-        It is recommended to use a global reference.
+        It is recommended to use an external reference, compare to
+        :attr:`Has_semantics.semantic_ID`.
     """
 
     def __init__(
@@ -3219,10 +3295,6 @@ class Multi_language_property(Data_element):
     value_ID: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
-
-    .. note::
-
-        It is recommended to use a global reference.
     """
 
     def __init__(
@@ -3275,6 +3347,11 @@ class Multi_language_property(Data_element):
 class Range(Data_element):
     """
     A range data element is a data element that defines a range with min and max.
+
+    .. note::
+
+        This element is experimental and therefore may be subject to change or may be
+        removed completely in future versions of the meta-model.
     """
 
     value_type: "Data_type_def_XSD"
@@ -3330,15 +3407,15 @@ class Range(Data_element):
 class Reference_element(Data_element):
     """
     A reference element is a data element that defines a logical reference to another
-    element within the same or another AAS or a reference to an external object or
-    entity.
+    element within the same or another Asset Administration Shell or a reference to
+    an external object or entity.
     """
 
     value: Optional["Reference"]
     """
-    Global reference to an external object or entity or a logical reference to
-    another element within the same or another AAS (i.e. a model reference to
-    a Referable).
+    External reference to an external object or entity or a logical reference to
+    another element within the same or another Asset Administration Shell (i.e. a
+    model reference to a Referable).
     """
 
     def __init__(
@@ -3374,8 +3451,8 @@ class Reference_element(Data_element):
 
 class Blob(Data_element):
     """
-    A :class:`Blob` is a data element that represents a file that is contained with its
-    source code in the value attribute.
+    A :class:`Blob` is a data element that represents a file that is contained in the
+    :attr:`value` attribute with its source code.
     """
 
     value: Optional["Blob_type"]
@@ -3394,7 +3471,7 @@ class Blob(Data_element):
 
     The content type (MIME type) states which file extensions the file can have.
 
-    Valid values are content types like e.g. ``application/json``, ``application/xls``,
+    Valid values are content types like ``application/json``, ``application/xls``,
     ``image/jpg``.
 
     The allowed values are defined as in RFC2046.
@@ -3435,14 +3512,14 @@ class Blob(Data_element):
 
 class File(Data_element):
     """
-    A File is a data element that represents an address to a file (a locator).
+    A file is a data element that represents an address to a file (a locator).
 
-    The value is an URI that can represent an absolute or relative path.
+    The value is a URI that can represent an absolute or relative path.
     """
 
     value: Optional["Path_type"]
     """
-    Path and name of the referenced file (with file extension).
+    Path and name of the file (with file extension).
 
     The path can be absolute or relative.
     """
@@ -3450,8 +3527,6 @@ class File(Data_element):
     content_type: Optional["Content_type"]
     """
     Content type of the content of the file.
-
-    The content type states which file extensions the file can have.
     """
 
     def __init__(
@@ -3496,7 +3571,7 @@ class File(Data_element):
       for item in self.annotations
     ),
     "ID-shorts need to be defined for all the items of annotations according to "
-    "AASd-117 (ID-short of Referables not being a direct child of "
+    "AASd-117 (ID-short of non-identifiable Referables not being a direct child of "
     "a Submodel element list shall be specified)."
 )
 @invariant(
@@ -3587,7 +3662,7 @@ class Annotated_relationship_element(Relationship_element):
         for item in self.statements
     ),
     "ID-shorts need to be defined for all the items of statements according to "
-    "AASd-117 (ID-short of Referables not being a direct child of "
+    "AASd-117 (ID-short of non-identifiable Referables not being a direct child of "
     "a Submodel element list shall be specified)."
 )
 @invariant(
@@ -3609,8 +3684,8 @@ class Entity(Submodel_element):
 
     statements: Optional[List["Submodel_element"]]
     """
-    Describes statements applicable to the entity by a set of submodel elements,
-    typically with a qualified value.
+    Statement applicable to the entity, each statement described by a
+    :class:`Submodel_element` - typically with a qualified value.
     """
 
     entity_type: Optional["Entity_type"]
@@ -3621,10 +3696,6 @@ class Entity(Submodel_element):
     global_asset_ID: Optional["Identifier"]
     """
     Global identifier of the asset the entity is representing.
-
-    .. note::
-
-        This is a global reference.
     """
 
     specific_asset_IDs: Optional[List["Specific_asset_ID"]]
@@ -3678,16 +3749,17 @@ class Entity_type(Enum):
 
     Co_managed_entity = "CoManagedEntity"
     """
-    For co-managed entities there is no separate AAS. Co-managed entities need to be
-    part of a self-managed entity.
+    There is no separate Asset Administration Shell for co-managed entities.
+    Co-managed entities need to be part of a self-managed entity.
     """
 
     Self_managed_entity = "SelfManagedEntity"
     """
-    Self-Managed Entities have their own AAS but can be part of the bill of material of
-    a composite self-managed entity.
+    Self-managed entities have their own Asset Administration Shell but can be part
+    of another composite self-managed entity.
 
-    The asset of an I4.0 Component is a self-managed entity per definition.
+    The asset represented by an Asset Administration Shell is a self-managed entity
+    per definition.
     """
 
 
@@ -3703,7 +3775,7 @@ class Direction(Enum):
 
     Input = "input"
     """
-    Input direction.
+    Input direction
     """
 
     Output = "output"
@@ -3729,7 +3801,7 @@ class State_of_event(Enum):
 
     Off = "off"
     """
-    Event is off.
+    Event is off
     """
 
 
@@ -3760,9 +3832,7 @@ class Event_payload(DBC):
 
     source: "Reference"
     """
-    Reference to the source event element, including identification of
-    :class:`Asset_administration_shell`, :class:`Submodel`,
-    :class:`Submodel_element`'s.
+    Reference to the source event element.
     """
 
     source_semantic_ID: Optional["Reference"]
@@ -3771,15 +3841,12 @@ class Event_payload(DBC):
 
     .. note::
 
-        It is recommended to use a global reference.
+        It is recommended to use an external reference.
     """
 
     observable_reference: "Reference"
     """
     Reference to the referable, which defines the scope of the event.
-
-    Can be :class:`Asset_administration_shell`, :class:`Submodel` or
-    :class:`Submodel_element`.
     """
 
     observable_semantic_ID: Optional["Reference"]
@@ -3789,12 +3856,12 @@ class Event_payload(DBC):
 
     .. note::
 
-        It is recommended to use a global reference.
+        It is recommended to use an external reference.
     """
 
     topic: Optional["Message_topic_type"]
     """
-    Information for the outer message infrastructure for scheduling the event to
+    Information for the outer message infrastructure to schedule the event for
     the respective communication channel.
     """
 
@@ -3814,7 +3881,7 @@ class Event_payload(DBC):
 
     payload: Optional["Blob_type"]
     """
-    Event specific payload.
+    Event-specific payload.
     """
 
     def __init__(
@@ -3908,10 +3975,6 @@ class Basic_event_element(Event_element):
 
     observed: "Reference"
     """
-    Reference to the :class:`Referable`, which defines the scope of the event.
-    Can be :class:`Asset_administration_shell`, :class:`Submodel`, or
-    :class:`Submodel_element`.
-
     Reference to a referable, e.g., a data element or
     a submodel, that is being observed.
     """
@@ -3932,13 +3995,13 @@ class Basic_event_element(Event_element):
 
     message_topic: Optional["Message_topic_type"]
     """
-    Information for the outer message infrastructure for scheduling the event to the
+    Information for the outer message infrastructure to schedule the event for the
     respective communication channel.
     """
 
     message_broker: Optional["Reference"]
     """
-    Information, which outer message infrastructure shall handle messages for
+    Information about which outer message infrastructure shall handle messages for
     the :class:`Event_element`. Refers to a :class:`Submodel`,
     :class:`Submodel_element_list`, :class:`Submodel_element_collection` or
     :class:`Entity`, which contains :class:`Data_element`'s describing
@@ -3946,8 +4009,9 @@ class Basic_event_element(Event_element):
 
     .. note::
 
-        For different message infrastructure, e.g., OPC UA or MQTT or AMQP, this
-        proprietary specification could be standardized by having respective Submodels.
+        This proprietary specification could be standardized by using respective
+        :class:`Submodel`'s for different message infrastructure, e.g., OPC UA,
+        MQTT or AMQP.
     """
 
     last_update: Optional["Date_time_UTC"]
@@ -3958,24 +4022,24 @@ class Basic_event_element(Event_element):
 
     min_interval: Optional["Duration"]
     """
-    For input direction, reports on the maximum frequency, the software entity behind
-    the respective Referable can handle input events.
+    For input direction reports on the maximum frequency, the software entity behind
+    the respective :class:`Referable` can handle input events.
 
-    For output events, specifies the maximum frequency of outputting this event to
-    an outer infrastructure.
+    For output events, the maximum frequency of outputting this event to an outer
+    infrastructure is specified.
 
-    Might be not specified, that is, there is no minimum interval.
+    Might be not specified, i.e. if there is no minimum interval.
     """
 
     max_interval: Optional["Duration"]
     """
-    For input direction: not applicable.
+    Not applicable for input direction.
 
-    For output direction: maximum interval in time, the respective Referable shall send
-    an update of the status of the event, even if no other trigger condition for
-    the event was not met.
+    For output direction: maximum interval in time, the respective :class:`Referable`
+    shall send an update of the status of the event, even if no other trigger
+    condition for the event was not met.
 
-    Might be not specified, that is, there is no maximum interval
+    Might not be specified, i.e. if there is no maximum interval.
     """
 
     def __init__(
@@ -4087,6 +4151,12 @@ class Operation(Submodel_element):
     inoutput_variables: Optional[List["Operation_variable"]]
     """
     Parameter that is input and output of the operation.
+
+    .. note::
+
+        In embedded systems inoutput variables are variables that can be read but
+        that are also written by the system. Typically, this is implemented via a
+        pointer (i.e. 'by reference' instead of 'by value').
     """
 
     def __init__(
@@ -4129,8 +4199,8 @@ class Operation(Submodel_element):
     lambda self:
     self.value.ID_short is not None,
     "Value must have the ID-short specified according to Constraint AASd-117 "
-    "(ID-short of Referables not being a direct child of a Submodel element list "
-    "shall be specified)."
+    "(ID-short of non-identifiable Referables not being a direct child of a Submodel "
+    "element list shall be specified)."
 )
 # fmt: on
 class Operation_variable(DBC):
@@ -4172,8 +4242,12 @@ class Capability(Submodel_element):
 
     .. note::
 
-        The :attr:`semantic_ID` of a capability is typically an ontology.
-        Thus, reasoning on capabilities is enabled.
+        The :attr:`semantic_ID` of a capability is typically an ontology, which
+        enables reasoning on capabilities. The mapping to one or more skills
+        implementing the capability is done via a relationship element with the
+        corresponding semantics. A skill is typically a property or an operation.
+        In more complex cases, the mapping can also be a collection or a complete
+        submodel.
     """
 
     def __init__(
@@ -4543,11 +4617,7 @@ class Concept_description(Identifiable, Has_data_specification):
 
     .. note::
 
-       It is recommended to use a global reference.
-
-    .. note::
-
-       Compare to is-case-of relationship in ISO 13584-32 & IEC EN 61360
+       Compare with is-case-of relationship in ISO 13584-32 & IEC EN 61360
     """
 
     def __init__(
@@ -4584,7 +4654,7 @@ class Concept_description(Identifiable, Has_data_specification):
 
 class Reference_types(Enum):
     """
-    Reference types
+    Enumeration for denoting whether an element is an external or model reference.
     """
 
     External_reference = "ExternalReference"
@@ -4723,13 +4793,11 @@ class Reference_types(Enum):
 # fmt: on
 class Reference(DBC):
     """
-    Reference to either a model element of the same or another AAS or to an external
-    entity.
-
-    A reference is an ordered list of keys.
+    Reference to either a model element of the same or another Asset Administration
+    Shell or to an external entity.
 
     A model reference is an ordered list of keys, each key referencing an element. The
-    complete list of keys may for example be concatenated to a path that then gives
+    complete list of keys may for example be concatenated to a path that gives
     unique access to an element.
 
     An external reference is a reference to an external entity.
@@ -4818,19 +4886,22 @@ class Reference(DBC):
     """
     Type of the reference.
 
-    Denotes, whether reference is an external reference or a model reference.
+    Denotes whether the reference is an external reference or a model reference.
     """
 
     referred_semantic_ID: Optional["Reference"]
     """
-    :attr:`Has_semantics.semantic_ID` of the referenced model element
-    (:attr:`Reference.type` = :attr:`Reference_types.Model_reference`).
-
-    For external references there typically is no semantic ID.
+    Expected :attr:`Has_semantics.semantic_ID` of the referenced model element
+    (:attr:`Reference.type` = :attr:`Reference_types.Model_reference`); there
+    typically is no semantic ID for the referenced object of external references
+    (:attr:`Reference.type` = :attr:`Reference_types.External_reference`).
 
     .. note::
 
-        It is recommended to use a external reference.
+        If :attr:`referred_semantic_ID` is defined, the
+        :attr:`Has_semantics.semantic_ID` of the model element referenced should
+        have a matching semantic ID. If this is not the case, a validator should
+        raise a warning.
     """
 
     keys: List["Key"]
@@ -4856,19 +4927,23 @@ class Key(DBC):
     """
     Denotes which kind of entity is referenced.
 
-    In case :attr:`type` = :attr:`Key_types.Global_reference`,
+    If :attr:`type` = :attr:`Key_types.Global_reference`,
     the key represents a reference to a source that can be globally identified.
 
-    In case :attr:`type` = :attr:`Key_types.Fragment_reference` the key represents
+    If :attr:`type` = :attr:`Key_types.Fragment_reference` the key represents
     a bookmark or a similar local identifier within its parent element as specified
     by the key that precedes this key.
 
-    In all other cases the key references a model element of the same or of another AAS.
+    In all other cases, the key references a model element of the same or another
+    Asset Administration Shell.
     The name of the model element is explicitly listed.
     """
 
     value: "Identifier"
-    """The key value, for example an IRDI or an URI"""
+    """
+    The key value, for example an IRDI or a URI or the ID-short or any other 
+    fragment value
+    """
 
     def __init__(self, type: "Key_types", value: "Identifier") -> None:
         self.type = type
@@ -4891,8 +4966,8 @@ class Key_types(Enum):
 
     .. note::
 
-        Data Element is abstract, *i.e.* if a key uses :attr:`Data_element`
-        the reference may be a Property, a File etc.
+        Data elements are abstract, *i.e.* if a key uses :attr:`Data_element`
+        the reference may be a property, file, etc.
     """
 
     Entity = "Entity"
@@ -4921,8 +4996,9 @@ class Key_types(Enum):
 
     .. note::
 
-        Identifiable is abstract, i.e. if a key uses “Identifiable” the reference
-        may be an Asset Administration Shell, a Submodel or a Concept Description.
+        Identifiable is abstract, i.e. if a key uses "Identifiable" the reference
+        may be an :class:`Asset_administration_shell`, a :class:`Submodel` or
+        a :class:`Concept_description`.
     """
 
     Multi_language_property = "MultiLanguageProperty"
@@ -4951,16 +5027,17 @@ class Key_types(Enum):
     .. note::
 
         Submodel Element is abstract, *i.e.* if a key uses :attr:`Submodel_element`
-        the reference may be a :class:`Property`, an :class:`Operation` etc.
+        the reference may be a :class:`Property`, a :class:`Submodel_element_list`,
+        an :class:`Operation` etc.
     """
     Submodel_element_collection = "SubmodelElementCollection"
     """
-    Struct of Submodel Elements
+    Struct of :class:`Submodel_element`'s
     """
 
     Submodel_element_list = "SubmodelElementList"
     """
-    List of Submodel Elements
+    List of :class:`Submodel_element`'s
     """
 
 
@@ -5116,7 +5193,9 @@ Fragment_keys: Set[Key_types] = constant_set(
 
 class Data_type_def_XSD(Enum):
     """
-    Enumeration listing all XSD anySimpleTypes
+    Enumeration listing selected XSD anySimpleTypes of XML Schema 1.0.
+
+    See: https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes
 
     .. note::
 
@@ -5247,14 +5326,13 @@ class Environment:
 
     .. note::
 
-        w.r.t. file exchange: There is exactly one environment independent on how many
-        files the contained elements are split. If the file is split then there
-        shall be no element with the same identifier in two different files.
+        Environment is not an identifiable or referable element. It is introduced
+        to enable file transfer as well as serialization.
     """
 
     asset_administration_shells: Optional[List[Asset_administration_shell]]
     """
-    Asset administration shell
+    Asset Administration Shell
     """
 
     submodels: Optional[List[Submodel]]

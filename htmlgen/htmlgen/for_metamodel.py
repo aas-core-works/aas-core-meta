@@ -277,6 +277,7 @@ def _generate_page(
         content: Stripped
 ) -> str:
     """Generate a HTML page."""
+    # pylint: disable=line-too-long
     # noinspection SpellCheckingInspection
     page = f"""\
 <!DOCTYPE html>
