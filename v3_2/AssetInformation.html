@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>AssetInformation</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.2</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -248,7 +248,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="AssetInformation.html">
+          <a class="nav-item active" href="AssetInformation.html">
             AssetInformation
           </a>
         </li>
@@ -483,11 +483,6 @@
             Iec61360DataTypesWithUnit
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
-            ValidCategoriesForDataElement
-          </a>
-        </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
           <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
@@ -590,11 +585,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
-            AASd-090
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
             AASd-107
           </a>
@@ -637,11 +627,6 @@
         <li class="nav-item">
           <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
             AASd-119
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
-            AASd-120
           </a>
         </li>
         <li class="nav-item">
@@ -707,6 +692,16 @@
         <li class="nav-item">
           <a class="nav-item" href="Operation.html#constraint-AASd-134">
             AASd-134
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-137">
+            AASd-137
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-138">
+            AASd-138
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
@@ -991,13 +986,43 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetIdNameMatchesGlobalAssetId.html">
+            SpecificAssetIdNameMatchesGlobalAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementHasTemplateQualifierInTree.html">
+            SubmodelElementHasTemplateQualifierInTree
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementIsOfType.html">
             SubmodelElementIsOfType
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsHaveExactlyOneElementInTree.html">
+            SubmodelElementListsHaveExactlyOneElementInTree
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInOperationVariablesHaveExactlyOneElement.html">
+            SubmodelElementListsInOperationVariablesHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInSubmodelElementsHaveExactlyOneElement.html">
+            SubmodelElementListsInSubmodelElementsHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
             SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveNoTemplateQualifiers.html">
+            SubmodelElementsHaveNoTemplateQualifiers
           </a>
         </li>
         <li class="nav-item">
@@ -1009,23 +1034,207 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        AssetInformation<a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          In <a href="AssetInformation.html">AssetInformation</a> identifying metadata of the asset that is
+          represented by an Asset Administration Shell is defined.
         </div>
+        <div class="remarks">
+          <p>
+            Several asset kinds are distinguished like for example type assets and
+            instance assets.
+          </p>
+          <p>
+            The asset has a globally unique identifier, plus – if needed – additional
+            domain-specific (proprietary) identifiers. However, to support the corner case
+            of very first phase of life cycle where a stabilized/constant global asset
+            identifier does not already exist, the corresponding attribute
+            <a href="AssetInformation.html#globalAssetId">AssetInformation.globalAssetId</a> is optional.
+          </p>
+        </div>
+        <dl class="constraints">
+          <dt>
+            <a name="constraint-AASd-116"></a>Constraint AASd-116<a class="aas-anchor-link" href="#constraint-AASd-116">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              <code>globalAssetId</code> (case-insensitive) is a reserved key for
+              <a href="SpecificAssetId.html#name">SpecificAssetId.name</a> with the semantics as defined in
+              <code>https://admin-shell.io/aas/3/x/AssetInformation/globalAssetId</code>
+              where <code>x</code> is the minor version.
+            </p>
+            <div class="alert alert-info">
+              <a href="AssetInformation.html#constraint-AASd-116">AASd-116</a> is important to enable a generic search across
+              global and specific asset IDs (e.g. in IDTA-01002-3-0 discovery
+              operations like GetAllAssetLinksById). In the future the constraint
+              might become more strict in stating that the name <code>globalAssetId</code>
+              shall not be used as <a href="SpecificAssetId.html#name">SpecificAssetId.name</a>.
+            </div>
+            <div class="alert alert-info">
+              The comparison against <code>globalAssetId</code> is ASCII case-insensitive.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASd-131"></a>Constraint AASd-131<a class="aas-anchor-link" href="#constraint-AASd-131">🔗</a>
+          </dt>
+          <dd>
+            For <a href="AssetInformation.html">AssetInformation</a> either the <a href="AssetInformation.html#globalAssetId">AssetInformation.globalAssetId</a> shall be
+            defined or at least one item in <a href="AssetInformation.html#specificAssetIds">AssetInformation.specificAssetIds</a>.
+          </dd>
+        </dl>
       </div>
-      <h2>Values</h2>
+      <h2>
+        <a name="properties"></a>
+        Properties
+        <a class="aas-anchor-link" href="#properties">🔗</a>
+      </h2>
+      <dl>
+        <dt>
+          <a name="assetKind"></a>
+          assetKind: <span class="aas-type-annotation"><a href="AssetKind.html">AssetKind</a></span>
+          <a class="aas-anchor-link" href="#assetKind">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Denotes whether the Asset is of kind <a href="AssetKind.html#Type">AssetKind.Type</a>,
+              <a href="AssetKind.html#Instance">AssetKind.Instance</a>, <a href="AssetKind.html#Batch">AssetKind.Batch</a>, <a href="AssetKind.html#Role">AssetKind.Role</a>,
+              or <a href="AssetKind.html#NotApplicable">AssetKind.NotApplicable</a>.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="globalAssetId"></a>
+          globalAssetId: <span class="aas-type-annotation">Optional[<a href="Identifier.html">Identifier</a>]</span>
+          <a class="aas-anchor-link" href="#globalAssetId">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Identifier of the asset, the Asset Administration Shell is representing.
+            </div>
+            <div class="remarks">
+              This attribute is required as soon as the Asset Administration Shell is
+              exchanged via partners in the life cycle of the asset. In a first phase of the
+              life cycle, the asset might not yet have a global asset ID but already an
+              internal identifier. The internal identifier would be modelled via
+              <a href="AssetInformation.html#specificAssetIds">AssetInformation.specificAssetIds</a>.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="specificAssetIds"></a>
+          specificAssetIds: <span class="aas-type-annotation">Optional[List[<a href="SpecificAssetId.html">SpecificAssetId</a>]]</span>
+          <a class="aas-anchor-link" href="#specificAssetIds">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Additional domain-specific, typically proprietary identifier for the asset like
+              serial number, manufacturer part ID, customer part IDs, etc.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="assetType"></a>
+          assetType: <span class="aas-type-annotation">Optional[<a href="Identifier.html">Identifier</a>]</span>
+          <a class="aas-anchor-link" href="#assetType">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              In case <a href="AssetInformation.html#assetKind">AssetInformation.assetKind</a> is not <a href="AssetKind.html#NotApplicable">AssetKind.NotApplicable</a> the
+              <a href="AssetInformation.html#assetType">AssetInformation.assetType</a> is the asset ID of the type asset of the asset under
+              consideration as identified by <a href="AssetInformation.html#globalAssetId">AssetInformation.globalAssetId</a>.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                In case <a href="AssetInformation.html#assetKind">AssetInformation.assetKind</a> is &quot;Instance&quot; then the <a href="AssetInformation.html#assetType">AssetInformation.assetType</a> denotes
+                which &quot;Type&quot; the asset is of. But it is also possible
+                to have an <a href="AssetInformation.html#assetType">AssetInformation.assetType</a> of an asset of kind &quot;Type&quot;.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="defaultThumbnail"></a>
+          defaultThumbnail: <span class="aas-type-annotation">Optional[<a href="Resource.html">Resource</a>]</span>
+          <a class="aas-anchor-link" href="#defaultThumbnail">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Thumbnail of the asset represented by the Asset Administration Shell.
+            </div>
+            <div class="remarks">
+              Used as default.
+            </div>
+          </div>
+        </dd>
+      </dl>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
       <ul>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
+        <li>
+          Constraint AASd-116: ``globalAssetId`` (case-insensitive) is a reserved key. If used as value for the name of specific asset ID then the value of specific asset ID shall be identical to the global asset ID with semantics as defined in https://admin-shell.io/aas/3/x/AssetInformation/globalAssetId, x being the minor version of the used specification.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#specificAssetIds">specificAssetIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span>
+    <span class='nb'>all</span><span class='p'>(</span>
+        <span class='ow'>not</span> <span class='nf'><a href='SpecificAssetIdNameMatchesGlobalAssetId.html'>SpecificAssetIdNameMatchesGlobalAssetId</a></span><span class='p'>(</span>
+            <span class='nv'>specificAssetId</span><span class='o'>.</span><a href="SpecificAssetId.html#name">name</a>
+        <span class='p'>)</span>
+        <span class='ow'>or</span> <span class='p'>(</span>
+            <span class='p'>(</span>
+                <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#globalAssetId">globalAssetId</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+                <span class='ow'>and</span> <span class='nv'>specificAssetId</span><span class='o'>.</span><a href="SpecificAssetId.html#value">value</a> <span class='o'>==</span> <span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#globalAssetId">globalAssetId</a>
+            <span class='p'>)</span>
+        <span class='p'>)</span>
+        <span class='k'>for</span> <span class='nv'>specificAssetId</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#specificAssetIds">specificAssetIds</a>
+    <span class='p'>)</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-131: Either the global asset ID shall be defined or at least one specific asset ID.<br/>
+          <div class='highlight'><pre><span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span>
+            <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#globalAssetId">globalAssetId</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+            <span class='ow'>or</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#specificAssetIds">specificAssetIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='p'>)</span>
+    <span class='p'>)</span>
+    <span class='ow'>and</span> <span class='p'>(</span>
+        <span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#specificAssetIds">specificAssetIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#specificAssetIds">specificAssetIds</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Specific asset IDs must be either not set or have at least one item.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#specificAssetIds">specificAssetIds</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AssetInformation.html#specificAssetIds">specificAssetIds</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
       </ul>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="AssetAdministrationShell.html">AssetAdministrationShell</a>
+          </td>
+          <td>
+            <a href="AssetAdministrationShell.html#assetInformation">AssetAdministrationShell.assetInformation</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>

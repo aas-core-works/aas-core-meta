@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>AdministrativeInformation</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.2</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -233,7 +233,7 @@
         </li>
         <li class="nav-item mt-2">Concrete Classes</li>
         <li class="nav-item">
-          <a class="nav-item" href="AdministrativeInformation.html">
+          <a class="nav-item active" href="AdministrativeInformation.html">
             AdministrativeInformation
           </a>
         </li>
@@ -483,11 +483,6 @@
             Iec61360DataTypesWithUnit
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
-            ValidCategoriesForDataElement
-          </a>
-        </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
           <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
@@ -590,11 +585,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
-            AASd-090
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
             AASd-107
           </a>
@@ -637,11 +627,6 @@
         <li class="nav-item">
           <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
             AASd-119
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
-            AASd-120
           </a>
         </li>
         <li class="nav-item">
@@ -707,6 +692,16 @@
         <li class="nav-item">
           <a class="nav-item" href="Operation.html#constraint-AASd-134">
             AASd-134
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-137">
+            AASd-137
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-138">
+            AASd-138
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
@@ -991,13 +986,43 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetIdNameMatchesGlobalAssetId.html">
+            SpecificAssetIdNameMatchesGlobalAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementHasTemplateQualifierInTree.html">
+            SubmodelElementHasTemplateQualifierInTree
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementIsOfType.html">
             SubmodelElementIsOfType
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsHaveExactlyOneElementInTree.html">
+            SubmodelElementListsHaveExactlyOneElementInTree
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInOperationVariablesHaveExactlyOneElement.html">
+            SubmodelElementListsInOperationVariablesHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInSubmodelElementsHaveExactlyOneElement.html">
+            SubmodelElementListsInSubmodelElementsHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
             SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveNoTemplateQualifiers.html">
+            SubmodelElementsHaveNoTemplateQualifiers
           </a>
         </li>
         <li class="nav-item">
@@ -1009,23 +1034,205 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        AdministrativeInformation<a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          Administrative metainformation for an element.
         </div>
+        <dl class="constraints">
+          <dt>
+            <a name="constraint-AASd-005"></a>Constraint AASd-005<a class="aas-anchor-link" href="#constraint-AASd-005">🔗</a>
+          </dt>
+          <dd>
+            If <a href="AdministrativeInformation.html#version">AdministrativeInformation.version</a> is not specified, <a href="AdministrativeInformation.html#revision">AdministrativeInformation.revision</a> shall also be
+            unspecified. This means that a revision requires a version. If there is
+            no version, there is no revision. Revision is optional.
+          </dd>
+        </dl>
       </div>
-      <h2>Values</h2>
+      <h2>
+        <a name="inheritances"></a>
+        Inheritances
+        <a class="aas-anchor-link" href="#inheritances">🔗</a>
+      </h2>
       <ul>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
+        <li>
+          <a href="HasDataSpecification.html">HasDataSpecification</a>
+        </li>
       </ul>
+      <h2>
+        <a name="properties"></a>
+        Properties
+        <a class="aas-anchor-link" href="#properties">🔗</a>
+      </h2>
+      <dl>
+        <dt>
+          <a name="embeddedDataSpecifications"></a>
+          embeddedDataSpecifications: <span class="aas-type-annotation">Optional[List[<a href="EmbeddedDataSpecification.html">EmbeddedDataSpecification</a>]]</span>
+          <a class="aas-anchor-link" href="#embeddedDataSpecifications">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <em>(From <a href="HasDataSpecification.html">HasDataSpecification</a>)</em>
+          </div>
+          <div>
+            <div class="summary">
+              Embedded data specification.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="version"></a>
+          version: <span class="aas-type-annotation">Optional[<a href="VersionType.html">VersionType</a>]</span>
+          <a class="aas-anchor-link" href="#version">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Version of the element.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="revision"></a>
+          revision: <span class="aas-type-annotation">Optional[<a href="RevisionType.html">RevisionType</a>]</span>
+          <a class="aas-anchor-link" href="#revision">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Revision of the element.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="creator"></a>
+          creator: <span class="aas-type-annotation">Optional[<a href="Reference.html">Reference</a>]</span>
+          <a class="aas-anchor-link" href="#creator">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              The subject ID of the subject responsible for making the element.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="createdAt"></a>
+          createdAt: <span class="aas-type-annotation">Optional[<a href="DateTimeUtc.html">DateTimeUtc</a>]</span>
+          <a class="aas-anchor-link" href="#createdAt">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              date of creation.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="updatedAt"></a>
+          updatedAt: <span class="aas-type-annotation">Optional[<a href="DateTimeUtc.html">DateTimeUtc</a>]</span>
+          <a class="aas-anchor-link" href="#updatedAt">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              date of update.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="templateId"></a>
+          templateId: <span class="aas-type-annotation">Optional[<a href="Identifier.html">Identifier</a>]</span>
+          <a class="aas-anchor-link" href="#templateId">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Identifier of the template that guided the creation of the element.
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                So far, <a href="AdministrativeInformation.html#templateId">AdministrativeInformation.templateId</a> is only applicable for <a href="Submodel.html">Submodel</a>&#x27;s,
+                since template specifications are standardized for Submodels only.
+              </div>
+              <div class="alert alert-info">
+                In case of a submodel, the <a href="AdministrativeInformation.html#templateId">AdministrativeInformation.templateId</a> is the identifier
+                of the submodel template that guided the creation of the submodel
+              </div>
+              <div class="alert alert-info">
+                The <a href="AdministrativeInformation.html#templateId">AdministrativeInformation.templateId</a> is not relevant for validation in Submodels.
+                For validation the <a href="Submodel.html#semanticId">Submodel.semanticId</a> shall be used.
+              </div>
+              <div class="alert alert-info">
+                Usage of <a href="AdministrativeInformation.html#templateId">AdministrativeInformation.templateId</a> is not restricted to submodel instances. So also
+                the creation of submodel templates can be guided by another submodel template.
+              </div>
+            </div>
+          </div>
+        </dd>
+      </dl>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          Embedded data specifications must be either not set or have at least one item.<br/>
+          <em>(From <a href="HasDataSpecification.html">HasDataSpecification</a>)</em><br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AdministrativeInformation.html#embeddedDataSpecifications">embeddedDataSpecifications</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AdministrativeInformation.html#embeddedDataSpecifications">embeddedDataSpecifications</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASd-005: If version is not specified, revision shall also be unspecified. This means that a revision requires a version. If there is no version, there is no revision. Revision is optional.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AdministrativeInformation.html#revision">revision</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="AdministrativeInformation.html#version">version</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span></pre></div>
+        </li>
+      </ul>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="Identifiable.html">Identifiable</a>
+          </td>
+          <td>
+            <a href="Identifiable.html#administration">Identifiable.administration</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="AssetAdministrationShell.html">AssetAdministrationShell</a>
+          </td>
+          <td>
+            <a href="AssetAdministrationShell.html#administration">AssetAdministrationShell.administration</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Submodel.html">Submodel</a>
+          </td>
+          <td>
+            <a href="Submodel.html#administration">Submodel.administration</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="ConceptDescription.html">ConceptDescription</a>
+          </td>
+          <td>
+            <a href="ConceptDescription.html#administration">ConceptDescription.administration</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>

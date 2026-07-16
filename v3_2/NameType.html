@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>NameType</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.2</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -126,7 +126,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="NameType.html">
+          <a class="nav-item active" href="NameType.html">
             NameType
           </a>
         </li>
@@ -483,11 +483,6 @@
             Iec61360DataTypesWithUnit
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
-            ValidCategoriesForDataElement
-          </a>
-        </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
           <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
@@ -590,11 +585,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
-            AASd-090
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
             AASd-107
           </a>
@@ -637,11 +627,6 @@
         <li class="nav-item">
           <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
             AASd-119
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
-            AASd-120
           </a>
         </li>
         <li class="nav-item">
@@ -707,6 +692,16 @@
         <li class="nav-item">
           <a class="nav-item" href="Operation.html#constraint-AASd-134">
             AASd-134
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-137">
+            AASd-137
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-138">
+            AASd-138
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
@@ -991,13 +986,43 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetIdNameMatchesGlobalAssetId.html">
+            SpecificAssetIdNameMatchesGlobalAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementHasTemplateQualifierInTree.html">
+            SubmodelElementHasTemplateQualifierInTree
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementIsOfType.html">
             SubmodelElementIsOfType
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsHaveExactlyOneElementInTree.html">
+            SubmodelElementListsHaveExactlyOneElementInTree
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInOperationVariablesHaveExactlyOneElement.html">
+            SubmodelElementListsInOperationVariablesHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInSubmodelElementsHaveExactlyOneElement.html">
+            SubmodelElementListsInSubmodelElementsHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
             SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveNoTemplateQualifiers.html">
+            SubmodelElementsHaveNoTemplateQualifiers
           </a>
         </li>
         <li class="nav-item">
@@ -1009,23 +1034,242 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        NameType
+        <a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
+      <dl>
+      <dt>
+        <a name="primitive-type"></a>
+        Primitive type: <code>str</code>
+        <a class="aas-anchor-link" href="#primitive-type">🔗</a>
+      </dt>
+      <dd></dd>
+      </dl>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          string with length 128 maximum and 1 minimum
         </div>
       </div>
-      <h2>Values</h2>
+      <h2>
+        <a name="inheritances"></a>
+        Inheritances
+        <a class="aas-anchor-link" href="#inheritances">🔗</a>
+      </h2>
       <ul>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
+        <li>
+          <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>
+        </li>
       </ul>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          Constraint AASd-130: An attribute with data type &#x27;string&#x27; shall consist of these characters only: ^[\x09\x0A\x0D\x20-\uD7FF\uE000-\uFFFD\U00010000-\U0010FFFF]*$.<br/>
+          <em>(From <a href="XmlSerializableString.html">XmlSerializableString</a>)</em><br/>
+          <div class='highlight'><pre><span class='nf'><a href='MatchesXmlSerializableString.html'>MatchesXmlSerializableString</a></span><span class='p'>(</span>
+    <span class='bp'>self</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          The value must not be empty.<br/>
+          <em>(From <a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>)</em><br/>
+          <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>&gt;=</span> 1</pre></div>
+        </li>
+        <li>
+          Name type shall have a maximum length of 128 characters.<br/>
+          <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='p'>)</span> <span class='o'>&lt;=</span> 128</pre></div>
+        </li>
+      </ul>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="Extension.html">Extension</a>
+          </td>
+          <td>
+            <a href="Extension.html#name">Extension.name</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Referable.html">Referable</a>
+          </td>
+          <td>
+            <a href="Referable.html#category">Referable.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Identifiable.html">Identifiable</a>
+          </td>
+          <td>
+            <a href="Identifiable.html#category">Identifiable.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="AssetAdministrationShell.html">AssetAdministrationShell</a>
+          </td>
+          <td>
+            <a href="AssetAdministrationShell.html#category">AssetAdministrationShell.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Submodel.html">Submodel</a>
+          </td>
+          <td>
+            <a href="Submodel.html#category">Submodel.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="SubmodelElement.html">SubmodelElement</a>
+          </td>
+          <td>
+            <a href="SubmodelElement.html#category">SubmodelElement.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="RelationshipElement.html">RelationshipElement</a>
+          </td>
+          <td>
+            <a href="RelationshipElement.html#category">RelationshipElement.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="SubmodelElementList.html">SubmodelElementList</a>
+          </td>
+          <td>
+            <a href="SubmodelElementList.html#category">SubmodelElementList.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="SubmodelElementCollection.html">SubmodelElementCollection</a>
+          </td>
+          <td>
+            <a href="SubmodelElementCollection.html#category">SubmodelElementCollection.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="DataElement.html">DataElement</a>
+          </td>
+          <td>
+            <a href="DataElement.html#category">DataElement.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Property.html">Property</a>
+          </td>
+          <td>
+            <a href="Property.html#category">Property.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="MultiLanguageProperty.html">MultiLanguageProperty</a>
+          </td>
+          <td>
+            <a href="MultiLanguageProperty.html#category">MultiLanguageProperty.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Range.html">Range</a>
+          </td>
+          <td>
+            <a href="Range.html#category">Range.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="ReferenceElement.html">ReferenceElement</a>
+          </td>
+          <td>
+            <a href="ReferenceElement.html#category">ReferenceElement.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Blob.html">Blob</a>
+          </td>
+          <td>
+            <a href="Blob.html#category">Blob.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="File.html">File</a>
+          </td>
+          <td>
+            <a href="File.html#category">File.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="AnnotatedRelationshipElement.html">AnnotatedRelationshipElement</a>
+          </td>
+          <td>
+            <a href="AnnotatedRelationshipElement.html#category">AnnotatedRelationshipElement.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Entity.html">Entity</a>
+          </td>
+          <td>
+            <a href="Entity.html#category">Entity.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="EventElement.html">EventElement</a>
+          </td>
+          <td>
+            <a href="EventElement.html#category">EventElement.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="BasicEventElement.html">BasicEventElement</a>
+          </td>
+          <td>
+            <a href="BasicEventElement.html#category">BasicEventElement.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Operation.html">Operation</a>
+          </td>
+          <td>
+            <a href="Operation.html#category">Operation.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Capability.html">Capability</a>
+          </td>
+          <td>
+            <a href="Capability.html#category">Capability.category</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="ConceptDescription.html">ConceptDescription</a>
+          </td>
+          <td>
+            <a href="ConceptDescription.html#category">ConceptDescription.category</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>

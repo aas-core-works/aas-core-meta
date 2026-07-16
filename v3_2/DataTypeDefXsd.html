@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>DataTypeDefXsd</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.2</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -35,7 +35,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataTypeDefXsd.html">
+          <a class="nav-item active" href="DataTypeDefXsd.html">
             DataTypeDefXsd
           </a>
         </li>
@@ -483,11 +483,6 @@
             Iec61360DataTypesWithUnit
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
-            ValidCategoriesForDataElement
-          </a>
-        </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
           <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
@@ -590,11 +585,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
-            AASd-090
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
             AASd-107
           </a>
@@ -637,11 +627,6 @@
         <li class="nav-item">
           <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
             AASd-119
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
-            AASd-120
           </a>
         </li>
         <li class="nav-item">
@@ -707,6 +692,16 @@
         <li class="nav-item">
           <a class="nav-item" href="Operation.html#constraint-AASd-134">
             AASd-134
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-137">
+            AASd-137
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-138">
+            AASd-138
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
@@ -991,13 +986,43 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetIdNameMatchesGlobalAssetId.html">
+            SpecificAssetIdNameMatchesGlobalAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementHasTemplateQualifierInTree.html">
+            SubmodelElementHasTemplateQualifierInTree
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementIsOfType.html">
             SubmodelElementIsOfType
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsHaveExactlyOneElementInTree.html">
+            SubmodelElementListsHaveExactlyOneElementInTree
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInOperationVariablesHaveExactlyOneElement.html">
+            SubmodelElementListsInOperationVariablesHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInSubmodelElementsHaveExactlyOneElement.html">
+            SubmodelElementListsInSubmodelElementsHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
             SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveNoTemplateQualifiers.html">
+            SubmodelElementsHaveNoTemplateQualifiers
           </a>
         </li>
         <li class="nav-item">
@@ -1009,23 +1034,368 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        DataTypeDefXsd
+        <a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          Enumeration listing selected XSD anySimpleTypes of XML Schema 1.0.
+        </div>
+        <div class="remarks">
+          <p>
+            See: <a href="https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes">https://www.w3.org/TR/xmlschema-2/#built-in-primitive-datatypes</a>
+          </p>
+          <div class="alert alert-info">
+            <p>
+              RDF uses XML Schema Built-in data types from Version 1.1 but recommends
+              to use only a subset of XSD data types. That is why they are excluded
+              from the allowed data types in <a href="DataTypeDefXsd.html">DataTypeDefXsd</a>.
+            </p>
+            <ul>
+              <li>
+                XSD BuildIn List types are not supported (<code>ENTITIES</code>, <code>IDREFS</code>
+                and <code>NMTOKENS</code>).
+              </li>
+              <li>
+                XSD string BuildIn types are not supported (<code>normalizedString</code>,
+                <code>token</code>, <code>language</code>, <code>NCName</code>, <code>ENTITY</code>, <code>ID</code>, <code>IDREF</code>).
+              </li>
+              <li>
+                The following XSD primitive types are not supported: <code>NOTATION</code>,
+                <code>QName</code>.
+              </li>
+            </ul>
+          </div>
+          <div class="alert alert-info">
+            Additionally, the following RDF types are not supported in
+            <a href="DataTypeDefXsd.html">DataTypeDefXsd</a>: <code>HTML</code> and <code>XMLLiteral</code>.
+          </div>
+          <div class="alert alert-info">
+            Numeric data types in XML Schema are based on the definitions of
+            IEEE 754 with slight adoptions. For instance, <a href="DataTypeDefXsd.html#Float">DataTypeDefXsd.Float</a> and
+            <a href="DataTypeDefXsd.html#Double">DataTypeDefXsd.Double</a> use different exponent ranges. In any case, solely
+            the XML Schema data type definitions are applicable for AAS values.
+          </div>
         </div>
       </div>
-      <h2>Values</h2>
-      <ul>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
-      </ul>
+      <h2>Literals</h2>
+      <div>
+        <dl>
+        <dt>
+          <a name="AnyUri" />
+          AnyUri
+          <a class="aas-anchor-link" href="#AnyUri">🔗</a>
+           = <code>&#x27;xs:anyURI&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Base64Binary" />
+          Base64Binary
+          <a class="aas-anchor-link" href="#Base64Binary">🔗</a>
+           = <code>&#x27;xs:base64Binary&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Boolean" />
+          Boolean
+          <a class="aas-anchor-link" href="#Boolean">🔗</a>
+           = <code>&#x27;xs:boolean&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Byte" />
+          Byte
+          <a class="aas-anchor-link" href="#Byte">🔗</a>
+           = <code>&#x27;xs:byte&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Date" />
+          Date
+          <a class="aas-anchor-link" href="#Date">🔗</a>
+           = <code>&#x27;xs:date&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="DateTime" />
+          DateTime
+          <a class="aas-anchor-link" href="#DateTime">🔗</a>
+           = <code>&#x27;xs:dateTime&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Decimal" />
+          Decimal
+          <a class="aas-anchor-link" href="#Decimal">🔗</a>
+           = <code>&#x27;xs:decimal&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Double" />
+          Double
+          <a class="aas-anchor-link" href="#Double">🔗</a>
+           = <code>&#x27;xs:double&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Duration" />
+          Duration
+          <a class="aas-anchor-link" href="#Duration">🔗</a>
+           = <code>&#x27;xs:duration&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Float" />
+          Float
+          <a class="aas-anchor-link" href="#Float">🔗</a>
+           = <code>&#x27;xs:float&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="GDay" />
+          GDay
+          <a class="aas-anchor-link" href="#GDay">🔗</a>
+           = <code>&#x27;xs:gDay&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="GMonth" />
+          GMonth
+          <a class="aas-anchor-link" href="#GMonth">🔗</a>
+           = <code>&#x27;xs:gMonth&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="GMonthDay" />
+          GMonthDay
+          <a class="aas-anchor-link" href="#GMonthDay">🔗</a>
+           = <code>&#x27;xs:gMonthDay&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="GYear" />
+          GYear
+          <a class="aas-anchor-link" href="#GYear">🔗</a>
+           = <code>&#x27;xs:gYear&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="GYearMonth" />
+          GYearMonth
+          <a class="aas-anchor-link" href="#GYearMonth">🔗</a>
+           = <code>&#x27;xs:gYearMonth&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="HexBinary" />
+          HexBinary
+          <a class="aas-anchor-link" href="#HexBinary">🔗</a>
+           = <code>&#x27;xs:hexBinary&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Int" />
+          Int
+          <a class="aas-anchor-link" href="#Int">🔗</a>
+           = <code>&#x27;xs:int&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Integer" />
+          Integer
+          <a class="aas-anchor-link" href="#Integer">🔗</a>
+           = <code>&#x27;xs:integer&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Long" />
+          Long
+          <a class="aas-anchor-link" href="#Long">🔗</a>
+           = <code>&#x27;xs:long&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="NegativeInteger" />
+          NegativeInteger
+          <a class="aas-anchor-link" href="#NegativeInteger">🔗</a>
+           = <code>&#x27;xs:negativeInteger&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="NonNegativeInteger" />
+          NonNegativeInteger
+          <a class="aas-anchor-link" href="#NonNegativeInteger">🔗</a>
+           = <code>&#x27;xs:nonNegativeInteger&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="NonPositiveInteger" />
+          NonPositiveInteger
+          <a class="aas-anchor-link" href="#NonPositiveInteger">🔗</a>
+           = <code>&#x27;xs:nonPositiveInteger&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="PositiveInteger" />
+          PositiveInteger
+          <a class="aas-anchor-link" href="#PositiveInteger">🔗</a>
+           = <code>&#x27;xs:positiveInteger&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Short" />
+          Short
+          <a class="aas-anchor-link" href="#Short">🔗</a>
+           = <code>&#x27;xs:short&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="String" />
+          String
+          <a class="aas-anchor-link" href="#String">🔗</a>
+           = <code>&#x27;xs:string&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Time" />
+          Time
+          <a class="aas-anchor-link" href="#Time">🔗</a>
+           = <code>&#x27;xs:time&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="UnsignedByte" />
+          UnsignedByte
+          <a class="aas-anchor-link" href="#UnsignedByte">🔗</a>
+           = <code>&#x27;xs:unsignedByte&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="UnsignedInt" />
+          UnsignedInt
+          <a class="aas-anchor-link" href="#UnsignedInt">🔗</a>
+           = <code>&#x27;xs:unsignedInt&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="UnsignedLong" />
+          UnsignedLong
+          <a class="aas-anchor-link" href="#UnsignedLong">🔗</a>
+           = <code>&#x27;xs:unsignedLong&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="UnsignedShort" />
+          UnsignedShort
+          <a class="aas-anchor-link" href="#UnsignedShort">🔗</a>
+           = <code>&#x27;xs:unsignedShort&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        </dl>
+      </div>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="Extension.html">Extension</a>
+          </td>
+          <td>
+            <a href="Extension.html#valueType">Extension.valueType</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Qualifier.html">Qualifier</a>
+          </td>
+          <td>
+            <a href="Qualifier.html#valueType">Qualifier.valueType</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="SubmodelElementList.html">SubmodelElementList</a>
+          </td>
+          <td>
+            <a href="SubmodelElementList.html#valueTypeListElement">SubmodelElementList.valueTypeListElement</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Property.html">Property</a>
+          </td>
+          <td>
+            <a href="Property.html#valueType">Property.valueType</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="Range.html">Range</a>
+          </td>
+          <td>
+            <a href="Range.html#valueType">Range.valueType</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>

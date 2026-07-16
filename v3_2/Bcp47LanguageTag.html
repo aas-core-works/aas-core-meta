@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>Bcp47LanguageTag</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.2</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -81,7 +81,7 @@
         </li>
         <li class="nav-item mt-2">Constrained Primitives</li>
         <li class="nav-item">
-          <a class="nav-item" href="Bcp47LanguageTag.html">
+          <a class="nav-item active" href="Bcp47LanguageTag.html">
             Bcp47LanguageTag
           </a>
         </li>
@@ -483,11 +483,6 @@
             Iec61360DataTypesWithUnit
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
-            ValidCategoriesForDataElement
-          </a>
-        </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
           <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
@@ -590,11 +585,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
-            AASd-090
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
             AASd-107
           </a>
@@ -637,11 +627,6 @@
         <li class="nav-item">
           <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
             AASd-119
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
-            AASd-120
           </a>
         </li>
         <li class="nav-item">
@@ -707,6 +692,16 @@
         <li class="nav-item">
           <a class="nav-item" href="Operation.html#constraint-AASd-134">
             AASd-134
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-137">
+            AASd-137
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-138">
+            AASd-138
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
@@ -991,13 +986,43 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetIdNameMatchesGlobalAssetId.html">
+            SpecificAssetIdNameMatchesGlobalAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementHasTemplateQualifierInTree.html">
+            SubmodelElementHasTemplateQualifierInTree
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementIsOfType.html">
             SubmodelElementIsOfType
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsHaveExactlyOneElementInTree.html">
+            SubmodelElementListsHaveExactlyOneElementInTree
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInOperationVariablesHaveExactlyOneElement.html">
+            SubmodelElementListsInOperationVariablesHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInSubmodelElementsHaveExactlyOneElement.html">
+            SubmodelElementListsInSubmodelElementsHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
             SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveNoTemplateQualifiers.html">
+            SubmodelElementsHaveNoTemplateQualifiers
           </a>
         </li>
         <li class="nav-item">
@@ -1009,23 +1034,89 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        Bcp47LanguageTag
+        <a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
+      <dl>
+      <dt>
+        <a name="primitive-type"></a>
+        Primitive type: <code>str</code>
+        <a class="aas-anchor-link" href="#primitive-type">🔗</a>
+      </dt>
+      <dd></dd>
+      </dl>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          Represent a language tag conformant to BCP 47.
+        </div>
+        <div class="remarks">
+          See: <a href="https://tools.ietf.org/rfc/bcp/bcp47.txt">https://tools.ietf.org/rfc/bcp/bcp47.txt</a>
         </div>
       </div>
-      <h2>Values</h2>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
       <ul>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
+        <li>
+          The value must represent a value language tag conformant to BCP 47.<br/>
+          <div class='highlight'><pre><span class='nf'><a href='MatchesBcp47.html'>MatchesBcp47</a></span><span class='p'>(</span>
+    <span class='bp'>self</span>
+<span class='p'>)</span></pre></div>
+        </li>
       </ul>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="AbstractLangString.html">AbstractLangString</a>
+          </td>
+          <td>
+            <a href="AbstractLangString.html#language">AbstractLangString.language</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringNameType.html">LangStringNameType</a>
+          </td>
+          <td>
+            <a href="LangStringNameType.html#language">LangStringNameType.language</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringTextType.html">LangStringTextType</a>
+          </td>
+          <td>
+            <a href="LangStringTextType.html#language">LangStringTextType.language</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringPreferredNameTypeIec61360.html">LangStringPreferredNameTypeIec61360</a>
+          </td>
+          <td>
+            <a href="LangStringPreferredNameTypeIec61360.html#language">LangStringPreferredNameTypeIec61360.language</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringShortNameTypeIec61360.html">LangStringShortNameTypeIec61360</a>
+          </td>
+          <td>
+            <a href="LangStringShortNameTypeIec61360.html#language">LangStringShortNameTypeIec61360.language</a>
+          </td>
+        </tr>
+        <tr>
+          <td>
+            <a href="LangStringDefinitionTypeIec61360.html">LangStringDefinitionTypeIec61360</a>
+          </td>
+          <td>
+            <a href="LangStringDefinitionTypeIec61360.html#language">LangStringDefinitionTypeIec61360.language</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>

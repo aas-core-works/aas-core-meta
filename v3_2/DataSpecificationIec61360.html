@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>DataSpecificationIec61360</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.2</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -273,7 +273,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataSpecificationIec61360.html">
+          <a class="nav-item active" href="DataSpecificationIec61360.html">
             DataSpecificationIec61360
           </a>
         </li>
@@ -483,11 +483,6 @@
             Iec61360DataTypesWithUnit
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
-            ValidCategoriesForDataElement
-          </a>
-        </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
           <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
@@ -590,11 +585,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
-            AASd-090
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
             AASd-107
           </a>
@@ -637,11 +627,6 @@
         <li class="nav-item">
           <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
             AASd-119
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
-            AASd-120
           </a>
         </li>
         <li class="nav-item">
@@ -707,6 +692,16 @@
         <li class="nav-item">
           <a class="nav-item" href="Operation.html#constraint-AASd-134">
             AASd-134
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-137">
+            AASd-137
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-138">
+            AASd-138
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
@@ -991,13 +986,43 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetIdNameMatchesGlobalAssetId.html">
+            SpecificAssetIdNameMatchesGlobalAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementHasTemplateQualifierInTree.html">
+            SubmodelElementHasTemplateQualifierInTree
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementIsOfType.html">
             SubmodelElementIsOfType
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsHaveExactlyOneElementInTree.html">
+            SubmodelElementListsHaveExactlyOneElementInTree
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInOperationVariablesHaveExactlyOneElement.html">
+            SubmodelElementListsInOperationVariablesHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInSubmodelElementsHaveExactlyOneElement.html">
+            SubmodelElementListsInSubmodelElementsHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
             SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveNoTemplateQualifiers.html">
+            SubmodelElementsHaveNoTemplateQualifiers
           </a>
         </li>
         <li class="nav-item">
@@ -1009,22 +1034,338 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        DataSpecificationIec61360<a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          Content of data specification template for concept descriptions for properties,
+          values and value lists conformant to IEC 61360.
         </div>
+        <div class="remarks">
+          <div class="alert alert-info">
+            IEC61360 requires also a globally unique identifier for a concept
+            description. This ID is not part of the data specification template.
+            Instead the <a href="ConceptDescription.html#id">ConceptDescription.id</a> as inherited via
+            <a href="Identifiable.html">Identifiable</a> is used. Same holds for administrative
+            information like the version and revision.
+          </div>
+          <div class="alert alert-info">
+            <a href="ConceptDescription.html#idShort">ConceptDescription.idShort</a> and <a href="DataSpecificationIec61360.html#shortName">DataSpecificationIec61360.shortName</a> are very
+            similar. However, in this case the decision was to add
+            <a href="DataSpecificationIec61360.html#shortName">DataSpecificationIec61360.shortName</a> explicitly to the data specification. Same holds for
+            <a href="ConceptDescription.html#displayName">ConceptDescription.displayName</a> and
+            <a href="DataSpecificationIec61360.html#preferredName">DataSpecificationIec61360.preferredName</a>. Same holds for
+            <a href="ConceptDescription.html#description">ConceptDescription.description</a> and <a href="DataSpecificationIec61360.html#definition">DataSpecificationIec61360.definition</a>.
+          </div>
+        </div>
+        <dl class="constraints">
+          <dt>
+            <a name="constraint-AASc-3a-010"></a>Constraint AASc-3a-010<a class="aas-anchor-link" href="#constraint-AASc-3a-010">🔗</a>
+          </dt>
+          <dd>
+            <p>
+              If <a href="DataSpecificationIec61360.html#value">DataSpecificationIec61360.value</a> is not empty then <a href="DataSpecificationIec61360.html#valueList">DataSpecificationIec61360.valueList</a> shall be empty
+              and vice versa.
+            </p>
+            <div class="alert alert-info">
+              It is also possible that both <a href="DataSpecificationIec61360.html#value">DataSpecificationIec61360.value</a> and <a href="DataSpecificationIec61360.html#valueList">DataSpecificationIec61360.valueList</a> are
+              empty. This is the case for concept descriptions that define the semantics
+              of a property but do not have an enumeration (<a href="DataSpecificationIec61360.html#valueList">DataSpecificationIec61360.valueList</a>) as
+              data type.
+            </div>
+            <div class="alert alert-info">
+              Although it is possible to define a <a href="ConceptDescription.html">ConceptDescription</a> for a
+              :attr:´value_list`,
+              it is not possible to reuse this <a href="DataSpecificationIec61360.html#valueList">DataSpecificationIec61360.valueList</a>.
+              It is only possible to directly add a <a href="DataSpecificationIec61360.html#valueList">DataSpecificationIec61360.valueList</a> as data type
+              to a specific semantic definition of a property.
+            </div>
+          </dd>
+          <dt>
+            <a name="constraint-AASc-3a-009"></a>Constraint AASc-3a-009<a class="aas-anchor-link" href="#constraint-AASc-3a-009">🔗</a>
+          </dt>
+          <dd>
+            If <a href="DataSpecificationIec61360.html#dataType">DataSpecificationIec61360.dataType</a> one of:
+            <a href="DataTypeIec61360.html#IntegerMeasure">DataTypeIec61360.IntegerMeasure</a>,
+            <a href="DataTypeIec61360.html#RealMeasure">DataTypeIec61360.RealMeasure</a>,
+            <a href="DataTypeIec61360.html#RationalMeasure">DataTypeIec61360.RationalMeasure</a>,
+            <a href="DataTypeIec61360.html#IntegerCurrency">DataTypeIec61360.IntegerCurrency</a>,
+            <a href="DataTypeIec61360.html#RealCurrency">DataTypeIec61360.RealCurrency</a>, then <a href="DataSpecificationIec61360.html#unit">DataSpecificationIec61360.unit</a> or
+            <a href="DataSpecificationIec61360.html#unitId">DataSpecificationIec61360.unitId</a> shall be defined.
+          </dd>
+        </dl>
       </div>
-      <h2>Values</h2>
+      <h2>
+        <a name="inheritances"></a>
+        Inheritances
+        <a class="aas-anchor-link" href="#inheritances">🔗</a>
+      </h2>
       <ul>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
+        <li>
+          <a href="DataSpecificationContent.html">DataSpecificationContent</a>
+        </li>
+      </ul>
+      <h2>
+        <a name="properties"></a>
+        Properties
+        <a class="aas-anchor-link" href="#properties">🔗</a>
+      </h2>
+      <dl>
+        <dt>
+          <a name="preferredName"></a>
+          preferredName: <span class="aas-type-annotation">List[<a href="LangStringPreferredNameTypeIec61360.html">LangStringPreferredNameTypeIec61360</a>]</span>
+          <a class="aas-anchor-link" href="#preferredName">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Preferred name
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                It is advised to keep the length of the name limited to 35 characters.
+              </div>
+            </div>
+            <dl class="constraints">
+              <dt>
+                <a name="constraint-AASc-3a-002"></a>Constraint AASc-3a-002<a class="aas-anchor-link" href="#constraint-AASc-3a-002">🔗</a>
+              </dt>
+              <dd>
+                <a href="DataSpecificationIec61360.html#preferredName">DataSpecificationIec61360.preferredName</a> shall be provided at least in English.
+              </dd>
+            </dl>
+          </div>
+        </dd>
+        <dt>
+          <a name="shortName"></a>
+          shortName: <span class="aas-type-annotation">Optional[List[<a href="LangStringShortNameTypeIec61360.html">LangStringShortNameTypeIec61360</a>]]</span>
+          <a class="aas-anchor-link" href="#shortName">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Short name
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="unit"></a>
+          unit: <span class="aas-type-annotation">Optional[<a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>]</span>
+          <a class="aas-anchor-link" href="#unit">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Unit
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="unitId"></a>
+          unitId: <span class="aas-type-annotation">Optional[<a href="Reference.html">Reference</a>]</span>
+          <a class="aas-anchor-link" href="#unitId">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Unique unit id
+            </div>
+            <div class="remarks">
+              <p>
+                <a href="DataSpecificationIec61360.html#unit">DataSpecificationIec61360.unit</a> and <a href="DataSpecificationIec61360.html#unitId">DataSpecificationIec61360.unitId</a> need to be consistent if both attributes
+                are set
+              </p>
+              <div class="alert alert-info">
+                It is recommended to use an external reference ID.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="sourceOfDefinition"></a>
+          sourceOfDefinition: <span class="aas-type-annotation">Optional[<a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>]</span>
+          <a class="aas-anchor-link" href="#sourceOfDefinition">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Source of definition
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="symbol"></a>
+          symbol: <span class="aas-type-annotation">Optional[<a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>]</span>
+          <a class="aas-anchor-link" href="#symbol">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Symbol
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="dataType"></a>
+          dataType: <span class="aas-type-annotation">Optional[<a href="DataTypeIec61360.html">DataTypeIec61360</a>]</span>
+          <a class="aas-anchor-link" href="#dataType">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Data Type
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="definition"></a>
+          definition: <span class="aas-type-annotation">Optional[List[<a href="LangStringDefinitionTypeIec61360.html">LangStringDefinitionTypeIec61360</a>]]</span>
+          <a class="aas-anchor-link" href="#definition">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Definition in different languages
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="valueFormat"></a>
+          valueFormat: <span class="aas-type-annotation">Optional[<a href="NonEmptyXmlSerializableString.html">NonEmptyXmlSerializableString</a>]</span>
+          <a class="aas-anchor-link" href="#valueFormat">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Value Format
+            </div>
+            <div class="remarks">
+              <div class="alert alert-info">
+                The value format is based on ISO 13584-42 and IEC 61360-2.
+              </div>
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="valueList"></a>
+          valueList: <span class="aas-type-annotation">Optional[<a href="ValueList.html">ValueList</a>]</span>
+          <a class="aas-anchor-link" href="#valueList">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              List of allowed values
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="value"></a>
+          value: <span class="aas-type-annotation">Optional[<a href="ValueTypeIec61360.html">ValueTypeIec61360</a>]</span>
+          <a class="aas-anchor-link" href="#value">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Value
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="levelType"></a>
+          levelType: <span class="aas-type-annotation">Optional[<a href="LevelType.html">LevelType</a>]</span>
+          <a class="aas-anchor-link" href="#levelType">🔗</a>
+        </dt>
+
+        <dd>
+          <div>
+            <div class="summary">
+              Set of levels.
+            </div>
+          </div>
+        </dd>
+      </dl>
+      <h2>
+        <a name="invariants"></a>
+        Invariants
+        <a class="aas-anchor-link" href="#invariants">🔗</a>
+      </h2>
+      <ul>
+        <li>
+          Constraint AASc-3a-010: If value is not empty then value list shall be empty and vice versa.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='p'>(</span>
+    <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#value">value</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+    <span class='ow'>and</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#valueList">valueList</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='p'>)</span><span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASc-3a-009: If data type is a an integer, real or rational with a measure or currency, unit or unit ID shall be defined.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#dataType">dataType</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>and</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#dataType">dataType</a> <span class='ow'>in</span> <span class='no'><a href='Iec61360DataTypesWithUnit.html'>Iec61360DataTypesWithUnit</a></span><span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span>
+    <span class='p'>(</span>
+        <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#unit">unit</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+        <span class='ow'>or</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#unitId">unitId</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+    <span class='p'>)</span>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Definition must be either not set or have at least one item.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#definition">definition</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#definition">definition</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Definition must specify unique languages.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#definition">definition</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#definition">definition</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Short name must be either not set or have at least one item.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#shortName">shortName</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='p'>(</span><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#shortName">shortName</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Short name must specify unique languages.<br/>
+          <div class='highlight'><pre><span class='ow'>not</span> <span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#shortName">shortName</a> <span class='ow'>is not</span> <span class='kc'>None</span><span class='p'>)</span>
+<span class='ow'>or</span> <span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#shortName">shortName</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Preferred name must have at least one item.<br/>
+          <div class='highlight'><pre><span class='nb'>len</span><span class='p'>(</span><span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#preferredName">preferredName</a><span class='p'>)</span> <span class='o'>&gt;=</span> 1</pre></div>
+        </li>
+        <li>
+          Preferred name must specify unique languages.<br/>
+          <div class='highlight'><pre><span class='nf'><a href='LangStringsHaveUniqueLanguages.html'>LangStringsHaveUniqueLanguages</a></span><span class='p'>(</span>
+    <span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#preferredName">preferredName</a>
+<span class='p'>)</span></pre></div>
+        </li>
+        <li>
+          Constraint AASc-002: preferred name shall be provided at least in English.<br/>
+          <div class='highlight'><pre><span class='nb'>any</span><span class='p'>(</span>
+    <span class='nf'><a href='IsBcp47ForEnglish.html'>IsBcp47ForEnglish</a></span><span class='p'>(</span>
+        <span class='nv'>langString</span><span class='o'>.</span><a href="LangStringPreferredNameTypeIec61360.html#language">language</a>
+    <span class='p'>)</span>
+    <span class='k'>for</span> <span class='nv'>langString</span> <span class='ow'>in</span> <span class='bp'>self</span><span class='o'>.</span><a href="DataSpecificationIec61360.html#preferredName">preferredName</a>
+<span class='p'>)</span></pre></div>
+        </li>
       </ul>
     </div>
   </div>

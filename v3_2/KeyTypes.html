@@ -3,7 +3,7 @@
 <head>
   <meta charset="UTF-8">
   <meta name="viewport" content="width=device-width, initial-scale=1">
-  <title>ValidCategoriesForDataElement</title>
+  <title>KeyTypes</title>
   <link rel="stylesheet" href="../base.css">
   <link
     href="https://cdn.jsdelivr.net/npm/bootstrap@5.0.2/dist/css/bootstrap.min.css"
@@ -21,7 +21,7 @@
           <a class="nav-item" href="../index.html">Back</a>
         </li>
         <li class="nav-item  mb-2">
-          <a class="nav-item" href="index.html">V3.0</a>
+          <a class="nav-item" href="index.html">V3.2</a>
         </li>
         <li class="nav-item mt-2">Enumerations</li>
         <li class="nav-item">
@@ -55,7 +55,7 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="KeyTypes.html">
+          <a class="nav-item active" href="KeyTypes.html">
             KeyTypes
           </a>
         </li>
@@ -483,11 +483,6 @@
             Iec61360DataTypesWithUnit
           </a>
         </li>
-        <li class="nav-item">
-          <a class="nav-item active" href="ValidCategoriesForDataElement.html">
-            ValidCategoriesForDataElement
-          </a>
-        </li>
         <li class="nav-item">Constraints</li>
         <li class="nav-item">
           <a class="nav-item" href="DataSpecificationIec61360.html#constraint-AASc-3a-002">
@@ -590,11 +585,6 @@
           </a>
         </li>
         <li class="nav-item">
-          <a class="nav-item" href="DataElement.html#constraint-AASd-090">
-            AASd-090
-          </a>
-        </li>
-        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-107">
             AASd-107
           </a>
@@ -637,11 +627,6 @@
         <li class="nav-item">
           <a class="nav-item" href="Qualifiable.html#constraint-AASd-119">
             AASd-119
-          </a>
-        </li>
-        <li class="nav-item">
-          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-120">
-            AASd-120
           </a>
         </li>
         <li class="nav-item">
@@ -707,6 +692,16 @@
         <li class="nav-item">
           <a class="nav-item" href="Operation.html#constraint-AASd-134">
             AASd-134
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="Reference.html#constraint-AASd-137">
+            AASd-137
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementList.html#constraint-AASd-138">
+            AASd-138
           </a>
         </li>
         <li class="nav-item mt-2">Verification Functions</li>
@@ -991,13 +986,43 @@
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SpecificAssetIdNameMatchesGlobalAssetId.html">
+            SpecificAssetIdNameMatchesGlobalAssetId
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementHasTemplateQualifierInTree.html">
+            SubmodelElementHasTemplateQualifierInTree
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementIsOfType.html">
             SubmodelElementIsOfType
           </a>
         </li>
         <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsHaveExactlyOneElementInTree.html">
+            SubmodelElementListsHaveExactlyOneElementInTree
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInOperationVariablesHaveExactlyOneElement.html">
+            SubmodelElementListsInOperationVariablesHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementListsInSubmodelElementsHaveExactlyOneElement.html">
+            SubmodelElementListsInSubmodelElementsHaveExactlyOneElement
+          </a>
+        </li>
+        <li class="nav-item">
           <a class="nav-item" href="SubmodelElementsHaveIdenticalSemanticIds.html">
             SubmodelElementsHaveIdenticalSemanticIds
+          </a>
+        </li>
+        <li class="nav-item">
+          <a class="nav-item" href="SubmodelElementsHaveNoTemplateQualifiers.html">
+            SubmodelElementsHaveNoTemplateQualifiers
           </a>
         </li>
         <li class="nav-item">
@@ -1009,23 +1034,300 @@
     </div>
     <div class="col-9 mx-0 overflow-auto" id="content">
       <h1>
-        ValidCategoriesForDataElement<a class="aas-anchor-link" href="">🔗</a>
+        KeyTypes
+        <a class="aas-anchor-link" href="">🔗</a>
       </h1>
-      <du>
-        <dt>Type: <span class="aas-type-annotation">Set[str]</span></dt>
-        <dd></dd>
-      </du>
       <div class="aas-description">
         <div class="summary">
-          Categories for <a href="DataElement.html">DataElement</a> as defined in <a href="DataElement.html#constraint-AASd-090">AASd-090</a>
+          Enumeration of different key value types within a key.
         </div>
       </div>
-      <h2>Values</h2>
-      <ul>
-        <li><code>&#x27;VARIABLE&#x27;</code></li>
-        <li><code>&#x27;CONSTANT&#x27;</code></li>
-        <li><code>&#x27;PARAMETER&#x27;</code></li>
-      </ul>
+      <h2>Literals</h2>
+      <div>
+        <dl>
+        <dt>
+          <a name="AnnotatedRelationshipElement" />
+          AnnotatedRelationshipElement
+          <a class="aas-anchor-link" href="#AnnotatedRelationshipElement">🔗</a>
+           = <code>&#x27;AnnotatedRelationshipElement&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="AssetAdministrationShell" />
+          AssetAdministrationShell
+          <a class="aas-anchor-link" href="#AssetAdministrationShell">🔗</a>
+           = <code>&#x27;AssetAdministrationShell&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="BasicEventElement" />
+          BasicEventElement
+          <a class="aas-anchor-link" href="#BasicEventElement">🔗</a>
+           = <code>&#x27;BasicEventElement&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Blob" />
+          Blob
+          <a class="aas-anchor-link" href="#Blob">🔗</a>
+           = <code>&#x27;Blob&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Capability" />
+          Capability
+          <a class="aas-anchor-link" href="#Capability">🔗</a>
+           = <code>&#x27;Capability&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="ConceptDescription" />
+          ConceptDescription
+          <a class="aas-anchor-link" href="#ConceptDescription">🔗</a>
+           = <code>&#x27;ConceptDescription&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="DataElement" />
+          DataElement
+          <a class="aas-anchor-link" href="#DataElement">🔗</a>
+           = <code>&#x27;DataElement&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Data element.
+          </div>
+          <div class="remarks">
+            <div class="alert alert-info">
+              Data elements are abstract, 
+              <em>
+                i.e.
+              </em> if a key uses <a href="KeyTypes.html#DataElement">KeyTypes.DataElement</a>
+              the reference may be a property, file, etc.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="Entity" />
+          Entity
+          <a class="aas-anchor-link" href="#Entity">🔗</a>
+           = <code>&#x27;Entity&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="EventElement" />
+          EventElement
+          <a class="aas-anchor-link" href="#EventElement">🔗</a>
+           = <code>&#x27;EventElement&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Event.
+          </div>
+          <div class="remarks">
+            <div class="alert alert-info">
+              <a href="EventElement.html">EventElement</a> is abstract.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="File" />
+          File
+          <a class="aas-anchor-link" href="#File">🔗</a>
+           = <code>&#x27;File&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="FragmentReference" />
+          FragmentReference
+          <a class="aas-anchor-link" href="#FragmentReference">🔗</a>
+           = <code>&#x27;FragmentReference&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Bookmark or a similar local identifier of a subordinate part of
+            a primary resource
+          </div>
+        </dd>
+        <dt>
+          <a name="GlobalReference" />
+          GlobalReference
+          <a class="aas-anchor-link" href="#GlobalReference">🔗</a>
+           = <code>&#x27;GlobalReference&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Identifiable" />
+          Identifiable
+          <a class="aas-anchor-link" href="#Identifiable">🔗</a>
+           = <code>&#x27;Identifiable&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Identifiable.
+          </div>
+          <div class="remarks">
+            <div class="alert alert-info">
+              Identifiable is abstract, i.e. if a key uses &quot;Identifiable&quot; the reference
+              may be an <a href="AssetAdministrationShell.html">AssetAdministrationShell</a>, a <a href="Submodel.html">Submodel</a> or
+              a <a href="ConceptDescription.html">ConceptDescription</a>.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="MultiLanguageProperty" />
+          MultiLanguageProperty
+          <a class="aas-anchor-link" href="#MultiLanguageProperty">🔗</a>
+           = <code>&#x27;MultiLanguageProperty&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Property with a value that can be provided in multiple languages
+          </div>
+        </dd>
+        <dt>
+          <a name="Operation" />
+          Operation
+          <a class="aas-anchor-link" href="#Operation">🔗</a>
+           = <code>&#x27;Operation&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Property" />
+          Property
+          <a class="aas-anchor-link" href="#Property">🔗</a>
+           = <code>&#x27;Property&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="Range" />
+          Range
+          <a class="aas-anchor-link" href="#Range">🔗</a>
+           = <code>&#x27;Range&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Range with min and max
+          </div>
+        </dd>
+        <dt>
+          <a name="Referable" />
+          Referable
+          <a class="aas-anchor-link" href="#Referable">🔗</a>
+           = <code>&#x27;Referable&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="ReferenceElement" />
+          ReferenceElement
+          <a class="aas-anchor-link" href="#ReferenceElement">🔗</a>
+           = <code>&#x27;ReferenceElement&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Reference
+          </div>
+        </dd>
+        <dt>
+          <a name="RelationshipElement" />
+          RelationshipElement
+          <a class="aas-anchor-link" href="#RelationshipElement">🔗</a>
+           = <code>&#x27;RelationshipElement&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Relationship
+          </div>
+        </dd>
+        <dt>
+          <a name="Submodel" />
+          Submodel
+          <a class="aas-anchor-link" href="#Submodel">🔗</a>
+           = <code>&#x27;Submodel&#x27;</code>
+        </dt>
+        <dd>
+          
+        </dd>
+        <dt>
+          <a name="SubmodelElement" />
+          SubmodelElement
+          <a class="aas-anchor-link" href="#SubmodelElement">🔗</a>
+           = <code>&#x27;SubmodelElement&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Submodel Element
+          </div>
+          <div class="remarks">
+            <div class="alert alert-info">
+              Submodel Element is abstract, 
+              <em>
+                i.e.
+              </em> if a key uses <a href="KeyTypes.html#SubmodelElement">KeyTypes.SubmodelElement</a>
+              the reference may be a <a href="Property.html">Property</a>, a <a href="SubmodelElementList.html">SubmodelElementList</a>,
+              an <a href="Operation.html">Operation</a> etc.
+            </div>
+          </div>
+        </dd>
+        <dt>
+          <a name="SubmodelElementCollection" />
+          SubmodelElementCollection
+          <a class="aas-anchor-link" href="#SubmodelElementCollection">🔗</a>
+           = <code>&#x27;SubmodelElementCollection&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            Struct of <a href="SubmodelElement.html">SubmodelElement</a>&#x27;s
+          </div>
+        </dd>
+        <dt>
+          <a name="SubmodelElementList" />
+          SubmodelElementList
+          <a class="aas-anchor-link" href="#SubmodelElementList">🔗</a>
+           = <code>&#x27;SubmodelElementList&#x27;</code>
+        </dt>
+        <dd>
+          <div class="summary">
+            List of <a href="SubmodelElement.html">SubmodelElement</a>&#x27;s
+          </div>
+        </dd>
+        </dl>
+      </div>
+      <h2>Usages</h2>
+      <table class="table">
+        <tr>
+          <td>
+            <a href="Key.html">Key</a>
+          </td>
+          <td>
+            <a href="Key.html#type">Key.type</a>
+          </td>
+        </tr>
+      </table>
     </div>
   </div>
 </div>
