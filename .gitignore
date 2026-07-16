@@ -2,6 +2,8 @@
 deleteme.sh
 html-for-debug/
 
+# Claude / AI
+.claude/
 
 
 # Byte-compiled / optimized / DLL files

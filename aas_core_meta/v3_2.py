@@ -2364,7 +2364,8 @@ class Asset_information(DBC):
     In :class:`Asset_information` identifying metadata of the asset that is
     represented by an Asset Administration Shell is defined.
 
-    The asset may either represent a type asset or an instance asset.
+    Several asset kinds are distinguished like for example type assets and
+    instance assets.
 
     The asset has a globally unique identifier, plus – if needed – additional
     domain-specific (proprietary) identifiers. However, to support the corner case
@@ -2476,7 +2477,8 @@ class Resource(DBC):
     """
     Content type of the content of the file.
 
-    The content type states which file extensions the file can have.
+    A single content type (MIME type) can have multiple file extensions
+    associated with it.
     """
 
     def __init__(
@@ -2517,7 +2519,7 @@ class Asset_kind(Enum):
 
     Not_applicable = "NotApplicable"
     """
-    Neither a type asset nor an instance asset nor a batch asset nor a role asset
+    None of the other asset kinds
     """
 
 
@@ -3221,11 +3223,6 @@ class Property(Data_element):
     value_ID: Optional["Reference"]
     """
     Reference to the global unique ID of a coded value.
-
-    .. note::
-
-        It is recommended to use an external reference, compare to
-        :attr:`Has_semantics.semantic_ID`.
     """
 
     def __init__(
