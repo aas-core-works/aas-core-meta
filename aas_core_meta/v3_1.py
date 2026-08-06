@@ -359,6 +359,21 @@ def qualifier_types_are_unique(qualifiers: List["Qualifier"]) -> bool:
 
 
 @verification
+@implementation_specific
+def template_qualifiers_are_only_used_in_templates(submodel: "Submodel") -> bool:
+    """
+    Check that qualifiers of :attr:`Qualifier.kind`
+    :attr:`Qualifier_kind.Template_qualifier` are only used in :attr:`Submodel`
+    with :attr:`Modelling_kind.Template`.
+
+    :param submodel: to be checked
+    :return: True if :attr:`Submodel.kind` is not :attr:`Modelling_kind.Template`, or no :attr:`Qualifier.kind` is :attr:`Qualifier_kind.Template_qualifier`.
+
+    """
+    raise NotImplementedError()
+
+
+@verification
 def matches_XML_serializable_string(text: str) -> bool:
     """
     Check that :paramref:`text` conforms to the pattern of the Constraint AASd-130.
@@ -2419,21 +2434,7 @@ class Specific_asset_ID(Has_semantics):
     "element shall be of kind template."
 )
 @invariant(
-    lambda self:
-    not (self.submodel_elements is not None)
-    or (
-        not (self.kind_or_default() != Modelling_kind.Template)
-        or (
-            all(
-                not (submodel_element.qualifiers is not None)
-                or all(
-                    qualifier.kind_or_default() != Qualifier_kind.Template_qualifier
-                    for qualifier in submodel_element.qualifiers
-                )
-                for submodel_element in self.submodel_elements
-            )
-        )
-    ),
+    lambda self: template_qualifiers_are_only_used_in_templates(self),
     "Constraint AASd-129: If any qualifier kind value of a Submodel element qualifier "
     "(attribute qualifier inherited via Qualifiable) is equal to Template Qualifier "
     "then the submodel element shall be part of a submodel template, i.e. a Submodel "
