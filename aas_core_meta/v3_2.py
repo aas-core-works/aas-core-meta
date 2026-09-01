@@ -5990,3 +5990,564 @@ class Data_specification_IEC_61360(Data_specification_content):
         self.value_list = value_list
         self.value = value
         self.level_type = level_type
+
+
+# region Part 2
+
+
+@abstract
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.extensions is not None)
+    or extension_names_are_unique(self.extensions),
+    "The name of an extension needs to be unique."
+)
+@invariant(
+    lambda self:
+    not (self.extensions is not None)
+    or len(self.extensions) >= 1,
+    "Extensions must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.display_name is not None)
+    or lang_strings_have_unique_languages(self.display_name),
+    "Display name must specify unique languages."
+)
+@invariant(
+    lambda self:
+    not (self.display_name is not None)
+    or len(self.display_name) >= 1,
+    "Display name must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.description is not None)
+    or lang_strings_have_unique_languages(self.description),
+    "Description must specify unique languages."
+)
+@invariant(
+    lambda self:
+    not (self.description is not None)
+    or len(self.description) >= 1,
+    "Description must be either not set or have at least one item."
+)
+# fmt: on
+class Descriptor(DBC):
+    """
+    The self-describing information of a network resource.
+
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#Descriptor
+    """
+
+    description: Optional[List["Lang_string_text_type"]]
+    """
+    Description or comments on the element.
+
+    The description can be provided in several languages.
+    """
+
+    display_name: Optional[List["Lang_string_name_type"]]
+    """Display name. Can be provided in several languages."""
+
+    extensions: Optional[List["Extension"]]
+    """
+    An extension of the element.
+
+    .. note::
+
+        Extensions are proprietary, i.e. they do not support global interoperability.
+    """
+
+    def __init__(
+        self,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        extensions: Optional[List["Extension"]] = None,
+    ) -> None:
+        self.description = description
+        self.display_name = display_name
+        self.extensions = extensions
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.submodel_descriptors is not None)
+    or len(self.submodel_descriptors) >= 1,
+    "Submodel descriptors must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.specific_asset_IDs is not None)
+    or len(self.specific_asset_IDs) >= 1,
+    "Specific asset IDs must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.endpoints is not None)
+    or len(self.endpoints) >= 1,
+    "Endpoints must be either not set or have at least one item."
+)
+# fmt: on
+class Asset_administration_shell_descriptor(Descriptor):
+    """
+    Descriptor of an Asset Administration Shell.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#AssetAdministrationShellDescriptor
+    """
+
+    ID: "Identifier"
+    """Globally unique identification of the Asset Administration Shell."""
+
+    administration: Optional["Administrative_information"]
+    """Administrative information of the Asset Administration Shell."""
+
+    asset_kind: Optional["Asset_kind"]
+    """
+    Denotes whether the asset of the described Asset Administration Shell is of
+    kind :attr:`Asset_kind.Type`, :attr:`Asset_kind.Instance`,
+    :attr:`Asset_kind.Role`, or :attr:`Asset_kind.Not_applicable`.
+    """
+
+    asset_type: Optional["Identifier"]
+    """
+    The type of the asset described by the Asset Administration Shell of this
+    descriptor.
+
+    See :attr:`Asset_information.asset_type` for further information.
+    """
+
+    endpoints: Optional[List["Endpoint"]]
+    """
+    Endpoint of the network resource.
+
+    .. note::
+
+        The cardinality restriction for :attr:`endpoints` allows a provider to skip
+        the declaration of the location of an Asset Administration Shell and directly
+        point to the endpoints of the contained submodels through 
+        :attr:`submodel_descriptors`' :attr:`Submodel_descriptor.endpoints`.
+        A client, therefore, might decide to skip the lookup on the Asset
+        Administration Shell.
+        Nevertheless, in case the information contained in the
+        :class:`Asset_administration_shell_descriptor` deviates from the
+        related :class:`Asset_administration_shell`, or attributes are missing,
+        the :class:`Asset_administration_shell` is always the source of truth.
+    """
+
+    global_asset_ID: Optional["Identifier"]
+    """Global reference to the asset the Asset Administration Shell is representing."""
+
+    ID_short: Optional["Name_type"]
+    """Short name of the Asset Administration Shell."""
+
+    specific_asset_IDs: Optional[List["Specific_asset_ID"]]
+    """Specific asset identifier."""
+
+    submodel_descriptors: Optional[List["Submodel_descriptor"]]
+    """Descriptor of a submodel of the Asset Administration Shell."""
+
+    def __init__(
+        self,
+        ID: "Identifier",
+        description: Optional[List["Lang_string_text_type"]] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        extensions: Optional[List["Extension"]] = None,
+        administration: Optional["Administrative_information"] = None,
+        asset_kind: Optional["Asset_kind"] = None,
+        asset_type: Optional["Identifier"] = None,
+        endpoints: Optional[List["Endpoint"]] = None,
+        global_asset_ID: Optional["Identifier"] = None,
+        ID_short: Optional["Name_type"] = None,
+        specific_asset_IDs: Optional[List["Specific_asset_ID"]] = None,
+        submodel_descriptors: Optional[List["Submodel_descriptor"]] = None,
+    ) -> None:
+        Descriptor.__init__(
+            self,
+            description=description,
+            display_name=display_name,
+            extensions=extensions,
+        )
+
+        self.ID = ID
+        self.administration = administration
+        self.asset_kind = asset_kind
+        self.asset_type = asset_type
+        self.endpoints = endpoints
+        self.global_asset_ID = global_asset_ID
+        self.ID_short = ID_short
+        self.specific_asset_IDs = specific_asset_IDs
+        self.submodel_descriptors = submodel_descriptors
+
+
+# fmt: off
+@invariant(
+    lambda self: len(self.endpoints) >= 1,
+    "Endpoints must contain at least one item.",
+)
+@invariant(
+    lambda self:
+    not (self.supplemental_semantic_IDs is not None)
+    or (self.semantic_ID is not None),
+    "If there are supplemental semantic IDs defined then there shall be also "
+    "a main semantic ID."
+)
+@invariant(
+    lambda self:
+    not (self.supplemental_semantic_IDs is not None)
+    or len(self.supplemental_semantic_IDs) >= 1,
+    "Supplemental semantic IDs must be either not set or have at least one item."
+)
+# fmt: on
+class Submodel_descriptor(Descriptor):
+    """
+    A descriptor of a submodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#SubmodelDescriptor
+    """
+
+    endpoints: List["Endpoint"]
+    """Endpoint of the network resource."""
+
+    ID: "Identifier"
+    """Globally unique identification of the Submodel."""
+
+    administration: Optional["Administrative_information"]
+    """Administrative information of the Submodel."""
+
+    ID_short: Optional["Name_type"]
+    """Short name of the Submodel."""
+
+    semantic_ID: Optional["Reference"]
+    """
+    Identifier of the semantic definition of the Submodel.
+    """
+
+    supplemental_semantic_IDs: Optional[List["Reference"]]
+    """
+    Identifier of a supplemental semantic definition of the element called supplemental
+    semantic ID of the element.
+    """
+
+    def __init__(
+        self,
+        endpoints: List["Endpoint"],
+        ID: "Identifier",
+        description: Optional[List["Lang_string_text_type"]] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        extensions: Optional[List["Extension"]] = None,
+        administration: Optional["Administrative_information"] = None,
+        ID_short: Optional["Name_type"] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+    ) -> None:
+        Descriptor.__init__(
+            self,
+            description=description,
+            display_name=display_name,
+            extensions=extensions,
+        )
+
+        self.endpoints = endpoints
+        self.ID = ID
+        self.administration = administration
+        self.ID_short = ID_short
+        self.semantic_ID = semantic_ID
+        self.supplemental_semantic_IDs = supplemental_semantic_IDs
+
+
+class Endpoint(DBC):
+    """
+    The endpoint description of a network resource.
+
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#Endpoint
+    """
+
+    protocol_information: "Protocol_information"
+    """Protocol information of the network resource endpoint."""
+
+    interface: "Name_type"
+    """Name of the offered interface at the endpoint."""
+
+    def __init__(
+        self,
+        protocol_information: "Protocol_information",
+        interface: "Name_type",
+    ) -> None:
+        self.protocol_information = protocol_information
+        self.interface = interface
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.security_attributes is not None)
+    or len(self.security_attributes) >= 1,
+    "Security attributes must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.endpoint_protocol_versions is not None)
+    or len(self.endpoint_protocol_versions) >= 1,
+    "Endpoint protocol versions must be either not set or have at least one item."
+)
+# fmt: on
+class Protocol_information(DBC):
+    """
+    The protocol information of a network resource endpoint.
+
+    .. note::
+
+        The protocol information of a network resource endpoint is defined in
+        DIN SPEC 16593-2. After the release of DIN SPEC 16593-2, any required
+        updates will be made. This class is not part of the metamodel.
+
+        The information in this class is a 1:1 copy from DIN SPEC 16593-2. Required
+        changes need to be made by the related DIN working group.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ProtocolInformation
+    """
+
+    href: "Locator_type"
+    """The endpoint address as a URL."""
+
+    endpoint_protocol: Optional["Scheme_type"]
+    """
+    Either scheme of :attr:`href` or scheme plus further information.
+
+    The scheme denotes the highest level of doubtless transmission.
+    """
+
+    endpoint_protocol_versions: Optional[List["Name_type"]]
+    """
+    Each entry represents one supported version at this very endpoint, the entry shall
+    be formatted according to the regulations of the protocol specified in
+    the :attr:`href`
+    """
+
+    subprotocol: Optional["Short_ID_type"]
+    """
+    Allows for referencing sub-protocols that may be used in the context of that
+    endpoint e.g. "OPC Basic SOAP" or UA Binary
+    """
+
+    subprotocol_body: Optional["Text_type"]
+    """
+    If the sub-protocol field is present, a subprotocol body might be given to hold
+    extra information, e.g. node and namespace in an OPC UA server
+    """
+
+    subprotocol_body_encoding: Optional["Name_type"]
+    """
+    If :attr:`subprotocol_body` is present, the encoding might be explicitly defined,
+    otherwise it shall default to subprotocols encoding scheme
+    """
+
+    security_attributes: Optional[List["Security_attribute_object"]]
+    """
+    Array of :class:`Security_attribute_object`'s. Each attribute has
+    three properties:
+
+    :attr:`~Security_attribute_object.type`: enum security type or standard:
+
+    * ``NONE``;
+    * ``RFC_TLSA``, TLSA according to RFC 6698; or
+    * ``W3C_DID``, W3C DID document.
+
+    :attr:`~Security_attribute_object.key`: security attribute key according to standard
+    definitions of the security type.
+    
+    :attr:`~Security_attribute_object.value`: security attribute value, *e.g.*, DANE
+    TLSA Resource Record.
+
+    The :class:`Security_attribute_object`'s are treated as possible
+    alternatives (logical "or").
+    """
+
+    def __init__(
+        self,
+        href: "Locator_type",
+        endpoint_protocol: Optional["Scheme_type"] = None,
+        endpoint_protocol_versions: Optional[List["Name_type"]] = None,
+        subprotocol: Optional["Short_ID_type"] = None,
+        subprotocol_body: Optional["Text_type"] = None,
+        subprotocol_body_encoding: Optional["Name_type"] = None,
+        security_attributes: Optional[List["Security_attribute_object"]] = None,
+    ) -> None:
+        self.href = href
+        self.endpoint_protocol = endpoint_protocol
+        self.endpoint_protocol_versions = endpoint_protocol_versions
+        self.subprotocol = subprotocol
+        self.subprotocol_body = subprotocol_body
+        self.subprotocol_body_encoding = subprotocol_body_encoding
+        self.security_attributes = security_attributes
+
+
+class Security_attribute_object(DBC):
+    """
+    Security attributes as defined by DIN SPEC 16593-2. After the release of
+    DIN SPEC 16593-2, any required updates will be made. This class is not part of
+    the metamodel.
+
+    The information in this table is derived from DIN SPEC 16593-2. Required changes
+    need to be made by the related DIN working group.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#SecurityAttributeObject
+    """
+
+    type: "Security_type_enum"
+    """Enum security type or standard."""
+
+    key: str
+    """Security attribute key according to standard definitions of the security type."""
+
+    value: str
+    """Security attribute value e.g. DANE TLSA Resource Record."""
+
+    def __init__(self, type: "Security_type_enum", key: str, value: str) -> None:
+        self.type = type
+        self.key = key
+        self.value = value
+
+
+class Security_type_enum(Enum):
+    """
+    The security types as defined by DIN SPEC 16593-2. After the release of
+    DIN SPEC 16593-2, any required updates will be made. This class is not part of
+    the metamodel.
+
+    The information in this table is derived from DIN SPEC 16593-2. Required changes
+    need to be made by the related DIN working group.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#SecurityTypeEnum
+    """
+
+    # NOTE (mristin):
+    # The literal ``NONE`` from the specification is named :attr:`No_security`
+    # here since ``None`` is a reserved keyword in Python.
+    No_security = "NONE"
+    """No predefined security type available."""
+
+    RFC_TLSA = "RFC_TLSA"
+    """TLSA according to RFC 6698."""
+
+    W3C_DID = "W3C_DID"
+    """Decentralized Identifiers according to the W3C Recommendation."""
+
+
+class Asset_link(DBC):
+    """
+    Asset identifier derived from either :class:`Specific_asset_ID` or
+    :attr:`Asset_information.global_asset_ID`.
+
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#AssetLink
+    """
+
+    name: "Label_type"
+    """
+    Name of the Asset identifier, *i.e.*, ``globalAssetId``, a serial number,
+    manufacturer part ID, or customer part IDs.
+    """
+
+    value: "Identifier"
+    """Value of the Asset Identifier."""
+
+    def __init__(self, name: "Label_type", value: "Identifier") -> None:
+        self.name = name
+        self.value = value
+
+
+class Protocol_version(DBC):
+    """
+    A single protocol version supported at a network resource endpoint.
+
+    This class is not part of the metamodel. It represents a single entry of
+    :attr:`Protocol_information.endpoint_protocol_versions`, which is specified
+    as an array of plain strings in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ProtocolInformation
+    """
+
+    value: "Name_type"
+    """
+    The supported version.
+
+    The entry shall be formatted according to the regulations of the protocol
+    specified in :attr:`Protocol_information.href`.
+    """
+
+    def __init__(self, value: "Name_type") -> None:
+        self.value = value
+
+
+@invariant(
+    lambda self: len(self) <= 2048,
+    "Locator type shall have a maximum length of 2048 characters.",
+)
+class Locator_type(Non_empty_XML_serializable_string, DBC):
+    """
+    string with max 2048 and min 1 characters
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#LocatorType
+    """
+
+
+class Scheme_type(Name_type, DBC):
+    """
+    NameType
+
+    string with max 128 and min 1 characters
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#SchemeType
+    """
+
+
+class Short_ID_type(Name_type, DBC):
+    """
+    NameType
+
+    string with max 128 and min 1 characters
+
+    .. note::
+
+        :class:`Short_ID_type` is not the data type of :class:`ID_short_type`
+        attributes, but for IDs which shall be shorter than the identifier type.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ShortIdType
+    """
+
+
+@invariant(
+    lambda self: len(self) <= 2048,
+    "Text type shall have a maximum length of 2048 characters.",
+)
+class Text_type(Non_empty_XML_serializable_string, DBC):
+    """
+    string with max 2048 and min 1 characters
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#TextType
+    """
+
+
+# endregion Part 2

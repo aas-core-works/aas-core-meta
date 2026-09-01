@@ -1176,6 +1176,7 @@ class Test_assertions(unittest.TestCase):
     LOWER_TO_ABBREVIATION = {
         "aas": "AAS",
         "bcp": "BCP",
+        "did": "DID",
         "din": "DIN",
         "ece": "ECE",
         "html": "HTML",
@@ -1188,9 +1189,11 @@ class Test_assertions(unittest.TestCase):
         "nist": "NIST",
         "rfc": "RFC",
         "si": "SI",
+        "tlsa": "TLSA",
         "uri": "URI",
         "url": "URL",
         "utc": "UTC",
+        "w3c": "W3C",
         "xml": "XML",
         "xsd": "XSD",
     }
