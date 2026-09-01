@@ -8116,4 +8116,1051 @@ class Path_item(str, DBC):
 # endregion HTTP/REST API
 
 
+# region Metadata And Value Views
+
+
+# NOTE (mristin):
+# This region formalizes the Content=Metadata and Content=Value serialization
+# views referenced by SerializationModifier's Content enumeration (see class
+# Content above), specified for the individual submodel element (and submodel /
+# asset administration shell) types in Part 1's mappings document. These views
+# are not part of the metamodel itself; they are payload shapes defined for the
+# HTTP/REST API, mirrored here from the Part 2 OpenAPI schema
+# (Part2-API-Schemas/openapi.yaml) rather than from book prose, since the book
+# only describes the Content enumeration in general terms and does not spell
+# out each view's attributes.
+#
+# The *_metadata classes carry every attribute of the corresponding submodel
+# element *except* its value, mirroring the OpenAPI schema's
+# SubmodelElementAttributes/SubmodelElementMetadata/*Metadata composition.
+#
+# The *_value classes carry only the value. Several Value variants from the
+# OpenAPI schema are intentionally not formalized because their content is
+# inherently dynamic (ValueOnly-shaped JSON with no fixed attributes, the same
+# issue that already ruled out OperationRequestValueOnly/
+# OperationResultValueOnly elsewhere in this file) or structurally mismatched
+# with a static, attribute-typed class (a bare scalar or a bare array, not an
+# object): PropertyValue, MultiLanguagePropertyValue,
+# SubmodelElementCollectionValue, SubmodelElementListValue,
+# ReferenceElementValue, SubmodelValue. Each omission is noted where it would
+# otherwise be expected.
+#
+# See:
+# https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+
+
+@abstract
+class Submodel_element_attributes(
+    Referable, Has_semantics, Qualifiable, Has_data_specification
+):
+    """
+    The attributes shared by all submodel elements, without their value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    # NOTE (mristin):
+    # The OpenAPI schema also lists ``HasKind`` among the mixed-in classes. We
+    # omit it here: in Part 1, Has_kind is only used by Submodel, never by an
+    # individual submodel element, so including it here would introduce an
+    # attribute (``kind``) that no submodel element actually carries. We treat
+    # this as a mistake in the OpenAPI schema rather than a deliberate Part 2
+    # addition.
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Referable.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+        )
+
+        Has_semantics.__init__(
+            self,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+        )
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
+
+
+@abstract
+class Submodel_element_metadata(Submodel_element_attributes):
+    """
+    The metadata of a submodel element, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification. It is the polymorphic union of all the
+    ``*Metadata`` classes below.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_attributes.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Property_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Property`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    value_type: "Data_type_def_XSD"
+    """The value type of the property."""
+
+    def __init__(
+        self,
+        value_type: "Data_type_def_XSD",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.value_type = value_type
+
+
+class Range_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Range`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    value_type: "Data_type_def_XSD"
+    """The value type of the range."""
+
+    def __init__(
+        self,
+        value_type: "Data_type_def_XSD",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.value_type = value_type
+
+
+class Blob_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Blob`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class File_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`File`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Multi_language_property_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Multi_language_property`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Reference_element_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Reference_element`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Relationship_element_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Relationship_element`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Annotated_relationship_element_metadata(Submodel_element_metadata):
+    """
+    The metadata of an :class:`Annotated_relationship_element`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Entity_metadata(Submodel_element_metadata):
+    """
+    The metadata of an :class:`Entity`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Capability_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Capability`.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Operation_metadata(Submodel_element_metadata):
+    """
+    The metadata of an :class:`Operation`, without its input/output/inoutput variables.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Submodel_element_collection_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Submodel_element_collection`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+
+class Basic_event_element_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Basic_event_element`.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    direction: "Direction"
+    """Direction of event."""
+
+    state: "State_of_event"
+    """State of event."""
+
+    message_topic: Optional["Message_topic_type"]
+    """Topic, to which the event's message is published."""
+
+    message_broker: Optional["Reference"]
+    """Reference to a broker where the event's message is published."""
+
+    last_update: Optional["Date_time_UTC"]
+    """Timestamp of the last update of the event."""
+
+    min_interval: Optional["Duration"]
+    """For continuous signalling, the minimum interval between two consecutive events."""
+
+    max_interval: Optional["Duration"]
+    """For continuous signalling, the maximum interval between two consecutive events."""
+
+    def __init__(
+        self,
+        direction: "Direction",
+        state: "State_of_event",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        message_topic: Optional["Message_topic_type"] = None,
+        message_broker: Optional["Reference"] = None,
+        last_update: Optional["Date_time_UTC"] = None,
+        min_interval: Optional["Duration"] = None,
+        max_interval: Optional["Duration"] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.direction = direction
+        self.state = state
+        self.message_topic = message_topic
+        self.message_broker = message_broker
+        self.last_update = last_update
+        self.min_interval = min_interval
+        self.max_interval = max_interval
+
+
+class Submodel_element_list_metadata(Submodel_element_metadata):
+    """
+    The metadata of a :class:`Submodel_element_list`, without its value.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    order_relevant: Optional[bool]
+    """Defines whether order in the list is relevant."""
+
+    semantic_ID_list_element: Optional["Reference"]
+    """Semantic ID the submodel elements contained in the list match to."""
+
+    type_value_list_element: "AAS_submodel_elements"
+    """The submodel element type of the submodel elements contained in the list."""
+
+    value_type_list_element: Optional["Data_type_def_XSD"]
+    """The value type of the submodel elements contained in the list."""
+
+    def __init__(
+        self,
+        type_value_list_element: "AAS_submodel_elements",
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        order_relevant: Optional[bool] = None,
+        semantic_ID_list_element: Optional["Reference"] = None,
+        value_type_list_element: Optional["Data_type_def_XSD"] = None,
+    ) -> None:
+        Submodel_element_metadata.__init__(
+            self,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+            qualifiers=qualifiers,
+            embedded_data_specifications=embedded_data_specifications,
+        )
+
+        self.order_relevant = order_relevant
+        self.semantic_ID_list_element = semantic_ID_list_element
+        self.type_value_list_element = type_value_list_element
+        self.value_type_list_element = value_type_list_element
+
+
+class Submodel_metadata(
+    Identifiable, Has_kind, Has_semantics, Qualifiable, Has_data_specification
+):
+    """
+    The metadata of a :class:`Submodel`, without its submodel elements.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    def __init__(
+        self,
+        ID: Identifier,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        administration: Optional["Administrative_information"] = None,
+        kind: Optional["Modelling_kind"] = None,
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+        qualifiers: Optional[List["Qualifier"]] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+    ) -> None:
+        Identifiable.__init__(
+            self,
+            ID=ID,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            administration=administration,
+        )
+
+        Has_kind.__init__(self, kind=kind)
+
+        Has_semantics.__init__(
+            self,
+            semantic_ID=semantic_ID,
+            supplemental_semantic_IDs=supplemental_semantic_IDs,
+        )
+
+        Qualifiable.__init__(self, qualifiers=qualifiers)
+
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
+
+
+class Asset_administration_shell_metadata(Identifiable, Has_data_specification):
+    """
+    The metadata of an :class:`Asset_administration_shell`, without its
+    asset information and submodel references.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    derived_from: Optional["Reference"]
+    """
+    The reference to the Asset Administration Shell, which the Asset
+    Administration Shell was derived from.
+    """
+
+    def __init__(
+        self,
+        ID: Identifier,
+        extensions: Optional[List["Extension"]] = None,
+        category: Optional[Name_type] = None,
+        ID_short: Optional[ID_short_type] = None,
+        display_name: Optional[List["Lang_string_name_type"]] = None,
+        description: Optional[List["Lang_string_text_type"]] = None,
+        administration: Optional["Administrative_information"] = None,
+        embedded_data_specifications: Optional[
+            List["Embedded_data_specification"]
+        ] = None,
+        derived_from: Optional["Reference"] = None,
+    ) -> None:
+        Identifiable.__init__(
+            self,
+            ID=ID,
+            extensions=extensions,
+            category=category,
+            ID_short=ID_short,
+            display_name=display_name,
+            description=description,
+            administration=administration,
+        )
+
+        Has_data_specification.__init__(
+            self, embedded_data_specifications=embedded_data_specifications
+        )
+
+        self.derived_from = derived_from
+
+
+# NOTE (mristin):
+# The *_value classes below are deliberately *not* related by inheritance,
+# and none of them is used as a base class. Each stands alone as a plain
+# DBC.
+#
+# Consequently, each is marked with @serialization(with_model_type=False):
+# since none of them is part of a polymorphic hierarchy here, no "modelType"
+# discriminator should be emitted for them on serialization.
+#
+# Several variants from the HTTP schema have no class here at all, since
+# they do not fit this meta-model's static, attribute-typed class
+# representation:
+#
+# * ``PropertyValue`` is a raw JSON string, number or boolean, not an
+#   object -- use a plain scalar directly where needed.
+# * ``MultiLanguagePropertyValue`` and ``SubmodelElementCollectionValue``
+#   are dynamic, ValueOnly-shaped JSON (see the ValueOnly note earlier in
+#   this region).
+# * ``SubmodelElementListValue`` is a bare JSON array of values, not an
+#   object.
+# * ``SubmodelValue`` is, like ``SubmodelElementCollectionValue``,
+#   ValueOnly-shaped JSON.
+# * ``AnnotatedRelationshipElementValue`` has ``annotations`` attribute,
+#   which is itself ValueOnly-shaped JSON, so we cannot represent it.
+# * ``EntityValue`` has ``specificAssetIds`` as an array of dynamic
+#   ``SpecificAssetIdValue`` shape, and ``statements`` as ValueOnly-shaped JSON.
+
+
+@serialization(with_model_type=False)
+class Reference_element_value(DBC):
+    """
+    The value of a :class:`Reference_element`.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    type: "Reference_types"
+    """
+    Type of the reference.
+
+    Denotes whether the reference is an external reference or a model
+    reference.
+    """
+
+    keys: List["Key"]
+    """Unique references in their name space."""
+
+    referred_semantic_ID: Optional["Reference"]
+    """
+    Expected :attr:`Has_semantics.semantic_ID` of the referenced model
+    element.
+    """
+
+    def __init__(
+        self,
+        type: "Reference_types",
+        keys: List["Key"],
+        referred_semantic_ID: Optional["Reference"] = None,
+    ) -> None:
+        self.type = type
+        self.keys = keys
+        self.referred_semantic_ID = referred_semantic_ID
+
+
+@serialization(with_model_type=False)
+class Blob_value(DBC):
+    """
+    The value of a :class:`Blob`.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    content_type: Optional["Content_type"]
+    """The content type of the BLOB, *e.g.*, ``application/pdf``."""
+
+    value: Optional["Blob_type"]
+    """The BLOB content."""
+
+    def __init__(
+        self,
+        content_type: Optional["Content_type"] = None,
+        value: Optional["Blob_type"] = None,
+    ) -> None:
+        self.content_type = content_type
+        self.value = value
+
+
+@serialization(with_model_type=False)
+class File_value(DBC):
+    """
+    The value of a :class:`File`.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    content_type: Optional["Content_type"]
+    """The content type of the file, *e.g.*, ``application/pdf``."""
+
+    value: Optional["Path_type"]
+    """The path or URL to the file content."""
+
+    def __init__(
+        self,
+        content_type: Optional["Content_type"] = None,
+        value: Optional["Path_type"] = None,
+    ) -> None:
+        self.content_type = content_type
+        self.value = value
+
+
+@serialization(with_model_type=False)
+class Range_value(DBC):
+    """
+    The value of a :class:`Range`.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    min: float
+    """The minimum value of the range."""
+
+    max: float
+    """The maximum value of the range."""
+
+    def __init__(self, min: float, max: float) -> None:
+        self.min = min
+        self.max = max
+
+
+@serialization(with_model_type=False)
+class Relationship_element_value(DBC):
+    """
+    The value of a :class:`Relationship_element`.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    first: Optional["Reference"]
+    """Reference to the first element in the relationship."""
+
+    second: Optional["Reference"]
+    """Reference to the second element in the relationship."""
+
+    def __init__(
+        self,
+        first: Optional["Reference"] = None,
+        second: Optional["Reference"] = None,
+    ) -> None:
+        self.first = first
+        self.second = second
+
+
+@serialization(with_model_type=False)
+class Basic_event_element_value(DBC):
+    """
+    The value of a :class:`Basic_event_element`.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    observed: "Reference"
+    """Reference to the :class:`Referable`, which defines the scope of the event."""
+
+    def __init__(self, observed: "Reference") -> None:
+        self.observed = observed
+
+
+# endregion Metadata And Value Views
+
+
 # endregion Part 2

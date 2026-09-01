@@ -2201,6 +2201,375 @@ Observed literals: {sorted(literal_set)!r}""")
             errors_joined = "\n".join(tests.common.make_bullet_points(errors))
             raise AssertionError(f"One or more errors:\n{errors_joined}")
 
+    def test_metadata_classes_exclude_only_the_value_related_properties(
+        self,
+    ) -> None:
+        """
+        Assert that every ``*_metadata`` class in the "Metadata And Value
+        Views" region carries exactly the properties of its Part 1
+        counterpart, minus the value-related properties it deliberately
+        excludes, and that every property it does carry has *exactly* the
+        same type as on the Part 1 counterpart (a ``*_metadata`` class only
+        ever drops properties -- it never changes the type or the
+        optionality of the ones it keeps).
+
+        This keeps Part 1 and Part 2 in sync: if a property is added,
+        renamed, removed or re-typed on the Part 1 class, this test will
+        fail until the corresponding ``*_metadata`` class is updated to
+        match.
+        """
+        symbol_table = _META_MODEL.symbol_table
+
+        # fmt: off
+        # Map the metadata class name to
+        # (the Part 1 class name, the excluded property names)
+        cases = [
+            ("Property_metadata", "Property", {"value", "value_ID"}),
+            ("Range_metadata", "Range", {"min", "max"}),
+            ("Blob_metadata", "Blob", {"value", "content_type"}),
+            ("File_metadata", "File", {"value", "content_type"}),
+            (
+                "Multi_language_property_metadata",
+                "Multi_language_property",
+                {"value", "value_ID"},
+            ),
+            ("Reference_element_metadata", "Reference_element", {"value"}),
+            (
+                "Relationship_element_metadata",
+                "Relationship_element",
+                {"first", "second"},
+            ),
+            (
+                "Annotated_relationship_element_metadata",
+                "Annotated_relationship_element",
+                {"first", "second", "annotations"},
+            ),
+            (
+                "Entity_metadata",
+                "Entity",
+                {
+                    "statements",
+                    "entity_type",
+                    "global_asset_ID",
+                    "specific_asset_IDs",
+                },
+            ),
+            ("Capability_metadata", "Capability", set()),
+            (
+                "Operation_metadata",
+                "Operation",
+                {"input_variables", "output_variables", "inoutput_variables"},
+            ),
+            (
+                "Submodel_element_collection_metadata",
+                "Submodel_element_collection",
+                {"value"},
+            ),
+            (
+                "Submodel_element_list_metadata",
+                "Submodel_element_list",
+                {"value"},
+            ),
+            (
+                "Basic_event_element_metadata",
+                "Basic_event_element",
+                {"observed"},
+            ),
+            ("Submodel_metadata", "Submodel", {"submodel_elements"}),
+            (
+                "Asset_administration_shell_metadata",
+                "Asset_administration_shell",
+                {"asset_information", "submodels"},
+            ),
+        ]
+        # fmt: on
+
+        errors = []  # type: List[str]
+
+        for metadata_cls_name, full_cls_name, expected_excluded in cases:
+            metadata_cls = symbol_table.must_find_class(
+                aas_core_codegen.common.Identifier(metadata_cls_name)
+            )
+            full_cls = symbol_table.must_find_class(
+                aas_core_codegen.common.Identifier(full_cls_name)
+            )
+
+            metadata_props_by_name = {
+                prop.name: prop for prop in metadata_cls.properties
+            }
+            full_props_by_name = {prop.name: prop for prop in full_cls.properties}
+
+            metadata_prop_names = set(metadata_props_by_name.keys())
+            full_prop_names = set(full_props_by_name.keys())
+
+            # NOTE (mristin):
+            # This is a sanity-check that the excluded properties actually exist on the
+            # full class; otherwise the exclusion set itself is stale.
+            stale_exclusions = expected_excluded - full_prop_names
+            if stale_exclusions:
+                errors.append(
+                    f"The excluded properties {sorted(stale_exclusions)!r} for "
+                    f"{metadata_cls_name} no longer exist on {full_cls_name}; "
+                    f"update the exclusion set in this test."
+                )
+                continue
+
+            expected_metadata_prop_names = full_prop_names - expected_excluded
+
+            missing = expected_metadata_prop_names - metadata_prop_names
+            unexpected = metadata_prop_names - expected_metadata_prop_names
+
+            if missing:
+                errors.append(
+                    f"{metadata_cls_name} is missing the propert(y/ies) present "
+                    f"on {full_cls_name} and not in the excluded set: "
+                    f"{sorted(missing)!r}"
+                )
+
+            if unexpected:
+                errors.append(
+                    f"{metadata_cls_name} has the unexpected propert(y/ies), not "
+                    f"present on {full_cls_name} after excluding "
+                    f"{sorted(expected_excluded)!r}: {sorted(unexpected)!r}"
+                )
+
+            for prop_name in sorted(metadata_prop_names & full_prop_names):
+                metadata_type_str = str(
+                    metadata_props_by_name[prop_name].type_annotation
+                )
+                full_type_str = str(full_props_by_name[prop_name].type_annotation)
+
+                if metadata_type_str != full_type_str:
+                    errors.append(
+                        f"{metadata_cls_name}.{prop_name} is typed "
+                        f"{metadata_type_str!r}, but {full_cls_name}.{prop_name} "
+                        f"is typed {full_type_str!r}; the types (including "
+                        f"Optional-ness) must coincide."
+                    )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_reference_element_value_mirrors_all_properties_of_reference(
+        self,
+    ) -> None:
+        """
+        Assert that ``Reference_element_value`` carries exactly the same
+        properties as ``Reference``, each with exactly the same type.
+
+        Unlike the ``*_metadata`` classes, ``Reference_element_value`` does
+        not exclude any property: the Part 2 types ``ReferenceElementValue`` as
+        a direct alias of ``Reference``, not an object wrapping one, so it must mirror
+        *all* of ``Reference``'s properties. This keeps Part 1 and Part 2 in sync: if
+        a property is added, renamed, removed or re-typed on ``Reference``, this test
+        will fail until ``Reference_element_value`` is updated to match.
+        """
+        symbol_table = _META_MODEL.symbol_table
+
+        reference_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Reference")
+        )
+        reference_element_value_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Reference_element_value")
+        )
+
+        reference_props_by_name = {prop.name: prop for prop in reference_cls.properties}
+        reference_element_value_props_by_name = {
+            prop.name: prop for prop in reference_element_value_cls.properties
+        }
+
+        reference_prop_names = set(reference_props_by_name.keys())
+        reference_element_value_prop_names = set(
+            reference_element_value_props_by_name.keys()
+        )
+
+        missing = reference_prop_names - reference_element_value_prop_names
+        unexpected = reference_element_value_prop_names - reference_prop_names
+
+        errors = []  # type: List[str]
+
+        if missing:
+            errors.append(
+                f"Reference_element_value is missing the propert(y/ies) "
+                f"present on Reference: {sorted(missing)!r}"
+            )
+
+        if unexpected:
+            errors.append(
+                f"Reference_element_value has the unexpected propert(y/ies), "
+                f"not present on Reference: {sorted(unexpected)!r}"
+            )
+
+        for prop_name in sorted(
+            reference_prop_names & reference_element_value_prop_names
+        ):
+            reference_type_str = str(reference_props_by_name[prop_name].type_annotation)
+            reference_element_value_type_str = str(
+                reference_element_value_props_by_name[prop_name].type_annotation
+            )
+
+            if reference_type_str != reference_element_value_type_str:
+                errors.append(
+                    f"Reference_element_value.{prop_name} is typed "
+                    f"{reference_element_value_type_str!r}, but "
+                    f"Reference.{prop_name} is typed {reference_type_str!r}; "
+                    f"the types (including Optional-ness) must coincide."
+                )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_every_submodel_element_subclass_has_a_metadata_class(self) -> None:
+        """
+        Assert that every concrete subclass of ``Submodel_element`` in Part 1
+        has a corresponding ``<ClassName>_metadata`` class in the "Metadata
+        And Value Views" region.
+
+        This keeps Part 1 and Part 2 in sync: if a new submodel element type
+        is added to Part 1, this test will fail until a ``*_metadata`` class
+        is added for it too.
+        """
+        symbol_table = _META_MODEL.symbol_table
+
+        submodel_element_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Submodel_element")
+        )
+
+        errors = []  # type: List[str]
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(our_type, intermediate.ConcreteClass):
+                continue
+
+            if our_type is submodel_element_cls:
+                continue
+
+            if not our_type.is_subclass_of(submodel_element_cls):
+                continue
+
+            expected_metadata_cls_name = aas_core_codegen.common.Identifier(
+                f"{our_type.name}_metadata"
+            )
+
+            if symbol_table.find_our_type(expected_metadata_cls_name) is None:
+                errors.append(
+                    f"No {expected_metadata_cls_name!r} class found for the "
+                    f"submodel element {our_type.name!r}"
+                )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_every_submodel_element_subclass_has_a_value_class_or_is_exempted(
+        self,
+    ) -> None:
+        """
+        Assert that every concrete subclass of ``Submodel_element`` in Part 1
+        either has a corresponding ``<ClassName>_value`` class in the
+        "Metadata And Value Views" region, or is explicitly exempted below
+        with a reason.
+
+        This keeps Part 1 and Part 2 in sync: if a new submodel element type
+        is added to Part 1, this test will fail until either a ``*_value``
+        class is added for it, or it is added to the exemptions with a
+        reason (*e.g.*, because its value is ValueOnly-shaped/dynamic, or it
+        has no value at all).
+        """
+        symbol_table = _META_MODEL.symbol_table
+
+        submodel_element_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Submodel_element")
+        )
+
+        # fmt: off
+        # Map the Part 1 class name to the reason why it has no *_value class.
+        exemptions = {
+            "Property": (
+                "PropertyValue is a raw JSON string, number or boolean, not "
+                "an object."
+            ),
+            "Multi_language_property": (
+                "MultiLanguagePropertyValue is dynamic, ValueOnly-shaped JSON."
+            ),
+            "Annotated_relationship_element": (
+                "Its only difference from Relationship_element is the "
+                "annotations property, which is itself ValueOnly-shaped JSON."
+            ),
+            "Entity": (
+                "specificAssetIds is an array of the already-exempted, "
+                "dynamic SpecificAssetIdValue shape, and statements is "
+                "itself ValueOnly-shaped JSON."
+            ),
+            "Capability": "Capability has no value at all; no Value schema exists.",
+            "Operation": (
+                "Operation has no simple value; invocation uses "
+                "OperationRequest/OperationResult instead. No Value schema "
+                "exists."
+            ),
+            "Submodel_element_collection": (
+                "SubmodelElementCollectionValue is ValueOnly-shaped JSON."
+            ),
+            "Submodel_element_list": (
+                "SubmodelElementListValue is a bare JSON array, not an "
+                "object."
+            ),
+        }
+        # fmt: on
+
+        errors = []  # type: List[str]
+
+        concrete_submodel_element_names = set()  # type: Set[str]
+
+        for our_type in symbol_table.our_types:
+            if not isinstance(our_type, intermediate.ConcreteClass):
+                continue
+
+            if our_type is submodel_element_cls:
+                continue
+
+            if not our_type.is_subclass_of(submodel_element_cls):
+                continue
+
+            concrete_submodel_element_names.add(our_type.name)
+
+            expected_value_cls_name = aas_core_codegen.common.Identifier(
+                f"{our_type.name}_value"
+            )
+            value_cls_exists = (
+                symbol_table.find_our_type(expected_value_cls_name) is not None
+            )
+            is_exempted = our_type.name in exemptions
+
+            if value_cls_exists and is_exempted:
+                errors.append(
+                    f"{our_type.name!r} has both a {expected_value_cls_name!r} "
+                    f"class *and* an exemption entry; remove one of the two."
+                )
+            elif not value_cls_exists and not is_exempted:
+                errors.append(
+                    f"No {expected_value_cls_name!r} class found for the "
+                    f"submodel element {our_type.name!r}, and it is not "
+                    f"exempted either."
+                )
+
+        # NOTE (mristin):
+        # Sanity-check that the exemptions do not refer to stale/renamed
+        # submodel element classes.
+        stale_exemptions = set(exemptions.keys()) - concrete_submodel_element_names
+        if stale_exemptions:
+            errors.append(
+                f"The exemptions refer to classes which are no longer "
+                f"concrete subclasses of Submodel_element: "
+                f"{sorted(stale_exemptions)!r}"
+            )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
 
 if __name__ == "__main__":
     unittest.main()
