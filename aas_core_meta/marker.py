@@ -85,6 +85,47 @@ class serialization:
         return func
 
 
+class json_name:
+    """
+    Mark the explicit name of a property in the JSON serialization.
+
+    This is meant to be used as metadata in ``typing.Annotated`` on the type
+    annotation of a property, *e.g.*,
+    ``foo: Annotated[Optional[str], json_name("someFoo")]``, for the cases
+    where the JSON name can not be inferred from the property name by
+    the usual naming convention (as, for example, for the properties
+    starting with a special character in a query language).
+    """
+
+    def __init__(self, name: str) -> None:
+        """
+        Initialize with the given values.
+
+        :param name: explicit name of the property in the JSON serialization
+        """
+        self.name = name
+
+
+class xml_name:
+    """
+    Mark the explicit name of a property in the XML serialization.
+
+    This is meant to be used as metadata in ``typing.Annotated`` on the type
+    annotation of a property, *e.g.*,
+    ``foo: Annotated[Optional[str], xml_name("someFoo")]``, for the cases
+    where the XML name can not be inferred from the property name by
+    the usual naming convention.
+    """
+
+    def __init__(self, name: str) -> None:
+        """
+        Initialize with the given values.
+
+        :param name: explicit name of the property in the XML serialization
+        """
+        self.name = name
+
+
 def verification(thing: CallableT) -> CallableT:
     """Mark the function as a verification function used in contracts."""
     return thing
