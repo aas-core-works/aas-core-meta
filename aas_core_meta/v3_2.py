@@ -6364,8 +6364,8 @@ class Endpoint(DBC):
 )
 @invariant(
     lambda self:
-    not (self.endpoint_protocol_versions is not None)
-    or len(self.endpoint_protocol_versions) >= 1,
+    not (self.endpoint_protocol_version is not None)
+    or len(self.endpoint_protocol_version) >= 1,
     "Endpoint protocol versions must be either not set or have at least one item."
 )
 # fmt: on
@@ -6396,7 +6396,7 @@ class Protocol_information(DBC):
     The scheme denotes the highest level of doubtless transmission.
     """
 
-    endpoint_protocol_versions: Optional[List["Name_type"]]
+    endpoint_protocol_version: Optional[List["Name_type"]]
     """
     Each entry represents one supported version at this very endpoint, the entry shall
     be formatted according to the regulations of the protocol specified in
@@ -6446,7 +6446,7 @@ class Protocol_information(DBC):
         self,
         href: "Locator_type",
         endpoint_protocol: Optional["Scheme_type"] = None,
-        endpoint_protocol_versions: Optional[List["Name_type"]] = None,
+        endpoint_protocol_version: Optional[List["Name_type"]] = None,
         subprotocol: Optional["Short_ID_type"] = None,
         subprotocol_body: Optional["Text_type"] = None,
         subprotocol_body_encoding: Optional["Name_type"] = None,
@@ -6454,7 +6454,7 @@ class Protocol_information(DBC):
     ) -> None:
         self.href = href
         self.endpoint_protocol = endpoint_protocol
-        self.endpoint_protocol_versions = endpoint_protocol_versions
+        self.endpoint_protocol_version = endpoint_protocol_version
         self.subprotocol = subprotocol
         self.subprotocol_body = subprotocol_body
         self.subprotocol_body_encoding = subprotocol_body_encoding
@@ -6513,30 +6513,6 @@ class Security_type_enum(Enum):
 
     W3C_DID = "W3C_DID"
     """Decentralized Identifiers according to the W3C Recommendation."""
-
-
-class Protocol_version(DBC):
-    """
-    A single protocol version supported at a network resource endpoint.
-
-    This class is not part of the metamodel. It represents a single entry of
-    :attr:`Protocol_information.endpoint_protocol_versions`, which is specified
-    as an array of plain strings in the specification.
-
-    See:
-    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ProtocolInformation
-    """
-
-    value: "Name_type"
-    """
-    The supported version.
-
-    The entry shall be formatted according to the regulations of the protocol
-    specified in :attr:`Protocol_information.href`.
-    """
-
-    def __init__(self, value: "Name_type") -> None:
-        self.value = value
 
 
 class Asset_link(DBC):
@@ -7572,10 +7548,11 @@ class Status_code(Enum):
 # fmt: off
 @invariant(
     lambda self:
-    not (self.message is not None)
-    or len(self.message) >= 1,
-    "Message must be either not set or have at least one item."
+    not (self.messages is not None)
+    or len(self.messages) >= 1,
+    "Messages must be either not set or have at least one item."
 )
+@serialization(with_model_type=True)
 # fmt: on
 class Result(DBC):
     """
@@ -7585,11 +7562,11 @@ class Result(DBC):
     https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#Result
     """
 
-    message: Optional[List["Message"]]
-    """Additional message containing information for the requester"""
+    messages: Optional[List["Message"]]
+    """Additional messages containing information for the requester"""
 
-    def __init__(self, message: Optional[List["Message"]] = None) -> None:
-        self.message = message
+    def __init__(self, messages: Optional[List["Message"]] = None) -> None:
+        self.messages = messages
 
 
 class Message(DBC):
@@ -7613,7 +7590,7 @@ class Message(DBC):
     correlation_ID: Optional["Short_ID_type"]
     """Identifier to relate several result messages throughout several systems"""
 
-    timestamp: Optional["Date_time"]
+    timestamp: Optional["Date_time_UTC"]
     """Timestamp of the message"""
 
     def __init__(
@@ -7622,7 +7599,7 @@ class Message(DBC):
         text: str,
         code: Optional["Code_type"] = None,
         correlation_ID: Optional["Short_ID_type"] = None,
-        timestamp: Optional["Date_time"] = None,
+        timestamp: Optional["Date_time_UTC"] = None,
     ) -> None:
         self.message_type = message_type
         self.text = text
@@ -7637,6 +7614,16 @@ class Message_type_enum(Enum):
 
     See:
     https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#MessageTypeEnum
+    """
+
+    Undefined = "Undefined"
+    """
+    Used when the message type has not been set.
+
+    .. note::
+
+        Not documented in the book prose; present as a literal in the
+        OpenAPI schema's ``messageType`` enumeration.
     """
 
     Info = "Info"
@@ -7665,6 +7652,7 @@ class Message_type_enum(Enum):
     or len(self.inoutput_arguments) >= 1,
     "InOutput arguments must be either not set or have at least one item."
 )
+@serialization(with_model_type=True)
 # fmt: on
 class Operation_request(DBC):
     """
@@ -7742,6 +7730,7 @@ class Operation_request_async(Operation_request):
 # https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#operation-request-value-only
 
 
+@serialization(with_model_type=True)
 class Base_operation_result(Result):
     """
     The object containing the intermediate state of an operation.
@@ -7762,10 +7751,10 @@ class Base_operation_result(Result):
     def __init__(
         self,
         execution_state: "Execution_state",
-        message: Optional[List["Message"]] = None,
+        messages: Optional[List["Message"]] = None,
         success: Optional[bool] = None,
     ) -> None:
-        Result.__init__(self, message=message)
+        Result.__init__(self, messages=messages)
 
         self.execution_state = execution_state
         self.success = success
@@ -7802,7 +7791,7 @@ class Operation_result(Base_operation_result):
     def __init__(
         self,
         execution_state: "Execution_state",
-        message: Optional[List["Message"]] = None,
+        messages: Optional[List["Message"]] = None,
         success: Optional[bool] = None,
         output_arguments: Optional[List["Operation_variable"]] = None,
         inoutput_arguments: Optional[List["Operation_variable"]] = None,
@@ -7810,7 +7799,7 @@ class Operation_result(Base_operation_result):
         Base_operation_result.__init__(
             self,
             execution_state=execution_state,
-            message=message,
+            messages=messages,
             success=success,
         )
 
