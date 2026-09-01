@@ -890,6 +890,25 @@ def matches_xs_non_negative_integer(text: str) -> bool:
     return match(pattern, text) is not None
 
 
+# noinspection PyUnusedLocal
+@verification
+@implementation_specific
+def is_xs_non_negative_integer(text: str) -> bool:
+    """
+    Check that :paramref:`text` is a valid ``xs:nonNegativeInteger``.
+
+    The ``text`` is assumed to match a pre-defined pattern for
+    ``xs:nonNegativeInteger``. In this function, we check that the represented
+    number fits within the value range supported by the target implementation.
+
+    See: https://www.w3.org/TR/xmlschema-2/#nonNegativeInteger
+
+    :param text: Text to be checked
+    :returns: True if the :paramref:`text` is a valid ``xs:nonNegativeInteger``
+    """
+    raise NotImplementedError()
+
+
 @verification
 def matches_xs_positive_integer(text: str) -> bool:
     """
@@ -1384,6 +1403,18 @@ class Non_empty_XML_serializable_string(XML_serializable_string, DBC):
 )
 class Date_time_UTC(str, DBC):
     """Represent an ``xs:dateTime`` with the time zone fixed to UTC."""
+
+
+@invariant(
+    lambda self: is_xs_date_time(self),
+    "The value must represent a valid xs:dateTime.",
+)
+@invariant(
+    lambda self: matches_xs_date_time(self),
+    "The value must match the pattern of xs:dateTime.",
+)
+class Date_time(str, DBC):
+    """Represent an ``xs:dateTime``."""
 
 
 @invariant(
@@ -5995,6 +6026,42 @@ class Data_specification_IEC_61360(Data_specification_content):
 # region Part 2
 
 
+# region API Interfaces
+
+
+class Serialization_format(Enum):
+    """
+    Determines the format of serialization, for example JSON or XML.
+
+    The values are media types conformant to RFC 2046 and registered as
+    described in RFC 6838 (IANA).
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces.html#SerializationFormat
+    """
+
+    JSON = "application/json"
+    """
+    JSON serialization of the requested data object inside an AAS
+    Environment structure
+    """
+
+    XML = "application/xml"
+    """
+    XML serialization of the requested data object inside an AAS Environment
+    structure.
+    """
+
+    AASX = "application/aasx+xml"
+    """AASX-Package (binary data) containing the requested data object"""
+
+
+# endregion API Interfaces
+
+
+# region Data Types For Payload
+
+
 @abstract
 # fmt: off
 @invariant(
@@ -6448,6 +6515,30 @@ class Security_type_enum(Enum):
     """Decentralized Identifiers according to the W3C Recommendation."""
 
 
+class Protocol_version(DBC):
+    """
+    A single protocol version supported at a network resource endpoint.
+
+    This class is not part of the metamodel. It represents a single entry of
+    :attr:`Protocol_information.endpoint_protocol_versions`, which is specified
+    as an array of plain strings in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ProtocolInformation
+    """
+
+    value: "Name_type"
+    """
+    The supported version.
+
+    The entry shall be formatted according to the regulations of the protocol
+    specified in :attr:`Protocol_information.href`.
+    """
+
+    def __init__(self, value: "Name_type") -> None:
+        self.value = value
+
+
 class Asset_link(DBC):
     """
     Asset identifier derived from either :class:`Specific_asset_ID` or
@@ -6473,35 +6564,921 @@ class Asset_link(DBC):
         self.value = value
 
 
-class Protocol_version(DBC):
+@invariant(
+    lambda self: len(self.profiles) >= 1,
+    "Profiles must contain at least one item.",
+)
+class Service_description(DBC):
     """
-    A single protocol version supported at a network resource endpoint.
+    The self-describing information of an API Implementation. It enables
+    servers to present their capabilities to the clients, in particular
+    which profiles they implement. At least one defined profile is
+    required. Additional, proprietary attributes might be included.
+    Nevertheless, the server must not expect that a regular client
+    understands them.
 
-    This class is not part of the metamodel. It represents a single entry of
-    :attr:`Protocol_information.endpoint_protocol_versions`, which is specified
-    as an array of plain strings in the specification.
+    This class is not part of the metamodel.
 
     See:
-    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ProtocolInformation
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ServiceDescription
     """
 
-    value: "Name_type"
+    profiles: List["Service_specification_profile_enum"]
+    """List of implemented server specification profiles."""
+
+    def __init__(self, profiles: List["Service_specification_profile_enum"]) -> None:
+        self.profiles = profiles
+
+
+class Service_specification_profile_enum(Enum):
     """
-    The supported version.
+    The identifiers of the standardized service specification profiles.
+    See also Clause Service Specifications and Profiles for further
+    details.
 
-    The entry shall be formatted according to the regulations of the protocol
-    specified in :attr:`Protocol_information.href`.
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ServiceSpecificationProfileEnum
+
+    See also Clause Service Specifications and Profiles:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/service-specifications-and-profiles.html#service-specifications-and-profiles
     """
 
-    def __init__(self, value: "Name_type") -> None:
-        self.value = value
+    AAS_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "AssetAdministrationShellServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all features of the Asset Administration
+    Shell Service Specification Full Profile in version 3.0.
+    """
+
+    AAS_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all features of the Asset Administration
+    Shell Service Specification Full Profile in version 3.1.
+    """
+
+    AAS_service_specification_SSP_001_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all features of the Asset Administration
+    Shell Service Specification Full Profile in version 3.2.
+    """
+
+    AAS_service_specification_SSP_002_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "AssetAdministrationShellServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all features of the Asset Administration
+    Shell Service Specification Read Profile in version 3.0.
+    """
+
+    AAS_service_specification_SSP_002_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all features of the Asset Administration
+    Shell Service Specification Read Profile in version 3.1.
+    """
+
+    AAS_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all features of the Asset Administration
+    Shell Service Specification Read Profile in version 3.2.
+    """
+
+    Submodel_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/SubmodelServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Full Profile in version 3.0.
+    """
+
+    Submodel_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/SubmodelServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Full Profile in version 3.1.
+    """
+
+    Submodel_service_specification_SSP_001_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/SubmodelServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Full Profile in version 3.2.
+    """
+
+    Submodel_service_specification_SSP_002_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/SubmodelServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Value Profile in version 3.0.
+    """
+
+    Submodel_service_specification_SSP_002_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/SubmodelServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Value Profile in version 3.1.
+    """
+
+    Submodel_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/SubmodelServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Value Profile in version 3.2.
+    """
+
+    Submodel_service_specification_SSP_003_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/SubmodelServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Read Profile in version 3.0.
+    """
+
+    Submodel_service_specification_SSP_003_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/SubmodelServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Read Profile in version 3.1.
+    """
+
+    Submodel_service_specification_SSP_003_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/SubmodelServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all features of the Submodel Service
+    Specification Read Profile in version 3.2.
+    """
+
+    AASX_file_server_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "AasxFileServerServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the AASX File Server
+    Service Specification Full Profile in version 3.0.
+    """
+
+    AASX_file_server_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AasxFileServerServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the AASX File Server
+    Service Specification Full Profile in version 3.1.
+    """
+
+    AASX_file_server_service_specification_SSP_001_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AasxFileServerServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the AASX File Server
+    Service Specification Full Profile in version 3.2.
+    """
+
+    AASX_file_server_service_specification_SSP_002_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AasxFileServerServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the AASX File Server
+    Service Specification Read Profile in version 3.1.
+    """
+
+    AASX_file_server_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AasxFileServerServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the AASX File Server
+    Service Specification Read Profile in version 3.2.
+    """
+
+    AAS_registry_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Full Profile in version 3.0.
+    """
+
+    AAS_registry_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Full Profile in version 3.1.
+    """
+
+    AAS_registry_service_specification_SSP_001_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Full Profile in version 3.2.
+    """
+
+    AAS_registry_service_specification_SSP_002_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Read Profile in version 3.0.
+    """
+
+    AAS_registry_service_specification_SSP_002_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Read Profile in version 3.1.
+    """
+
+    AAS_registry_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Read Profile in version 3.2.
+    """
+
+    AAS_registry_service_specification_SSP_003_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Bulk Profile in version 3.1.
+    """
+
+    AAS_registry_service_specification_SSP_003_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Bulk Profile in version 3.2.
+    """
+
+    AAS_registry_service_specification_SSP_004_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-004"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Query Profile in version 3.1.
+    """
+
+    AAS_registry_service_specification_SSP_004_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-004"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Query Profile in version 3.2.
+    """
+
+    AAS_registry_service_specification_SSP_005_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-005"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Minimal Read Profile in version 3.1.
+    """
+
+    AAS_registry_service_specification_SSP_005_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRegistryServiceSpecification/SSP-005"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Registry Service Specification Minimal Read Profile in version 3.2.
+    """
+
+    Submodel_registry_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "SubmodelRegistryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Full Profile in version 3.0.
+    """
+
+    Submodel_registry_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRegistryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Full Profile in version 3.1.
+    """
+
+    Submodel_registry_service_specification_SSP_001_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRegistryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Full Profile in version 3.2.
+    """
+
+    Submodel_registry_service_specification_SSP_002_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "SubmodelRegistryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Read Profile in version 3.0.
+    """
+
+    Submodel_registry_service_specification_SSP_002_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRegistryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Read Profile in version 3.1.
+    """
+
+    Submodel_registry_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRegistryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Read Profile in version 3.2.
+    """
+
+    Submodel_registry_service_specification_SSP_003_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRegistryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Bulk Profile in version 3.1.
+    """
+
+    Submodel_registry_service_specification_SSP_003_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRegistryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Bulk Profile in version 3.2.
+    """
+
+    Submodel_registry_service_specification_SSP_004_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRegistryServiceSpecification/SSP-004"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Query Profile in version 3.1.
+    """
+
+    Submodel_registry_service_specification_SSP_004_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRegistryServiceSpecification/SSP-004"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Registry
+    Service Specification Query Profile in version 3.2.
+    """
+
+    Discovery_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/" "DiscoveryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Discovery Service
+    Specification Full Profile in version 3.0.
+    """
+
+    Discovery_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/" "DiscoveryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Discovery Service
+    Specification Full Profile in version 3.1.
+    """
+
+    Discovery_service_specification_SSP_001_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/" "DiscoveryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Discovery Service
+    Specification Full Profile in version 3.2.
+    """
+
+    Discovery_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/" "DiscoveryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Discovery Service
+    Specification Read Profile in version 3.1.
+    """
+
+    AAS_repository_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Full Profile in version 3.0.
+    """
+
+    AAS_repository_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Full Profile in version 3.1.
+    """
+
+    AAS_repository_service_specification_SSP_001_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Read Profile in version 3.2.
+    """
+
+    AAS_repository_service_specification_SSP_002_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Read Profile in version 3.0.
+    """
+
+    AAS_repository_service_specification_SSP_002_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Read Profile in version 3.1.
+    """
+
+    AAS_repository_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Read Profile in version 3.2.
+    """
+
+    AAS_repository_service_specification_SSP_003_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Query Profile in version 3.1.
+    """
+
+    AAS_repository_service_specification_SSP_003_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Query Profile in version 3.2.
+    """
+
+    AAS_repository_service_specification_SSP_004_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-004"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Signature Profile in version 3.2.
+    """
+
+    AAS_repository_service_specification_SSP_005_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "AssetAdministrationShellRepositoryServiceSpecification/SSP-005"
+    )
+    """
+    Indicates that the server implemented all details of the Asset Administration
+    Shell Repository Service Specification Identifiable Profile in version 3.2.
+    """
+
+    Submodel_repository_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "SubmodelRepositoryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Full Profile in version 3.0.
+    """
+
+    Submodel_repository_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRepositoryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Full Profile in version 3.1.
+    """
+
+    Submodel_repository_service_specification_SSP_001_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRepositoryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Full Profile in version 3.2.
+    """
+
+    Submodel_repository_service_specification_SSP_002_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "SubmodelRepositoryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Read Profile in version 3.0.
+    """
+
+    Submodel_repository_service_specification_SSP_002_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRepositoryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Read Profile in version 3.1.
+    """
+
+    Submodel_repository_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRepositoryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Read Profile in version 3.2.
+    """
+
+    Submodel_repository_service_specification_SSP_003_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "SubmodelRepositoryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Template Profile in version 3.0.
+    """
+
+    Submodel_repository_service_specification_SSP_003_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRepositoryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Template Profile in version 3.1.
+    """
+
+    Submodel_repository_service_specification_SSP_003_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRepositoryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Template Profile in version 3.2.
+    """
+
+    Submodel_repository_service_specification_SSP_004_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "SubmodelRepositoryServiceSpecification/SSP-004"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Template Read Profile in version 3.0.
+    """
+
+    Submodel_repository_service_specification_SSP_004_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRepositoryServiceSpecification/SSP-004"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Template Read Profile in version 3.1.
+    """
+
+    Submodel_repository_service_specification_SSP_004_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRepositoryServiceSpecification/SSP-004"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Template Read Profile in version 3.2.
+    """
+
+    Submodel_repository_service_specification_SSP_005_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "SubmodelRepositoryServiceSpecification/SSP-005"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Query Profile in version 3.1.
+    """
+
+    Submodel_repository_service_specification_SSP_005_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRepositoryServiceSpecification/SSP-005"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Query Profile in version 3.2.
+    """
+
+    Submodel_repository_service_specification_SSP_006_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "SubmodelRepositoryServiceSpecification/SSP-006"
+    )
+    """
+    Indicates that the server implemented all details of the Submodel Service
+    Repository Specification Signature Profile in version 3.2.
+    """
+
+    Concept_description_repository_service_specification_SSP_001_V3_0 = (
+        "https://admin-shell.io/aas/API/3/0/"
+        "ConceptDescriptionRepositoryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Concept Description
+    Repository Service Specification Profile in version 3.0.
+    """
+
+    Concept_description_repository_service_specification_SSP_001_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "ConceptDescriptionRepositoryServiceSpecification/SSP-001"
+    )
+    """
+    Indicates that the server implemented all details of the Concept Description
+    Repository Service Specification Profile in version 3.1.
+    """
+
+    Concept_description_repository_service_specification_SSP_002_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "ConceptDescriptionRepositoryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Concept Description
+    Repository Service Specification Query Profile in version 3.2.
+    """
+
+    Concept_description_repository_service_specification_SSP_002_V3_1 = (
+        "https://admin-shell.io/aas/API/3/1/"
+        "ConceptDescriptionRepositoryServiceSpecification/SSP-002"
+    )
+    """
+    Indicates that the server implemented all details of the Concept Description
+    Repository Service Specification Query Profile in version 3.1.
+    """
+
+    Concept_description_repository_service_specification_SSP_003_V3_2 = (
+        "https://admin-shell.io/aas/API/3/2/"
+        "ConceptDescriptionRepositoryServiceSpecification/SSP-003"
+    )
+    """
+    Indicates that the server implemented all details of the Concept Description
+    Repository Service Specification Signature Profile in version 3.2.
+    """
 
 
+@abstract
+class Recent_change(DBC):
+    """
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#RecentChange
+    """
+
+    created_at: "Date_time_UTC"
+    """The point in time at which the Identifiable object was created"""
+
+    updated_at: "Date_time_UTC"
+    """
+    The point in time at which the Identifiable object was recently updated
+    """
+
+    def __init__(
+        self, created_at: "Date_time_UTC", updated_at: "Date_time_UTC"
+    ) -> None:
+        self.created_at = created_at
+        self.updated_at = updated_at
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.specific_asset_IDs is not None)
+    or len(self.specific_asset_IDs) >= 1,
+    "Specific asset IDs must be either not set or have at least one item."
+)
+# fmt: on
+class Asset_administration_shell_recent_change(Recent_change):
+    """
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#AssetAdministrationShellRecentChange
+    """
+
+    ID: "Identifier"
+    """Globally unique identification of the Asset Administration Shell"""
+
+    global_asset_ID: Optional["Identifier"]
+    """Global reference to the asset the AAS is representing"""
+
+    specific_asset_IDs: Optional[List["Specific_asset_ID"]]
+    """Specific asset identifier"""
+
+    def __init__(
+        self,
+        created_at: "Date_time_UTC",
+        updated_at: "Date_time_UTC",
+        ID: "Identifier",
+        global_asset_ID: Optional["Identifier"] = None,
+        specific_asset_IDs: Optional[List["Specific_asset_ID"]] = None,
+    ) -> None:
+        Recent_change.__init__(self, created_at=created_at, updated_at=updated_at)
+
+        self.ID = ID
+        self.global_asset_ID = global_asset_ID
+        self.specific_asset_IDs = specific_asset_IDs
+
+
+class Concept_description_recent_change(Recent_change):
+    """
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ConceptDescriptionRecentChange
+    """
+
+    ID: "Identifier"
+    """Globally unique identification of the Submodel"""
+
+    def __init__(
+        self,
+        created_at: "Date_time_UTC",
+        updated_at: "Date_time_UTC",
+        ID: "Identifier",
+    ) -> None:
+        Recent_change.__init__(self, created_at=created_at, updated_at=updated_at)
+
+        self.ID = ID
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.supplemental_semantic_IDs is not None)
+    or (self.semantic_ID is not None),
+    "If there are supplemental semantic IDs defined then there shall be also "
+    "a main semantic ID."
+)
+@invariant(
+    lambda self:
+    not (self.supplemental_semantic_IDs is not None)
+    or len(self.supplemental_semantic_IDs) >= 1,
+    "Supplemental semantic IDs must be either not set or have at least one item."
+)
+# fmt: on
+class Submodel_recent_change(Recent_change):
+    """
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#SubmodelRecentChange
+    """
+
+    ID: "Identifier"
+    """Globally unique identification of the Submodel"""
+
+    semantic_ID: Optional["Reference"]
+    """Identifier of the semantic definition of the Submodel"""
+
+    supplemental_semantic_IDs: Optional[List["Reference"]]
+    """
+    Identifier of a supplemental semantic definition of the element called
+    supplemental semantic ID of the element
+    """
+
+    def __init__(
+        self,
+        created_at: "Date_time_UTC",
+        updated_at: "Date_time_UTC",
+        ID: "Identifier",
+        semantic_ID: Optional["Reference"] = None,
+        supplemental_semantic_IDs: Optional[List["Reference"]] = None,
+    ) -> None:
+        Recent_change.__init__(self, created_at=created_at, updated_at=updated_at)
+
+        self.ID = ID
+        self.semantic_ID = semantic_ID
+        self.supplemental_semantic_IDs = supplemental_semantic_IDs
+
+
+@invariant(
+    lambda self: self >= 0,
+    "The value must be a non-negative integer.",
+)
+class Non_negative_integer(int, DBC):
+    """
+    The ``nonNegativeInteger`` datatype as defined by XML Schema Part 2 in
+    version 1.0.
+
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#_simple_data_types
+    """
+
+
+# region Primitive Data Types
+#
+# See:
+# https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#_primitive_data_types
+
+
+# fmt: off
+@invariant(
+    lambda self: len(self) >= 1,
+    "The value must not be empty."
+)
+@invariant(
+    lambda self: len(self) <= 32,
+    "Code type shall have a maximum length of 32 characters.",
+)
+# fmt: on
+class Code_type(str, DBC):
+    """
+    string with max 32 and min 1 characters
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#CodeType
+    """
+
+
+class Short_ID_type(Name_type, DBC):
+    """
+    same as :class:`Name_type` (string with max 128 and min 1 characters)
+
+    .. note::
+
+        :class:`Short_ID_type` is *not* the data type of :class:`ID_short_type`
+        attributes, but for IDs which shall be shorter than the identifier type.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ShortIdType
+    """
+
+
+# fmt: off
+@invariant(
+    lambda self: len(self) >= 1,
+    "The value must not be empty."
+)
 @invariant(
     lambda self: len(self) <= 2048,
     "Locator type shall have a maximum length of 2048 characters.",
 )
-class Locator_type(Non_empty_XML_serializable_string, DBC):
+# fmt: on
+class Locator_type(str, DBC):
     """
     string with max 2048 and min 1 characters
 
@@ -6510,44 +7487,633 @@ class Locator_type(Non_empty_XML_serializable_string, DBC):
     """
 
 
-class Scheme_type(Name_type, DBC):
-    """
-    NameType
-
-    string with max 128 and min 1 characters
-
-    See:
-    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#SchemeType
-    """
-
-
-class Short_ID_type(Name_type, DBC):
-    """
-    NameType
-
-    string with max 128 and min 1 characters
-
-    .. note::
-
-        :class:`Short_ID_type` is not the data type of :class:`ID_short_type`
-        attributes, but for IDs which shall be shorter than the identifier type.
-
-    See:
-    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ShortIdType
-    """
-
-
+# fmt: off
+@invariant(
+    lambda self: len(self) >= 1,
+    "The value must not be empty."
+)
 @invariant(
     lambda self: len(self) <= 2048,
     "Text type shall have a maximum length of 2048 characters.",
 )
-class Text_type(Non_empty_XML_serializable_string, DBC):
+# fmt: on
+class Text_type(str, DBC):
     """
     string with max 2048 and min 1 characters
 
     See:
     https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#TextType
     """
+
+
+class Scheme_type(Name_type, DBC):
+    """
+    same as NameType (string with max 128 and min 1 characters)
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#SchemeType
+    """
+
+
+# endregion Primitive Data Types
+
+
+class Status_code(Enum):
+    """
+    Generic status codes.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#StatusCode
+    """
+
+    Success = "Success"
+    """Success"""
+
+    Success_created = "SuccessCreated"
+    """Successful creation of a new resource"""
+
+    Success_accepted = "SuccessAccepted"
+    """The reception of the request was successful"""
+
+    Success_no_content = "SuccessNoContent"
+    """Success with explicitly no content in the payload"""
+
+    Client_error_bad_request = "ClientErrorBadRequest"
+    """Bad or malformed request"""
+
+    Client_not_authorized = "ClientNotAuthorized"
+    """Wrong or missing authorization credentials"""
+
+    Client_forbidden = "ClientForbidden"
+    """Authorization has been refused"""
+
+    Client_method_not_allowed = "ClientMethodNotAllowed"
+    """Operation request is not allowed"""
+
+    Client_error_resource_not_found = "ClientErrorResourceNotFound"
+    """Resource not found"""
+
+    Client_resource_conflict = "ClientResourceConflict"
+    """Conflict-creating resource (resource already exists)"""
+
+    Server_internal_error = "ServerInternalError"
+    """Unexpected error"""
+
+    Server_not_implemented = "ServerNotImplemented"
+    """
+    The server has not implemented this API Operation. Intended for cases
+    where API Operations beyond the supported service profiles are requested.
+    """
+
+    Server_error_bad_gateway = "ServerErrorBadGateway"
+    """Bad gateway"""
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.message is not None)
+    or len(self.message) >= 1,
+    "Message must be either not set or have at least one item."
+)
+# fmt: on
+class Result(DBC):
+    """
+    The result object.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#Result
+    """
+
+    message: Optional[List["Message"]]
+    """Additional message containing information for the requester"""
+
+    def __init__(self, message: Optional[List["Message"]] = None) -> None:
+        self.message = message
+
+
+class Message(DBC):
+    """
+    A message containing more information for the requester about a certain
+    happening in the backend.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#Message
+    """
+
+    message_type: "Message_type_enum"
+    """The message type"""
+
+    text: str
+    """The message text"""
+
+    code: Optional["Code_type"]
+    """Technology-dependent status or error code"""
+
+    correlation_ID: Optional["Short_ID_type"]
+    """Identifier to relate several result messages throughout several systems"""
+
+    timestamp: Optional["Date_time"]
+    """Timestamp of the message"""
+
+    def __init__(
+        self,
+        message_type: "Message_type_enum",
+        text: str,
+        code: Optional["Code_type"] = None,
+        correlation_ID: Optional["Short_ID_type"] = None,
+        timestamp: Optional["Date_time"] = None,
+    ) -> None:
+        self.message_type = message_type
+        self.text = text
+        self.code = code
+        self.correlation_ID = correlation_ID
+        self.timestamp = timestamp
+
+
+class Message_type_enum(Enum):
+    """
+    The message type.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#MessageTypeEnum
+    """
+
+    Info = "Info"
+    """Used to inform the user about a certain fact"""
+
+    Warning = "Warning"
+    """Used for warnings; warnings may lead to errors in the subsequent execution"""
+
+    Error = "Error"
+    """Used for handling errors"""
+
+    Exception = "Exception"
+    """Used in case of an internal and/or unhandled exception"""
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.input_arguments is not None)
+    or len(self.input_arguments) >= 1,
+    "Input arguments must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.inoutput_arguments is not None)
+    or len(self.inoutput_arguments) >= 1,
+    "InOutput arguments must be either not set or have at least one item."
+)
+# fmt: on
+class Operation_request(DBC):
+    """
+    The operation request object.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#OperationRequest
+    """
+
+    input_arguments: Optional[List["Operation_variable"]]
+    """Input argument"""
+
+    inoutput_arguments: Optional[List["Operation_variable"]]
+    """InOutput argument"""
+
+    client_timeout_duration: Optional["Duration"]
+    """
+    Duration indicating when the client suggests the server to have finished
+    execution of the invoked operation. The server may take this value into account to
+    decide on its effective timeout, however, the server may or may not use by its own
+    discretion.
+    """
+
+    def __init__(
+        self,
+        input_arguments: Optional[List["Operation_variable"]] = None,
+        inoutput_arguments: Optional[List["Operation_variable"]] = None,
+        client_timeout_duration: Optional["Duration"] = None,
+    ) -> None:
+        self.input_arguments = input_arguments
+        self.inoutput_arguments = inoutput_arguments
+        self.client_timeout_duration = client_timeout_duration
+
+
+@invariant(
+    lambda self: self.client_timeout_duration is not None,
+    "Client timeout duration must be set for asynchronous operation invocation.",
+)
+class Operation_request_async(Operation_request):
+    """
+    The operation request object for asynchronous invocation.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification. It corresponds to the request body of the
+    ``InvokeOperationAsync`` operation, which is :class:`Operation_request`
+    with :attr:`~Operation_request.client_timeout_duration` made mandatory.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces.html#_operation_invokeoperationasync
+    """
+
+    def __init__(
+        self,
+        input_arguments: Optional[List["Operation_variable"]] = None,
+        inoutput_arguments: Optional[List["Operation_variable"]] = None,
+        client_timeout_duration: Optional["Duration"] = None,
+    ) -> None:
+        Operation_request.__init__(
+            self,
+            input_arguments=input_arguments,
+            inoutput_arguments=inoutput_arguments,
+            client_timeout_duration=client_timeout_duration,
+        )
+
+
+# NOTE (mristin):
+# OperationRequestValueOnly is not formalized here. Its inputArguments/
+# inoutputArguments are typed ValueOnly, which is not a metamodel class, but
+# a dynamic JSON serialization mode defined in Part 1's mappings. Its shape mirrors
+# the corresponding submodel element's own (recursive) structure and has no fixed
+# set of attributes, so it does not fit this meta-model's static, attribute-typed
+# class representation.
+#
+# See:
+# https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#operation-request-value-only
+
+
+class Base_operation_result(Result):
+    """
+    The object containing the intermediate state of an operation.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#BaseOperationResult
+    """
+
+    execution_state: "Execution_state"
+    """Execution state"""
+
+    success: Optional[bool]
+    """
+    Flag indicating whether the business operation behind the operation was
+    successful (true) or not (false)
+    """
+
+    def __init__(
+        self,
+        execution_state: "Execution_state",
+        message: Optional[List["Message"]] = None,
+        success: Optional[bool] = None,
+    ) -> None:
+        Result.__init__(self, message=message)
+
+        self.execution_state = execution_state
+        self.success = success
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.output_arguments is not None)
+    or len(self.output_arguments) >= 1,
+    "Output arguments must be either not set or have at least one item."
+)
+@invariant(
+    lambda self:
+    not (self.inoutput_arguments is not None)
+    or len(self.inoutput_arguments) >= 1,
+    "InOutput arguments must be either not set or have at least one item."
+)
+# fmt: on
+class Operation_result(Base_operation_result):
+    """
+    The operation's invocation result object.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#OperationResult
+    """
+
+    output_arguments: Optional[List["Operation_variable"]]
+    """Output argument"""
+
+    inoutput_arguments: Optional[List["Operation_variable"]]
+    """InOutput argument"""
+
+    def __init__(
+        self,
+        execution_state: "Execution_state",
+        message: Optional[List["Message"]] = None,
+        success: Optional[bool] = None,
+        output_arguments: Optional[List["Operation_variable"]] = None,
+        inoutput_arguments: Optional[List["Operation_variable"]] = None,
+    ) -> None:
+        Base_operation_result.__init__(
+            self,
+            execution_state=execution_state,
+            message=message,
+            success=success,
+        )
+
+        self.output_arguments = output_arguments
+        self.inoutput_arguments = inoutput_arguments
+
+
+# NOTE (mristin):
+# OperationResultValueOnly is not formalized here. Its outputArguments/
+# inoutputArguments are typed ValueOnly, which is not a metamodel class, but
+# a dynamic JSON serialization mode defined in Part 1's mappings. Its shape mirrors
+# the corresponding submodel element's own (recursive) structure and has no fixed
+# set of attributes, so it does not fit this meta-model's static, attribute-typed
+# class representation.
+#
+# See:
+# https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#operation-result-value-only
+
+
+class Execution_state(Enum):
+    """
+    The operation's invocation result state.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#ExecutionState
+    """
+
+    Initiated = "Initiated"
+    """The operation is ready to be executed (initial state)"""
+
+    Running = "Running"
+    """The operation is running"""
+
+    Completed = "Completed"
+    """The operation is completed"""
+
+    Canceled = "Canceled"
+    """The operation was cancelled externally"""
+
+    Failed = "Failed"
+    """The operation failed"""
+
+    Timeout = "Timeout"
+    """The operation has timed out due to given client or server timeout"""
+
+
+class Operation_handle(DBC):
+    """
+    The returned handle of an operation's asynchronous invocation used to
+    request the current state of the operation's execution.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#OperationHandle
+    """
+
+    handle_ID: "Short_ID_type"
+    """Handle ID"""
+
+    def __init__(self, handle_ID: "Short_ID_type") -> None:
+        self.handle_ID = handle_ID
+
+
+# endregion Data Types For Payload
+
+# region Basic Operation Parameters
+#
+# See:
+# https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+
+
+class Level(Enum):
+    """
+    Indicates the depth of the structure of the response or input content.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    Deep = "Deep"
+    """
+    All elements of a requested hierarchy level and all children on all
+    sublevels are returned.
+
+    Children in this sense are SubmodelElements which are contained at the
+    'submodelElements' field of Submodels, the 'value' field of
+    SubmodelElementCollections or SubmodelElementLists, the 'statements'
+    field of Entities, or the 'annotations' field of
+    AnnotatedRelationshipElements.
+    """
+
+    Core = "Core"
+    """
+    Only elements of a requested hierarchy level as well as direct children
+    are returned. By this, a client can iterate the hierarchy step by step.
+    """
+
+
+class Content(Enum):
+    """
+    Content indicates the kind of serialization of the response or input content.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    Normal = "Normal"
+    """
+    The standard serialization of the model element or child elements is
+    applied.
+    """
+
+    Metadata = "Metadata"
+    """Only metadata of an element or child elements is returned; the value is not."""
+
+    Value = "Value"
+    """
+    Only the raw value of the model element or child elements is returned;
+    it is commonly referred to as ValueOnly-serialization.
+    """
+
+    Reference = "Reference"
+    """
+    Only applicable to Referables. Only the reference to the found element
+    is returned; potential child elements are ignored.
+    """
+
+    Path = "Path"
+    """
+    Returns the ID-short of the requested element and a list of ID-short
+    paths to child elements if the requested element is a Submodel,
+    a SubmodelElementCollection, a SubmodelElementList, an
+    AnnotatedRelationshipElement, or an Entity.
+    """
+
+
+class Extent(Enum):
+    """
+    Indicates to which extent the response or input content is being
+    serialized.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-operation-parameters.html#SerializationModifier
+    """
+
+    Without_BLOB_value = "WithoutBLOBValue"
+    """
+    Only applicable to BLOB-elements; the BLOB content is not returned.
+
+    This is the default value.
+    """
+
+    With_BLOB_value = "WithBLOBValue"
+    """
+    Only applicable to BLOB-elements; the BLOB content is returned as
+    base64-encoded string.
+    """
+
+
+# endregion Basic Operation Parameters
+
+
+# region HTTP/REST API
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Paged_result(DBC):
+    """
+    An object connecting the actual list of returned items with metadata
+    information to, *e.g.*, fetch the next part of the result set.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    result: Optional[List["Referable"]]
+    """
+    List of returned items. Any kind of Referables is possible, depending on
+    the endpoint which has been requested.
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Referable"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+class Paging_metadata(DBC):
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+
+    .. note::
+
+        More attributes may be added to this class in future versions.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    cursor: Optional[str]
+    """
+    The cursor for the next part of the result set. No cursor attribute means that
+    the end of the result set has been reached.
+    """
+
+    def __init__(self, cursor: Optional[str] = None) -> None:
+        self.cursor = cursor
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.aas_IDs is not None)
+    or len(self.aas_IDs) >= 1,
+    "AAS IDs must be either not set or have at least one item."
+)
+# fmt: on
+class Package_description(DBC):
+    """
+    The package description consists of a system-wide unique packageId and
+    its corresponding Asset Administration Shell identifiers.
+
+    The packageId is used to identify the AASX package at the AASX file
+    server. The package description is used to list the Asset
+    Administration Shells in a given AASX package.
+
+    This class is not part of the metamodel.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#PackageDescription
+    """
+
+    package_ID: "Short_ID_type"
+    """File server specific package id"""
+
+    aas_IDs: Optional[List["Identifier"]]
+    """Asset Administration Shell unique identifiers"""
+
+    def __init__(
+        self,
+        package_ID: "Short_ID_type",
+        aas_IDs: Optional[List["Identifier"]] = None,
+    ) -> None:
+        self.package_ID = package_ID
+        self.aas_IDs = aas_IDs
+
+
+@verification
+def matches_path_item(text: str) -> bool:
+    """
+    Check that :paramref:`text` is a valid idShortPath.
+
+    An idShortPath is a chain of idShorts or SubmodelElementList-indexes
+    which points to an element within a hierarchy of elements, *e.g.*,
+    ``sme1.sme2[0].p1``.
+    """
+    pattern = (
+        r"^(([A-Za-z][A-Za-z0-9_]+)|(\[[0-9]+\]))"
+        r"((\.[A-Za-z][A-Za-z0-9_]+)|(\[[0-9]+\])){0,}$"
+    )
+
+    return match(pattern, text) is not None
+
+
+@invariant(
+    lambda self: matches_path_item(self),
+    "The value must match the pattern of a path item.",
+)
+class Path_item(str, DBC):
+    """
+    A chain of idShorts or SubmodelElementList-indexes, which points to an
+    element within a hierarchy of elements, *e.g.*, ``sme1.sme2[0].p1``.
+
+    The root of the path is always a submodel, and the first element is
+    always the idShort of a first-level submodel element within it. idShorts
+    are separated by a dot, while SubmodelElementList indices are written in
+    brackets.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#_addressing_resources
+    """
+
+
+# endregion HTTP/REST API
 
 
 # endregion Part 2
