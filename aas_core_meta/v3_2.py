@@ -7552,7 +7552,6 @@ class Status_code(Enum):
     or len(self.messages) >= 1,
     "Messages must be either not set or have at least one item."
 )
-@serialization(with_model_type=True)
 # fmt: on
 class Result(DBC):
     """
@@ -7652,7 +7651,6 @@ class Message_type_enum(Enum):
     or len(self.inoutput_arguments) >= 1,
     "InOutput arguments must be either not set or have at least one item."
 )
-@serialization(with_model_type=True)
 # fmt: on
 class Operation_request(DBC):
     """
@@ -7687,35 +7685,67 @@ class Operation_request(DBC):
         self.client_timeout_duration = client_timeout_duration
 
 
+# fmt: off
 @invariant(
-    lambda self: self.client_timeout_duration is not None,
-    "Client timeout duration must be set for asynchronous operation invocation.",
+    lambda self:
+    not (self.input_arguments is not None)
+    or len(self.input_arguments) >= 1,
+    "Input arguments must be either not set or have at least one item."
 )
-class Operation_request_async(Operation_request):
+@invariant(
+    lambda self:
+    not (self.inoutput_arguments is not None)
+    or len(self.inoutput_arguments) >= 1,
+    "InOutput arguments must be either not set or have at least one item."
+)
+# fmt: on
+class Operation_request_async(DBC):
     """
     The operation request object for asynchronous invocation.
 
     This class is not part of the metamodel and is not itself a named class
     in the specification. It corresponds to the request body of the
-    ``InvokeOperationAsync`` operation, which is :class:`Operation_request`
-    with :attr:`~Operation_request.client_timeout_duration` made mandatory.
+    ``InvokeOperationAsync`` operation, which is shaped like
+    :class:`Operation_request` with
+    :attr:`~Operation_request.client_timeout_duration` made mandatory.
+
+    .. note::
+
+        This class is deliberately *not* related to :class:`Operation_request`
+        by inheritance: a subclass constructor must exactly match
+        argument's type to the inherited property's declared
+        type, so a property declared ``Optional[Duration]`` on a base class
+        cannot be narrowed to a required ``Duration`` on a subclass. Making
+        this a standalone class lets ``client_timeout_duration`` be
+        genuinely required here.
 
     See:
     https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces.html#_operation_invokeoperationasync
     """
 
+    input_arguments: Optional[List["Operation_variable"]]
+    """Input argument"""
+
+    inoutput_arguments: Optional[List["Operation_variable"]]
+    """InOutput argument"""
+
+    client_timeout_duration: "Duration"
+    """
+    Duration indicating when the client suggests the server to have finished
+    execution of the invoked operation. The server may take this value into account to
+    decide on its effective timeout, however, the server may or may not use by its own
+    discretion.
+    """
+
     def __init__(
         self,
+        client_timeout_duration: "Duration",
         input_arguments: Optional[List["Operation_variable"]] = None,
         inoutput_arguments: Optional[List["Operation_variable"]] = None,
-        client_timeout_duration: Optional["Duration"] = None,
     ) -> None:
-        Operation_request.__init__(
-            self,
-            input_arguments=input_arguments,
-            inoutput_arguments=inoutput_arguments,
-            client_timeout_duration=client_timeout_duration,
-        )
+        self.client_timeout_duration = client_timeout_duration
+        self.input_arguments = input_arguments
+        self.inoutput_arguments = inoutput_arguments
 
 
 # NOTE (mristin):
@@ -7730,10 +7760,29 @@ class Operation_request_async(Operation_request):
 # https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#operation-request-value-only
 
 
-@serialization(with_model_type=True)
-class Base_operation_result(Result):
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.messages is not None)
+    or len(self.messages) >= 1,
+    "Messages must be either not set or have at least one item."
+)
+# fmt: on
+class Base_operation_result(DBC):
     """
     The object containing the intermediate state of an operation.
+
+    .. note::
+
+        This class is deliberately *not* related to :class:`Result` by
+        inheritance (and :class:`Operation_result` below is, in turn, not
+        related to this class by inheritance either). aas-core-codegen
+        refuses to generate a schema for a concrete class with concrete
+        descendants unless it is marked
+        ``@serialization(with_model_type=True)``, which would introduce a
+        ``modelType`` discriminator property that the official schema does
+        not have for this hierarchy. Flattening the hierarchy avoids that
+        mismatch, at the cost of repeating :attr:`messages` here.
 
     See:
     https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#BaseOperationResult
@@ -7741,6 +7790,9 @@ class Base_operation_result(Result):
 
     execution_state: "Execution_state"
     """Execution state"""
+
+    messages: Optional[List["Message"]]
+    """Additional messages containing information for the requester"""
 
     success: Optional[bool]
     """
@@ -7754,13 +7806,18 @@ class Base_operation_result(Result):
         messages: Optional[List["Message"]] = None,
         success: Optional[bool] = None,
     ) -> None:
-        Result.__init__(self, messages=messages)
-
         self.execution_state = execution_state
+        self.messages = messages
         self.success = success
 
 
 # fmt: off
+@invariant(
+    lambda self:
+    not (self.messages is not None)
+    or len(self.messages) >= 1,
+    "Messages must be either not set or have at least one item."
+)
 @invariant(
     lambda self:
     not (self.output_arguments is not None)
@@ -7774,12 +7831,29 @@ class Base_operation_result(Result):
     "InOutput arguments must be either not set or have at least one item."
 )
 # fmt: on
-class Operation_result(Base_operation_result):
+class Operation_result(DBC):
     """
     The operation's invocation result object.
 
+    .. note::
+
+        This class is deliberately *not* related to :class:`Base_operation_result`
+        by inheritance; see the note on that class.
+
     See:
     https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/specification/interfaces-payload.html#OperationResult
+    """
+
+    execution_state: "Execution_state"
+    """Execution state"""
+
+    messages: Optional[List["Message"]]
+    """Additional messages containing information for the requester"""
+
+    success: Optional[bool]
+    """
+    Flag indicating whether the business operation behind the operation was
+    successful (true) or not (false)
     """
 
     output_arguments: Optional[List["Operation_variable"]]
@@ -7796,13 +7870,9 @@ class Operation_result(Base_operation_result):
         output_arguments: Optional[List["Operation_variable"]] = None,
         inoutput_arguments: Optional[List["Operation_variable"]] = None,
     ) -> None:
-        Base_operation_result.__init__(
-            self,
-            execution_state=execution_state,
-            messages=messages,
-            success=success,
-        )
-
+        self.execution_state = execution_state
+        self.messages = messages
+        self.success = success
         self.output_arguments = output_arguments
         self.inoutput_arguments = inoutput_arguments
 
@@ -8960,8 +9030,7 @@ class Asset_administration_shell_metadata(Identifiable, Has_data_specification):
 
 # NOTE (mristin):
 # The *_value classes below are deliberately *not* related by inheritance,
-# and none of them is used as a base class. Each stands alone as a plain
-# DBC.
+# and none of them is used as a base class.
 #
 # Consequently, each is marked with @serialization(with_model_type=False):
 # since none of them is part of a polymorphic hierarchy here, no "modelType"
@@ -9150,6 +9219,588 @@ class Basic_event_element_value(DBC):
 
 
 # endregion Metadata And Value Views
+
+
+# region GetXxxResult Envelopes
+
+
+# NOTE (mristin):
+# Each class here is one endpoint's paginated response envelope: the
+# official API composes it as PagedResult + a "result" property with a
+# type specific to that endpoint. We do not model this via inheritance from
+# Paged_result: doing so would give Paged_result concrete descendants, which would force
+# @serialization(with_model_type=True) on it and introduce a
+# "modelType" discriminator that the official API does not have anywhere
+# in this family. Each class below is therefore standalone, duplicating
+# paging_metadata by hand (same reasoning as for Result/
+# Base_operation_result/Operation_result above).
+#
+# Two of the seventeen GetXxxResult schemas are not formalized here:
+# GetSubmodelElementsValueResult and GetSubmodelsValueResult. Both type
+# their "result" as ValueOnly-shaped JSON (dynamic, no fixed attributes),
+# the same issue that already ruled out ValueOnly itself and several
+# *_value classes elsewhere in this file.
+#
+# See:
+# https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_asset_administration_shells_result(DBC):
+    """
+    The result of listing all Asset Administration Shells.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Asset_administration_shell"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Asset_administration_shell"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_asset_administration_shells_metadata_result(DBC):
+    """
+    The result of listing the metadata of all Asset Administration Shells.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Asset_administration_shell_metadata"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Asset_administration_shell_metadata"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_all_asset_administration_shells_recent_changes_result(DBC):
+    """
+    The result of listing the recent changes of all Asset Administration Shells.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Asset_administration_shell_recent_change"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Asset_administration_shell_recent_change"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_asset_administration_shell_descriptors_result(DBC):
+    """
+    The result of listing all Asset Administration Shell descriptors.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Asset_administration_shell_descriptor"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Asset_administration_shell_descriptor"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_concept_descriptions_result(DBC):
+    """
+    The result of listing all concept descriptions.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Concept_description"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Concept_description"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_all_concept_descriptions_recent_changes_result(DBC):
+    """
+    The result of listing the recent changes of all concept descriptions.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Concept_description_recent_change"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Concept_description_recent_change"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_package_descriptions_result(DBC):
+    """
+    The result of listing all AASX package descriptions.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Package_description"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Package_description"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_path_items_result(DBC):
+    """
+    The result of listing idShortPaths.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Path_item"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Path_item"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_references_result(DBC):
+    """
+    The result of listing references.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Reference"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Reference"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_submodel_descriptors_result(DBC):
+    """
+    The result of listing all submodel descriptors.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Submodel_descriptor"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Submodel_descriptor"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_submodel_elements_metadata_result(DBC):
+    """
+    The result of listing the metadata of all submodel elements.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Submodel_element_metadata"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Submodel_element_metadata"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_submodel_elements_result(DBC):
+    """
+    The result of listing all submodel elements.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Submodel_element"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Submodel_element"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_all_submodels_recent_changes_result(DBC):
+    """
+    The result of listing the recent changes of all submodels.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Submodel_recent_change"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Submodel_recent_change"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_submodels_metadata_result(DBC):
+    """
+    The result of listing the metadata of all submodels.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Submodel_metadata"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Submodel_metadata"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# fmt: off
+@invariant(
+    lambda self:
+    not (self.result is not None)
+    or len(self.result) >= 1,
+    "Result must be either not set or have at least one item."
+)
+# fmt: on
+class Get_submodels_result(DBC):
+    """
+    The result of listing all submodels.
+
+    This class is not part of the metamodel and is not itself a named class
+    in the specification.
+
+    See:
+    https://industrialdigitaltwin.io/aas-specifications/IDTA-01002/v3.2/http-rest-api/http-rest-api.html#pagination
+    """
+
+    paging_metadata: "Paging_metadata"
+    """
+    Additional information for the client to, *e.g.*, fetch the next part of
+    the result set.
+    """
+
+    result: Optional[List["Submodel"]]
+    """The returned items."""
+
+    def __init__(
+        self,
+        paging_metadata: "Paging_metadata",
+        result: Optional[List["Submodel"]] = None,
+    ) -> None:
+        self.paging_metadata = paging_metadata
+        self.result = result
+
+
+# endregion GetXxxResult Envelopes
 
 
 # endregion Part 2

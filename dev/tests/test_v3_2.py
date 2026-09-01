@@ -2294,13 +2294,8 @@ Observed literals: {sorted(literal_set)!r}""")
                 aas_core_codegen.common.Identifier(full_cls_name)
             )
 
-            metadata_props_by_name = {
-                prop.name: prop for prop in metadata_cls.properties
-            }
-            full_props_by_name = {prop.name: prop for prop in full_cls.properties}
-
-            metadata_prop_names = set(metadata_props_by_name.keys())
-            full_prop_names = set(full_props_by_name.keys())
+            metadata_prop_names = set(metadata_cls.properties_by_name.keys())
+            full_prop_names = set(full_cls.properties_by_name.keys())
 
             # NOTE (mristin):
             # This is a sanity-check that the excluded properties actually exist on the
@@ -2333,19 +2328,22 @@ Observed literals: {sorted(literal_set)!r}""")
                     f"{sorted(expected_excluded)!r}: {sorted(unexpected)!r}"
                 )
 
-            for prop_name in sorted(metadata_prop_names & full_prop_names):
-                metadata_type_str = str(
-                    metadata_props_by_name[prop_name].type_annotation
+            # NOTE (mristin):
+            # The retained properties must coincide in type (including
+            # Optional-ness) with their Part 1 counterparts. This is exactly what
+            # structural subtyping checks: every property of ``metadata_cls`` must
+            # be matched on ``full_cls`` by a same-named property of the exact same
+            # type.
+            if (
+                not missing
+                and not unexpected
+                and not full_cls.is_structural_subtype_of(metadata_cls)
+            ):
+                errors.append(
+                    f"One or more of the propert(y/ies) shared between "
+                    f"{metadata_cls_name} and {full_cls_name} do not coincide in "
+                    f"type (including Optional-ness)."
                 )
-                full_type_str = str(full_props_by_name[prop_name].type_annotation)
-
-                if metadata_type_str != full_type_str:
-                    errors.append(
-                        f"{metadata_cls_name}.{prop_name} is typed "
-                        f"{metadata_type_str!r}, but {full_cls_name}.{prop_name} "
-                        f"is typed {full_type_str!r}; the types (including "
-                        f"Optional-ness) must coincide."
-                    )
 
         if len(errors) > 0:
             errors_joined = "\n".join(tests.common.make_bullet_points(errors))
@@ -2374,52 +2372,19 @@ Observed literals: {sorted(literal_set)!r}""")
             aas_core_codegen.common.Identifier("Reference_element_value")
         )
 
-        reference_props_by_name = {prop.name: prop for prop in reference_cls.properties}
-        reference_element_value_props_by_name = {
-            prop.name: prop for prop in reference_element_value_cls.properties
-        }
-
-        reference_prop_names = set(reference_props_by_name.keys())
-        reference_element_value_prop_names = set(
-            reference_element_value_props_by_name.keys()
+        # NOTE (mristin):
+        # Two classes carry exactly the same properties, each with exactly the
+        # same type, if and only if each is a structural subtype of the other.
+        self.assertTrue(
+            reference_element_value_cls.is_structural_subtype_of(reference_cls),
+            "Reference_element_value is missing a propert(y/ies) present on "
+            "Reference, or one of its shared properties is mistyped.",
         )
-
-        missing = reference_prop_names - reference_element_value_prop_names
-        unexpected = reference_element_value_prop_names - reference_prop_names
-
-        errors = []  # type: List[str]
-
-        if missing:
-            errors.append(
-                f"Reference_element_value is missing the propert(y/ies) "
-                f"present on Reference: {sorted(missing)!r}"
-            )
-
-        if unexpected:
-            errors.append(
-                f"Reference_element_value has the unexpected propert(y/ies), "
-                f"not present on Reference: {sorted(unexpected)!r}"
-            )
-
-        for prop_name in sorted(
-            reference_prop_names & reference_element_value_prop_names
-        ):
-            reference_type_str = str(reference_props_by_name[prop_name].type_annotation)
-            reference_element_value_type_str = str(
-                reference_element_value_props_by_name[prop_name].type_annotation
-            )
-
-            if reference_type_str != reference_element_value_type_str:
-                errors.append(
-                    f"Reference_element_value.{prop_name} is typed "
-                    f"{reference_element_value_type_str!r}, but "
-                    f"Reference.{prop_name} is typed {reference_type_str!r}; "
-                    f"the types (including Optional-ness) must coincide."
-                )
-
-        if len(errors) > 0:
-            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
-            raise AssertionError(f"One or more errors:\n{errors_joined}")
+        self.assertTrue(
+            reference_cls.is_structural_subtype_of(reference_element_value_cls),
+            "Reference_element_value has (an) unexpected propert(y/ies), not "
+            "present on Reference.",
+        )
 
     def test_every_submodel_element_subclass_has_a_metadata_class(self) -> None:
         """
@@ -2565,6 +2530,264 @@ Observed literals: {sorted(literal_set)!r}""")
                 f"concrete subclasses of Submodel_element: "
                 f"{sorted(stale_exemptions)!r}"
             )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_operation_request_async_has_the_expected_fields(self) -> None:
+        """
+        Assert that ``Operation_request_async`` has exactly the same fields
+        as ``Operation_request`` -- ``input_arguments`` and
+        ``inoutput_arguments`` with coinciding types, and
+        ``client_timeout_duration`` present on both, but required (not
+        ``Optional``) on ``Operation_request_async``.
+
+        ``Operation_request_async`` is deliberately *not* a subclass of
+        ``Operation_request`` (see the note on the class itself), so nothing
+        keeps the two in sync automatically; this test is what does. If a
+        field is added, renamed, removed or re-typed on ``Operation_request``,
+        this test will fail until ``Operation_request_async`` is updated to
+        match.
+        """
+        symbol_table = _META_MODEL.symbol_table
+
+        operation_request_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Operation_request")
+        )
+        operation_request_async_cls = symbol_table.must_find_class(
+            aas_core_codegen.common.Identifier("Operation_request_async")
+        )
+
+        operation_request_prop_names = set(
+            operation_request_cls.properties_by_name.keys()
+        )
+        operation_request_async_prop_names = set(
+            operation_request_async_cls.properties_by_name.keys()
+        )
+
+        errors = []  # type: List[str]
+
+        missing = operation_request_prop_names - operation_request_async_prop_names
+        unexpected = operation_request_async_prop_names - operation_request_prop_names
+
+        if missing:
+            errors.append(
+                f"Operation_request_async is missing the propert(y/ies) "
+                f"present on Operation_request: {sorted(missing)!r}"
+            )
+
+        if unexpected:
+            errors.append(
+                f"Operation_request_async has the unexpected propert(y/ies), "
+                f"not present on Operation_request: {sorted(unexpected)!r}"
+            )
+
+        # NOTE (mristin):
+        # client_timeout_duration is expected to differ: required (not
+        # Optional) on Operation_request_async, Optional on Operation_request.
+        # This is the one property that keeps the two classes from being
+        # structural subtypes of each other (``Class.is_structural_subtype_of``
+        # is invariant in Optional-ness), so we special-case it here and
+        # compare the rest with ``intermediate.type_annotations_equal``.
+        if not missing and not unexpected:
+            client_timeout_duration_request = operation_request_cls.properties_by_name[
+                "client_timeout_duration"
+            ]
+            client_timeout_duration_async = (
+                operation_request_async_cls.properties_by_name[
+                    "client_timeout_duration"
+                ]
+            )
+
+            if isinstance(
+                client_timeout_duration_async.type_annotation,
+                intermediate.OptionalTypeAnnotation,
+            ) or not intermediate.type_annotations_equal(
+                intermediate.beneath_optional(
+                    client_timeout_duration_request.type_annotation
+                ),
+                client_timeout_duration_async.type_annotation,
+            ):
+                errors.append(
+                    "Operation_request_async.client_timeout_duration is "
+                    "expected to be the required (non-Optional) form of "
+                    "Operation_request.client_timeout_duration, but it is not."
+                )
+
+            for prop_name in sorted(
+                operation_request_prop_names - {"client_timeout_duration"}
+            ):
+                request_prop = operation_request_cls.properties_by_name[prop_name]
+                async_prop = operation_request_async_cls.properties_by_name[prop_name]
+
+                if not intermediate.type_annotations_equal(
+                    request_prop.type_annotation, async_prop.type_annotation
+                ):
+                    errors.append(
+                        f"Operation_request_async.{prop_name} is typed "
+                        f"{async_prop.type_annotation}, but "
+                        f"Operation_request.{prop_name} is typed "
+                        f"{request_prop.type_annotation}; the types (including "
+                        f"Optional-ness) must coincide."
+                    )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_result_base_operation_result_operation_result_share_coinciding_fields(
+        self,
+    ) -> None:
+        """
+        Assert that the fields shared among ``Result``, ``Base_operation_result``
+        and ``Operation_result`` coincide in type wherever they overlap.
+
+        These three classes are deliberately *not* related by inheritance
+        (see the note on ``Base_operation_result``): aas-core-codegen
+        refuses to generate a schema for a concrete class with concrete
+        descendants unless it is marked
+        ``@serialization(with_model_type=True)``, which would introduce a
+        ``modelType`` discriminator that the official schema does not have
+        for this hierarchy. Flattening avoids that mismatch, but it means
+        ``messages`` (all three classes) and ``execution_state``/``success``
+        (``Base_operation_result`` and ``Operation_result``) are duplicated
+        by hand. This test is what keeps those duplicates in sync: if one
+        copy is changed without the other, this test will fail.
+        """
+        symbol_table = _META_MODEL.symbol_table
+
+        class_names = ["Result", "Base_operation_result", "Operation_result"]
+        props_by_class = {
+            name: {
+                prop.name: str(prop.type_annotation)
+                for prop in symbol_table.must_find_class(
+                    aas_core_codegen.common.Identifier(name)
+                ).properties
+            }
+            for name in class_names
+        }
+
+        errors = []  # type: List[str]
+
+        for i, first_name in enumerate(class_names):
+            for second_name in class_names[i + 1 :]:
+                first_props = props_by_class[first_name]
+                second_props = props_by_class[second_name]
+
+                shared_prop_names = set(first_props.keys()) & set(second_props.keys())
+
+                for prop_name in sorted(shared_prop_names):
+                    first_type_str = first_props[prop_name]
+                    second_type_str = second_props[prop_name]
+
+                    if first_type_str != second_type_str:
+                        errors.append(
+                            f"{first_name}.{prop_name} is typed "
+                            f"{first_type_str!r}, but {second_name}.{prop_name} "
+                            f"is typed {second_type_str!r}; the types "
+                            f"(including Optional-ness) must coincide."
+                        )
+
+        if len(errors) > 0:
+            errors_joined = "\n".join(tests.common.make_bullet_points(errors))
+            raise AssertionError(f"One or more errors:\n{errors_joined}")
+
+    def test_get_xxx_result_envelopes_have_the_expected_fields(self) -> None:
+        """
+        Assert that every ``Get_*_result`` class in the "GetXxxResult
+        Envelopes" region has exactly ``paging_metadata`` (required, typed
+        ``Paging_metadata``) and ``result`` (``Optional[List[...]]`` of the
+        expected item type), and nothing else.
+
+        These classes are deliberately standalone (not related by
+        inheritance to ``Paged_result`` or to each other; see the note at
+        the top of the region), so nothing keeps their shape in sync
+        automatically. This test is what does: if a class is mistyped
+        (*e.g.*, a stale or misspelled item type) or gains/loses a field,
+        this test will fail.
+        """
+        symbol_table = _META_MODEL.symbol_table
+
+        # fmt: off
+        # Map the class name to the expected item type of its "result" list.
+        cases = [
+            (
+                "Get_all_asset_administration_shells_recent_changes_result",
+                "Asset_administration_shell_recent_change",
+            ),
+            (
+                "Get_all_concept_descriptions_recent_changes_result",
+                "Concept_description_recent_change",
+            ),
+            ("Get_all_submodels_recent_changes_result", "Submodel_recent_change"),
+            (
+                "Get_asset_administration_shell_descriptors_result",
+                "Asset_administration_shell_descriptor",
+            ),
+            (
+                "Get_asset_administration_shells_metadata_result",
+                "Asset_administration_shell_metadata",
+            ),
+            ("Get_asset_administration_shells_result", "Asset_administration_shell"),
+            ("Get_concept_descriptions_result", "Concept_description"),
+            ("Get_package_descriptions_result", "Package_description"),
+            ("Get_path_items_result", "Path_item"),
+            ("Get_references_result", "Reference"),
+            ("Get_submodel_descriptors_result", "Submodel_descriptor"),
+            ("Get_submodel_elements_metadata_result", "Submodel_element_metadata"),
+            ("Get_submodel_elements_result", "Submodel_element"),
+            ("Get_submodels_metadata_result", "Submodel_metadata"),
+            ("Get_submodels_result", "Submodel"),
+        ]
+        # fmt: on
+
+        errors = []  # type: List[str]
+
+        for cls_name, item_type_name in cases:
+            cls = symbol_table.must_find_class(
+                aas_core_codegen.common.Identifier(cls_name)
+            )
+
+            props_by_name = {prop.name: prop for prop in cls.properties}
+            prop_names = set(props_by_name.keys())
+
+            expected_prop_names = {"paging_metadata", "result"}
+
+            missing = expected_prop_names - prop_names
+            unexpected = prop_names - expected_prop_names
+
+            if missing:
+                errors.append(
+                    f"{cls_name} is missing the expected propert(y/ies): "
+                    f"{sorted(missing)!r}"
+                )
+
+            if unexpected:
+                errors.append(
+                    f"{cls_name} has the unexpected propert(y/ies): "
+                    f"{sorted(unexpected)!r}"
+                )
+
+            if "paging_metadata" in props_by_name:
+                paging_metadata_type_str = str(
+                    props_by_name["paging_metadata"].type_annotation
+                )
+                if paging_metadata_type_str != "Paging_metadata":
+                    errors.append(
+                        f"{cls_name}.paging_metadata is typed "
+                        f"{paging_metadata_type_str!r}, expected "
+                        f"'Paging_metadata' (required)."
+                    )
+
+            if "result" in props_by_name:
+                result_type_str = str(props_by_name["result"].type_annotation)
+                expected_result_type_str = f"Optional[List[{item_type_name}]]"
+                if result_type_str != expected_result_type_str:
+                    errors.append(
+                        f"{cls_name}.result is typed {result_type_str!r}, "
+                        f"expected {expected_result_type_str!r}."
+                    )
 
         if len(errors) > 0:
             errors_joined = "\n".join(tests.common.make_bullet_points(errors))
